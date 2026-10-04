@@ -110,9 +110,9 @@ class Practice(unittest.TestCase):
 class Page(unittest.TestCase):
     def test_page_loads_vocab_script(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
-        self.assertIn('src="js/vocab.js"', html)
+        self.assertIn('src="js/vocab.js?v=', html)
         # Экран словарика подключается отдельным файлом после основного скрипта.
-        self.assertIn('src="js/vocab-ui.js"', html)
+        self.assertIn('src="js/vocab-ui.js?v=', html)
         ui = (ROOT / "js" / "vocab-ui.js").read_text(encoding="utf-8")
         self.assertIn('A.routes.words', ui)
 

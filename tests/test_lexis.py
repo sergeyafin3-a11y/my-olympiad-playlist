@@ -68,8 +68,8 @@ class Page(unittest.TestCase):
     def test_page_loads_lexis(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
         for f in FILES:
-            self.assertIn('src="data/lexis/%s.js"' % f, html)
-        self.assertIn('src="js/lexis-ui.js"', html)
+            self.assertIn('src="data/lexis/%s.js?v=' % f, html)
+        self.assertIn('src="js/lexis-ui.js?v=', html)
         ui = (ROOT / "js" / "lexis-ui.js").read_text(encoding="utf-8")
         self.assertIn("A.routes.lexis", ui)
 

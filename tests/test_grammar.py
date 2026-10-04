@@ -157,9 +157,9 @@ class Page(unittest.TestCase):
     def test_page_loads_grammar(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
         for l in LEVELS:
-            self.assertIn('src="data/grammar/grammar-%s.js"' % l, html)
-        self.assertIn('src="js/grammar.js"', html)
-        self.assertIn('src="js/grammar-ui.js"', html)
+            self.assertIn('src="data/grammar/grammar-%s.js?v=' % l, html)
+        self.assertIn('src="js/grammar.js?v=', html)
+        self.assertIn('src="js/grammar-ui.js?v=', html)
 
 
 if __name__ == "__main__":
