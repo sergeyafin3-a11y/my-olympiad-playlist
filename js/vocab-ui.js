@@ -184,9 +184,10 @@
       if (b.dataset.wsave) {
         var term = document.getElementById("wsTerm").value, tr = document.getElementById("wsTr").value;
         if (!term.trim()) { sheetError("Type the word or phrase first."); return; }
+        var before = W;
         if (editId) W = Vo.rename(W, editId, term, tr);
         else W = Vo.add(W, { term: term, tr: tr, ctx: pending.ctx, src: (location.hash.split("/")[2] || "") }, Date.now());
-        if (!save()) { sheetError("Couldn't save: the browser storage is full or blocked."); return; }
+        if (!save()) { W = before; sheetError("Couldn't save: the browser storage is full or blocked."); return; }
         closeSheet(); A.keepScroll(A.render);
       }
       if (b.dataset.wcancel) closeSheet();
@@ -242,7 +243,9 @@
       var txt = String(s).replace(/\s+/g, " ").trim();
       var el = s.anchorNode && (s.anchorNode.nodeType === 3 ? s.anchorNode.parentElement : s.anchorNode);
       if (!txt || txt.length > 80 || !/[A-Za-z]/.test(txt) || !inContent(el)) return;
-      var an = s.anchorNode, at = an && an.nodeType === 3 ? an.textContent : el.textContent, ao = an && an.nodeType === 3 ? s.anchorOffset : 0;
+      // Начало выделения берём из диапазона: при выделении справа налево anchor стоит в конце.
+      var rg = s.rangeCount ? s.getRangeAt(0) : null, an = rg && rg.startContainer;
+      var at = an && an.nodeType === 3 ? an.textContent : el.textContent, ao = an && an.nodeType === 3 ? rg.startOffset : 0;
       showPill({ term: txt.replace(/^[^A-Za-z]+|[^A-Za-z'’]+$/g, ""), ctx: sentence(at, ao, Math.min(at.length, ao + txt.length)) });
     }, 350);
   });
@@ -263,7 +266,10 @@
     document.body.appendChild(ta); ta.select(); var ok = false; try { ok = document.execCommand("copy"); } catch (e) {} ta.remove(); return ok;
   }
 
-  document.getElementById("app").onclick = function () {};
+  var app = document.getElementById("app");
+  app.onclick = function () {};
+  // Без этого iOS подсвечивает серым весь контейнер при каждом нажатии.
+  app.style.webkitTapHighlightColor = "transparent";
 
   A.render();
 })();
