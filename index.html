@@ -18,7 +18,7 @@
   --c:#3DDC97;
   --tabbar:64px;--dock:calc(var(--tabbar) + 12px);
 }
-body.playing{--dock:calc(var(--tabbar) + 88px)}
+body.playing{--dock:calc(var(--tabbar) + 96px)}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
 body{padding-inline:16px;padding-block:env(safe-area-inset-top,0px) calc(var(--tabbar) + 120px + env(safe-area-inset-bottom,0px))}
@@ -214,9 +214,9 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
 <script>
 (function () {
   var V = window.VARIANT, C = window.Check;
-  // Разделы-расширения (словарик, грамматика) живут в своих файлах и регистрируются здесь:
-  // маршрут #/<имя> и строка в блоке Practice на главной.
-  var ROUTES = {}, PRACTICE = [];
+  // Разделы-расширения (словарик, грамматика, лексика) живут в своих файлах
+  // и регистрируют здесь свой маршрут #/<имя>; вкладка внизу появляется сама.
+  var ROUTES = {};
   var KEY = "olymp-playlist-" + V.id;
   var S = { ans: {}, checked: {}, manual: {}, writing: {}, points: {}, card: "mardi", last: null, full: {} };
   try { var raw = localStorage.getItem(KEY); if (raw) S = Object.assign(S, JSON.parse(raw)); } catch (e) {}
@@ -334,7 +334,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     S.last = t.id; save();
     var s = SEC[t.section], checked = !!S.checked[t.id];
     var backHref = FULLMODE ? "#/" : "#/s/" + t.section;
-    var h = '<div style="--c:' + s.color + '"><a class="back" href="' + backHref + '">← ' + (FULLMODE ? "Home" : esc(s.title)) + '</a>' +
+    var h = '<div style="--c:' + s.color + '"><a class="back" href="' + backHref + '">← ' + (FULLMODE ? "Exam" : esc(s.title)) + '</a>' +
       '<div class="taskhead"><span class="sq" aria-hidden="true">' + s.icon + '</span><div><span class="eyebrow">' + esc(s.title) + (FULLMODE ? ' · full variant ' + (FULL.indexOf(t) + 1) + '/' + FULL.length : '') + '</span><h1>' + esc(t.title) + '</h1></div></div>' +
       '<div class="bar">' + fullBar(t) + (t.items ? '<span class="chip">' + range(t) + '</span>' : '') + (t.readMinutes ? timerBtn("read-" + t.id, t.readMinutes * 60, t.readMinutes + " min to read the text") : '') + '</div>';
 
@@ -553,7 +553,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   au.addEventListener("loadedmetadata", function () { $("plSeek").max = Math.floor(au.duration); $("plDur").textContent = fmt(au.duration); });
   au.addEventListener("timeupdate", function () { $("plCur").textContent = fmt(au.currentTime); $("plSeek").value = Math.floor(au.currentTime); });
 
-  window.App = { esc: esc, fmt: fmt, render: render, keepScroll: keepScroll, byId: byId, routes: ROUTES, practice: PRACTICE, variant: V, sections: SEC };
+  window.App = { esc: esc, fmt: fmt, render: render, keepScroll: keepScroll, byId: byId, routes: ROUTES, variant: V, sections: SEC };
   render();
 })();
 </script>

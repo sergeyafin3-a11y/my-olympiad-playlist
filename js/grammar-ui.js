@@ -31,11 +31,6 @@
 
   function byId(id) { return T.filter(function (t) { return t.id === id; })[0]; }
 
-  A.practice.push(function () {
-    var done = Object.keys(S.best).length;
-    return '<a class="row" href="#/grammar" style="--c:' + COLOR + '"><span class="sq" aria-hidden="true">📐</span><span><span class="t">Grammar</span><br><span class="s">' + T.length + ' topics · ' + Object.keys(G.OLYMPIAD).length + ' 🔥 olympiad · ' + done + ' tested</span></span></a>';
-  });
-
   A.routes.grammar = function (parts) {
     if (parts[1] === "t" && byId(parts[2])) return topic(byId(parts[2]));
     if (parts[1] === "mix" && parts[2] === "run" && S.mix) return mixRun();

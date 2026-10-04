@@ -33,12 +33,6 @@
   ].join("\n");
   document.head.appendChild(css);
 
-  // ---------- главная: строка в блоке Practice ----------
-  A.practice.push(function () {
-    var known = W.filter(function (w) { return (w.level || 0) >= 4; }).length;
-    return '<a class="row" href="#/words" style="--c:' + COLOR + '"><span class="sq" aria-hidden="true">💗</span><span><span class="t">My words</span><br><span class="s">' + W.length + ' saved · ' + known + ' learned</span></span></a>';
-  });
-
   // ---------- экраны ----------
   var session = null; // текущая тренировка: {mode, deck, i, shown, right, done}
 
