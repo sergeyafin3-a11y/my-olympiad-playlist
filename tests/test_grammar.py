@@ -100,6 +100,22 @@ class MixedTest(unittest.TestCase):
         self.assertTrue(r)
 
 
+class SavedState(unittest.TestCase):
+    def test_prune_drops_questions_whose_topic_or_item_is_gone(self):
+        r = run_js("""
+          var mix = {qs: [{topic: "a1-can", i: 0}, {topic: "gone-topic", i: 1}, {topic: "a1-can", i: 99}, {topic: "b2-wish", i: 3}],
+                     ans: {"0": 1, "1": "x", "2": "y", "3": "hadn't said"}, checked: false};
+          var p = G.prune(mix, T);
+          return {qs: p.qs, ans: p.ans};
+        """)
+        self.assertEqual(r["qs"], [{"topic": "a1-can", "i": 0}, {"topic": "b2-wish", "i": 3}])
+        self.assertEqual(r["ans"], {"0": 1, "1": "hadn't said"})
+
+    def test_known_topic_ids_filters_stale_selection(self):
+        r = run_js('return G.knownIds(T, ["a1-can", "gone-topic", "b2-wish"]);')
+        self.assertEqual(r, ["a1-can", "b2-wish"])
+
+
 class Page(unittest.TestCase):
     def test_page_loads_grammar(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")

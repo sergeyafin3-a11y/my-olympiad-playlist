@@ -31,5 +31,24 @@
     return pool.slice(0, n);
   }
 
-  window.Grammar = { check: check, score: score, topicsByLevel: topicsByLevel, mixed: mixed };
+  // Сохранённый смешанный тест мог пережить обновление тем: выкидываем вопросы, которых больше нет,
+  // и перенумеровываем ответы, иначе страница падает на несуществующем вопросе.
+  function prune(mix, topics) {
+    var byId = {}; topics.forEach(function (t) { byId[t.id] = t; });
+    var qs = [], ans = {};
+    mix.qs.forEach(function (q, i) {
+      var t = byId[q.topic];
+      if (!t || !t.items[q.i]) return;
+      if (mix.ans && mix.ans[i] != null) ans[qs.length] = mix.ans[i];
+      qs.push(q);
+    });
+    return { qs: qs, ans: ans, checked: !!mix.checked && qs.length > 0 };
+  }
+
+  function knownIds(topics, ids) {
+    var all = topics.map(function (t) { return t.id; });
+    return ids.filter(function (id) { return all.indexOf(id) >= 0; });
+  }
+
+  window.Grammar = { check: check, score: score, topicsByLevel: topicsByLevel, mixed: mixed, prune: prune, knownIds: knownIds };
 })();

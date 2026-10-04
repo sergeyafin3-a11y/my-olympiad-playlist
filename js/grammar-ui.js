@@ -4,6 +4,9 @@
   var KEY = "olymp-grammar", COLOR = "#2EC4D6", LEVELS = ["A1", "A2", "B1", "B2"];
   var S = { best: {}, ans: {}, checked: {}, mix: null, mixLevels: ["B1", "B2"], mixTopics: [], mixN: 20 };
   try { S = Object.assign(S, JSON.parse(localStorage.getItem(KEY) || "{}")); } catch (e) {}
+  if (!Array.isArray(S.mixLevels)) S.mixLevels = ["B1", "B2"];
+  S.mixTopics = G.knownIds(T, Array.isArray(S.mixTopics) ? S.mixTopics : []);
+  if (S.mix && Array.isArray(S.mix.qs)) S.mix = G.prune(S.mix, T); else S.mix = null;
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
   var filter = "all";
 
@@ -96,7 +99,8 @@
   function mixSetup() {
     var h = '<div style="--c:' + COLOR + '"><a class="back" href="#/grammar">← Grammar</a><h1 style="margin-top:14px;font-size:30px;font-weight:800">Mixed test</h1>' +
       '<p class="muted">Questions from several topics, shuffled. Pick levels or exact topics.</p>' +
-      '<h2 class="list-h" style="font-size:16px">Levels</h2><div class="cards2">' + LEVELS.map(function (l) { return '<button class="opt' + (S.mixLevels.indexOf(l) >= 0 ? ' sel' : '') + '" data-glevel="' + l + '">' + l + '</button>'; }).join("") + '</div>' +
+      '<h2 class="list-h" style="font-size:16px">Levels</h2><div class="cards2"' + (S.mixTopics.length ? ' style="opacity:.4"' : '') + '>' + LEVELS.map(function (l) { return '<button class="opt' + (S.mixLevels.indexOf(l) >= 0 ? ' sel' : '') + '" data-glevel="' + l + '">' + l + '</button>'; }).join("") + '</div>' +
+      (S.mixTopics.length ? '<p class="note" id="gTopicNote">Topics are chosen below, so levels are ignored. <button class="link-btn" data-gclear="1" style="background:none;border:0;color:' + COLOR + ';padding:0;text-decoration:underline">Clear topics</button></p>' : '') +
       '<details class="text"><summary>Or choose topics (' + S.mixTopics.length + ' selected)</summary><div class="prose" style="padding-top:4px">' +
       T.map(function (t) { return '<label style="display:flex;gap:8px;align-items:flex-start;margin:6px 0;cursor:pointer"><input type="checkbox" data-gtopic="' + t.id + '"' + (S.mixTopics.indexOf(t.id) >= 0 ? ' checked' : '') + ' style="margin-top:6px;accent-color:' + COLOR + '"><span><span class="lv ' + t.level + '">' + t.level + '</span> ' + esc(t.title) + '</span></label>'; }).join("") + '</div></details>' +
       '<h2 class="list-h" style="font-size:16px">Questions</h2><div class="cards2">' + [10, 20, 30].map(function (n) { return '<button class="opt' + (S.mixN === n ? ' sel' : '') + '" data-gn="' + n + '">' + n + '</button>'; }).join("") + '</div>' +
@@ -133,6 +137,8 @@
       a[i] = a[i] === j ? null : j; save(); A.keepScroll(A.render); return;
     }
     if (b.dataset.gcheck) {
+      var its = b.dataset.gcheck === "mix" ? mixItems() : byId(b.dataset.gcheck).items, cur = ansOf(b.dataset.gcheck);
+      if (!answered(its, cur)) { b.textContent = "Answer at least one question"; return; }
       if (b.dataset.gcheck === "mix") S.mix.checked = true;
       else {
         var t = byId(b.dataset.gcheck), got = G.score(t.items, S.ans[t.id] || {}).got;
@@ -147,6 +153,7 @@
       if (k >= 0) S.mixLevels.splice(k, 1); else S.mixLevels.push(l);
       save(); A.keepScroll(A.render); return;
     }
+    if (b.dataset.gclear) { S.mixTopics = []; save(); A.keepScroll(A.render); return; }
     if (b.dataset.gn) { S.mixN = +b.dataset.gn; save(); A.keepScroll(A.render); return; }
     if (b.dataset.gstart) {
       var ids = mixIds();
@@ -170,8 +177,8 @@
       var k = S.mixTopics.indexOf(el.dataset.gtopic);
       if (el.checked && k < 0) S.mixTopics.push(el.dataset.gtopic);
       if (!el.checked && k >= 0) S.mixTopics.splice(k, 1);
-      save();
-      var sum = el.closest("details").querySelector("summary"); if (sum) sum.textContent = "Or choose topics (" + S.mixTopics.length + " selected)";
+      save(); A.keepScroll(A.render);
+      var d = document.querySelector("details.text"); if (d) d.open = true;
     }
   });
 
