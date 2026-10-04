@@ -1,18 +1,15 @@
 window.GRAMMAR = window.GRAMMAR || [];
 window.GRAMMAR.push(
   {
-    id: "b2-conditionals-3-mixed", level: "B2", title: "Third and mixed conditionals",
+    id: "b2-conditional-3", level: "B2", title: "Third conditional",
     rule: {
-      intro: "Третий тип условных — сожаление или рассуждение о прошлом, которое уже не изменить. Смешанные связывают прошлое с настоящим: прошлое условие — результат сейчас, или постоянное свойство — результат в прошлом.",
+      intro: "Третий тип условных — сожаление или рассуждение о прошлом, которое уже не изменить: условие не выполнилось, и результат тоже остался в прошлом.",
       blocks: [
         { h: "Третий тип (прошлое → прошлое)", rows: [
           ["If + Past Perfect, would have + V3", "If I had studied harder, I would have passed."],
           ["could / might have + V3", "If we had left earlier, we might have caught the train."],
-          ["отрицание", "If it hadn't rained, we wouldn't have cancelled the match."]
-        ] },
-        { h: "Смешанные условные", rows: [
-          ["прошлое условие → результат сейчас: If + Past Perfect, would + V", "If I had taken the map, I wouldn't be lost now."],
-          ["свойство сейчас → результат в прошлом: If + Past Simple, would have + V3", "If I were braver, I would have sung at the concert."]
+          ["отрицание", "If it hadn't rained, we wouldn't have cancelled the match."],
+          ["вопрос", "What would you have done if you had missed the bus?"]
         ] },
         { h: "Инверсия вместо if", rows: [
           ["Had + подлежащее + V3", "Had I known about the party, I would have come."],
@@ -21,21 +18,21 @@ window.GRAMMAR.push(
       ],
       tips: [
         "Не ставьте would в часть с if: не «If I would have known», а «If I had known, I would have told you».",
-        "Слова now, today, still в главной части — сигнал смешанного типа: «If he hadn't broken his leg, he would be playing today».",
+        "Третий тип часто звучит как упрёк или сожаление: «If you had told me, I would have helped» = жаль, что ты не сказал.",
         "В инверсии нет сокращения hadn't в начале: «Had I not seen it…», а не «Hadn't I seen it…» — частая ловушка олимпиад."
       ]
     },
     items: [
       { type: "choice", q: "If I ___ harder, I would have passed the exam.", opts: ["studied", "had studied", "would study"], a: 1, why: "Нереальное прошлое: в части с if — Past Perfect." },
-      { type: "choice", q: "If she had taken the map, she ___ lost now.", opts: ["wouldn't be", "wouldn't have been", "won't be"], a: 0, why: "Смешанный тип: прошлое условие, результат сейчас (now) — would + V." },
+      { type: "choice", q: "If she had taken the map, she ___ lost in the old town.", opts: ["wouldn't get", "wouldn't have got", "won't get"], a: 1, why: "Результат в прошлом: would have + V3." },
       { type: "text", q: "If we ___ (leave) earlier, we wouldn't have missed the train.", accept: ["had left", "'d left", "d left"], why: "Третий тип: if + Past Perfect." },
-      { type: "text", q: "If he ___ (not / break) his leg last month, he would be playing in the final today.", accept: ["hadn't broken", "had not broken"], why: "Прошлое условие (last month) с результатом сегодня — Past Perfect в if-части." },
-      { type: "choice", q: "If I were taller, I ___ for the basketball team last year.", opts: ["would be chosen", "would have been chosen", "had been chosen"], a: 1, why: "Свойство сейчас (were taller) → результат в прошлом (last year): would have + V3." },
+      { type: "text", q: "If he ___ (not / break) his leg, he would have played in the final.", accept: ["hadn't broken", "had not broken"], why: "Условие в прошлом, которое не выполнилось: if + Past Perfect." },
+      { type: "choice", q: "If you had asked me, I ___ you with your project.", opts: ["would help", "would have helped", "had helped"], a: 1, why: "Главная часть третьего типа: would have + V3." },
       { type: "text", q: "Our team ___ (win) the match if the goalkeeper hadn't been injured.", accept: ["would have won", "'d have won", "d have won", "could have won", "might have won"], why: "Главная часть третьего типа: would/could/might have + V3." },
       { type: "choice", q: "___ I known about the concert, I would have bought tickets.", opts: ["If", "Had", "Have", "Should"], a: 1, why: "Инверсия вместо if в третьем типе: Had I known…" },
-      { type: "choice", q: "If you ___ me the wrong answer yesterday, I wouldn't be in trouble now.", opts: ["didn't tell", "hadn't told", "wouldn't tell"], a: 1, why: "Условие в прошлом (yesterday) → Past Perfect; результат сейчас → would + V." },
-      { type: "text", q: "If I ___ (be) better at maths, I would have chosen the physics class.", accept: ["were", "was", "had been"], why: "Если речь о постоянном свойстве (я и сейчас слаб в математике) — смешанный тип: were/was. Had been тоже верно, если имеется в виду только прошлое (третий тип)." },
-      { type: "choice", q: "If scientists hadn't invented the transistor, we ___ smartphones today.", opts: ["wouldn't have", "wouldn't have had", "hadn't had"], a: 0, why: "Прошлое условие → результат сегодня (today): would + V." }
+      { type: "choice", q: "If you ___ me the wrong answer, I wouldn't have failed the test.", opts: ["didn't tell", "hadn't told", "wouldn't tell"], a: 1, why: "Условие в прошлом — Past Perfect в части с if." },
+      { type: "text", q: "I ___ (not / be) late if my alarm had gone off.", accept: ["wouldn't have been", "would not have been"], why: "Результат в прошлом в отрицании: wouldn't have + V3." },
+      { type: "choice", q: "What would you have done if you ___ the last bus?", opts: ["missed", "had missed", "would miss"], a: 1, why: "Вопрос в третьем типе: if-часть всё равно в Past Perfect." }
     ]
   },
   {

@@ -116,6 +116,21 @@ class SavedState(unittest.TestCase):
         self.assertEqual(r, ["a1-can", "b2-wish"])
 
 
+class Scope(unittest.TestCase):
+    def test_mixed_conditionals_are_not_taught(self):
+        # Учитель попросил убрать смешанные условные: ни темы, ни правила, ни вопросов о них.
+        r = run_js("""
+          var hits = [];
+          T.forEach(function(t){
+            var blob = JSON.stringify(t).toLowerCase();
+            if (/mixed|смешанн/.test(blob)) hits.push(t.id);
+          });
+          return {hits: hits, third: T.filter(function(t){ return t.id === "b2-conditional-3"; }).map(function(t){ return t.title; })};
+        """)
+        self.assertEqual(r["hits"], [])
+        self.assertEqual(r["third"], ["Third conditional"])
+
+
 class Page(unittest.TestCase):
     def test_page_loads_grammar(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
