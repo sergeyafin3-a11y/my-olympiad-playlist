@@ -192,9 +192,13 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
 
 <script src="data/variant.js"></script>
 <script src="js/check.js"></script>
+<script src="js/vocab.js"></script>
 <script>
 (function () {
   var V = window.VARIANT, C = window.Check;
+  // Разделы-расширения (словарик, грамматика) живут в своих файлах и регистрируются здесь:
+  // маршрут #/<имя> и строка в блоке Practice на главной.
+  var ROUTES = {}, PRACTICE = [];
   var KEY = "olymp-playlist-" + V.id;
   var S = { ans: {}, checked: {}, manual: {}, writing: {}, points: {}, card: "mardi", last: null, full: {} };
   try { var raw = localStorage.getItem(KEY); if (raw) S = Object.assign(S, JSON.parse(raw)); } catch (e) {}
@@ -236,6 +240,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
       var n = ts.length === 1 && ts[0].type === "speaking" ? "oral round" : ts.length + (ts.length === 1 ? " track" : " tracks");
       h += '<a class="row" href="#/s/' + s.id + '" style="--c:' + s.color + '"><span class="sq" aria-hidden="true">' + s.icon + '</span><span><span class="t">' + esc(s.title) + '</span><br><span class="s">' + n + '</span></span><span class="r"><b>' + got + '</b> / ' + mx + '</span></a>';
     });
+    if (PRACTICE.length) h += '<h2 class="list-h">Practice</h2>' + PRACTICE.map(function (f) { return f(); }).join("");
     h += '<a class="row" href="#/results"><span class="sq" style="background:#2A2A2A" aria-hidden="true">🏆</span><span><span class="t">My results</span><br><span class="s">points by part</span></span></a>';
     h += '<p class="foot">' + esc(V.subtitle) + '. Official tasks, key and audio: <a href="' + esc(V.source.url) + '" target="_blank" rel="noopener">' + esc(V.source.name) + '</a>.</p>';
     return h;
@@ -398,6 +403,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     if ((parts[0] === "t" || parts[0] === "full") && byId(parts[1])) html = task(byId(parts[1]));
     else if (parts[0] === "s" && SEC[parts[1]]) html = album(parts[1]);
     else if (parts[0] === "results") html = results();
+    else if (ROUTES[parts[0]]) html = ROUTES[parts[0]](parts);
     else html = home();
     $("app").innerHTML = html;
     if ($("wText")) updateWC();
@@ -511,8 +517,10 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   au.addEventListener("loadedmetadata", function () { $("plSeek").max = Math.floor(au.duration); $("plDur").textContent = fmt(au.duration); });
   au.addEventListener("timeupdate", function () { $("plCur").textContent = fmt(au.currentTime); $("plSeek").value = Math.floor(au.currentTime); });
 
+  window.App = { esc: esc, fmt: fmt, render: render, keepScroll: keepScroll, byId: byId, routes: ROUTES, practice: PRACTICE, variant: V, sections: SEC };
   render();
 })();
 </script>
+<script src="js/vocab-ui.js"></script>
 </body>
 </html>
