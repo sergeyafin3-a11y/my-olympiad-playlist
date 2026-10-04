@@ -16,10 +16,12 @@
   --acc:#3DDC97;--acc-ink:#0D2B1E;--bad:#FF6B6B;--bad-bg:#3A1C1C;--ok-bg:#12321F;--warn:#FFC93D;
   --head:"Syne","Onest",system-ui,sans-serif;--body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
   --c:#3DDC97;
+  --tabbar:64px;--dock:calc(var(--tabbar) + 12px);
 }
+body.playing{--dock:calc(var(--tabbar) + 88px)}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
-body{padding-inline:16px;padding-block:env(safe-area-inset-top,0px) 120px}
+body{padding-inline:16px;padding-block:env(safe-area-inset-top,0px) calc(var(--tabbar) + 120px + env(safe-area-inset-bottom,0px))}
 [hidden]{display:none!important}
 img{max-width:100%}
 button,input,textarea{font:inherit;color:inherit}
@@ -124,10 +126,11 @@ details.text[open] summary::after{content:"hide"}
 .puz.text{color:#111;font-weight:700;font-family:Georgia,serif;font-size:20px;letter-spacing:.06em;padding:8px 14px}
 .key{margin-top:8px;font-size:14px}
 .key b{color:var(--acc)}
-.actions{position:sticky;bottom:calc(84px + env(safe-area-inset-bottom,0px));margin-top:18px;display:flex;gap:10px;align-items:center;background:linear-gradient(transparent,var(--bg) 30%);padding-top:18px}
+.actions{position:sticky;bottom:calc(var(--dock) + env(safe-area-inset-bottom,0px));margin-top:18px;display:flex;gap:10px;align-items:center;background:linear-gradient(transparent,var(--bg) 30%);padding-top:18px}
 .actions .res{margin-left:auto;font-family:var(--head);font-weight:800;font-size:22px;font-variant-numeric:tabular-nums}
 .actions .res small{font-family:var(--body);font-size:13px;color:var(--mute);font-weight:500}
 .next{margin-top:10px}
+.tabtop{height:14px}
 .actions.static{position:static;background:none}
 
 /* writing & speaking */
@@ -160,7 +163,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
 .reset{margin-top:28px;background:transparent;border:1px solid var(--line);border-radius:999px;padding:8px 16px;color:var(--mute);font-size:13px}
 
 /* player */
-.player{position:fixed;left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:10;max-width:720px;margin:0 auto;background:#2A2A2A;border-radius:10px;padding:8px 10px 10px;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+.player{position:fixed;left:8px;right:8px;bottom:calc(var(--tabbar) + 8px + env(safe-area-inset-bottom,0px));z-index:10;max-width:720px;margin:0 auto;background:#2A2A2A;border-radius:10px;padding:8px 10px 10px;box-shadow:0 8px 30px rgba(0,0,0,.5)}
 .player .top{display:flex;align-items:center;gap:10px}
 .player .mini{width:40px;height:40px;border-radius:5px;flex:none;background:conic-gradient(from 200deg,#FF5C39,#FFC93D,#3DDC97,#5B7CFF,#FF5C39)}
 .player .lbl{font-size:14px;font-weight:600;line-height:1.2;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -170,12 +173,19 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
 .player .ctl .pp{background:var(--ink);color:#121212;font-size:15px}
 .player .seek{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:11px;color:var(--mute);font-variant-numeric:tabular-nums}
 .player input[type=range]{flex:1;accent-color:var(--acc);height:4px}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:11;background:rgba(18,18,18,.96);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.tabbar div{max-width:720px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));height:var(--tabbar)}
+.tabbar a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-decoration:none;color:var(--mute);font-size:11px;font-weight:600;letter-spacing:.01em}
+.tabbar a span{font-size:21px;line-height:1;filter:grayscale(1);opacity:.7}
+.tabbar a.on{color:var(--ink)}
+.tabbar a.on span{filter:none;opacity:1}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
 <div class="wrap" id="app" aria-live="polite"></div>
 
+<nav class="tabbar" aria-label="Sections"><div id="tabs"></div></nav>
 <div class="player" id="player" hidden>
   <div class="top">
     <div class="mini" aria-hidden="true"></div>
@@ -248,15 +258,13 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
       var n = ts.length === 1 && ts[0].type === "speaking" ? "oral round" : ts.length + (ts.length === 1 ? " track" : " tracks");
       h += '<a class="row" href="#/s/' + s.id + '" style="--c:' + s.color + '"><span class="sq" aria-hidden="true">' + s.icon + '</span><span><span class="t">' + esc(s.title) + '</span><br><span class="s">' + n + '</span></span><span class="r"><b>' + got + '</b> / ' + mx + '</span></a>';
     });
-    if (PRACTICE.length) h += '<h2 class="list-h">Practice</h2>' + PRACTICE.map(function (f) { return f(); }).join("");
-    h += '<a class="row" href="#/results"><span class="sq" style="background:#2A2A2A" aria-hidden="true">🏆</span><span><span class="t">My results</span><br><span class="s">points by part</span></span></a>';
     h += '<p class="foot">' + esc(V.subtitle) + '. Official tasks, key and audio: <a href="' + esc(V.source.url) + '" target="_blank" rel="noopener">' + esc(V.source.name) + '</a>.</p>';
     return h;
   }
 
   function album(sid) {
     var s = SEC[sid], ts = sectionTasks(sid);
-    var h = '<div style="--c:' + s.color + '"><a class="back" href="#/">← Home</a>' +
+    var h = '<div style="--c:' + s.color + '"><a class="back" href="#/">← Exam</a>' +
       '<div class="album"><span class="sq" aria-hidden="true">' + s.icon + '</span><div><span class="eyebrow" style="color:#DADADA">Section</span><h1>' + esc(s.title) + '</h1><p>' + esc(V.title) + ' · ' + ts.length + (ts.length === 1 ? ' track' : ' tracks') + ' · ' + sum(ts) + ' / ' + sumMax(ts) + ' points</p></div></div>' +
       '<div class="listen"><a class="bigplay" href="#/t/' + ts[0].id + '" style="text-decoration:none">▶ Play</a></div><div class="tracks">';
     ts.forEach(function (t, i) {
@@ -391,7 +399,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
 
   function results() {
     var total = sum(TASKS), max = sumMax(TASKS);
-    var h = '<a class="back" href="#/">← Home</a><h1 style="margin-top:14px;font-size:34px;font-weight:800">My results</h1><div class="big-score">' + total + ' <small>/ ' + max + '</small></div><div class="tracks">';
+    var h = '<div class="tabtop"></div><h1 style="margin-top:14px;font-size:34px;font-weight:800">My results</h1><div class="big-score">' + total + ' <small>/ ' + max + '</small></div><div class="tracks">';
     V.parts.forEach(function (p) {
       var col = SEC[p.tasks[0].section].color;
       h += '<h2 class="list-h" style="font-size:18px">' + esc(p.title) + ' · ' + sum(p.tasks) + ' / ' + p.max + '</h2>';
@@ -414,10 +422,29 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     else if (ROUTES[parts[0]]) html = ROUTES[parts[0]](parts);
     else html = home();
     $("app").innerHTML = html;
+    drawTabs(parts[0]);
     if ($("wText")) updateWC();
     tickTimers();
   }
   window.addEventListener("hashchange", function () { render(); window.scrollTo(0, 0); });
+
+  // ---------- tabs ----------
+  // Вкладки внизу: экзамен, лексика, грамматика, словарик, результаты.
+  // Вкладка показывается, только если её раздел подключён (у расширений — свой файл).
+  var TABS = [
+    { href: "#/", icon: "🎧", label: "Exam", route: "" },
+    { href: "#/lexis", icon: "🔥", label: "Lexis", route: "lexis" },
+    { href: "#/grammar", icon: "📐", label: "Grammar", route: "grammar" },
+    { href: "#/words", icon: "💗", label: "Words", route: "words" },
+    { href: "#/results", icon: "🏆", label: "Results", route: "results" }
+  ];
+  function drawTabs(route) {
+    var cur = ROUTES[route] || route === "results" ? route : "";
+    $("tabs").innerHTML = TABS.filter(function (t) { return t.route === "" || t.route === "results" || ROUTES[t.route]; }).map(function (t) {
+      var on = t.route === cur;
+      return '<a href="' + t.href + '"' + (on ? ' class="on" aria-current="page"' : '') + '><span aria-hidden="true">' + t.icon + '</span>' + t.label + '</a>';
+    }).join("");
+  }
 
   // ---------- events ----------
   document.addEventListener("click", function (e) {
@@ -505,7 +532,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   var au = $("au");
   function playFrom(sec, label) {
     if (!au.src) au.src = V.audio;
-    $("player").hidden = false;
+    $("player").hidden = false; document.body.classList.add("playing");
     $("plLabel").innerHTML = esc(label) + "<small>" + esc(V.title) + "</small>";
     // play() зовём синхронно в обработчике нажатия: iOS Safari иначе считает это автозапуском
     // и молча блокирует. Перемотку делаем, как только известна длительность.
@@ -520,6 +547,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   $("plBack").addEventListener("click", function () { au.currentTime = Math.max(0, au.currentTime - 10); });
   $("plFwd").addEventListener("click", function () { au.currentTime = Math.min(au.duration || 1e9, au.currentTime + 10); });
   $("plSeek").addEventListener("input", function (e) { au.currentTime = Number(e.target.value); });
+  au.addEventListener("play", function () { document.body.classList.add("playing"); });
   au.addEventListener("play", function () { $("plPP").textContent = "❚❚"; $("plPP").setAttribute("aria-label", "Pause"); });
   au.addEventListener("pause", function () { $("plPP").textContent = "▶"; $("plPP").setAttribute("aria-label", "Play"); });
   au.addEventListener("loadedmetadata", function () { $("plSeek").max = Math.floor(au.duration); $("plDur").textContent = fmt(au.duration); });

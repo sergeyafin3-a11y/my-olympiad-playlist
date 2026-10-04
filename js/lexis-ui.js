@@ -25,7 +25,7 @@
   };
 
   function overview() {
-    var h = '<div style="--c:' + COLOR + '"><a class="back" href="#/">← Home</a>' +
+    var h = '<div style="--c:' + COLOR + '"><div class="tabtop"></div>' +
       '<div class="album"><span class="sq" aria-hidden="true">🔥</span><div><span class="eyebrow" style="color:#DADADA">Practice</span><h1>Olympiad lexis</h1><p>' + L.length + ' topics · tip + 10 questions each</p></div></div>' +
       '<p class="note">Темы выбраны по 10 вариантам финала и регионального этапа ВсОШ 2021–2026: именно это там спрашивают чаще всего.</p>' +
       '<div class="listen"><button class="bigplay" data-lstart="1">▶ Olympiad mix</button>' + [10, 20, 30].map(function (n) { return '<button class="opt' + (S.mixN === n ? ' sel' : '') + '" data-ln="' + n + '">' + n + '</button>'; }).join("") + '</div>' +

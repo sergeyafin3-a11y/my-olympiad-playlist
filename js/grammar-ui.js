@@ -44,7 +44,7 @@
   };
 
   function overview() {
-    var h = '<div style="--c:' + COLOR + '"><a class="back" href="#/">← Home</a>' +
+    var h = '<div style="--c:' + COLOR + '"><div class="tabtop"></div>' +
       '<div class="album"><span class="sq" aria-hidden="true">📐</span><div><span class="eyebrow" style="color:#DADADA">Practice</span><h1>Grammar</h1><p>' + T.length + ' topics · rule + 10 questions each</p></div></div>' +
       '<div class="listen"><a class="bigplay" href="#/grammar/mix" style="text-decoration:none">▶ Mixed test</a></div>' +
       '<div class="cards2">' + ["all", "olymp"].concat(LEVELS).map(function (l) { return '<button class="opt' + (filter === l ? ' sel' : '') + '" data-gfilter="' + l + '">' + (l === "all" ? "All levels" : l === "olymp" ? "🔥 Olympiad" : l) + '</button>'; }).join("") + '</div>' +

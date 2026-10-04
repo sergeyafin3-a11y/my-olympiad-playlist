@@ -46,7 +46,7 @@
     if (parts[1] === "cards" || parts[1] === "quiz") return practice(parts[1]);
     session = null;
     var q = (document.getElementById("wSearch") || {}).value || "";
-    var h = '<div style="--c:' + COLOR + '"><a class="back" href="#/">← Home</a>' +
+    var h = '<div style="--c:' + COLOR + '"><div class="tabtop"></div>' +
       '<div class="album"><span class="sq" aria-hidden="true">💗</span><div><span class="eyebrow" style="color:#DADADA">Practice</span><h1>My words</h1><p>' + W.length + ' saved · tap any word in a task to add it</p></div></div>' +
       '<div class="listen"><a class="bigplay" href="#/words/cards" style="text-decoration:none">▶ Flashcards</a><a class="ghost" href="#/words/quiz" style="text-decoration:none">✎ Quiz</a><button class="ghost" data-wnew="1">＋ Add word</button><button class="ghost" data-wcopy="1">⧉ Copy list</button></div>';
     if (!W.length) {
