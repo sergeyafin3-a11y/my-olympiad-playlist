@@ -136,6 +136,7 @@ window.GRAMMAR.push(
         ] }
       ],
       tips: [
+        "Олимпиадная ловушка «most largest»: суффикс -est уже значит «самый», most с ним не ставится — the largest city (не the most largest), better (не more better).",
         "Не смешивайте два способа: не \"more easier\", а \"easier\".",
         "После сравнительной степени — than, а не that или as: \"She is older than me.\"",
         "Перед превосходной степенью нужен the: не \"most beautiful city\", а \"the most beautiful city\"."
@@ -210,6 +211,7 @@ window.GRAMMAR.push(
         ] }
       ],
       tips: [
+        "Олимпиадная ловушка «no any»: после no второе отрицание не нужно — There is no milk (не no any milk). И a few ≠ few: a few friends — несколько (хватает), few friends — мало (почти нет).",
         "Деньги, время, вода, информация — неисчисляемые: не \"many money\", а \"much money\".",
         "В утвердительном предложении лучше a lot of, а не much: не \"I have much homework\", а \"I have a lot of homework\".",
         "В вежливой просьбе и предложении — some, хотя это вопрос: \"Would you like some cake?\""

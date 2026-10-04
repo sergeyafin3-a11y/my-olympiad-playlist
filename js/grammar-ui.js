@@ -51,6 +51,7 @@
       '<p class="note">🔥 — темы, которые встречаются в заданиях олимпиады (финал и региональный этап, 2021–2026).</p>';
     LEVELS.forEach(function (l) {
       if (filter !== "all" && filter !== "olymp" && filter !== l) return;
+      if (filter === "olymp" && !T.some(function (t) { return t.level === l && G.OLYMPIAD[t.id]; })) return;
       h += '<h2 class="list-h" style="font-size:18px"><span class="lv ' + l + '">' + l + '</span></h2><div class="tracks">';
       G.olympiadFirst(T.filter(function (t) { return t.level === l && (filter !== "olymp" || G.OLYMPIAD[t.id]); })).forEach(function (t, i) {
         var b = S.best[t.id], fire = G.OLYMPIAD[t.id];
