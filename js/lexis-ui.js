@@ -22,15 +22,15 @@
 
   function overview() {
     var h = '<div style="--c:' + COLOR + '"><div class="tabtop"></div>' +
-      '<div class="album"><span class="sq" aria-hidden="true">🔥</span><div><span class="eyebrow" style="color:#DADADA">Practice</span><h1>Olympiad lexis</h1><p>' + L.length + ' topics · tip + 10 questions each</p></div></div>' +
-      '<p class="note">Темы выбраны по 10 вариантам финала и регионального этапа ВсОШ 2021–2026: именно это там спрашивают чаще всего.</p>' +
-      '<div class="listen"><button class="bigplay" data-lstart="1">▶ Olympiad mix</button>' + [10, 20, 30].map(function (n) { return '<button class="opt' + (S.mixN === n ? ' sel' : '') + '" data-ln="' + n + '">' + n + '</button>'; }).join("") + '</div>' +
+      '<div class="album"><span class="sq" aria-hidden="true">🔥</span><div><span class="eyebrow" style="color:#DADADA">Vocabulary for the olympiad</span><h1>Olympiad lexis</h1><p>' + L.length + ' topics · tip + 10 questions each</p></div></div>' +
+      '<p class="howto">What the olympiad asks most often. Open a topic: read the tip, then answer <b>10 questions</b>. Or take a <b>mixed test</b> from all topics.</p>' +
+      '<h2 class="list-h" style="font-size:16px">Mixed test</h2><div class="listen" style="align-items:center"><span class="muted" style="font-size:14px">Questions:</span>' + [10, 20, 30].map(function (n) { return '<button class="opt' + (S.mixN === n ? ' sel' : '') + '" data-ln="' + n + '">' + n + '</button>'; }).join("") + '<button class="bigplay" data-lstart="1">▶ Start</button></div>' +
       (S.mix && S.mix.qs.length ? '<p class="note"><a href="#/lexis/mix">Continue the last mix →</a></p>' : '');
     GROUPS.forEach(function (g) {
       h += '<h2 class="list-h" style="font-size:18px">' + esc(g) + '</h2><div class="tracks">';
       L.filter(function (t) { return t.group === g; }).forEach(function (t, i) {
         var b = S.best[t.id];
-        h += '<a class="tr" href="#/lexis/t/' + t.id + '"><span class="i">' + (i + 1) + '</span><span><span class="t">' + esc(t.title) + '</span></span><span class="r' + (b != null ? ' done' : '') + '">' + (b != null ? b + ' / 10' : '—') + '</span></a>';
+        h += '<a class="tr" href="#/lexis/t/' + t.id + '"><span class="i">' + (i + 1) + '</span><span><span class="t">' + esc(t.title) + '</span></span><span class="r' + (b != null ? ' done' : '') + '">' + (b != null ? '✓ ' + b + ' / 10' : 'not started') + '</span></a>';
       });
       h += '</div>';
     });

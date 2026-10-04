@@ -40,7 +40,8 @@
 
   function overview() {
     var h = '<div style="--c:' + COLOR + '"><div class="tabtop"></div>' +
-      '<div class="album"><span class="sq" aria-hidden="true">📐</span><div><span class="eyebrow" style="color:#DADADA">Practice</span><h1>Grammar</h1><p>' + T.length + ' topics · rule + 10 questions each</p></div></div>' +
+      '<div class="album"><span class="sq" aria-hidden="true">📐</span><div><span class="eyebrow" style="color:#DADADA">Rules and tests</span><h1>Grammar</h1><p>' + T.length + ' topics · rule + 10 questions each</p></div></div>' +
+      '<p class="howto">Open a topic: read the <b>rule</b>, then do the <b>10-question test</b>. 🔥 = asked at the olympiad. A <b>mixed test</b> takes questions from several topics.</p>' +
       '<div class="listen"><a class="bigplay" href="#/grammar/mix" style="text-decoration:none">▶ Mixed test</a></div>' +
       '<div class="cards2">' + ["all", "olymp"].concat(LEVELS).map(function (l) { return '<button class="opt' + (filter === l ? ' sel' : '') + '" data-gfilter="' + l + '">' + (l === "all" ? "All levels" : l === "olymp" ? "🔥 Olympiad" : l) + '</button>'; }).join("") + '</div>' +
       '<p class="note">🔥 — темы, которые встречаются в заданиях олимпиады (финал и региональный этап, 2021–2026).</p>';
@@ -50,7 +51,7 @@
       h += '<h2 class="list-h" style="font-size:18px"><span class="lv ' + l + '">' + l + '</span></h2><div class="tracks">';
       G.olympiadFirst(T.filter(function (t) { return t.level === l && (filter !== "olymp" || G.OLYMPIAD[t.id]); })).forEach(function (t, i) {
         var b = S.best[t.id], fire = G.OLYMPIAD[t.id];
-        h += '<a class="tr" href="#/grammar/t/' + t.id + '"><span class="i">' + (i + 1) + '</span><span><span class="t">' + (fire ? '🔥 ' : '') + esc(t.title) + '</span>' + (fire ? '<br><span class="s">' + esc(fire) + '</span>' : '') + '</span><span class="r' + (b != null ? ' done' : '') + '">' + (b != null ? b + ' / 10' : '—') + '</span></a>';
+        h += '<a class="tr" href="#/grammar/t/' + t.id + '"><span class="i">' + (i + 1) + '</span><span><span class="t">' + (fire ? '🔥 ' : '') + esc(t.title) + '</span>' + (fire ? '<br><span class="s">' + esc(fire) + '</span>' : '') + '</span><span class="r' + (b != null ? ' done' : '') + '">' + (b != null ? '✓ ' + b + ' / 10' : 'not started') + '</span></a>';
       });
       h += '</div>';
     });
