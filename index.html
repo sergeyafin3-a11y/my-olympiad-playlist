@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#121212">
+<title>My Olympiad Playlist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Onest:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#121212;--card:#1C1C1C;--card2:#262626;--line:#2F2F2F;
+  --ink:#F2F2F2;--mute:#A7A7A7;--dim:#6E6E6E;
+  --acc:#3DDC97;--acc-ink:#0D2B1E;--bad:#FF6B6B;--bad-bg:#3A1C1C;--ok-bg:#12321F;--warn:#FFC93D;
+  --head:"Syne","Onest",system-ui,sans-serif;--body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --c:#3DDC97;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+body{padding-inline:16px;padding-block:env(safe-area-inset-top,0px) 120px}
+[hidden]{display:none!important}
+img{max-width:100%}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+a{color:inherit}
+.wrap{max-width:720px;margin:0 auto}
+h1,h2,h3{font-family:var(--head);margin:0;letter-spacing:-.01em;text-wrap:balance}
+.eyebrow{font-size:13px;color:var(--mute);font-weight:500}
+.muted{color:var(--mute)}
+
+/* home */
+.home-top{padding-top:28px;display:flex;flex-direction:column;gap:6px}
+.home-top h1{font-size:clamp(34px,9vw,52px);font-weight:800;line-height:1}
+.pts{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-weight:600;font-variant-numeric:tabular-nums;align-self:flex-start;margin-top:10px}
+.pts b{color:var(--acc)}
+.hero{margin-top:22px;display:flex;gap:14px;align-items:center;background:var(--card);border-radius:12px;padding:12px;text-decoration:none}
+.hero:hover{background:var(--card2)}
+.cover{flex:none;width:76px;height:76px;border-radius:8px;display:grid;place-items:center;font-family:var(--head);font-weight:800;font-size:13px;color:#121212;letter-spacing:.04em;background:conic-gradient(from 200deg,#FF5C39,#FFC93D,#3DDC97,#5B7CFF,#C77DFF,#FF5C39)}
+.hero h2{font-size:19px}
+.hero p{margin:2px 0 0;font-size:13px;color:var(--mute)}
+.playbtn{margin-left:auto;flex:none;width:48px;height:48px;border-radius:50%;background:var(--acc);color:#0B0B0B;display:grid;place-items:center;font-size:18px;border:0}
+.now{margin-top:12px;font-size:13px;color:var(--acc);font-weight:600;text-decoration:none;display:inline-block}
+.list-h{margin:30px 0 8px;font-size:22px;font-weight:700}
+.row{display:flex;align-items:center;gap:12px;padding:8px;margin-inline:-8px;border-radius:8px;text-decoration:none}
+.row:hover{background:var(--card)}
+.sq{flex:none;width:52px;height:52px;border-radius:6px;display:grid;place-items:center;font-size:22px;background:var(--c)}
+.row .t{font-weight:600}
+.row .s{font-size:13px;color:var(--mute)}
+.row .r{margin-left:auto;font-size:13px;color:var(--mute);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.row .r b{color:var(--ink)}
+.foot{margin-top:36px;font-size:12px;color:var(--dim)}
+.foot a{color:var(--mute)}
+
+/* album */
+.back{display:inline-flex;align-items:center;gap:6px;margin-top:18px;color:var(--mute);text-decoration:none;font-size:14px}
+.album{display:flex;gap:16px;align-items:flex-end;margin-top:14px;padding:18px;border-radius:14px;background:linear-gradient(180deg,color-mix(in srgb,var(--c) 45%,#121212),#1A1A1A)}
+.album .sq{width:110px;height:110px;font-size:48px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.album h1{font-size:clamp(28px,7vw,40px);font-weight:800;line-height:1.05}
+.album p{margin:6px 0 0;font-size:13px;color:#DADADA}
+.tracks{margin-top:14px}
+.tr{display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;padding:10px 8px;margin-inline:-8px;border-radius:8px;text-decoration:none}
+.tr:hover{background:var(--card)}
+.tr .i{color:var(--mute);text-align:center;font-variant-numeric:tabular-nums}
+.tr .t{font-weight:600;line-height:1.3}
+.tr .s{font-size:13px;color:var(--mute)}
+.tr .r{font-size:13px;color:var(--mute);font-variant-numeric:tabular-nums}
+.tr .r.done{color:var(--acc);font-weight:600}
+
+/* task */
+.taskhead{display:flex;align-items:center;gap:12px;margin-top:14px}
+.taskhead .sq{width:56px;height:56px}
+.taskhead h1{font-size:22px;font-weight:700;line-height:1.15}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:13px;font-variant-numeric:tabular-nums}
+.chip.timer.late{color:var(--bad);border-color:var(--bad)}
+button.chip:hover{background:var(--card2)}
+.intro{margin-top:14px;background:var(--card);border-radius:12px;padding:12px 14px;font-size:15px;color:#DCDCDC}
+.example{margin-top:8px;font-size:14px;color:var(--mute);font-style:italic}
+.listen{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px}
+.bigplay{display:inline-flex;align-items:center;gap:10px;background:var(--acc);color:#0B0B0B;border:0;border-radius:999px;padding:10px 18px;font-weight:700}
+.ghost{background:transparent;border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-weight:600}
+.ghost:hover{background:var(--card)}
+details.text{margin-top:14px;background:#181818;border:1px solid var(--line);border-radius:12px}
+details.text summary{cursor:pointer;padding:12px 14px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:8px}
+details.text summary::after{content:"show";color:var(--acc);font-size:13px}
+details.text[open] summary::after{content:"hide"}
+.prose{padding:0 16px 16px;font-size:16px;line-height:1.7;max-width:68ch}
+.prose h3{font-size:20px;margin-bottom:2px}
+.prose .sub{color:var(--mute);font-style:italic;margin-bottom:10px}
+.prose p{margin:0 0 12px}
+.gap{display:inline-block;min-width:40px;text-align:center;background:color-mix(in srgb,var(--c) 22%,transparent);border-bottom:2px solid var(--c);border-radius:4px;padding:0 6px;font-weight:600;font-variant-numeric:tabular-nums}
+.bank{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.bank span{background:var(--card2);border-radius:6px;padding:3px 10px;font-weight:600}
+.legend{margin-top:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px}
+.legend div{background:var(--card);border-radius:8px;padding:6px 10px;font-size:14px}
+.legend b{color:var(--c);margin-right:6px}
+.legend.long{grid-template-columns:1fr}
+.legend.long div{font-size:14px;line-height:1.45}
+.items{margin-top:18px;display:flex;flex-direction:column;gap:12px}
+.it{background:var(--card);border-radius:12px;padding:12px 14px;border:1px solid transparent}
+.it.ok{border-color:var(--acc);background:var(--ok-bg)}
+.it.no{border-color:var(--bad);background:var(--bad-bg)}
+.it .q{font-weight:500}
+.it .n{color:var(--c);font-weight:700;margin-right:6px;font-variant-numeric:tabular-nums}
+.letters{color:var(--mute);font-size:13px;letter-spacing:.2em;font-weight:700;margin-left:6px}
+.opts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.opt{border:1px solid var(--line);background:var(--card2);border-radius:999px;padding:6px 14px;font-size:14px;text-align:left}
+.opt:hover:not(:disabled){border-color:var(--mute)}
+.opt.sel{background:var(--ink);color:#121212;border-color:var(--ink);font-weight:600}
+.opt.right{background:var(--acc);color:#0B0B0B;border-color:var(--acc);font-weight:600}
+.opt.wrong{background:var(--bad);color:#1A0B0B;border-color:var(--bad);text-decoration:line-through}
+.opt:disabled{cursor:default}
+.opt.letter{min-width:40px;text-align:center;padding:6px 0}
+.opts.col{flex-direction:column;align-items:stretch}
+.opts.col .opt{border-radius:10px}
+.inp{width:100%;max-width:420px;background:#101010;border:1px solid var(--line);border-radius:8px;padding:9px 12px;margin-top:10px}
+.pair{display:flex;flex-wrap:wrap;gap:8px}
+.pair .inp{flex:1 1 160px}
+.puz{margin-top:10px;background:#fff;border-radius:8px;padding:8px;display:inline-block}
+.puz img{display:block;max-height:220px}
+.puz.text{color:#111;font-weight:700;font-family:Georgia,serif;font-size:20px;letter-spacing:.06em;padding:8px 14px}
+.key{margin-top:8px;font-size:14px}
+.key b{color:var(--acc)}
+.actions{position:sticky;bottom:calc(84px + env(safe-area-inset-bottom,0px));margin-top:18px;display:flex;gap:10px;align-items:center;background:linear-gradient(transparent,var(--bg) 30%);padding-top:18px}
+.actions .res{margin-left:auto;font-family:var(--head);font-weight:800;font-size:22px;font-variant-numeric:tabular-nums}
+.actions .res small{font-family:var(--body);font-size:13px;color:var(--mute);font-weight:500}
+.next{margin-top:10px}
+.actions.static{position:static;background:none}
+
+/* writing & speaking */
+.premise{font-size:17px;font-weight:600;margin:8px 0}
+.points{margin:8px 0 0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.points label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.points input{margin-top:5px;accent-color:var(--acc);width:18px;height:18px;flex:none}
+textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;border:1px solid var(--line);border-radius:10px;padding:12px 14px;line-height:1.6;resize:vertical}
+.wc{margin-top:6px;font-size:14px;font-variant-numeric:tabular-nums}
+.wc.good{color:var(--acc)}.wc.ok{color:var(--warn)}.wc.bad{color:var(--bad)}
+.crit{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.crit .c{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:10px;padding:8px 12px}
+.crit .c span{flex:1;font-size:14px}
+.step{display:flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums}
+.step button{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--card2)}
+.step b{min-width:44px;text-align:center}
+.note{margin-top:10px;font-size:13px;color:var(--mute)}
+.cards2{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.fact{margin-top:12px;display:grid;gap:8px}
+.fact div{background:var(--card);border-radius:10px;padding:10px 12px;font-size:14px}
+.fact b{display:block;color:var(--c);margin-bottom:4px}
+.fact ul{margin:0;padding-left:18px}
+.plan{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.plan span{background:color-mix(in srgb,var(--c) 22%,transparent);border-radius:6px;padding:3px 10px;font-size:14px}
+.timers{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+
+/* results */
+.big-score{margin-top:18px;font-family:var(--head);font-weight:800;font-size:clamp(48px,14vw,80px);line-height:1;font-variant-numeric:tabular-nums}
+.big-score small{font-size:22px;color:var(--mute)}
+.reset{margin-top:28px;background:transparent;border:1px solid var(--line);border-radius:999px;padding:8px 16px;color:var(--mute);font-size:13px}
+
+/* player */
+.player{position:fixed;left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:10;max-width:720px;margin:0 auto;background:#2A2A2A;border-radius:10px;padding:8px 10px 10px;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+.player .top{display:flex;align-items:center;gap:10px}
+.player .mini{width:40px;height:40px;border-radius:5px;flex:none;background:conic-gradient(from 200deg,#FF5C39,#FFC93D,#3DDC97,#5B7CFF,#FF5C39)}
+.player .lbl{font-size:14px;font-weight:600;line-height:1.2;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.player .lbl small{display:block;font-weight:400;color:var(--mute);font-size:12px}
+.player .ctl{margin-left:auto;display:flex;align-items:center;gap:4px;flex:none}
+.player .ctl button{background:none;border:0;width:36px;height:36px;border-radius:50%;font-size:14px}
+.player .ctl .pp{background:var(--ink);color:#121212;font-size:15px}
+.player .seek{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:11px;color:var(--mute);font-variant-numeric:tabular-nums}
+.player input[type=range]{flex:1;accent-color:var(--acc);height:4px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app" aria-live="polite"></div>
+
+<div class="player" id="player" hidden>
+  <div class="top">
+    <div class="mini" aria-hidden="true"></div>
+    <div class="lbl" id="plLabel">Listening<small>Final 2025/26</small></div>
+    <div class="ctl">
+      <button id="plBack" aria-label="Back 10 seconds">↺10</button>
+      <button class="pp" id="plPP" aria-label="Play">▶</button>
+      <button id="plFwd" aria-label="Forward 10 seconds">10↻</button>
+    </div>
+  </div>
+  <div class="seek"><span id="plCur">0:00</span><input type="range" id="plSeek" min="0" max="1500" step="1" value="0" aria-label="Seek"><span id="plDur">25:00</span></div>
+</div>
+<audio id="au" preload="none"></audio>
+
+<script src="data/variant.js"></script>
+<script src="js/check.js"></script>
+<script>
+(function () {
+  var V = window.VARIANT, C = window.Check;
+  var KEY = "olymp-playlist-" + V.id;
+  var S = { ans: {}, checked: {}, manual: {}, writing: {}, points: {}, card: "mardi", last: null, full: {} };
+  try { var raw = localStorage.getItem(KEY); if (raw) S = Object.assign(S, JSON.parse(raw)); } catch (e) {}
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function fmt(sec) { sec = Math.max(0, Math.round(sec)); var h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60), s = sec % 60; return (h ? h + ":" + String(m).padStart(2, "0") : m) + ":" + String(s).padStart(2, "0"); }
+
+  // Плоские списки: все задания по порядку и по разделам.
+  var TASKS = [], PART_OF = {};
+  V.parts.forEach(function (p) { p.tasks.forEach(function (t) { TASKS.push(t); PART_OF[t.id] = p; }); });
+  var SEC = {}; V.sections.forEach(function (s) { SEC[s.id] = s; });
+  function byId(id) { return TASKS.filter(function (t) { return t.id === id; })[0]; }
+  function sectionTasks(sid) { return TASKS.filter(function (t) { return t.section === sid; }); }
+  // Полный вариант — письменный тур: L&R, Use of English, Writing. Устная часть идёт отдельным днём.
+  var FULL = TASKS.filter(function (t) { return t.type !== "speaking"; });
+
+  function isManual(t) { return t.type === "writing" || t.type === "speaking"; }
+  function result(t) { return isManual(t) ? C.score(t, S.manual) : C.score(t, S.ans[t.id]); }
+  // Очки идут в счёт только после «Check» (или выставленных баллов за письмо и речь).
+  function earned(t) { var r = result(t); if (isManual(t)) return r.marked ? r.got : null; return S.checked[t.id] ? r.got : null; }
+  function maxOf(t) { return result(t).max; }
+  function sum(list) { return list.reduce(function (a, t) { var e = earned(t); return a + (e || 0); }, 0); }
+  function sumMax(list) { return list.reduce(function (a, t) { return a + maxOf(t); }, 0); }
+  function range(t) { if (!t.items) return isManual(t) ? "20 points" : ""; return "items " + t.items[0].n + "–" + t.items[t.items.length - 1].n; }
+
+  // ---------- views ----------
+  function home() {
+    var total = sum(TASKS), max = sumMax(TASKS), last = S.last && byId(S.last);
+    var firstOpen = FULL.filter(function (t) { return earned(t) === null; })[0] || FULL[0];
+    var h = '<header class="home-top"><span class="eyebrow">Made for you</span><h1>My Olympiad<br>Playlist</h1>' +
+      '<span class="pts">⭐ <b>' + total + '</b> / ' + max + ' points</span></header>' +
+      '<a class="hero" href="#/full/' + firstOpen.id + '"><div class="cover">FINAL</div><div><h2>Full variant</h2><p>' + esc(V.title) + ' · 3 parts · 4 h 15 min</p></div><span class="playbtn" aria-hidden="true">▶</span></a>';
+    if (last) h += '<a class="now" href="#/t/' + last.id + '">● now playing: ' + esc(SEC[last.section].title) + ' · ' + esc(last.title.split(" · ")[0]) + '</a>';
+    h += '<h2 class="list-h">Sections</h2>';
+    V.sections.forEach(function (s) {
+      var ts = sectionTasks(s.id), got = sum(ts), mx = sumMax(ts);
+      var n = ts.length === 1 && ts[0].type === "speaking" ? "oral round" : ts.length + (ts.length === 1 ? " track" : " tracks");
+      h += '<a class="row" href="#/s/' + s.id + '" style="--c:' + s.color + '"><span class="sq" aria-hidden="true">' + s.icon + '</span><span><span class="t">' + esc(s.title) + '</span><br><span class="s">' + n + '</span></span><span class="r"><b>' + got + '</b> / ' + mx + '</span></a>';
+    });
+    h += '<a class="row" href="#/results"><span class="sq" style="background:#2A2A2A" aria-hidden="true">🏆</span><span><span class="t">My results</span><br><span class="s">points by part</span></span></a>';
+    h += '<p class="foot">' + esc(V.subtitle) + '. Official tasks, key and audio: <a href="' + esc(V.source.url) + '" target="_blank" rel="noopener">' + esc(V.source.name) + '</a>.</p>';
+    return h;
+  }
+
+  function album(sid) {
+    var s = SEC[sid], ts = sectionTasks(sid);
+    var h = '<div style="--c:' + s.color + '"><a class="back" href="#/">← Home</a>' +
+      '<div class="album"><span class="sq" aria-hidden="true">' + s.icon + '</span><div><span class="eyebrow" style="color:#DADADA">Section</span><h1>' + esc(s.title) + '</h1><p>' + esc(V.title) + ' · ' + ts.length + (ts.length === 1 ? ' track' : ' tracks') + ' · ' + sum(ts) + ' / ' + sumMax(ts) + ' points</p></div></div>' +
+      '<div class="listen"><a class="bigplay" href="#/t/' + ts[0].id + '" style="text-decoration:none">▶ Play</a></div><div class="tracks">';
+    ts.forEach(function (t, i) {
+      var e = earned(t);
+      h += '<a class="tr" href="#/t/' + t.id + '"><span class="i">' + (i + 1) + '</span><span><span class="t">' + esc(t.title) + '</span><br><span class="s">' + range(t) + '</span></span><span class="r' + (e !== null ? ' done' : '') + '">' + (e !== null ? e + ' / ' + maxOf(t) : '— / ' + maxOf(t)) + '</span></a>';
+    });
+    return h + '</div></div>';
+  }
+
+  function optsFor(t, it) { return it.opts || t.opts; }
+  function compactChoice(t) { return t.opts && t.opts.length > 4; }
+
+  function itemHTML(t, it, checked) {
+    var a = (S.ans[t.id] || {})[it.n], r = checked ? C.score(t, S.ans[t.id]).items.filter(function (x) { return x.n === it.n; })[0] : null;
+    var cls = "it" + (r ? (r.ok ? " ok" : " no") : "");
+    var h = '<div class="' + cls + '"><div class="q"><span class="n">' + it.n + '.</span>' + esc(it.q) + (it.letters ? '<span class="letters">' + esc(it.letters) + '</span>' : '') + '</div>';
+    if (it.img) h += '<div class="puz"><img src="' + esc(it.img) + '" alt="Puzzle ' + it.n + '"></div>';
+    if (t.type === "choice") {
+      var os = optsFor(t, it), compact = compactChoice(t);
+      h += '<div class="opts' + (!compact && os.some(function (o) { return o.t.length > 28; }) ? ' col' : '') + '">';
+      os.forEach(function (o) {
+        var c = "opt" + (compact ? " letter" : "");
+        if (checked) { if (it.a.indexOf(o.k) >= 0) c += " right"; else if (a === o.k) c += " wrong"; }
+        else if (a === o.k) c += " sel";
+        h += '<button class="' + c + '" data-t="' + t.id + '" data-n="' + it.n + '" data-k="' + o.k + '"' + (checked ? ' disabled' : '') + '>' + (compact ? o.k : '<b>' + o.k + '</b> ' + esc(o.t)) + '</button>';
+      });
+      h += '</div>';
+    } else if (t.type === "text") {
+      h += '<input class="inp" data-t="' + t.id + '" data-n="' + it.n + '" value="' + esc(a || "") + '" placeholder="your answer" autocomplete="off" autocapitalize="off" spellcheck="false"' + (checked ? ' disabled' : '') + '>';
+    } else if (t.type === "pair") {
+      var p = a || ["", ""];
+      h += '<div class="pair">' + [0, 1].map(function (j) { return '<input class="inp" data-t="' + t.id + '" data-n="' + it.n + '" data-j="' + j + '" value="' + esc(p[j] || "") + '" placeholder="word ' + (j + 1) + '" autocomplete="off" autocapitalize="off" spellcheck="false"' + (checked ? ' disabled' : '') + '>'; }).join("") + '</div>';
+    }
+    if (r && !r.ok) h += '<div class="key">Key: <b>' + esc(C.rightAnswer(t, it)) + '</b></div>';
+    return h + '</div>';
+  }
+
+  function textBlock(t, open) {
+    if (t.text) {
+      return '<details class="text"' + (open ? ' open' : '') + '><summary>📄 ' + esc(t.textTitle) + '</summary><div class="prose"><h3>' + esc(t.textTitle) + '</h3><p class="sub">' + esc(t.textSubtitle || "") + '</p>' +
+        t.text.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join("") + '</div></details>';
+    }
+    if (t.textRef) {
+      var L = V[t.textRef];
+      return '<details class="text"' + (open ? ' open' : '') + '><summary>📄 ' + esc(L.title) + '</summary><div class="prose"><h3>' + esc(L.title) + '</h3>' +
+        L.text.map(function (p) { return '<p>' + esc(p).replace(/\((\d\d)\) …/g, '<span class="gap">$1</span>') + '</p>'; }).join("") + '</div></details>';
+    }
+    return "";
+  }
+
+  function fullBar(t) {
+    if (!FULLMODE) return "";
+    var p = PART_OF[t.id];
+    if (!p.minutes) return "";
+    if (!S.full[p.id]) { S.full[p.id] = Date.now(); save(); }
+    return '<span class="chip timer" id="partTimer" data-part="' + p.id + '">⏱ ' + esc(p.title) + ' · <span>…</span></span><button class="chip" data-restart="' + p.id + '">↺ restart timer</button>';
+  }
+
+  function nextLink(t) {
+    if (!FULLMODE) return "";
+    var i = FULL.indexOf(t), n = FULL[i + 1];
+    return n ? '<a class="ghost next" href="#/full/' + n.id + '" style="text-decoration:none;display:inline-block">Next track ▶ ' + esc(n.title.split(" · ")[0]) + ' (' + esc(SEC[n.section].title) + ')</a>'
+             : '<a class="ghost next" href="#/results" style="text-decoration:none;display:inline-block">Finish ▶ results</a>';
+  }
+
+  function task(t) {
+    S.last = t.id; save();
+    var s = SEC[t.section], checked = !!S.checked[t.id];
+    var backHref = FULLMODE ? "#/" : "#/s/" + t.section;
+    var h = '<div style="--c:' + s.color + '"><a class="back" href="' + backHref + '">← ' + (FULLMODE ? "Home" : esc(s.title)) + '</a>' +
+      '<div class="taskhead"><span class="sq" aria-hidden="true">' + s.icon + '</span><div><span class="eyebrow">' + esc(s.title) + (FULLMODE ? ' · full variant ' + (FULL.indexOf(t) + 1) + '/' + FULL.length : '') + '</span><h1>' + esc(t.title) + '</h1></div></div>' +
+      '<div class="bar">' + fullBar(t) + (t.items ? '<span class="chip">' + range(t) + '</span>' : '') + (t.readMinutes ? timerBtn("read-" + t.id, t.readMinutes * 60, t.readMinutes + " min to read the text") : '') + '</div>';
+
+    if (t.type === "writing") return h + writing(t) + nextLink(t) + '</div>';
+    if (t.type === "speaking") return h + speaking(t) + '</div>';
+
+    h += '<div class="intro">' + esc(t.intro) + (t.example ? '<div class="example">' + esc(t.example) + '</div>' : '') + '</div>';
+    if (t.wordBank) h += '<div class="bank">' + t.wordBank.map(function (w) { return '<span>' + esc(w) + '</span>'; }).join("") + '</div>';
+    if (t.examples) {
+      h += '<div class="items">' + t.examples.map(function (e) {
+        return '<div class="it"><div class="q"><span class="n">' + esc(e.label) + '</span>example</div>' + (e.img ? '<div class="puz"><img src="' + esc(e.img) + '" alt="Example ' + esc(e.label) + '"></div>' : '<div class="puz text">' + esc(e.show) + '</div>') + '<div class="key">→ <b>' + esc(e.answer) + '</b></div></div>';
+      }).join("") + '</div>';
+    }
+    if (t.text) h += textBlock(t, true);
+    if (t.audio) {
+      h += '<div class="listen"><button class="bigplay" data-play="' + t.audio.from + '" data-label="' + esc(t.audio.label) + '">▶ ' + esc(t.audio.label) + '</button>' +
+        (t.audio.skip ? '<button class="ghost" data-play="' + t.audio.skip.at + '" data-label="Task 3 · interview">⏭ ' + esc(t.audio.skip.label) + '</button>' : '') + '</div>';
+      if (t.afterText) h += '<p class="note">' + esc(t.afterText) + '</p>';
+    }
+    if (t.textRef) h += textBlock(t, t.id === "lr-4a");
+    if (t.type === "choice" && compactChoice(t)) {
+      h += '<div class="legend' + (t.longOpts ? ' long' : '') + '">' + t.opts.map(function (o) { return '<div><b>' + o.k + '</b>' + esc(o.t) + '</div>'; }).join("") + '</div>';
+    }
+    h += '<div class="items">' + t.items.map(function (it) { return itemHTML(t, it, checked); }).join("") + '</div>';
+    var r = result(t);
+    h += '<div class="actions">' + (checked ? '<button class="ghost" data-retry="' + t.id + '">↺ Try again</button><span class="res">' + r.got + ' <small>/ ' + r.max + ' points</small></span>'
+                                            : '<button class="bigplay" data-check="' + t.id + '">✓ Check answers</button><span class="res"><small>' + r.items.filter(function (i) { return i.answered; }).length + ' / ' + r.max + ' answered</small></span>') + '</div>';
+    return h + nextLink(t) + '</div>';
+  }
+
+  function stepper(t, c) {
+    var v = Number(((S.manual[t.id] || {})[c.id])) || 0;
+    return '<div class="c"><span>' + esc(c.t) + '</span><div class="step"><button data-m="' + t.id + '" data-c="' + c.id + '" data-d="-1" aria-label="minus">−</button><b>' + v + ' / ' + c.max + '</b><button data-m="' + t.id + '" data-c="' + c.id + '" data-d="1" aria-label="plus">+</button></div></div>';
+  }
+
+  function writing(t) {
+    var W = S.writing, r = result(t), checks = W.points || [];
+    var h = '<div class="intro">' + esc(t.intro) + '<p class="premise">' + esc(t.premise) + '</p>' + esc(t.outro) + '<p style="margin:10px 0 0">The story should contain</p><ul class="points">' +
+      t.points.map(function (p, i) { return '<li><label><input type="checkbox" data-wp="' + i + '"' + (checks[i] ? ' checked' : '') + '><span>' + esc(p) + '</span></label></li>'; }).join("") +
+      '</ul><p style="margin:10px 0 0"><b>Write ' + t.words.min + '-' + t.words.max + ' words. Your story must have a title.</b></p></div>' +
+      '<div class="timers">' + timerBtn("writing", PART_OF[t.id].minutes * 60, PART_OF[t.id].minutes + " min") + '</div>' +
+      '<input class="inp" id="wTitle" placeholder="Title" value="' + esc(W.title || "") + '" style="max-width:none;font-weight:600">' +
+      '<textarea class="essay" id="wText" placeholder="Once upon a time…">' + esc(W.text || "") + '</textarea><div class="wc" id="wc"></div>' +
+      '<h2 class="list-h" style="font-size:18px">Points from the teacher</h2><div class="crit">' + t.criteria.map(function (c) { return stepper(t, c); }).join("") + '</div>' +
+      '<p class="note">' + esc(t.note) + '</p><div class="actions static"><span class="res">' + r.got + ' <small>/ ' + r.max + ' points</small></span></div>';
+    return h;
+  }
+
+  function speaking(t) {
+    var card = t.cards.filter(function (c) { return c.id === S.card; })[0] || t.cards[0], r = result(t);
+    var h = '<div class="intro">Preparation – ' + t.timing.prep + ' minutes · Monologue: ' + esc(t.timing.monologue) + ' · Questions/Answers: ' + esc(t.timing.questions) + '</div>' +
+      '<div class="cards2">' + t.cards.map(function (c) { return '<button class="opt' + (c.id === card.id ? ' sel' : '') + '" data-card="' + c.id + '">' + esc(c.label) + '</button>'; }).join("") + '</div>' +
+      '<div class="timers">' + timerBtn("prep", t.timing.prep * 60, "preparation 15:00") + timerBtn("mono", 210, "monologue 3:30") + timerBtn("qa", 180, "questions 3:00") + '</div>' +
+      '<div class="intro"><b>1. Monologue.</b> ' + esc(card.task) + '<div class="plan">' + card.plan.map(function (p) { return '<span>' + esc(p) + '</span>'; }).join("") + '</div><p style="margin:10px 0 0">' + esc(card.opinion) + '</p>' +
+      '<p style="margin:10px 0 0"><b>2. Questions/Answers.</b> ' + esc(card.qa) + '</p><p class="note">' + esc(t.notesRule) + '</p></div>' +
+      '<h2 class="list-h" style="font-size:18px">Fact file</h2><div class="fact">' + card.fact.map(function (f) { return '<div><b>' + esc(f[0]) + '</b><ul>' + f[1].map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ul></div>'; }).join("") + '</div>' +
+      '<div class="intro"><b>Partner’s task.</b> ' + esc(card.partner) + '</div>' +
+      '<h2 class="list-h" style="font-size:18px">Points from the teacher</h2><div class="crit">' + t.criteria.map(function (c) { return stepper(t, c); }).join("") + '</div>' +
+      '<p class="note">' + esc(t.note) + '</p><div class="actions static"><span class="res">' + r.got + ' <small>/ ' + r.max + ' points</small></span></div>';
+    return h;
+  }
+
+  function results() {
+    var total = sum(TASKS), max = sumMax(TASKS);
+    var h = '<a class="back" href="#/">← Home</a><h1 style="margin-top:14px;font-size:34px;font-weight:800">My results</h1><div class="big-score">' + total + ' <small>/ ' + max + '</small></div><div class="tracks">';
+    V.parts.forEach(function (p) {
+      var col = SEC[p.tasks[0].section].color;
+      h += '<h2 class="list-h" style="font-size:18px">' + esc(p.title) + ' · ' + sum(p.tasks) + ' / ' + p.max + '</h2>';
+      p.tasks.forEach(function (t) {
+        var e = earned(t);
+        h += '<a class="tr" href="#/t/' + t.id + '" style="--c:' + col + '"><span class="i" style="color:' + col + '">●</span><span><span class="t">' + esc(t.title) + '</span><br><span class="s">' + range(t) + '</span></span><span class="r' + (e !== null ? ' done' : '') + '">' + (e !== null ? e : '—') + ' / ' + maxOf(t) + '</span></a>';
+      });
+    });
+    return h + '</div><button class="reset" id="resetAll">Start over: clear all answers</button>';
+  }
+
+  // ---------- routing ----------
+  var FULLMODE = false;
+  function render() {
+    var hash = location.hash.replace(/^#\/?/, ""), parts = hash.split("/"), html;
+    FULLMODE = parts[0] === "full";
+    if ((parts[0] === "t" || parts[0] === "full") && byId(parts[1])) html = task(byId(parts[1]));
+    else if (parts[0] === "s" && SEC[parts[1]]) html = album(parts[1]);
+    else if (parts[0] === "results") html = results();
+    else html = home();
+    $("app").innerHTML = html;
+    if ($("wText")) updateWC();
+    tickTimers();
+  }
+  window.addEventListener("hashchange", function () { render(); window.scrollTo(0, 0); });
+
+  // ---------- events ----------
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.k) {
+      var a = S.ans[b.dataset.t] = S.ans[b.dataset.t] || {};
+      a[b.dataset.n] = a[b.dataset.n] === b.dataset.k ? null : b.dataset.k;
+      save(); keepScroll(render); return;
+    }
+    if (b.dataset.check) { S.checked[b.dataset.check] = true; save(); keepScroll(render); return; }
+    if (b.dataset.retry) { delete S.checked[b.dataset.retry]; delete S.ans[b.dataset.retry]; save(); keepScroll(render); return; }
+    if (b.dataset.play) { playFrom(+b.dataset.play, b.dataset.label); return; }
+    if (b.dataset.m) {
+      var t = byId(b.dataset.m), c = t.criteria.filter(function (x) { return x.id === b.dataset.c; })[0];
+      var m = S.manual[t.id] = S.manual[t.id] || {};
+      m[c.id] = Math.max(0, Math.min(c.max, (Number(m[c.id]) || 0) + Number(b.dataset.d)));
+      save(); keepScroll(render); return;
+    }
+    if (b.dataset.card) { S.card = b.dataset.card; save(); keepScroll(render); return; }
+    if (b.dataset.tid) { toggleTimer(b); return; }
+    if (b.dataset.restart) { S.full[b.dataset.restart] = Date.now(); save(); tickTimers(); return; }
+    if (b.id === "resetAll") {
+      if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Sure? Tap again to erase everything"; return; }
+      S = { ans: {}, checked: {}, manual: {}, writing: {}, points: {}, card: "mardi", last: null, full: {} }; save(); render(); return;
+    }
+  });
+  document.addEventListener("input", function (e) {
+    var el = e.target;
+    if (el.dataset && el.dataset.t) {
+      var a = S.ans[el.dataset.t] = S.ans[el.dataset.t] || {};
+      if (el.dataset.j != null) { var p = a[el.dataset.n] || ["", ""]; p[+el.dataset.j] = el.value; a[el.dataset.n] = p; }
+      else a[el.dataset.n] = el.value;
+      save(); refreshCount(el.dataset.t); return;
+    }
+    if (el.id === "wTitle") { S.writing.title = el.value; save(); return; }
+    if (el.id === "wText") { S.writing.text = el.value; save(); updateWC(); return; }
+  });
+  document.addEventListener("change", function (e) {
+    var el = e.target;
+    if (el.dataset && el.dataset.wp != null) { S.writing.points = S.writing.points || []; S.writing.points[+el.dataset.wp] = el.checked; save(); }
+  });
+  function keepScroll(fn) { var y = window.scrollY; fn(); window.scrollTo(0, y); }
+  function refreshCount(tid) {
+    var t = byId(tid), res = document.querySelector(".actions .res small");
+    if (t && res && !S.checked[tid]) res.textContent = C.score(t, S.ans[tid]).items.filter(function (i) { return i.answered; }).length + " / " + t.items.length + " answered";
+  }
+  function updateWC() {
+    var t = byId("writing-1"), n = (S.writing.text || "").trim().split(/\s+/).filter(Boolean).length, el = $("wc"), w = t.words;
+    var cls = n >= w.min && n <= w.max ? "good" : n >= w.accMin && n <= w.accMax ? "ok" : "bad";
+    el.className = "wc " + cls;
+    el.textContent = n + " words · aim " + w.min + "–" + w.max + (cls === "ok" ? " (still accepted: " + w.accMin + "–" + w.accMax + ")" : cls === "bad" && n ? " (outside " + w.accMin + "–" + w.accMax + ")" : "");
+  }
+
+  // ---------- timers ----------
+  // Таймер живёт по стабильному id, а не по тексту кнопки: текст меняется каждую секунду,
+  // а перерисовка экрана заменяет сами кнопки.
+  var timers = {};
+  function timerText(tid, label) {
+    var tm = timers[tid]; if (!tm) return "⏱ " + label;
+    var left = (tm.end - Date.now()) / 1000;
+    return left > 0 ? "⏱ " + fmt(left) + " · tap to stop" : "⏰ time! · tap to reset";
+  }
+  function timerBtn(tid, sec, label) {
+    return '<button class="chip' + (timers[tid] && timers[tid].end <= Date.now() ? ' late' : '') + '" data-timer="' + sec + '" data-tid="' + tid + '" data-label="' + esc(label) + '">' + timerText(tid, label) + '</button>';
+  }
+  function toggleTimer(b) {
+    var tid = b.dataset.tid;
+    if (timers[tid]) delete timers[tid]; else timers[tid] = { end: Date.now() + Number(b.dataset.timer) * 1000 };
+    tickTimers();
+  }
+  function tickTimers() {
+    Array.prototype.forEach.call(document.querySelectorAll("[data-tid]"), function (el) {
+      el.textContent = timerText(el.dataset.tid, el.dataset.label);
+      el.classList.toggle("late", !!timers[el.dataset.tid] && timers[el.dataset.tid].end <= Date.now());
+    });
+    var pt = $("partTimer"); if (!pt) return;
+    var p = V.parts.filter(function (x) { return x.id === pt.dataset.part; })[0];
+    var left = p.minutes * 60 - (Date.now() - S.full[p.id]) / 1000;
+    pt.querySelector("span").textContent = left > 0 ? fmt(left) + " left" : "time is up";
+    pt.classList.toggle("late", left <= 0);
+  }
+  setInterval(tickTimers, 1000);
+
+  // ---------- player ----------
+  var au = $("au");
+  function playFrom(sec, label) {
+    if (!au.src) au.src = V.audio;
+    $("player").hidden = false;
+    $("plLabel").innerHTML = esc(label) + "<small>" + esc(V.title) + "</small>";
+    // play() зовём синхронно в обработчике нажатия: iOS Safari иначе считает это автозапуском
+    // и молча блокирует. Перемотку делаем, как только известна длительность.
+    if (au.readyState >= 1) au.currentTime = sec;
+    else au.addEventListener("loadedmetadata", function () { au.currentTime = sec; }, { once: true });
+    au.play().catch(function () {});
+  }
+  $("plPP").addEventListener("click", function () {
+    if (!au.src) return playFrom(0, "Listening");
+    if (au.paused) au.play().catch(function () {}); else au.pause();
+  });
+  $("plBack").addEventListener("click", function () { au.currentTime = Math.max(0, au.currentTime - 10); });
+  $("plFwd").addEventListener("click", function () { au.currentTime = Math.min(au.duration || 1e9, au.currentTime + 10); });
+  $("plSeek").addEventListener("input", function (e) { au.currentTime = Number(e.target.value); });
+  au.addEventListener("play", function () { $("plPP").textContent = "❚❚"; $("plPP").setAttribute("aria-label", "Pause"); });
+  au.addEventListener("pause", function () { $("plPP").textContent = "▶"; $("plPP").setAttribute("aria-label", "Play"); });
+  au.addEventListener("loadedmetadata", function () { $("plSeek").max = Math.floor(au.duration); $("plDur").textContent = fmt(au.duration); });
+  au.addEventListener("timeupdate", function () { $("plCur").textContent = fmt(au.currentTime); $("plSeek").value = Math.floor(au.currentTime); });
+
+  render();
+})();
+</script>
+</body>
+</html>
