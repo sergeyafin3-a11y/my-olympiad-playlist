@@ -50,5 +50,25 @@
     return ids.filter(function (id) { return all.indexOf(id) >= 0; });
   }
 
-  window.Grammar = { check: check, score: score, topicsByLevel: topicsByLevel, mixed: mixed, prune: prune, knownIds: knownIds };
+  // Темы, которые встречаются в заданиях финала и регионального этапа ВсОШ 2021/22–2025/26
+  // (10 вариантов): там грамматика проверяется через нужную форму слова в пропусках
+  // и через задание «найди лишнее слово». Причина — для подсказки в приложении.
+  var OLYMPIAD = {
+    "a1-articles": "лишний артикль в задании «найди лишнее слово»",
+    "a1-plurals-this-these": "множественное число в заданиях с пропусками",
+    "a2-past-simple": "формы неправильных глаголов в пропусках",
+    "a2-comparatives": "ловушка «most largest» в поиске лишнего слова",
+    "a2-quantifiers": "much / any и ловушка «no any» в поиске лишнего слова",
+    "b1-passive-basic": "причастие V3 в пропусках",
+    "b1-gerund-infinitive": "форма -ing в пропусках",
+    "b2-passive-advanced": "пассив и причастия в пропусках",
+    "b2-participle-clauses": "причастные обороты (having sold…) в поиске лишнего слова"
+  };
+
+  // Внутри уровня отмеченные темы идут первыми, остальные — в прежнем порядке.
+  function olympiadFirst(topics) {
+    return topics.filter(function (t) { return OLYMPIAD[t.id]; }).concat(topics.filter(function (t) { return !OLYMPIAD[t.id]; }));
+  }
+
+  window.Grammar = { OLYMPIAD: OLYMPIAD, olympiadFirst: olympiadFirst, check: check, score: score, topicsByLevel: topicsByLevel, mixed: mixed, prune: prune, knownIds: knownIds };
 })();

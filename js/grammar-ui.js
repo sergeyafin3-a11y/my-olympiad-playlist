@@ -33,7 +33,7 @@
 
   A.practice.push(function () {
     var done = Object.keys(S.best).length;
-    return '<a class="row" href="#/grammar" style="--c:' + COLOR + '"><span class="sq" aria-hidden="true">📐</span><span><span class="t">Grammar</span><br><span class="s">' + T.length + ' topics · A1–B2 · ' + done + ' tested</span></span></a>';
+    return '<a class="row" href="#/grammar" style="--c:' + COLOR + '"><span class="sq" aria-hidden="true">📐</span><span><span class="t">Grammar</span><br><span class="s">' + T.length + ' topics · ' + Object.keys(G.OLYMPIAD).length + ' 🔥 olympiad · ' + done + ' tested</span></span></a>';
   });
 
   A.routes.grammar = function (parts) {
@@ -47,13 +47,15 @@
     var h = '<div style="--c:' + COLOR + '"><a class="back" href="#/">← Home</a>' +
       '<div class="album"><span class="sq" aria-hidden="true">📐</span><div><span class="eyebrow" style="color:#DADADA">Practice</span><h1>Grammar</h1><p>' + T.length + ' topics · rule + 10 questions each</p></div></div>' +
       '<div class="listen"><a class="bigplay" href="#/grammar/mix" style="text-decoration:none">▶ Mixed test</a></div>' +
-      '<div class="cards2">' + ["all"].concat(LEVELS).map(function (l) { return '<button class="opt' + (filter === l ? ' sel' : '') + '" data-gfilter="' + l + '">' + (l === "all" ? "All levels" : l) + '</button>'; }).join("") + '</div>';
+      '<div class="cards2">' + ["all", "olymp"].concat(LEVELS).map(function (l) { return '<button class="opt' + (filter === l ? ' sel' : '') + '" data-gfilter="' + l + '">' + (l === "all" ? "All levels" : l === "olymp" ? "🔥 Olympiad" : l) + '</button>'; }).join("") + '</div>' +
+      '<p class="note">🔥 — темы, которые встречаются в заданиях олимпиады (финал и региональный этап, 2021–2026).</p>';
     LEVELS.forEach(function (l) {
-      if (filter !== "all" && filter !== l) return;
+      if (filter !== "all" && filter !== "olymp" && filter !== l) return;
+      if (filter === "olymp" && !T.some(function (t) { return t.level === l && G.OLYMPIAD[t.id]; })) return;
       h += '<h2 class="list-h" style="font-size:18px"><span class="lv ' + l + '">' + l + '</span></h2><div class="tracks">';
-      T.filter(function (t) { return t.level === l; }).forEach(function (t, i) {
-        var b = S.best[t.id];
-        h += '<a class="tr" href="#/grammar/t/' + t.id + '"><span class="i">' + (i + 1) + '</span><span><span class="t">' + esc(t.title) + '</span></span><span class="r' + (b != null ? ' done' : '') + '">' + (b != null ? b + ' / 10' : '—') + '</span></a>';
+      G.olympiadFirst(T.filter(function (t) { return t.level === l && (filter !== "olymp" || G.OLYMPIAD[t.id]); })).forEach(function (t, i) {
+        var b = S.best[t.id], fire = G.OLYMPIAD[t.id];
+        h += '<a class="tr" href="#/grammar/t/' + t.id + '"><span class="i">' + (i + 1) + '</span><span><span class="t">' + (fire ? '🔥 ' : '') + esc(t.title) + '</span>' + (fire ? '<br><span class="s">' + esc(fire) + '</span>' : '') + '</span><span class="r' + (b != null ? ' done' : '') + '">' + (b != null ? b + ' / 10' : '—') + '</span></a>';
       });
       h += '</div>';
     });
@@ -85,6 +87,7 @@
     var ans = S.ans[t.id] || {}, checked = !!S.checked[t.id], r = G.score(t.items, ans);
     var h = '<div style="--c:' + COLOR + '"><a class="back" href="#/grammar">← Grammar</a>' +
       '<div class="taskhead"><span class="sq" aria-hidden="true">📐</span><div><span class="eyebrow"><span class="lv ' + t.level + '">' + t.level + '</span></span><h1>' + esc(t.title) + '</h1></div></div>' +
+      (G.OLYMPIAD[t.id] ? '<p class="note">🔥 Встречается на олимпиаде: ' + esc(G.OLYMPIAD[t.id]) + '</p>' : '') +
       '<div class="rule"><p class="ri">' + esc(t.rule.intro) + '</p>' +
       t.rule.blocks.map(function (b) { return '<h3>' + esc(b.h) + '</h3><div class="rtab">' + b.rows.map(function (row) { return '<div>' + esc(row[0]) + '</div><div>' + esc(row[1]) + '</div>'; }).join("") + '</div>'; }).join("") +
       (t.rule.tips && t.rule.tips.length ? '<ul class="tips">' + t.rule.tips.map(function (x) { return '<li>💡 ' + esc(x) + '</li>'; }).join("") + '</ul>' : '') + '</div>' +
