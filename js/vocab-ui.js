@@ -5,13 +5,14 @@
   var KEY = "olymp-words";
   var W = [];
   try { W = JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) {}
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(W)); } catch (e) {} }
+  if (!Array.isArray(W)) W = [];
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(W)); return true; } catch (e) { return false; } }
   var COLOR = "#FF7AB6";
 
   var css = document.createElement("style");
   css.textContent = [
-    ".addpill{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:12;background:" + COLOR + ";color:#2A0A18;border:0;border-radius:999px;padding:10px 18px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.45);max-width:calc(100vw - 32px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
-    ".sheet{position:fixed;left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:13;max-width:720px;margin:0 auto;background:#232323;border:1px solid #333;border-radius:14px;padding:16px;box-shadow:0 12px 40px rgba(0,0,0,.6)}",
+    ".addpill{position:fixed;left:50%;transform:translateX(-50%);top:calc(12px + env(safe-area-inset-top,0px));z-index:12;background:" + COLOR + ";color:#2A0A18;border:0;border-radius:999px;padding:10px 18px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.45);max-width:calc(100vw - 32px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
+    ".sheet{position:fixed;left:8px;right:8px;top:calc(8px + env(safe-area-inset-top,0px));z-index:13;max-width:720px;margin:0 auto;background:#232323;border:1px solid #333;border-radius:14px;padding:16px;box-shadow:0 12px 40px rgba(0,0,0,.6)}",
     ".sheet h2{font-size:18px}.sheet label{display:block;font-size:13px;color:var(--mute);margin-top:10px}",
     ".sheet .inp{max-width:none;margin-top:4px}.sheet .ctx{font-size:13px;color:var(--mute);font-style:italic;margin-top:8px}",
     ".sheet .btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;align-items:center}",
@@ -26,6 +27,8 @@
     ".flash .big{font-family:var(--head);font-weight:800;font-size:clamp(26px,7vw,38px);line-height:1.1;text-wrap:balance}",
     ".flash .tr{font-size:20px;color:" + COLOR + ";font-weight:600}.flash .cx{font-size:14px;color:var(--mute);font-style:italic;max-width:52ch}",
     ".prog{font-size:13px;color:var(--mute);margin-top:12px;font-variant-numeric:tabular-nums}",
+    ".sheet .err{color:var(--bad);font-size:13px;margin-top:8px}",
+    ".sheet textarea{width:100%;min-height:160px;margin-top:8px;background:#101010;border:1px solid var(--line);border-radius:8px;padding:8px;color:var(--ink)}",
     ".empty{margin-top:18px;background:var(--card);border-radius:12px;padding:16px;color:var(--mute)}"
   ].join("\n");
   document.head.appendChild(css);
@@ -141,6 +144,10 @@
     pending = entry; sheet.hidden = false;
     var f = document.getElementById(entry.term ? "wsTr" : "wsTerm"); if (f) f.focus();
   }
+  function sheetError(msg) {
+    var e = sheet.querySelector(".err"); if (!e) { e = document.createElement("div"); e.className = "err"; sheet.querySelector(".btns").before(e); }
+    e.textContent = msg;
+  }
   function closeSheet() { sheet.hidden = true; pending = null; editId = null; }
 
   // Слово под пальцем: берём текстовый узел в точке нажатия и расширяем до границ слова.
@@ -154,17 +161,16 @@
     while (b < t.length && re.test(t[b])) b++;
     var w = t.slice(a, b).replace(/^['’-]+|['’-]+$/g, "");
     if (w.length < 2 || !/[A-Za-z]/.test(w)) return null;
-    return { term: w, ctx: sentence(node.parentElement ? node.parentElement.textContent : t, w) };
+    return { term: w, ctx: sentence(t, a, b) };
   }
-  function sentence(text, w) {
-    var i = text.indexOf(w); if (i < 0) return "";
-    var a = i, b = i + w.length;
+  // Предложение вокруг того места, куда нажали (а не первое вхождение слова в абзаце).
+  function sentence(text, a, b) {
     while (a > 0 && !/[.!?]/.test(text[a - 1])) a--;
     while (b < text.length && !/[.!?]/.test(text[b])) b++;
     return text.slice(a, Math.min(text.length, b + 1)).replace(/\s+/g, " ").trim().slice(0, 240);
   }
   function inContent(el) {
-    return el && el.closest && el.closest("#app") && !el.closest("button, input, textarea, a, select, .wrow, .flash, label");
+    return el && el.closest && el.closest("#app") && !el.closest("button, input, textarea, a, select, summary, .wrow, .flash, label");
   }
   function showPill(entry) {
     pending = entry; pill.textContent = "＋ add “" + entry.term + "”"; pill.hidden = false;
@@ -177,14 +183,17 @@
     if (b && b.closest(".sheet")) {
       if (b.dataset.wsave) {
         var term = document.getElementById("wsTerm").value, tr = document.getElementById("wsTr").value;
-        if (editId) W = Vo.update(W, editId, { term: term.replace(/\s+/g, " ").trim() || pending.term, tr: tr.trim() });
+        if (!term.trim()) { sheetError("Type the word or phrase first."); return; }
+        if (editId) W = Vo.rename(W, editId, term, tr);
         else W = Vo.add(W, { term: term, tr: tr, ctx: pending.ctx, src: (location.hash.split("/")[2] || "") }, Date.now());
-        save(); closeSheet(); A.keepScroll(A.render);
+        if (!save()) { sheetError("Couldn't save: the browser storage is full or blocked."); return; }
+        closeSheet(); A.keepScroll(A.render);
       }
       if (b.dataset.wcancel) closeSheet();
       return;
     }
     if (b) {
+      pill.hidden = true;
       if (b.dataset.wnew) { openSheet({ term: "", tr: "" }); return; }
       if (b.dataset.wedit) { var w = W.filter(function (x) { return x.id === b.dataset.wedit; })[0]; if (w) openSheet(w, w.id); return; }
       if (b.dataset.wdel) {
@@ -192,10 +201,16 @@
         W = Vo.remove(W, b.dataset.wdel); save(); A.keepScroll(A.render); return;
       }
       if (b.dataset.wcopy) {
-        var txt = Vo.exportText(W);
+        var txt = Vo.exportText(W), ok = fallbackCopy(txt);
         var done = function () { b.textContent = "✓ Copied"; };
-        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, function () { fallbackCopy(txt); done(); });
-        else { fallbackCopy(txt); done(); }
+        var manual = function () {
+          // Скопировать не дали (так бывает в части браузеров) — показываем список, чтобы выделить руками.
+          sheet.innerHTML = '<h2>My words</h2><p class="muted" style="margin:6px 0 0">Select all and copy:</p><textarea readonly>' + esc(txt) + '</textarea><div class="btns"><button class="ghost" data-wcancel="1">Close</button></div>';
+          sheet.hidden = false;
+        };
+        if (ok) done();
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, function () { if (!ok) manual(); });
+        else if (!ok) manual();
         return;
       }
       if (b.dataset.wshow) { session.shown = true; A.render(); return; }
@@ -221,11 +236,14 @@
   document.addEventListener("selectionchange", function () {
     clearTimeout(selT);
     selT = setTimeout(function () {
+      var ae = document.activeElement;
+      if (ae && /^(INPUT|TEXTAREA)$/.test(ae.tagName)) return;
       var s = window.getSelection(); if (!s || s.isCollapsed) return;
       var txt = String(s).replace(/\s+/g, " ").trim();
       var el = s.anchorNode && (s.anchorNode.nodeType === 3 ? s.anchorNode.parentElement : s.anchorNode);
       if (!txt || txt.length > 80 || !/[A-Za-z]/.test(txt) || !inContent(el)) return;
-      showPill({ term: txt.replace(/^[^A-Za-z]+|[^A-Za-z'’]+$/g, ""), ctx: sentence(el.textContent, txt) });
+      var an = s.anchorNode, at = an && an.nodeType === 3 ? an.textContent : el.textContent, ao = an && an.nodeType === 3 ? s.anchorOffset : 0;
+      showPill({ term: txt.replace(/^[^A-Za-z]+|[^A-Za-z'’]+$/g, ""), ctx: sentence(at, ao, Math.min(at.length, ao + txt.length)) });
     }, 350);
   });
   var selT;
@@ -242,8 +260,10 @@
 
   function fallbackCopy(txt) {
     var ta = document.createElement("textarea"); ta.value = txt; ta.style.position = "absolute"; ta.style.left = "-9999px";
-    document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (e) {} ta.remove();
+    document.body.appendChild(ta); ta.select(); var ok = false; try { ok = document.execCommand("copy"); } catch (e) {} ta.remove(); return ok;
   }
+
+  document.getElementById("app").onclick = function () {};
 
   A.render();
 })();

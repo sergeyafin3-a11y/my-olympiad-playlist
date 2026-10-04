@@ -117,5 +117,23 @@ class Page(unittest.TestCase):
         self.assertIn('A.routes.words', ui)
 
 
+class Edit(unittest.TestCase):
+    def test_rename_into_existing_word_merges_instead_of_duplicating(self):
+        r = run_js("""
+          var l = [{id: "a", term: "gossip", tr: "", ctx: "c1", level: 2},
+                   {id: "b", term: "rumour", tr: "слух", ctx: "", level: 0}];
+          var out = V.rename(l, "b", "Gossip", "сплетни");
+          return out.map(function(w){ return [w.id, w.term, w.tr]; });
+        """)
+        self.assertEqual(r, [["a", "gossip", "сплетни"]])
+
+    def test_rename_plain_and_empty(self):
+        r = run_js("""
+          var l = [{id: "a", term: "gossip", tr: ""}];
+          return [V.rename(l, "a", " small talk ", "болтовня")[0].term, V.rename(l, "a", "   ", "x")[0].term];
+        """)
+        self.assertEqual(r, ["small talk", "gossip"])
+
+
 if __name__ == "__main__":
     unittest.main()

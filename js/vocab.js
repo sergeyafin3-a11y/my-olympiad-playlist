@@ -30,6 +30,21 @@
     return list.map(function (w) { return w.id === id ? Object.assign({}, w, patch) : w; });
   }
 
+  // Правка слова: если новое написание совпало с другим словом из списка, сливаем их,
+  // иначе в словарике окажутся два одинаковых слова с разными уровнями.
+  function rename(list, id, term, tr) {
+    term = String(term || "").replace(/\s+/g, " ").trim();
+    tr = String(tr || "").trim();
+    var me = list.filter(function (w) { return w.id === id; })[0];
+    if (!me) return list;
+    if (!term) term = me.term;
+    var twin = list.filter(function (w) { return w.id !== id && norm(w.term) === norm(term); })[0];
+    if (!twin) return update(list, id, { term: term, tr: tr });
+    return list.filter(function (w) { return w.id !== id; }).map(function (w) {
+      return w.id === twin.id ? Object.assign({}, w, { tr: tr || w.tr, ctx: w.ctx || me.ctx }) : w;
+    });
+  }
+
   function remove(list, id) { return list.filter(function (w) { return w.id !== id; }); }
 
   function checkTyped(entry, typed) {
@@ -75,5 +90,5 @@
     return list.map(function (w) { return w.term + (w.tr ? " — " + w.tr : ""); }).join("\n");
   }
 
-  window.Vocab = { norm: norm, add: add, update: update, remove: remove, checkTyped: checkTyped, grade: grade, pick: pick, shuffle: shuffle, choiceQuestion: choiceQuestion, exportText: exportText };
+  window.Vocab = { norm: norm, add: add, update: update, rename: rename, remove: remove, checkTyped: checkTyped, grade: grade, pick: pick, shuffle: shuffle, choiceQuestion: choiceQuestion, exportText: exportText };
 })();
