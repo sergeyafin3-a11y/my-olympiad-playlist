@@ -131,6 +131,28 @@ class Scope(unittest.TestCase):
         self.assertEqual(r["third"], ["Third conditional"])
 
 
+class OlympiadMarks(unittest.TestCase):
+    def test_marked_topics_exist_and_have_a_reason(self):
+        r = run_js("""
+          var ids = T.map(function(t){ return t.id; });
+          return Object.keys(G.OLYMPIAD).map(function(k){ return [k, ids.indexOf(k) >= 0, !!G.OLYMPIAD[k]]; });
+        """)
+        self.assertGreaterEqual(len(r), 6)
+        for tid, exists, reason in r:
+            self.assertTrue(exists, tid)
+            self.assertTrue(reason, tid)
+
+    def test_marked_topics_go_first_inside_their_level(self):
+        r = run_js("""
+          var ordered = G.olympiadFirst(T.filter(function(t){ return t.level === "A2"; }));
+          return ordered.map(function(t){ return !!G.OLYMPIAD[t.id]; });
+        """)
+        flags = r
+        self.assertIn(True, flags)
+        # сначала все отмеченные, потом остальные
+        self.assertEqual(flags, sorted(flags, reverse=True))
+
+
 class Page(unittest.TestCase):
     def test_page_loads_grammar(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
