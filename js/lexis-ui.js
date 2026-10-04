@@ -20,7 +20,7 @@
 
   A.routes.lexis = function (parts) {
     if (parts[1] === "t" && byId(parts[2])) return topic(byId(parts[2]));
-    if (parts[1] === "mix" && S.mix) return mixRun();
+    if (parts[1] === "mix" && S.mix && S.mix.qs.length) return mixRun();
     return overview();
   };
 
@@ -29,7 +29,7 @@
       '<div class="album"><span class="sq" aria-hidden="true">🔥</span><div><span class="eyebrow" style="color:#DADADA">Practice</span><h1>Olympiad lexis</h1><p>' + L.length + ' topics · tip + 10 questions each</p></div></div>' +
       '<p class="note">Темы выбраны по 10 вариантам финала и регионального этапа ВсОШ 2021–2026: именно это там спрашивают чаще всего.</p>' +
       '<div class="listen"><button class="bigplay" data-lstart="1">▶ Olympiad mix</button>' + [10, 20, 30].map(function (n) { return '<button class="opt' + (S.mixN === n ? ' sel' : '') + '" data-ln="' + n + '">' + n + '</button>'; }).join("") + '</div>' +
-      (S.mix ? '<p class="note"><a href="#/lexis/mix">Continue the last mix →</a></p>' : '');
+      (S.mix && S.mix.qs.length ? '<p class="note"><a href="#/lexis/mix">Continue the last mix →</a></p>' : '');
     GROUPS.forEach(function (g) {
       h += '<h2 class="list-h" style="font-size:18px">' + esc(g) + '</h2><div class="tracks">';
       L.filter(function (t) { return t.group === g; }).forEach(function (t, i) {
@@ -41,10 +41,18 @@
     return h + '</div>';
   }
 
+  // «Одно слово на три предложения» пишется через « / » — показываем по строкам.
+  // В фразовых глаголах « / » стоит внутри подсказки «(put / off)», её не трогаем:
+  // строки разбиваем, только если в вопросе несколько пропусков.
+  function qText(q) {
+    var e = esc(q);
+    return q.split("___").length > 2 ? e.replace(/ \/ /g, "<br>") : e;
+  }
+
   function itemHTML(scope, it, i, ans, checked, sub) {
     var a = ans[i], ok = checked ? G.check(it, a) : null;
     var h = '<div class="it' + (checked ? (ok ? ' ok' : ' no') : '') + '">' + (sub ? '<div class="topic-src">' + esc(sub) + '</div>' : '') +
-      '<div class="q"><span class="n">' + (i + 1) + '.</span>' + esc(it.q).replace(/ \/ /g, '<br>') + '</div>';
+      '<div class="q"><span class="n">' + (i + 1) + '.</span>' + qText(it.q) + '</div>';
     if (it.type === "choice") {
       h += '<div class="opts">' + it.opts.map(function (o, j) {
         var c = "opt";
@@ -110,7 +118,9 @@
     if (b.dataset.lretry) { delete S.checked[b.dataset.lretry]; delete S.ans[b.dataset.lretry]; save(); A.keepScroll(A.render); return; }
     if (b.dataset.ln) { S.mixN = +b.dataset.ln; save(); A.keepScroll(A.render); return; }
     if (b.dataset.lstart) {
-      S.mix = { qs: G.mixed(L, L.map(function (t) { return t.id; }), S.mixN, Math.random), ans: {}, checked: false }; save();
+      var qs = G.mixed(L, L.map(function (t) { return t.id; }), S.mixN, Math.random);
+      if (!qs.length) { b.textContent = "No questions yet"; return; }
+      S.mix = { qs: qs, ans: {}, checked: false }; save();
       if (location.hash === "#/lexis/mix") { A.render(); window.scrollTo(0, 0); } else location.hash = "#/lexis/mix";
     }
   });
