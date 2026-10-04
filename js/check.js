@@ -38,9 +38,18 @@
       return s + v;
     }, 0);
     // По критериям ВсОШ ноль за содержание (письмо) или за монолог (устная часть) обнуляет всё.
+    // Пока этот критерий не выставлен, работа считается непроверенной: иначе 0/9 на экране
+    // соседствовал бы с ненулевой суммой.
     var gate = task.type === "writing" ? "task" : "mono";
-    if (marks[gate] != null && Number(marks[gate]) === 0) got = 0;
-    return { got: got, max: max, items: [], marked: Object.keys(marks).length > 0 };
+    var marked = marks[gate] != null;
+    if (!marked || Number(marks[gate]) === 0) got = 0;
+    return { got: got, max: max, items: [], marked: marked };
+  }
+
+  // Пара считается отвеченной, только когда вписаны оба слова.
+  function isAnswered(ans) {
+    if (Array.isArray(ans)) return ans.length === 2 && ans.every(function (w) { return norm(w) !== ""; });
+    return ans != null && String(ans).trim() !== "";
   }
 
   function score(task, sheet) {
@@ -48,7 +57,7 @@
     sheet = sheet || {};
     var items = task.items.map(function (it) {
       var ans = sheet[String(it.n)];
-      return { n: it.n, ok: itemOk(task, it, ans), answered: ans != null && ans !== "" };
+      return { n: it.n, ok: itemOk(task, it, ans), answered: isAnswered(ans) };
     });
     var got = items.filter(function (i) { return i.ok; }).length;
     return { got: got, max: task.items.length, items: items };

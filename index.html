@@ -299,7 +299,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     var p = PART_OF[t.id];
     if (!p.minutes) return "";
     if (!S.full[p.id]) { S.full[p.id] = Date.now(); save(); }
-    return '<span class="chip timer" id="partTimer" data-part="' + p.id + '">⏱ ' + esc(p.title) + ' · <span>…</span></span>';
+    return '<span class="chip timer" id="partTimer" data-part="' + p.id + '">⏱ ' + esc(p.title) + ' · <span>…</span></span><button class="chip" data-restart="' + p.id + '">↺ restart timer</button>';
   }
 
   function nextLink(t) {
@@ -315,7 +315,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     var backHref = FULLMODE ? "#/" : "#/s/" + t.section;
     var h = '<div style="--c:' + s.color + '"><a class="back" href="' + backHref + '">← ' + (FULLMODE ? "Home" : esc(s.title)) + '</a>' +
       '<div class="taskhead"><span class="sq" aria-hidden="true">' + s.icon + '</span><div><span class="eyebrow">' + esc(s.title) + (FULLMODE ? ' · full variant ' + (FULL.indexOf(t) + 1) + '/' + FULL.length : '') + '</span><h1>' + esc(t.title) + '</h1></div></div>' +
-      '<div class="bar">' + fullBar(t) + (t.items ? '<span class="chip">' + range(t) + '</span>' : '') + (t.readMinutes ? '<button class="chip" data-timer="' + t.readMinutes * 60 + '">⏱ ' + t.readMinutes + ' min to read the text</button>' : '') + '</div>';
+      '<div class="bar">' + fullBar(t) + (t.items ? '<span class="chip">' + range(t) + '</span>' : '') + (t.readMinutes ? timerBtn("read-" + t.id, t.readMinutes * 60, t.readMinutes + " min to read the text") : '') + '</div>';
 
     if (t.type === "writing") return h + writing(t) + nextLink(t) + '</div>';
     if (t.type === "speaking") return h + speaking(t) + '</div>';
@@ -330,7 +330,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     if (t.text) h += textBlock(t, true);
     if (t.audio) {
       h += '<div class="listen"><button class="bigplay" data-play="' + t.audio.from + '" data-label="' + esc(t.audio.label) + '">▶ ' + esc(t.audio.label) + '</button>' +
-        (t.id === "lr-3" ? '<button class="ghost" data-play="973" data-label="Task 3 · interview">⏭ straight to the interview</button>' : '') + '</div>';
+        (t.audio.skip ? '<button class="ghost" data-play="' + t.audio.skip.at + '" data-label="Task 3 · interview">⏭ ' + esc(t.audio.skip.label) + '</button>' : '') + '</div>';
       if (t.afterText) h += '<p class="note">' + esc(t.afterText) + '</p>';
     }
     if (t.textRef) h += textBlock(t, t.id === "lr-4a");
@@ -354,7 +354,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     var h = '<div class="intro">' + esc(t.intro) + '<p class="premise">' + esc(t.premise) + '</p>' + esc(t.outro) + '<p style="margin:10px 0 0">The story should contain</p><ul class="points">' +
       t.points.map(function (p, i) { return '<li><label><input type="checkbox" data-wp="' + i + '"' + (checks[i] ? ' checked' : '') + '><span>' + esc(p) + '</span></label></li>'; }).join("") +
       '</ul><p style="margin:10px 0 0"><b>Write ' + t.words.min + '-' + t.words.max + ' words. Your story must have a title.</b></p></div>' +
-      '<div class="timers"><button class="chip" data-timer="' + PART_OF[t.id].minutes * 60 + '">⏱ ' + PART_OF[t.id].minutes + ' min</button></div>' +
+      '<div class="timers">' + timerBtn("writing", PART_OF[t.id].minutes * 60, PART_OF[t.id].minutes + " min") + '</div>' +
       '<input class="inp" id="wTitle" placeholder="Title" value="' + esc(W.title || "") + '" style="max-width:none;font-weight:600">' +
       '<textarea class="essay" id="wText" placeholder="Once upon a time…">' + esc(W.text || "") + '</textarea><div class="wc" id="wc"></div>' +
       '<h2 class="list-h" style="font-size:18px">Points from the teacher</h2><div class="crit">' + t.criteria.map(function (c) { return stepper(t, c); }).join("") + '</div>' +
@@ -366,11 +366,11 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     var card = t.cards.filter(function (c) { return c.id === S.card; })[0] || t.cards[0], r = result(t);
     var h = '<div class="intro">Preparation – ' + t.timing.prep + ' minutes · Monologue: ' + esc(t.timing.monologue) + ' · Questions/Answers: ' + esc(t.timing.questions) + '</div>' +
       '<div class="cards2">' + t.cards.map(function (c) { return '<button class="opt' + (c.id === card.id ? ' sel' : '') + '" data-card="' + c.id + '">' + esc(c.label) + '</button>'; }).join("") + '</div>' +
-      '<div class="timers"><button class="chip" data-timer="' + t.timing.prep * 60 + '">⏱ preparation 15:00</button><button class="chip" data-timer="210">⏱ monologue 3:30</button><button class="chip" data-timer="180">⏱ questions 3:00</button></div>' +
+      '<div class="timers">' + timerBtn("prep", t.timing.prep * 60, "preparation 15:00") + timerBtn("mono", 210, "monologue 3:30") + timerBtn("qa", 180, "questions 3:00") + '</div>' +
       '<div class="intro"><b>1. Monologue.</b> ' + esc(card.task) + '<div class="plan">' + card.plan.map(function (p) { return '<span>' + esc(p) + '</span>'; }).join("") + '</div><p style="margin:10px 0 0">' + esc(card.opinion) + '</p>' +
       '<p style="margin:10px 0 0"><b>2. Questions/Answers.</b> ' + esc(card.qa) + '</p><p class="note">' + esc(t.notesRule) + '</p></div>' +
       '<h2 class="list-h" style="font-size:18px">Fact file</h2><div class="fact">' + card.fact.map(function (f) { return '<div><b>' + esc(f[0]) + '</b><ul>' + f[1].map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ul></div>'; }).join("") + '</div>' +
-      '<div class="intro"><b>Partner’s task.</b> ' + esc(t.partner) + '</div>' +
+      '<div class="intro"><b>Partner’s task.</b> ' + esc(card.partner) + '</div>' +
       '<h2 class="list-h" style="font-size:18px">Points from the teacher</h2><div class="crit">' + t.criteria.map(function (c) { return stepper(t, c); }).join("") + '</div>' +
       '<p class="note">' + esc(t.note) + '</p><div class="actions static"><span class="res">' + r.got + ' <small>/ ' + r.max + ' points</small></span></div>';
     return h;
@@ -423,7 +423,8 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
       save(); keepScroll(render); return;
     }
     if (b.dataset.card) { S.card = b.dataset.card; save(); keepScroll(render); return; }
-    if (b.dataset.timer) { startTimer(b); return; }
+    if (b.dataset.tid) { toggleTimer(b); return; }
+    if (b.dataset.restart) { S.full[b.dataset.restart] = Date.now(); save(); tickTimers(); return; }
     if (b.id === "resetAll") {
       if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Sure? Tap again to erase everything"; return; }
       S = { ans: {}, checked: {}, manual: {}, writing: {}, points: {}, card: "mardi", last: null, full: {} }; save(); render(); return;
@@ -457,29 +458,32 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   }
 
   // ---------- timers ----------
+  // Таймер живёт по стабильному id, а не по тексту кнопки: текст меняется каждую секунду,
+  // а перерисовка экрана заменяет сами кнопки.
   var timers = {};
-  function startTimer(b) {
-    var key = b.dataset.timer + "|" + b.textContent;
-    if (timers[key]) { clearInterval(timers[key].id); delete timers[key]; b.textContent = b.dataset.orig; b.classList.remove("late"); return; }
-    b.dataset.orig = b.dataset.orig || b.textContent;
-    var end = Date.now() + Number(b.dataset.timer) * 1000;
-    var k2 = b.dataset.timer + "|" + b.dataset.orig;
-    function tick() {
-      var left = (end - Date.now()) / 1000;
-      var el = Array.prototype.filter.call(document.querySelectorAll("[data-timer]"), function (x) { return x.dataset.orig === b.dataset.orig || x.textContent === b.dataset.orig; })[0];
-      if (!el) return;
-      el.dataset.orig = b.dataset.orig;
-      if (left <= 0) { el.textContent = "⏰ time!"; el.classList.add("late"); clearInterval(timers[k2].id); return; }
-      el.textContent = "⏱ " + fmt(left) + " · tap to stop";
-    }
-    timers[k2] = { id: setInterval(tick, 1000) }; tick();
+  function timerText(tid, label) {
+    var tm = timers[tid]; if (!tm) return "⏱ " + label;
+    var left = (tm.end - Date.now()) / 1000;
+    return left > 0 ? "⏱ " + fmt(left) + " · tap to stop" : "⏰ time! · tap to reset";
+  }
+  function timerBtn(tid, sec, label) {
+    return '<button class="chip' + (timers[tid] && timers[tid].end <= Date.now() ? ' late' : '') + '" data-timer="' + sec + '" data-tid="' + tid + '" data-label="' + esc(label) + '">' + timerText(tid, label) + '</button>';
+  }
+  function toggleTimer(b) {
+    var tid = b.dataset.tid;
+    if (timers[tid]) delete timers[tid]; else timers[tid] = { end: Date.now() + Number(b.dataset.timer) * 1000 };
+    tickTimers();
   }
   function tickTimers() {
-    var el = $("partTimer"); if (!el) return;
-    var p = V.parts.filter(function (x) { return x.id === el.dataset.part; })[0];
+    Array.prototype.forEach.call(document.querySelectorAll("[data-tid]"), function (el) {
+      el.textContent = timerText(el.dataset.tid, el.dataset.label);
+      el.classList.toggle("late", !!timers[el.dataset.tid] && timers[el.dataset.tid].end <= Date.now());
+    });
+    var pt = $("partTimer"); if (!pt) return;
+    var p = V.parts.filter(function (x) { return x.id === pt.dataset.part; })[0];
     var left = p.minutes * 60 - (Date.now() - S.full[p.id]) / 1000;
-    el.querySelector("span").textContent = left > 0 ? fmt(left) + " left" : "time is up";
-    el.classList.toggle("late", left <= 0);
+    pt.querySelector("span").textContent = left > 0 ? fmt(left) + " left" : "time is up";
+    pt.classList.toggle("late", left <= 0);
   }
   setInterval(tickTimers, 1000);
 
@@ -489,8 +493,11 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     if (!au.src) au.src = V.audio;
     $("player").hidden = false;
     $("plLabel").innerHTML = esc(label) + "<small>" + esc(V.title) + "</small>";
-    var go = function () { au.currentTime = sec; au.play().catch(function () {}); };
-    if (au.readyState >= 1) go(); else { au.addEventListener("loadedmetadata", go, { once: true }); au.load(); }
+    // play() зовём синхронно в обработчике нажатия: iOS Safari иначе считает это автозапуском
+    // и молча блокирует. Перемотку делаем, как только известна длительность.
+    if (au.readyState >= 1) au.currentTime = sec;
+    else au.addEventListener("loadedmetadata", function () { au.currentTime = sec; }, { once: true });
+    au.play().catch(function () {});
   }
   $("plPP").addEventListener("click", function () {
     if (!au.src) return playFrom(0, "Listening");

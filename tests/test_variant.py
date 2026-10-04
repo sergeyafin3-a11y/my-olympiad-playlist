@@ -135,5 +135,33 @@ class Scoring(unittest.TestCase):
         self.assertEqual(score_part("uoe", uoe)["got"], 38)
 
 
+class ReviewFixes(unittest.TestCase):
+    def test_manual_score_waits_for_the_gate_criterion(self):
+        # Пока учитель не выставил «решение задачи», баллы за остальное не считаются.
+        r = run_js("""
+          var w = window.VARIANT.parts[2].tasks[0];
+          var a = window.Check.score(w, {"writing-1": {org: 3, lex: 2}});
+          var b = window.Check.score(w, {"writing-1": {task: 0, org: 3, lex: 2}});
+          var c = window.Check.score(w, {"writing-1": {task: 7, org: 3, lex: 2}});
+          return [a.got, a.marked, b.got, b.marked, c.got, c.marked];
+        """)
+        self.assertEqual(r, [0, False, 0, True, 12, True])
+
+    def test_pair_counts_as_answered_only_when_both_words_typed(self):
+        r = run_js("""
+          var t = window.VARIANT.parts[1].tasks[0];
+          var s = window.Check.score(t, {"1": ["", ""], "2": ["agonise", ""], "3": ["brie", "briefly"]});
+          return s.items.slice(0, 3).map(function(i){ return i.answered; });
+        """)
+        self.assertEqual(r, [False, False, True])
+
+    def test_interview_marker_lives_in_data(self):
+        r = run_js("""
+          var t = window.VARIANT.parts[0].tasks[2];
+          return [t.audio.from, t.audio.skip && t.audio.skip.at];
+        """)
+        self.assertTrue(r[0] < r[1] < 25 * 60)
+
+
 if __name__ == "__main__":
     unittest.main()

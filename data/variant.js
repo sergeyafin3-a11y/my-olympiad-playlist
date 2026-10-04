@@ -88,7 +88,7 @@
           },
           {
             id: "lr-3", section: "listening", title: "Task 3 · Integrated listening and reading", type: "choice", opts: ABCD_INT,
-            audio: { from: 864, label: "Task 3 · interview (twice)" },
+            audio: { from: 864, label: "Task 3 · interview (twice)", skip: { at: 973, label: "straight to the interview" } },
             readMinutes: 10,
             intro: "Read an excerpt from the essay by James Marriott, a writer at The Times, then listen to an interview with him. You will notice that some ideas coincide and some differ in the text and the interview. Answer questions 16-25 by choosing A if the idea is expressed in both materials, B if it can be found only in the reading text, C if it can be found only in the audio-recording, and D if neither of the materials expresses the idea.",
             textTitle: "The dawn of the post-literate society",
@@ -276,6 +276,7 @@
                 task: "As ‘a guide’, you take your fellow students from your school to a famous carnival in New Orleans, giving them an opportunity to immerse themselves into the unique culture of modern entertainment and comparing it with the old-age traditions. Using the video and information from the fact file, speak about the Carnival celebrations (Set 1 STUDENT 1: Mardi Gras):",
                 plan: ["Origins and History", "Festive Events", "Street culture: Costumes, Music, Food", "Cultural Significance"],
                 opinion: "Express your own opinion on why Carnivals are worth being attended by people from all over the world. Synchronize your presentation with the video.",
+                partner: "Listen to the presentation of your partner (Set 2 STUDENT 2: Maslenitsa). Questions/ Answers: Time: 2- 3 minutes. Ask 2 QUESTIONS about the Carnival to get ADDITIONAL INFORMATION not mentioned in the presentation. You should only use WH-questions (special questions). Questions about the opinion of your partner are NOT accepted.",
                 qa: "Answer 2 QUESTIONS from your partner – ‘a fellow student’ about the Mardi Gras Carnival. Make sure your answer is based on the information from the fact file. If there is NO relevant information in the fact file, base your answer on your best guess.",
                 fact: [
                   ["Происхождение и история праздника", [
@@ -304,6 +305,7 @@
                 task: "As ‘a guide’, you take your fellow students from your school to a famous Russian celebration of the end of winter – Maslenitsa, giving them an opportunity to immerse themselves into the unique culture of modern entertainment and comparing it with the old-age traditions. Using the video and information from the fact file, speak about the Carnival celebrations (Set 2 STUDENT 2: Maslenitsa):",
                 plan: ["Origins and History", "Festive Events", "Street culture: Costumes, Music, Food", "Cultural Significance"],
                 opinion: "Express your own opinion on why Carnivals are worth being attended by people from all over the world. Synchronize your presentation with the video.",
+                partner: "Listen to the presentation of your partner (Set 1 STUDENT 1: Mardi Gras). Questions/ Answers: Time: 2- 3 minutes. Ask 2 QUESTIONS about the Carnival to get ADDITIONAL INFORMATION not mentioned in the presentation. You should only use WH-questions (special questions). Questions about the opinion of your partner are NOT accepted.",
                 qa: "Answer 2 QUESTIONS from your partner – ‘a fellow student’ about the Carnival. Make sure your answer is based on the information from the fact file. If there is NO relevant information in the fact file, base your answer on your best guess.",
                 fact: [
                   ["Происхождение и история праздника", [
@@ -328,7 +330,6 @@
                 ]
               }
             ],
-            partner: "Listen to the presentation of your partner. Ask 2 QUESTIONS about the Carnival to get ADDITIONAL INFORMATION not mentioned in the presentation. You should only use WH-questions (special questions). Questions about the opinion of your partner are NOT accepted.",
             notesRule: "You can make notes during the preparation time, but YOU ARE NOT ALLOWED TO READ them during the presentation.",
             criteria: [
               { id: "mono", t: "Решение коммуникативной задачи · монолог", max: 6 },
