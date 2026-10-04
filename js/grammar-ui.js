@@ -44,7 +44,7 @@
       '<p class="howto">Open a topic: read the <b>rule</b>, then do the <b>10-question test</b>. 🔥 = asked at the olympiad. A <b>mixed test</b> takes questions from several topics.</p>' +
       '<div class="listen"><a class="bigplay" href="#/grammar/mix" style="text-decoration:none">▶ Mixed test</a></div>' +
       '<div class="cards2">' + ["all", "olymp"].concat(LEVELS).map(function (l) { return '<button class="opt' + (filter === l ? ' sel' : '') + '" data-gfilter="' + l + '">' + (l === "all" ? "All levels" : l === "olymp" ? "🔥 Olympiad" : l) + '</button>'; }).join("") + '</div>' +
-      '<p class="note">🔥 — темы, которые встречаются в заданиях олимпиады (финал и региональный этап, 2021–2026).</p>';
+      '';
     LEVELS.forEach(function (l) {
       if (filter !== "all" && filter !== "olymp" && filter !== l) return;
       if (filter === "olymp" && !T.some(function (t) { return t.level === l && G.OLYMPIAD[t.id]; })) return;
@@ -83,7 +83,7 @@
     var ans = S.ans[t.id] || {}, checked = !!S.checked[t.id], r = G.score(t.items, ans);
     var h = '<div style="--c:' + COLOR + '"><a class="back" href="#/grammar">← Grammar</a>' +
       '<div class="taskhead"><span class="sq" aria-hidden="true">📐</span><div><span class="eyebrow"><span class="lv ' + t.level + '">' + t.level + '</span></span><h1>' + esc(t.title) + '</h1></div></div>' +
-      (G.OLYMPIAD[t.id] ? '<p class="note">🔥 Встречается на олимпиаде: ' + esc(G.OLYMPIAD[t.id]) + '</p>' : '') +
+      (G.OLYMPIAD[t.id] ? '<p class="note">🔥 At the olympiad: ' + esc(G.OLYMPIAD[t.id]) + '</p>' : '') +
       '<div class="rule"><p class="ri">' + esc(t.rule.intro) + '</p>' +
       t.rule.blocks.map(function (b) { return '<h3>' + esc(b.h) + '</h3><div class="rtab">' + b.rows.map(function (row) { return '<div>' + esc(row[0]) + '</div><div>' + esc(row[1]) + '</div>'; }).join("") + '</div>'; }).join("") +
       (t.rule.tips && t.rule.tips.length ? '<ul class="tips">' + t.rule.tips.map(function (x) { return '<li>💡 ' + esc(x) + '</li>'; }).join("") + '</ul>' : '') + '</div>' +
@@ -122,7 +122,7 @@
       var ws = Object.keys(weak);
       if (ws.length) h += '<h2 class="list-h" style="font-size:18px">Repeat these rules</h2><div class="tracks">' + ws.map(function (id) { var t = byId(id); return '<a class="tr" href="#/grammar/t/' + id + '"><span class="i"><span class="lv ' + t.level + '">' + t.level + '</span></span><span class="t">' + esc(t.title) + '</span><span class="r">' + weak[id] + ' ✗</span></a>'; }).join("") + '</div>';
     }
-    h += '<div class="actions">' + (checked ? '<button class="ghost" data-gstart="1">↺ New mix</button><span class="res">' + r.got + ' <small>/ ' + r.max + '</small></span>'
+    h += '<div class="actions">' + (checked ? '<button class="ghost" data-gstart="1">↺ New mixed test</button><span class="res">' + r.got + ' <small>/ ' + r.max + '</small></span>'
                                             : '<button class="bigplay" data-gcheck="mix">✓ Check answers</button><span class="res"><small id="gCount">' + answered(items, M.ans) + ' / ' + items.length + ' answered</small></span>') + '</div>';
     return h + '</div>';
   }

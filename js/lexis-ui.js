@@ -25,7 +25,7 @@
       '<div class="album"><span class="sq" aria-hidden="true">🔥</span><div><span class="eyebrow" style="color:#DADADA">Vocabulary for the olympiad</span><h1>Olympiad lexis</h1><p>' + L.length + ' topics · tip + 10 questions each</p></div></div>' +
       '<p class="howto">What the olympiad asks most often. Open a topic: read the tip, then answer <b>10 questions</b>. Or take a <b>mixed test</b> from all topics.</p>' +
       '<h2 class="list-h" style="font-size:16px">Mixed test</h2><div class="listen" style="align-items:center"><span class="muted" style="font-size:14px">Questions:</span>' + [10, 20, 30].map(function (n) { return '<button class="opt' + (S.mixN === n ? ' sel' : '') + '" data-ln="' + n + '">' + n + '</button>'; }).join("") + '<button class="bigplay" data-lstart="1">▶ Start</button></div>' +
-      (S.mix && S.mix.qs.length ? '<p class="note"><a href="#/lexis/mix">Continue the last mix →</a></p>' : '');
+      (S.mix && S.mix.qs.length ? '<p class="note"><a href="#/lexis/mix">Continue the last mixed test →</a></p>' : '');
     GROUPS.forEach(function (g) {
       h += '<h2 class="list-h" style="font-size:18px">' + esc(g) + '</h2><div class="tracks">';
       L.filter(function (t) { return t.group === g; }).forEach(function (t, i) {
@@ -83,7 +83,7 @@
   function mixItems() { return S.mix.qs.map(function (q) { var t = byId(q.topic); return t && t.items[q.i]; }); }
   function mixRun() {
     var M = S.mix, items = mixItems(), checked = !!M.checked, r = G.score(items, M.ans);
-    var h = '<div style="--c:' + COLOR + '"><a class="back" href="#/lexis">← Olympiad lexis</a><h1 style="margin-top:14px;font-size:28px;font-weight:800">Olympiad mix · ' + items.length + '</h1><div class="items">' +
+    var h = '<div style="--c:' + COLOR + '"><a class="back" href="#/lexis">← Olympiad lexis</a><h1 style="margin-top:14px;font-size:28px;font-weight:800">Mixed test · ' + items.length + '</h1><div class="items">' +
       items.map(function (it, i) { var t = byId(M.qs[i].topic); return itemHTML("mix", it, i, M.ans, checked, t.group + " · " + t.title); }).join("") + '</div>';
     if (checked) {
       var weak = {};
@@ -91,7 +91,7 @@
       var ws = Object.keys(weak);
       if (ws.length) h += '<h2 class="list-h" style="font-size:18px">Repeat these topics</h2><div class="tracks">' + ws.map(function (id) { var t = byId(id); return '<a class="tr" href="#/lexis/t/' + id + '"><span class="i">🔥</span><span class="t">' + esc(t.title) + '</span><span class="r">' + weak[id] + ' ✗</span></a>'; }).join("") + '</div>';
     }
-    h += '<div class="actions">' + (checked ? '<button class="ghost" data-lstart="1">↺ New mix</button><span class="res">' + r.got + ' <small>/ ' + r.max + '</small></span>'
+    h += '<div class="actions">' + (checked ? '<button class="ghost" data-lstart="1">↺ New mixed test</button><span class="res">' + r.got + ' <small>/ ' + r.max + '</small></span>'
                                             : '<button class="bigplay" data-lcheck="mix">✓ Check answers</button><span class="res"><small id="lCount">' + answered(items, M.ans) + ' / ' + items.length + ' answered</small></span>') + '</div>';
     return h + '</div>';
   }

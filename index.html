@@ -210,17 +210,17 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
 </div>
 <audio id="au" preload="none"></audio>
 
-<script src="data/variant.js?v=dd924de5b4"></script>
-<script src="js/check.js?v=dd924de5b4"></script>
-<script src="js/vocab.js?v=dd924de5b4"></script>
-<script src="data/grammar/grammar-a1.js?v=dd924de5b4"></script>
-<script src="data/grammar/grammar-a2.js?v=dd924de5b4"></script>
-<script src="data/grammar/grammar-b1.js?v=dd924de5b4"></script>
-<script src="data/grammar/grammar-b2.js?v=dd924de5b4"></script>
-<script src="js/grammar.js?v=dd924de5b4"></script>
-<script src="data/lexis/lexis-wf.js?v=dd924de5b4"></script>
-<script src="data/lexis/lexis-pv.js?v=dd924de5b4"></script>
-<script src="data/lexis/lexis-wp.js?v=dd924de5b4"></script>
+<script src="data/variant.js?v=4fca119b14"></script>
+<script src="js/check.js?v=4fca119b14"></script>
+<script src="js/vocab.js?v=4fca119b14"></script>
+<script src="data/grammar/grammar-a1.js?v=4fca119b14"></script>
+<script src="data/grammar/grammar-a2.js?v=4fca119b14"></script>
+<script src="data/grammar/grammar-b1.js?v=4fca119b14"></script>
+<script src="data/grammar/grammar-b2.js?v=4fca119b14"></script>
+<script src="js/grammar.js?v=4fca119b14"></script>
+<script src="data/lexis/lexis-wf.js?v=4fca119b14"></script>
+<script src="data/lexis/lexis-pv.js?v=4fca119b14"></script>
+<script src="data/lexis/lexis-wp.js?v=4fca119b14"></script>
 <script>
 (function () {
   var V = window.VARIANT, C = window.Check;
@@ -252,7 +252,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   function maxOf(t) { return result(t).max; }
   function sum(list) { return list.reduce(function (a, t) { var e = earned(t); return a + (e || 0); }, 0); }
   function sumMax(list) { return list.reduce(function (a, t) { return a + maxOf(t); }, 0); }
-  function range(t) { if (!t.items) return isManual(t) ? "the teacher gives up to 20 points" : ""; return t.items.length + " questions (" + t.items[0].n + "–" + t.items[t.items.length - 1].n + ")"; }
+  function range(t) { if (!t.items) return isManual(t) ? "the teacher gives up to " + maxOf(t) + " pts" : ""; return t.items.length + " questions (" + t.items[0].n + "–" + t.items[t.items.length - 1].n + ")"; }
 
   // ---------- views ----------
   function home() {
@@ -276,7 +276,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   function album(sid) {
     var s = SEC[sid], ts = sectionTasks(sid);
     var h = '<div style="--c:' + s.color + '"><a class="back" href="#/">← Exam</a>' +
-      '<div class="album"><span class="sq" aria-hidden="true">' + s.icon + '</span><div><span class="eyebrow" style="color:#DADADA">Section</span><h1>' + esc(s.title) + '</h1><p>' + esc(V.title) + ' · ' + ts.length + (ts.length === 1 ? ' task' : ' tasks') + ' · ' + sum(ts) + ' / ' + sumMax(ts) + ' points</p></div></div>' +
+      '<div class="album"><span class="sq" aria-hidden="true">' + s.icon + '</span><div><span class="eyebrow" style="color:#DADADA">Section</span><h1>' + esc(s.title) + '</h1><p>' + esc(V.title) + ' · ' + ts.length + (ts.length === 1 ? ' task' : ' tasks') + ' · ' + sum(ts) + ' / ' + sumMax(ts) + ' pts</p></div></div>' +
       '<div class="listen"><a class="bigplay" href="#/t/' + ts[0].id + '" style="text-decoration:none">▶ Start</a></div><div class="tracks">';
     ts.forEach(function (t, i) {
       var e = earned(t);
@@ -309,7 +309,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
       var p = a || ["", ""];
       h += '<div class="pair">' + [0, 1].map(function (j) { return '<input class="inp" data-t="' + t.id + '" data-n="' + it.n + '" data-j="' + j + '" value="' + esc(p[j] || "") + '" placeholder="word ' + (j + 1) + '" autocomplete="off" autocapitalize="off" spellcheck="false"' + (checked ? ' disabled' : '') + '>'; }).join("") + '</div>';
     }
-    if (r && !r.ok) h += '<div class="key">Key: <b>' + esc(C.rightAnswer(t, it)) + '</b></div>';
+    if (r && !r.ok) h += '<div class="key">Answer: <b>' + esc(C.rightAnswer(t, it)) + '</b></div>';
     return h + '</div>';
   }
 
@@ -346,13 +346,13 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     var s = SEC[t.section], checked = !!S.checked[t.id];
     var backHref = FULLMODE ? "#/" : "#/s/" + t.section;
     var h = '<div style="--c:' + s.color + '"><a class="back" href="' + backHref + '">← ' + (FULLMODE ? "Exam" : esc(s.title)) + '</a>' +
-      '<div class="taskhead"><span class="sq" aria-hidden="true">' + s.icon + '</span><div><span class="eyebrow">' + esc(s.title) + (FULLMODE ? ' · full variant ' + (FULL.indexOf(t) + 1) + '/' + FULL.length : '') + '</span><h1>' + esc(t.title) + '</h1></div></div>' +
+      '<div class="taskhead"><span class="sq" aria-hidden="true">' + s.icon + '</span><div><span class="eyebrow">' + esc(s.title) + (FULLMODE ? ' · full exam ' + (FULL.indexOf(t) + 1) + '/' + FULL.length : '') + '</span><h1>' + esc(t.title) + '</h1></div></div>' +
       '<div class="bar">' + fullBar(t) + (t.items ? '<span class="chip">' + range(t) + '</span>' : '') + (t.readMinutes ? timerBtn("read-" + t.id, t.readMinutes * 60, t.readMinutes + " min to read the text") : '') + '</div>';
 
-    if (t.type === "writing") return h + writing(t) + nextLink(t) + '</div>';
-    if (t.type === "speaking") return h + speaking(t) + '</div>';
+    if (t.type === "writing") return h + '<p class="howto">Write your story in the box below — it is <b>saved automatically</b>. Tick the 4 points when they are in your story. The <b>teacher</b> reads it and gives the points at the bottom.</p>' + writing(t) + nextLink(t) + '</div>';
+    if (t.type === "speaking") return h + '<p class="howto">Choose your card, <b>prepare with the timer</b>, then speak <b>without notes</b>. The teacher plays your partner, asks 2 questions and gives the points at the bottom.</p>' + speaking(t) + '</div>';
 
-    var steps = t.audio ? ["Listen", "Answer", "Check"] : (t.text || t.textRef) ? ["Read the text", "Answer", "Check"] : ["Answer", "Check"];
+    var steps = (t.text || t.textRef ? ["Read the text"] : []).concat(t.audio ? ["Listen"] : [], ["Answer", "Check"]);
     h += '<ol class="steps" aria-label="What to do">' + steps.map(function (x) { return '<li>' + x + '</li>'; }).join("") + '</ol>';
     h += '<div class="intro">' + esc(t.intro) + (t.example ? '<div class="example">' + esc(t.example) + '</div>' : '') + '</div>';
     if (t.wordBank) h += '<div class="bank">' + t.wordBank.map(function (w) { return '<span>' + esc(w) + '</span>'; }).join("") + '</div>';
@@ -418,7 +418,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
       h += '<h2 class="list-h" style="font-size:18px">' + esc(p.title) + ' · ' + sum(p.tasks) + ' / ' + p.max + '</h2>';
       p.tasks.forEach(function (t) {
         var e = earned(t);
-        h += '<a class="tr" href="#/t/' + t.id + '" style="--c:' + col + '"><span class="i" style="color:' + col + '">●</span><span><span class="t">' + esc(t.title) + '</span><br><span class="s">' + range(t) + '</span></span><span class="r' + (e !== null ? ' done' : '') + '">' + (e !== null ? e : '—') + ' / ' + maxOf(t) + '</span></a>';
+        h += '<a class="tr" href="#/t/' + t.id + '" style="--c:' + col + '"><span class="i" style="color:' + col + '">●</span><span><span class="t">' + esc(t.title) + '</span><br><span class="s">' + range(t) + '</span></span><span class="r' + (e !== null ? ' done' : '') + '">' + (e !== null ? '✓ ' + e + ' / ' + maxOf(t) : 'not started') + '</span></a>';
       });
     });
     return h + '</div><button class="reset" id="resetAll">Start over: clear all answers</button>';
@@ -570,8 +570,8 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   render();
 })();
 </script>
-<script src="js/vocab-ui.js?v=dd924de5b4"></script>
-<script src="js/grammar-ui.js?v=dd924de5b4"></script>
-<script src="js/lexis-ui.js?v=dd924de5b4"></script>
+<script src="js/vocab-ui.js?v=4fca119b14"></script>
+<script src="js/grammar-ui.js?v=4fca119b14"></script>
+<script src="js/lexis-ui.js?v=4fca119b14"></script>
 </body>
 </html>
