@@ -183,7 +183,7 @@ window.GRAMMAR.push(
     items: [
       { type: "choice", q: "Look at those black clouds! It ___ rain.", opts: ["will", "is going to", "rains"], a: 1, why: "Прогноз по видимым признакам (тучи) — be going to." },
       { type: "choice", q: "— I'm thirsty. — Wait, I ___ get you some water.", opts: ["will", "am going to", "going to"], a: 0, why: "Решение помочь принято прямо сейчас — will." },
-      { type: "text", q: "We have bought tickets. We ___ (visit) Paris in May.", accept: ["are going to visit", "are visiting"], why: "Билеты уже куплены — это план: are going to visit." },
+      { type: "text", q: "We have bought tickets. We ___ (visit) Paris in May.", accept: ["are going to visit", "are visiting"], why: "Билеты уже куплены — это план: are going to visit (договорённость можно выразить и Present Continuous: are visiting)." },
       { type: "choice", q: "I promise I ___ tell anyone.", opts: ["won't", "not going to", "don't"], a: 0, why: "Обещание — will; отрицание: won't." },
       { type: "text", q: "The phone is ringing! — ___ (I / answer) it.", accept: ["I'll answer", "I will answer"], why: "Решение в момент речи — will: I'll answer." },
       { type: "choice", q: "She has saved money because she ___ buy a new laptop.", opts: ["will", "is going to", "going"], a: 1, why: "Деньги уже копит — план принят заранее, be going to." },
@@ -273,7 +273,7 @@ window.GRAMMAR.push(
         { h: "Обязанность и запрет", rows: [
           ["must + V — надо (так считает говорящий, правило)", "I must call my grandma."],
           ["have to / has to + V — надо (из-за обстоятельств)", "She has to wear a uniform."],
-          ["mustn't + V — нельзя", "You mustn't cross on red."],
+          ["mustn't + V — нельзя", "You mustn't cross the road on a red light."],
           ["don't / doesn't have to + V — не обязательно", "I don't have to get up early on Sunday."]
         ] },
         { h: "Совет", rows: [

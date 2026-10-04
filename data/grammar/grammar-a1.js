@@ -36,7 +36,7 @@ window.GRAMMAR.push(
       { type: "text", q: "It ___ (not / be) cold today.", accept: ["isn't", "is not"], why: "It + is, отрицание — is not (isn't)." },
       { type: "choice", q: "___ your brother good at football?", opts: ["Am", "Is", "Are"], a: 1, why: "Your brother — это he, поэтому вопрос начинается с Is." },
       { type: "choice", q: "Where ___ my headphones?", opts: ["is", "are", "am"], a: 1, why: "Headphones — множественное число, поэтому are." },
-      { type: "text", q: "I ___ (not / be) hungry.", accept: ["am not"], why: "С I отрицание — am not. Формы «amn't» нет." },
+      { type: "text", q: "I ___ (not / be) hungry.", accept: ["am not", "'m not"], why: "С I отрицание — am not. Формы «amn't» нет." },
       { type: "choice", q: "— Are you from Moscow? — Yes, I ___.", opts: ["am", "'m", "is"], a: 0, why: "В кратком положительном ответе не сокращают: Yes, I am." }
     ]
   },
@@ -202,7 +202,7 @@ window.GRAMMAR.push(
       { type: "text", q: "one city — two ___", accept: ["cities"], why: "Согласная + y → -ies: cities." },
       { type: "text", q: "one knife — two ___", accept: ["knives"], why: "-fe → -ves: knives." },
       { type: "choice", q: "Who is ___ girl over there?", opts: ["this", "that", "those"], a: 1, why: "Одна девушка, и она далеко (over there) — that." },
-      { type: "choice", q: "My ___ hurt after the long walk.", opts: ["foot", "foots", "feet"], a: 2, why: "Исключение: foot → feet; глагол hurt без -s подсказывает множественное число." }
+      { type: "choice", q: "My ___ are cold and wet after the long walk.", opts: ["foot", "foots", "feet"], a: 2, why: "Исключение: foot → feet; глагол are подсказывает множественное число." }
     ]
   },
   {
@@ -237,7 +237,7 @@ window.GRAMMAR.push(
       { type: "choice", q: "My ___ room is very big. (my mum and dad)", opts: ["parent's", "parents'", "parents"], a: 1, why: "Parents — мн. число на -s, добавляем только апостроф: parents'." },
       { type: "text", q: "They live in a small flat. ___ (they) flat is near the river.", accept: ["their"], why: "They → their." },
       { type: "choice", q: "The dog is eating ___ food.", opts: ["it's", "its", "it"], a: 1, why: "«Свою» для животного или предмета — its; it's = it is." },
-      { type: "text", q: "My ___ (brother) friends are funny.", accept: ["brother's"], why: "Один брат: brother + 's — my brother's friends." },
+      { type: "text", q: "My ___ (brother) friends are funny. (I have only one brother.)", accept: ["brother's"], why: "Один брат: brother + 's — my brother's friends." },
       { type: "choice", q: "Ann and ___ brother are in my class.", opts: ["she", "her", "hers"], a: 1, why: "Брат Ани — «её брат»: her brother." },
       { type: "text", q: "Is this ___ (you) pencil?", accept: ["your"], why: "You → your." }
     ]

@@ -61,7 +61,7 @@ window.GRAMMAR.push(
       ],
       tips: [
         "«Я жду уже час» — не Present Continuous: I have been waiting for an hour (не I am waiting for an hour).",
-        "Know, like, want, believe, own не ставятся в Continuous: I've had this phone for two years (не I've been having).",
+        "Know, like, want, believe, own и have в значении «иметь» не ставятся в Continuous: I've had this phone for two years (не I've been having).",
         "Если называется количество результата, нужен Present Perfect Simple: She has read 50 pages (не has been reading 50 pages)."
       ]
     },
@@ -94,8 +94,8 @@ window.GRAMMAR.push(
           ["причина в прошлом", "I was tired because I had trained all day."]
         ] },
         { h: "Сравни", rows: [
-          ["When I arrived, she left. (сначала я пришёл, потом она ушла)", "When I arrived, she left."],
-          ["When I arrived, she had left. (она ушла раньше)", "When I arrived, she had left."]
+          ["сначала я пришёл, потом она ушла", "When I arrived, she left."],
+          ["она ушла раньше, чем я пришёл", "When I arrived, she had left."]
         ] }
       ],
       tips: [
@@ -113,7 +113,7 @@ window.GRAMMAR.push(
       { type: "text", q: "We were hungry because we ___ (not / eat) all day.", accept: ["hadn't eaten", "had not eaten"], why: "Причина до момента в прошлом — had not + V3." },
       { type: "choice", q: "___ you ever been abroad before you moved to London?", opts: ["Have", "Had", "Did"], a: 1, why: "Опыт до другого события в прошлом (переезд) — Past Perfect: Had you ever been…" },
       { type: "choice", q: "I ___ the exam because I had studied hard.", opts: ["passed", "had passed", "have passed"], a: 0, why: "Сдача экзамена — позднее действие, для него Past Simple; раньше была учёба (had studied)." },
-      { type: "text", q: "The kitchen was a mess because the kids ___ (bake) a cake.", accept: ["had baked", "'d baked", "had been baking", "'d been baking"], why: "Пекли раньше, чем мы увидели беспорядок, — Past Perfect." },
+      { type: "text", q: "The kitchen was a mess because the kids ___ (bake) a cake.", accept: ["had baked", "'d baked", "had been baking", "'d been baking"], why: "Пекли раньше, чем мы увидели беспорядок, — Past Perfect (had baked) или, с акцентом на процессе, Past Perfect Continuous (had been baking)." },
       { type: "choice", q: "Which sentence is correct?", opts: ["When I arrived, Kate had gone home, so I didn't see her.", "When I arrived, Kate has gone home, so I didn't see her.", "When I had arrived, Kate went home, so I didn't see her."], a: 0, why: "Кейт ушла раньше моего прихода — had gone. Has gone нельзя в рассказе о прошлом." }
     ]
   },
@@ -166,7 +166,7 @@ window.GRAMMAR.push(
         ] },
         { h: "Second conditional", rows: [
           ["If + Past Simple, would + V", "If I had more money, I would travel more."],
-          ["were для всех лиц (было бы правильно)", "If I were you, I would apologise."]
+          ["were для всех лиц (в разговорной речи с I / he / she — и was)", "If I were you, I would apologise."]
         ] },
         { h: "Сравни", rows: [
           ["реально, может случиться", "If I win the match, I'll be happy."],
@@ -203,8 +203,8 @@ window.GRAMMAR.push(
           ["by + исполнитель", "The song was written by Billie Eilish."]
         ] },
         { h: "Отрицания и вопросы", rows: [
-          ["isn't / wasn't + V3", "The room wasn't cleaned yesterday."],
-          ["Is/Was … + V3?", "Were the tickets sold online?"]
+          ["isn't / aren't / wasn't / weren't + V3", "The room wasn't cleaned yesterday."],
+          ["Is / Are / Was / Were … + V3?", "Were the tickets sold online?"]
         ] },
         { h: "Глаголы с предлогом", rows: [
           ["предлог остаётся после V3", "This band is talked about a lot."]
@@ -339,8 +339,8 @@ window.GRAMMAR.push(
     },
     items: [
       { type: "choice", q: "\"I'm hungry,\" Tom said yesterday. → Tom said he ___ hungry.", opts: ["is", "was", "will be"], a: 1, why: "Present Simple сдвигается в Past Simple: am → was." },
-      { type: "choice", q: "\"I will help you,\" he said. → He said he ___ help me.", opts: ["will", "would", "can"], a: 1, why: "Will → would." },
-      { type: "text", q: "\"I can swim,\" Anna said. → Anna said she ___ swim.", accept: ["could"], why: "Can → could." },
+      { type: "choice", q: "\"I will help you tomorrow,\" he said last month. → He said he ___ help me the next day.", opts: ["will", "would", "can"], a: 1, why: "Will → would." },
+      { type: "text", q: "\"I can swim,\" Anna said. → Anna said she ___ swim.", accept: ["could", "can"], why: "Обычно сдвиг: can → could (can можно оставить, если это по-прежнему правда — Анна и сейчас умеет плавать)." },
       { type: "text", q: "\"I saw the film,\" Max said. → Max said he ___ the film.", accept: ["had seen", "'d seen", "saw"], why: "Past Simple → Past Perfect (в разговорной речи можно оставить saw)." },
       { type: "choice", q: "She ___ me that she was busy.", opts: ["said", "told", "spoke"], a: 1, why: "Есть адресат (me) — told." },
       { type: "choice", q: "\"We are leaving tomorrow,\" they said last week. → They said they were leaving ___.", opts: ["tomorrow", "the next day", "yesterday"], a: 1, why: "Слова сказаны неделю назад, поэтому tomorrow → the next day." },

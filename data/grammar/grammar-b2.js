@@ -34,7 +34,7 @@ window.GRAMMAR.push(
       { type: "text", q: "Our team ___ (win) the match if the goalkeeper hadn't been injured.", accept: ["would have won", "'d have won", "d have won", "could have won", "might have won"], why: "Главная часть третьего типа: would/could/might have + V3." },
       { type: "choice", q: "___ I known about the concert, I would have bought tickets.", opts: ["If", "Had", "Have", "Should"], a: 1, why: "Инверсия вместо if в третьем типе: Had I known…" },
       { type: "choice", q: "If you ___ me the wrong answer yesterday, I wouldn't be in trouble now.", opts: ["didn't tell", "hadn't told", "wouldn't tell"], a: 1, why: "Условие в прошлом (yesterday) → Past Perfect; результат сейчас → would + V." },
-      { type: "text", q: "If I ___ (be) better at maths, I would have chosen the physics class.", accept: ["were", "was"], why: "Постоянное свойство сейчас — Past Simple (were/was); результат в прошлом." },
+      { type: "text", q: "If I ___ (be) better at maths, I would have chosen the physics class.", accept: ["were", "was", "had been"], why: "Если речь о постоянном свойстве (я и сейчас слаб в математике) — смешанный тип: were/was. Had been тоже верно, если имеется в виду только прошлое (третий тип)." },
       { type: "choice", q: "If scientists hadn't invented the transistor, we ___ smartphones today.", opts: ["wouldn't have", "wouldn't have had", "hadn't had"], a: 0, why: "Прошлое условие → результат сегодня (today): would + V." }
     ]
   },
@@ -144,7 +144,7 @@ window.GRAMMAR.push(
     items: [
       { type: "choice", q: "She asked me where ___.", opts: ["did I live", "I lived", "do I live"], a: 1, why: "В косвенном вопросе прямой порядок слов без did." },
       { type: "choice", q: "He asked me ___ I had finished the project.", opts: ["that", "if", "what"], a: 1, why: "Общий вопрос (да/нет) передаётся через if/whether." },
-      { type: "text", q: "\"Did you see the match yesterday?\" → He asked me ___ the match the day before.", accept: ["if I had seen", "whether I had seen", "if I'd seen", "whether I'd seen"], why: "Past Simple сдвигается в Past Perfect; вопрос да/нет — if/whether." },
+      { type: "text", q: "\"Did you see the match yesterday?\" → He asked me ___ the match the day before.", accept: ["if I had seen", "whether I had seen", "if I'd seen", "whether I'd seen", "if I saw", "whether I saw"], why: "Past Simple обычно сдвигается в Past Perfect (в разговорной речи можно оставить saw); вопрос да/нет — if/whether." },
       { type: "choice", q: "The teacher told us ___ our phones.", opts: ["to switch off", "switch off", "that switch off"], a: 0, why: "Приказ: tell + someone + to + V." },
       { type: "text", q: "\"Don't be late!\" → Mum told me ___ late.", accept: ["not to be"], why: "Отрицательный приказ: not to + V." },
       { type: "choice", q: "\"Could you help me with the bags?\" → She asked me ___ her with the bags.", opts: ["to help", "help", "helping", "that I help"], a: 0, why: "Просьба: ask + someone + to + V." },
@@ -168,12 +168,12 @@ window.GRAMMAR.push(
           ["отрицание", "I won't have finished the essay by Monday."]
         ] },
         { h: "Future Perfect Continuous: will have been + V-ing", rows: [
-          ["сколько времени к моменту будущего", "By 18, Max will have been playing for the team for three years."],
+          ["сколько времени к моменту будущего", "By the time he's 18, Max will have been playing for the team for three years."],
           ["с глаголами состояния — Future Perfect", "Next month they will have been married for ten years."]
         ] }
       ],
       tips: [
-        "Маркер by (к какому-то моменту) почти всегда требует Future Perfect: «By 9 I will have done it», а не «I will do it by 9» в значении «уже будет сделано».",
+        "By + момент будущего — частый сигнал Future Perfect, когда важно, что к этому моменту всё уже будет завершено: «By 9 I will have finished it». Обещание «I'll do it by 9» тоже правильно — это просто другое значение.",
         "После when, by the time, before в будущем — Present Simple: «By the time you get home…», а не «will get».",
         "Will you be …ing? звучит вежливее, чем Will you …?: спрашиваем о планах, а не просим."
       ]
@@ -220,12 +220,12 @@ window.GRAMMAR.push(
     items: [
       { type: "choice", q: "Her lights are on. She ___ be at home.", opts: ["must", "can't", "mustn't"], a: 0, why: "Логичный вывод «точно да» — must." },
       { type: "choice", q: "That ___ be Tom — he's in London this week.", opts: ["must", "can't", "might"], a: 1, why: "Уверенность «точно нет» — can't." },
-      { type: "text", q: "The ground is wet. It ___ (rain) last night.", accept: ["must have rained"], why: "Уверенный вывод о прошлом: must have + V3." },
+      { type: "text", q: "The ground is wet. It ___ (rain) last night.", accept: ["must have rained", "must've rained"], why: "Уверенный вывод о прошлом: must have + V3." },
       { type: "choice", q: "I can't find my keys. I ___ have left them at school — I'm not sure.", opts: ["must", "might", "can't"], a: 1, why: "«Не уверен» — только возможность: might have + V3." },
       { type: "text", q: "He ___ (not / see) us — he didn't say hello.", accept: ["can't have seen", "cannot have seen", "couldn't have seen", "could not have seen"], why: "Уверенность «точно не» о прошлом: can't / couldn't have + V3." },
       { type: "choice", q: "She got 100% on the test. She ___ have studied a lot.", opts: ["must", "can't", "should"], a: 0, why: "Вывод «наверняка» о прошлом — must have; should have — это упрёк." },
       { type: "choice", q: "Which sentence means \"I'm sure he isn't telling the truth\"?", opts: ["He mustn't be telling the truth.", "He can't be telling the truth.", "He might not be telling the truth."], a: 1, why: "Уверенное «нет» — can't; mustn't — запрет, might not — лишь возможность." },
-      { type: "text", q: "Lisa isn't answering her phone. Maybe she ___ (sleep) right now.", accept: ["might be sleeping", "may be sleeping", "could be sleeping"], why: "Maybe → возможность; процесс сейчас: might/may/could be + V-ing." },
+      { type: "text", q: "Lisa isn't answering her phone. She ___ (sleep) right now — I'm not sure. (use a modal)", accept: ["might be sleeping", "may be sleeping", "could be sleeping"], why: "«Не уверен» → возможность; процесс сейчас: might/may/could be + V-ing." },
       { type: "choice", q: "You ___ be tired after that marathon! Sit down.", opts: ["must", "can't", "might not"], a: 0, why: "Очевидный вывод — must." },
       { type: "text", q: "The window was locked from the inside. The thief ___ (not / get in) through it.", accept: ["can't have got in", "cannot have got in", "couldn't have got in", "could not have got in", "can't have gotten in", "cannot have gotten in", "couldn't have gotten in", "could not have gotten in"], why: "Невозможность в прошлом: can't / couldn't have + V3." }
     ]
@@ -263,7 +263,7 @@ window.GRAMMAR.push(
       { type: "choice", q: "Not only ___ the exam, but she also got the highest score.", opts: ["she passed", "did she pass", "passed she"], a: 1, why: "Not only + did + подлежащее + V." },
       { type: "choice", q: "Hardly ___ home when it started to rain.", opts: ["I had got", "had I got", "did I get"], a: 1, why: "Hardly … when: Past Perfect с инверсией — had I got." },
       { type: "text", q: "No sooner ___ (we / sit) down than the film started.", accept: ["had we sat"], why: "No sooner + had + подлежащее + V3 … than." },
-      { type: "text", q: "Rarely ___ (he / be) late for training.", accept: ["is he", "was he", "has he been"], why: "После Rarely — инверсия: is he / was he." },
+      { type: "text", q: "Rarely ___ (he / be) late for training.", accept: ["is he", "was he", "has he been"], why: "После Rarely — инверсия: is he / was he / has he been." },
       { type: "choice", q: "Hardly had the concert begun ___ the lights went out.", opts: ["than", "when", "that"], a: 1, why: "Hardly сочетается с when (than — пара к No sooner)." },
       { type: "choice", q: "Only after the match ___ how tired I was.", opts: ["I realised", "did I realise", "I did realise"], a: 1, why: "Only after … — инверсия в главной части: did I realise." },
       { type: "text", q: "Not until I moved to London ___ (I / understand) how big a city can be.", accept: ["did I understand"], why: "Not until + придаточное, затем инверсия: did I understand." },
