@@ -106,8 +106,8 @@ class Structure(unittest.TestCase):
 
     def test_page_loads_data_and_checker(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
-        self.assertIn('src="data/variant.js"', html)
-        self.assertIn('src="js/check.js"', html)
+        self.assertIn('src="data/variant.js?v=', html)
+        self.assertIn('src="js/check.js?v=', html)
 
 
 class Scoring(unittest.TestCase):
