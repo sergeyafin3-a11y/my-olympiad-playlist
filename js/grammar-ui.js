@@ -31,11 +31,6 @@
 
   function byId(id) { return T.filter(function (t) { return t.id === id; })[0]; }
 
-  A.practice.push(function () {
-    var done = Object.keys(S.best).length;
-    return '<a class="row" href="#/grammar" style="--c:' + COLOR + '"><span class="sq" aria-hidden="true">📐</span><span><span class="t">Grammar</span><br><span class="s">' + T.length + ' topics · ' + Object.keys(G.OLYMPIAD).length + ' 🔥 olympiad · ' + done + ' tested</span></span></a>';
-  });
-
   A.routes.grammar = function (parts) {
     if (parts[1] === "t" && byId(parts[2])) return topic(byId(parts[2]));
     if (parts[1] === "mix" && parts[2] === "run" && S.mix) return mixRun();
@@ -44,7 +39,7 @@
   };
 
   function overview() {
-    var h = '<div style="--c:' + COLOR + '"><a class="back" href="#/">← Home</a>' +
+    var h = '<div style="--c:' + COLOR + '"><div class="tabtop"></div>' +
       '<div class="album"><span class="sq" aria-hidden="true">📐</span><div><span class="eyebrow" style="color:#DADADA">Practice</span><h1>Grammar</h1><p>' + T.length + ' topics · rule + 10 questions each</p></div></div>' +
       '<div class="listen"><a class="bigplay" href="#/grammar/mix" style="text-decoration:none">▶ Mixed test</a></div>' +
       '<div class="cards2">' + ["all", "olymp"].concat(LEVELS).map(function (l) { return '<button class="opt' + (filter === l ? ' sel' : '') + '" data-gfilter="' + l + '">' + (l === "all" ? "All levels" : l === "olymp" ? "🔥 Olympiad" : l) + '</button>'; }).join("") + '</div>' +

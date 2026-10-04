@@ -14,10 +14,6 @@
   function byId(id) { return L.filter(function (t) { return t.id === id; })[0]; }
   function answered(items, ans) { return items.filter(function (_, i) { return ans[i] != null && String(ans[i]).trim() !== ""; }).length; }
 
-  A.practice.unshift(function () {
-    return '<a class="row" href="#/lexis" style="--c:' + COLOR + '"><span class="sq" aria-hidden="true">🔥</span><span><span class="t">Olympiad lexis</span><br><span class="s">' + L.length + ' topics · what the olympiad really asks · ' + Object.keys(S.best).length + ' tested</span></span></a>';
-  });
-
   A.routes.lexis = function (parts) {
     if (parts[1] === "t" && byId(parts[2])) return topic(byId(parts[2]));
     if (parts[1] === "mix" && S.mix && S.mix.qs.length) return mixRun();
@@ -25,7 +21,7 @@
   };
 
   function overview() {
-    var h = '<div style="--c:' + COLOR + '"><a class="back" href="#/">← Home</a>' +
+    var h = '<div style="--c:' + COLOR + '"><div class="tabtop"></div>' +
       '<div class="album"><span class="sq" aria-hidden="true">🔥</span><div><span class="eyebrow" style="color:#DADADA">Practice</span><h1>Olympiad lexis</h1><p>' + L.length + ' topics · tip + 10 questions each</p></div></div>' +
       '<p class="note">Темы выбраны по 10 вариантам финала и регионального этапа ВсОШ 2021–2026: именно это там спрашивают чаще всего.</p>' +
       '<div class="listen"><button class="bigplay" data-lstart="1">▶ Olympiad mix</button>' + [10, 20, 30].map(function (n) { return '<button class="opt' + (S.mixN === n ? ' sel' : '') + '" data-ln="' + n + '">' + n + '</button>'; }).join("") + '</div>' +
