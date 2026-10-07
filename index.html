@@ -260,7 +260,6 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     var firstOpen = FULL.filter(function (t) { return earned(t) === null; })[0] || FULL[0];
     var h = '<header class="home-top"><span class="eyebrow">Your English, legendary</span><h1>Lexicon<br>Legend</h1>' +
       '<span class="pts">⭐ <b>' + total + '</b> / ' + max + ' points</span></header>' +
-      '<p class="howto">Do the <b>full exam</b> like at the olympiad, or open <b>one section</b> below. At the end of each task tap <b>Check answers</b> to get your points.</p>' +
       '<a class="hero" href="#/full/' + firstOpen.id + '"><div class="cover">FINAL</div><div><h2>Full exam</h2><p>Like at the olympiad · 3 parts · 4 h 15 min</p></div><span class="playbtn" aria-hidden="true">▶</span></a>';
     if (last) h += '<a class="continue" href="#/t/' + last.id + '"><b>▶ Continue:</b> ' + esc(SEC[last.section].title) + ' · ' + esc(last.title.split(" · ")[0]) + '</a>';
     h += '<h2 class="list-h">Sections</h2>';
