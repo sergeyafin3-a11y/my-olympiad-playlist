@@ -31,7 +31,7 @@ class Wording(unittest.TestCase):
 
     def test_every_tab_explains_itself(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
-        # главная (Exam) и Results — в index.html, остальные вкладки — в своих файлах
+        # Results, Writing и Speaking — в index.html, остальные вкладки — в своих файлах
         self.assertGreaterEqual(html.count('class="howto"'), 2)
         for name in ["lexis-ui.js", "grammar-ui.js", "vocab-ui.js"]:
             self.assertIn('class="howto"', (ROOT / "js" / name).read_text(encoding="utf-8"), name)
@@ -48,6 +48,13 @@ class Name(unittest.TestCase):
         self.assertIn("<title>Lexicon Legend</title>", html)
         self.assertIn("<h1>Lexicon<br>Legend</h1>", html)
         self.assertNotIn("Olympiad Playlist", html)
+
+
+class HomeHint(unittest.TestCase):
+    def test_home_has_no_long_instruction(self):
+        # Учитель попросила убрать с главной строку «Do the full exam like at the olympiad…».
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        self.assertNotIn("Do the <b>full exam</b>", html)
 
 
 if __name__ == "__main__":
