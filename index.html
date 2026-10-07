@@ -131,6 +131,16 @@ details.text[open] summary::after{content:"hide"}
 .actions .res small{font-family:var(--body);font-size:13px;color:var(--mute);font-weight:500}
 .next{margin-top:10px}
 .tabtop{height:14px}
+.album h1{overflow-wrap:anywhere}
+@media (max-width:480px){.album{padding:14px;gap:12px}.album .sq{width:64px;height:64px;font-size:30px}.album h1{font-size:28px}}
+.howto{margin:12px 0 0;font-size:14px;line-height:1.5;color:#CFCFCF;background:var(--card);border-radius:10px;padding:10px 12px}
+.howto b{color:var(--ink)}
+.steps{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px;counter-reset:st}
+.steps li{counter-increment:st;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#DADADA}
+.steps li::before{content:counter(st);display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--c);color:#0B0B0B;font-size:12px;font-weight:700}
+.steps li:not(:last-child)::after{content:"→";color:var(--dim);margin-left:2px}
+.continue{display:flex;align-items:center;gap:8px;margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;text-decoration:none;font-weight:600;font-size:14px}
+.continue b{color:var(--acc)}
 .actions.static{position:static;background:none}
 
 /* writing & speaking */
@@ -200,17 +210,17 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
 </div>
 <audio id="au" preload="none"></audio>
 
-<script src="data/variant.js?v=ffb1ea1201"></script>
-<script src="js/check.js?v=ffb1ea1201"></script>
-<script src="js/vocab.js?v=ffb1ea1201"></script>
-<script src="data/grammar/grammar-a1.js?v=ffb1ea1201"></script>
-<script src="data/grammar/grammar-a2.js?v=ffb1ea1201"></script>
-<script src="data/grammar/grammar-b1.js?v=ffb1ea1201"></script>
-<script src="data/grammar/grammar-b2.js?v=ffb1ea1201"></script>
-<script src="js/grammar.js?v=ffb1ea1201"></script>
-<script src="data/lexis/lexis-wf.js?v=ffb1ea1201"></script>
-<script src="data/lexis/lexis-pv.js?v=ffb1ea1201"></script>
-<script src="data/lexis/lexis-wp.js?v=ffb1ea1201"></script>
+<script src="data/variant.js?v=4fca119b14"></script>
+<script src="js/check.js?v=4fca119b14"></script>
+<script src="js/vocab.js?v=4fca119b14"></script>
+<script src="data/grammar/grammar-a1.js?v=4fca119b14"></script>
+<script src="data/grammar/grammar-a2.js?v=4fca119b14"></script>
+<script src="data/grammar/grammar-b1.js?v=4fca119b14"></script>
+<script src="data/grammar/grammar-b2.js?v=4fca119b14"></script>
+<script src="js/grammar.js?v=4fca119b14"></script>
+<script src="data/lexis/lexis-wf.js?v=4fca119b14"></script>
+<script src="data/lexis/lexis-pv.js?v=4fca119b14"></script>
+<script src="data/lexis/lexis-wp.js?v=4fca119b14"></script>
 <script>
 (function () {
   var V = window.VARIANT, C = window.Check;
@@ -242,21 +252,22 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   function maxOf(t) { return result(t).max; }
   function sum(list) { return list.reduce(function (a, t) { var e = earned(t); return a + (e || 0); }, 0); }
   function sumMax(list) { return list.reduce(function (a, t) { return a + maxOf(t); }, 0); }
-  function range(t) { if (!t.items) return isManual(t) ? "20 points" : ""; return "items " + t.items[0].n + "–" + t.items[t.items.length - 1].n; }
+  function range(t) { if (!t.items) return isManual(t) ? "the teacher gives up to " + maxOf(t) + " pts" : ""; return t.items.length + " questions (" + t.items[0].n + "–" + t.items[t.items.length - 1].n + ")"; }
 
   // ---------- views ----------
   function home() {
     var total = sum(TASKS), max = sumMax(TASKS), last = S.last && byId(S.last);
     var firstOpen = FULL.filter(function (t) { return earned(t) === null; })[0] || FULL[0];
-    var h = '<header class="home-top"><span class="eyebrow">Made for you</span><h1>My Olympiad<br>Playlist</h1>' +
+    var h = '<header class="home-top"><span class="eyebrow">Olympiad English trainer</span><h1>My Olympiad<br>Playlist</h1>' +
       '<span class="pts">⭐ <b>' + total + '</b> / ' + max + ' points</span></header>' +
-      '<a class="hero" href="#/full/' + firstOpen.id + '"><div class="cover">FINAL</div><div><h2>Full variant</h2><p>' + esc(V.title) + ' · 3 parts · 4 h 15 min</p></div><span class="playbtn" aria-hidden="true">▶</span></a>';
-    if (last) h += '<a class="now" href="#/t/' + last.id + '">● now playing: ' + esc(SEC[last.section].title) + ' · ' + esc(last.title.split(" · ")[0]) + '</a>';
+      '<p class="howto">Do the <b>full exam</b> like at the olympiad, or open <b>one section</b> below. At the end of each task tap <b>Check answers</b> to get your points.</p>' +
+      '<a class="hero" href="#/full/' + firstOpen.id + '"><div class="cover">FINAL</div><div><h2>Full exam</h2><p>Like at the olympiad · 3 parts · 4 h 15 min</p></div><span class="playbtn" aria-hidden="true">▶</span></a>';
+    if (last) h += '<a class="continue" href="#/t/' + last.id + '"><b>▶ Continue:</b> ' + esc(SEC[last.section].title) + ' · ' + esc(last.title.split(" · ")[0]) + '</a>';
     h += '<h2 class="list-h">Sections</h2>';
     V.sections.forEach(function (s) {
       var ts = sectionTasks(s.id), got = sum(ts), mx = sumMax(ts);
-      var n = ts.length === 1 && ts[0].type === "speaking" ? "oral round" : ts.length + (ts.length === 1 ? " track" : " tracks");
-      h += '<a class="row" href="#/s/' + s.id + '" style="--c:' + s.color + '"><span class="sq" aria-hidden="true">' + s.icon + '</span><span><span class="t">' + esc(s.title) + '</span><br><span class="s">' + n + '</span></span><span class="r"><b>' + got + '</b> / ' + mx + '</span></a>';
+      var n = ts.length === 1 && ts[0].type === "speaking" ? "speaking test with the teacher" : ts.length + (ts.length === 1 ? " task" : " tasks");
+      h += '<a class="row" href="#/s/' + s.id + '" style="--c:' + s.color + '"><span class="sq" aria-hidden="true">' + s.icon + '</span><span><span class="t">' + esc(s.title) + '</span><br><span class="s">' + n + '</span></span><span class="r"><b>' + got + '</b> / ' + mx + ' pts</span></a>';
     });
     h += '<p class="foot">' + esc(V.subtitle) + '. Official tasks, key and audio: <a href="' + esc(V.source.url) + '" target="_blank" rel="noopener">' + esc(V.source.name) + '</a>.</p>';
     return h;
@@ -265,11 +276,11 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   function album(sid) {
     var s = SEC[sid], ts = sectionTasks(sid);
     var h = '<div style="--c:' + s.color + '"><a class="back" href="#/">← Exam</a>' +
-      '<div class="album"><span class="sq" aria-hidden="true">' + s.icon + '</span><div><span class="eyebrow" style="color:#DADADA">Section</span><h1>' + esc(s.title) + '</h1><p>' + esc(V.title) + ' · ' + ts.length + (ts.length === 1 ? ' track' : ' tracks') + ' · ' + sum(ts) + ' / ' + sumMax(ts) + ' points</p></div></div>' +
-      '<div class="listen"><a class="bigplay" href="#/t/' + ts[0].id + '" style="text-decoration:none">▶ Play</a></div><div class="tracks">';
+      '<div class="album"><span class="sq" aria-hidden="true">' + s.icon + '</span><div><span class="eyebrow" style="color:#DADADA">Section</span><h1>' + esc(s.title) + '</h1><p>' + esc(V.title) + ' · ' + ts.length + (ts.length === 1 ? ' task' : ' tasks') + ' · ' + sum(ts) + ' / ' + sumMax(ts) + ' pts</p></div></div>' +
+      '<div class="listen"><a class="bigplay" href="#/t/' + ts[0].id + '" style="text-decoration:none">▶ Start</a></div><div class="tracks">';
     ts.forEach(function (t, i) {
       var e = earned(t);
-      h += '<a class="tr" href="#/t/' + t.id + '"><span class="i">' + (i + 1) + '</span><span><span class="t">' + esc(t.title) + '</span><br><span class="s">' + range(t) + '</span></span><span class="r' + (e !== null ? ' done' : '') + '">' + (e !== null ? e + ' / ' + maxOf(t) : '— / ' + maxOf(t)) + '</span></a>';
+      h += '<a class="tr" href="#/t/' + t.id + '"><span class="i">' + (i + 1) + '</span><span><span class="t">' + esc(t.title) + '</span><br><span class="s">' + range(t) + '</span></span><span class="r' + (e !== null ? ' done' : '') + '">' + (e !== null ? '✓ ' + e + ' / ' + maxOf(t) : 'not started') + '</span></a>';
     });
     return h + '</div></div>';
   }
@@ -298,7 +309,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
       var p = a || ["", ""];
       h += '<div class="pair">' + [0, 1].map(function (j) { return '<input class="inp" data-t="' + t.id + '" data-n="' + it.n + '" data-j="' + j + '" value="' + esc(p[j] || "") + '" placeholder="word ' + (j + 1) + '" autocomplete="off" autocapitalize="off" spellcheck="false"' + (checked ? ' disabled' : '') + '>'; }).join("") + '</div>';
     }
-    if (r && !r.ok) h += '<div class="key">Key: <b>' + esc(C.rightAnswer(t, it)) + '</b></div>';
+    if (r && !r.ok) h += '<div class="key">Answer: <b>' + esc(C.rightAnswer(t, it)) + '</b></div>';
     return h + '</div>';
   }
 
@@ -326,7 +337,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   function nextLink(t) {
     if (!FULLMODE) return "";
     var i = FULL.indexOf(t), n = FULL[i + 1];
-    return n ? '<a class="ghost next" href="#/full/' + n.id + '" style="text-decoration:none;display:inline-block">Next track ▶ ' + esc(n.title.split(" · ")[0]) + ' (' + esc(SEC[n.section].title) + ')</a>'
+    return n ? '<a class="ghost next" href="#/full/' + n.id + '" style="text-decoration:none;display:inline-block">Next task ▶ ' + esc(n.title.split(" · ")[0]) + ' (' + esc(SEC[n.section].title) + ')</a>'
              : '<a class="ghost next" href="#/results" style="text-decoration:none;display:inline-block">Finish ▶ results</a>';
   }
 
@@ -335,12 +346,14 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     var s = SEC[t.section], checked = !!S.checked[t.id];
     var backHref = FULLMODE ? "#/" : "#/s/" + t.section;
     var h = '<div style="--c:' + s.color + '"><a class="back" href="' + backHref + '">← ' + (FULLMODE ? "Exam" : esc(s.title)) + '</a>' +
-      '<div class="taskhead"><span class="sq" aria-hidden="true">' + s.icon + '</span><div><span class="eyebrow">' + esc(s.title) + (FULLMODE ? ' · full variant ' + (FULL.indexOf(t) + 1) + '/' + FULL.length : '') + '</span><h1>' + esc(t.title) + '</h1></div></div>' +
+      '<div class="taskhead"><span class="sq" aria-hidden="true">' + s.icon + '</span><div><span class="eyebrow">' + esc(s.title) + (FULLMODE ? ' · full exam ' + (FULL.indexOf(t) + 1) + '/' + FULL.length : '') + '</span><h1>' + esc(t.title) + '</h1></div></div>' +
       '<div class="bar">' + fullBar(t) + (t.items ? '<span class="chip">' + range(t) + '</span>' : '') + (t.readMinutes ? timerBtn("read-" + t.id, t.readMinutes * 60, t.readMinutes + " min to read the text") : '') + '</div>';
 
-    if (t.type === "writing") return h + writing(t) + nextLink(t) + '</div>';
-    if (t.type === "speaking") return h + speaking(t) + '</div>';
+    if (t.type === "writing") return h + '<p class="howto">Write your story in the box below — it is <b>saved automatically</b>. Tick the 4 points when they are in your story. The <b>teacher</b> reads it and gives the points at the bottom.</p>' + writing(t) + nextLink(t) + '</div>';
+    if (t.type === "speaking") return h + '<p class="howto">Choose your card, <b>prepare with the timer</b>, then speak <b>without notes</b>. The teacher plays your partner, asks 2 questions and gives the points at the bottom.</p>' + speaking(t) + '</div>';
 
+    var steps = (t.text || t.textRef ? ["Read the text"] : []).concat(t.audio ? ["Listen"] : [], ["Answer", "Check"]);
+    h += '<ol class="steps" aria-label="What to do">' + steps.map(function (x) { return '<li>' + x + '</li>'; }).join("") + '</ol>';
     h += '<div class="intro">' + esc(t.intro) + (t.example ? '<div class="example">' + esc(t.example) + '</div>' : '') + '</div>';
     if (t.wordBank) h += '<div class="bank">' + t.wordBank.map(function (w) { return '<span>' + esc(w) + '</span>'; }).join("") + '</div>';
     if (t.examples) {
@@ -399,13 +412,13 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
 
   function results() {
     var total = sum(TASKS), max = sumMax(TASKS);
-    var h = '<div class="tabtop"></div><h1 style="margin-top:14px;font-size:34px;font-weight:800">My results</h1><div class="big-score">' + total + ' <small>/ ' + max + '</small></div><div class="tracks">';
+    var h = '<div class="tabtop"></div><h1 style="margin-top:14px;font-size:34px;font-weight:800">My results</h1><p class="howto">Your points for the olympiad exam. Tap a task to open it. Writing and speaking points come from the teacher.</p><div class="big-score">' + total + ' <small>/ ' + max + '</small></div><div class="tracks">';
     V.parts.forEach(function (p) {
       var col = SEC[p.tasks[0].section].color;
       h += '<h2 class="list-h" style="font-size:18px">' + esc(p.title) + ' · ' + sum(p.tasks) + ' / ' + p.max + '</h2>';
       p.tasks.forEach(function (t) {
         var e = earned(t);
-        h += '<a class="tr" href="#/t/' + t.id + '" style="--c:' + col + '"><span class="i" style="color:' + col + '">●</span><span><span class="t">' + esc(t.title) + '</span><br><span class="s">' + range(t) + '</span></span><span class="r' + (e !== null ? ' done' : '') + '">' + (e !== null ? e : '—') + ' / ' + maxOf(t) + '</span></a>';
+        h += '<a class="tr" href="#/t/' + t.id + '" style="--c:' + col + '"><span class="i" style="color:' + col + '">●</span><span><span class="t">' + esc(t.title) + '</span><br><span class="s">' + range(t) + '</span></span><span class="r' + (e !== null ? ' done' : '') + '">' + (e !== null ? '✓ ' + e + ' / ' + maxOf(t) : 'not started') + '</span></a>';
       });
     });
     return h + '</div><button class="reset" id="resetAll">Start over: clear all answers</button>';
@@ -557,8 +570,8 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   render();
 })();
 </script>
-<script src="js/vocab-ui.js?v=ffb1ea1201"></script>
-<script src="js/grammar-ui.js?v=ffb1ea1201"></script>
-<script src="js/lexis-ui.js?v=ffb1ea1201"></script>
+<script src="js/vocab-ui.js?v=4fca119b14"></script>
+<script src="js/grammar-ui.js?v=4fca119b14"></script>
+<script src="js/lexis-ui.js?v=4fca119b14"></script>
 </body>
 </html>

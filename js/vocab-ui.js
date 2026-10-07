@@ -41,10 +41,11 @@
     session = null;
     var q = (document.getElementById("wSearch") || {}).value || "";
     var h = '<div style="--c:' + COLOR + '"><div class="tabtop"></div>' +
-      '<div class="album"><span class="sq" aria-hidden="true">💗</span><div><span class="eyebrow" style="color:#DADADA">Practice</span><h1>My words</h1><p>' + W.length + ' saved · tap any word in a task to add it</p></div></div>' +
+      '<div class="album"><span class="sq" aria-hidden="true">💗</span><div><span class="eyebrow" style="color:#DADADA">Your dictionary</span><h1>My words</h1><p>' + W.length + ' saved</p></div></div>' +
+      '<p class="howto">In any task, <b>tap an English word</b> and press <b>＋ add</b> at the top of the screen. To save a phrase, select several words. Then learn them with <b>Flashcards</b> or a <b>Quiz</b>.</p>' +
       '<div class="listen"><a class="bigplay" href="#/words/cards" style="text-decoration:none">▶ Flashcards</a><a class="ghost" href="#/words/quiz" style="text-decoration:none">✎ Quiz</a><button class="ghost" data-wnew="1">＋ Add word</button><button class="ghost" data-wcopy="1">⧉ Copy list</button></div>';
     if (!W.length) {
-      return h + '<div class="empty">No words yet. Open any task, tap an unknown word and press <b>＋ add</b>. To save a phrase, select several words.</div></div>';
+      return h + '<div class="empty">No words yet — open any task in <b>Exam</b>, <b>Lexis</b> or <b>Grammar</b> and tap a word.</div></div>';
     }
     h += '<input class="inp wsearch" id="wSearch" placeholder="Search" value="' + esc(q) + '" autocomplete="off">' + '<div id="wList">' + list(q) + '</div>';
     return h + '</div>';
