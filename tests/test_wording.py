@@ -41,5 +41,14 @@ class Wording(unittest.TestCase):
         self.assertIn('class="steps"', html)
 
 
+class Name(unittest.TestCase):
+    def test_app_is_called_lexicon_legend(self):
+        # Приложение — не только для олимпиады, поэтому название общее.
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        self.assertIn("<title>Lexicon Legend</title>", html)
+        self.assertIn("<h1>Lexicon<br>Legend</h1>", html)
+        self.assertNotIn("Olympiad Playlist", html)
+
+
 if __name__ == "__main__":
     unittest.main()

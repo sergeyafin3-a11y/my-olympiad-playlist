@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#121212">
-<title>My Olympiad Playlist</title>
+<title>Lexicon Legend</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Onest:wght@400;500;600;700&display=swap">
@@ -258,7 +258,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   function home() {
     var total = sum(TASKS), max = sumMax(TASKS), last = S.last && byId(S.last);
     var firstOpen = FULL.filter(function (t) { return earned(t) === null; })[0] || FULL[0];
-    var h = '<header class="home-top"><span class="eyebrow">Olympiad English trainer</span><h1>My Olympiad<br>Playlist</h1>' +
+    var h = '<header class="home-top"><span class="eyebrow">Your English, legendary</span><h1>Lexicon<br>Legend</h1>' +
       '<span class="pts">⭐ <b>' + total + '</b> / ' + max + ' points</span></header>' +
       '<p class="howto">Do the <b>full exam</b> like at the olympiad, or open <b>one section</b> below. At the end of each task tap <b>Check answers</b> to get your points.</p>' +
       '<a class="hero" href="#/full/' + firstOpen.id + '"><div class="cover">FINAL</div><div><h2>Full exam</h2><p>Like at the olympiad · 3 parts · 4 h 15 min</p></div><span class="playbtn" aria-hidden="true">▶</span></a>';
