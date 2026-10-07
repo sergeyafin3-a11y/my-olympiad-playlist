@@ -64,6 +64,20 @@ class Content(unittest.TestCase):
         self.assertEqual(r, [])
 
 
+class Titles(unittest.TestCase):
+    def test_every_group_has_its_own_colour_and_icon(self):
+        # Названия групп и тем должны быть хорошо заметны: у каждой группы свой цвет и значок.
+        import re
+        ui = (ROOT / "js" / "lexis-ui.js").read_text(encoding="utf-8")
+        styled = set(re.findall(r'"([^"]+)": \{ icon: "[^"]+", color: "#[0-9A-Fa-f]{6}" \}', ui))
+        self.assertEqual(styled, GROUPS)
+
+    def test_topic_title_splits_into_name_and_details(self):
+        ui = (ROOT / "js" / "lexis-ui.js").read_text(encoding="utf-8")
+        self.assertIn('class="lx-name"', ui)
+        self.assertIn('class="lx-detail"', ui)
+
+
 class Page(unittest.TestCase):
     def test_page_loads_lexis(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")

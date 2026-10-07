@@ -5,6 +5,37 @@
 (function () {
   var A = window.App, G = window.Grammar, L = window.LEXIS || [], esc = A.esc;
   var KEY = "olymp-lexis", COLOR = "#FF9F43";
+  // У каждой группы свой цвет и значок: названия тем должны быть видны с первого взгляда.
+  var GROUP_STYLE = {
+    "Word formation": { icon: "🧱", color: "#FF9F43" },
+    "Phrasal verbs": { icon: "🧗", color: "#5B7CFF" },
+    "Prepositions": { icon: "📍", color: "#2EC4D6" },
+    "Collocations & idioms": { icon: "💬", color: "#C77DFF" },
+    "Word play": { icon: "🎲", color: "#FF7AB6" },
+    "Error hunt": { icon: "🔍", color: "#FF6B6B" }
+  };
+  function gs(g) { return GROUP_STYLE[g] || { icon: "🔥", color: COLOR }; }
+  // «Nouns: -ment, -ness…» → крупно «Nouns», мелко «-ment, -ness…»
+  function titleParts(t) {
+    var i = t.title.indexOf(": ");
+    return i < 0 ? [t.title, ""] : [t.title.slice(0, i), t.title.slice(i + 2)];
+  }
+  var css = document.createElement("style");
+  css.textContent = [
+    ".lx-group{display:flex;align-items:center;gap:10px;margin:26px 0 4px}",
+    ".lx-group .ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-size:20px;background:var(--g)}",
+    ".lx-group h2{font-size:21px;font-weight:800;line-height:1.1}",
+    ".lx-group small{margin-left:auto;font-size:12px;color:var(--mute);white-space:nowrap}",
+    ".lx-card{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;margin-top:8px;padding:12px 14px;border-radius:12px;background:var(--card);border:1px solid var(--line);text-decoration:none}",
+    ".lx-card:hover{border-color:var(--g)}",
+    ".lx-card .num{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;color:#0B0B0B;background:var(--g)}",
+    ".lx-name{display:block;font-family:var(--head);font-size:17px;font-weight:700;line-height:1.2;color:var(--ink)}",
+    ".lx-detail{display:block;margin-top:3px;font-size:13px;color:var(--mute);line-height:1.35}",
+    ".lx-card .st{font-size:12px;color:var(--dim);white-space:nowrap}",
+    ".lx-card .st.done{color:var(--acc);font-weight:700}",
+    ".lx-pill{display:inline-block;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700;color:#0B0B0B;background:var(--g)}"
+  ].join("\n");
+  document.head.appendChild(css);
   var GROUPS = [];
   L.forEach(function (t) { if (GROUPS.indexOf(t.group) < 0) GROUPS.push(t.group); });
   var S = { best: {}, ans: {}, checked: {}, mix: null, mixN: 20 };
@@ -27,10 +58,11 @@
       '<h2 class="list-h" style="font-size:16px">Mixed test</h2><div class="listen" style="align-items:center"><span class="muted" style="font-size:14px">Questions:</span>' + [10, 20, 30].map(function (n) { return '<button class="opt' + (S.mixN === n ? ' sel' : '') + '" data-ln="' + n + '">' + n + '</button>'; }).join("") + '<button class="bigplay" data-lstart="1">▶ Start</button></div>' +
       (S.mix && S.mix.qs.length ? '<p class="note"><a href="#/lexis/mix">Continue the last mixed test →</a></p>' : '');
     GROUPS.forEach(function (g) {
-      h += '<h2 class="list-h" style="font-size:18px">' + esc(g) + '</h2><div class="tracks">';
-      L.filter(function (t) { return t.group === g; }).forEach(function (t, i) {
-        var b = S.best[t.id];
-        h += '<a class="tr" href="#/lexis/t/' + t.id + '"><span class="i">' + (i + 1) + '</span><span><span class="t">' + esc(t.title) + '</span></span><span class="r' + (b != null ? ' done' : '') + '">' + (b != null ? '✓ ' + b + ' / 10' : 'not started') + '</span></a>';
+      var st = gs(g), list = L.filter(function (t) { return t.group === g; });
+      h += '<div class="lx-group" style="--g:' + st.color + '"><span class="ic" aria-hidden="true">' + st.icon + '</span><h2>' + esc(g) + '</h2><small>' + list.length + (list.length === 1 ? ' topic' : ' topics') + '</small></div><div>';
+      list.forEach(function (t, i) {
+        var b = S.best[t.id], tp = titleParts(t);
+        h += '<a class="lx-card" href="#/lexis/t/' + t.id + '" style="--g:' + st.color + '"><span class="num">' + (i + 1) + '</span><span><span class="lx-name">' + esc(tp[0]) + '</span>' + (tp[1] ? '<span class="lx-detail">' + esc(tp[1]) + '</span>' : '') + '</span><span class="st' + (b != null ? ' done' : '') + '">' + (b != null ? '✓ ' + b + ' / 10' : 'not started') + '</span></a>';
       });
       h += '</div>';
     });
@@ -69,7 +101,7 @@
   function topic(t) {
     var ans = S.ans[t.id] || {}, checked = !!S.checked[t.id], r = G.score(t.items, ans);
     var h = '<div style="--c:' + COLOR + '"><a class="back" href="#/lexis">← Olympiad lexis</a>' +
-      '<div class="taskhead"><span class="sq" aria-hidden="true">🔥</span><div><span class="eyebrow">' + esc(t.group) + '</span><h1>' + esc(t.title) + '</h1></div></div>' +
+      '<div class="taskhead" style="--g:' + gs(t.group).color + '"><span class="sq" aria-hidden="true" style="background:var(--g)">' + gs(t.group).icon + '</span><div><span class="lx-pill">' + esc(t.group) + '</span><h1 style="margin-top:4px">' + esc(titleParts(t)[0]) + '</h1>' + (titleParts(t)[1] ? '<span class="lx-detail">' + esc(titleParts(t)[1]) + '</span>' : '') + '</div></div>' +
       '<div class="rule"><p class="ri">' + esc(t.rule.intro) + '</p>' +
       t.rule.blocks.map(function (b) { return '<h3>' + esc(b.h) + '</h3><div class="rtab">' + b.rows.map(function (row) { return '<div>' + esc(row[0]) + '</div><div>' + esc(row[1]) + '</div>'; }).join("") + '</div>'; }).join("") +
       (t.rule.tips && t.rule.tips.length ? '<ul class="tips">' + t.rule.tips.map(function (x) { return '<li>💡 ' + esc(x) + '</li>'; }).join("") + '</ul>' : '') + '</div>' +

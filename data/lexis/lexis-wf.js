@@ -121,7 +121,7 @@ window.LEXIS.push(
   {
     id: "lx-wf-context",
     group: "Word formation",
-    title: "Word formation in a text (olympiad style)",
+    title: "In a text: olympiad-style gaps",
     rule: {
       intro: "Как на ВсОШ: связный текст, в каждом пропуске — слово от данного корня В НУЖНОЙ ГРАММАТИЧЕСКОЙ ФОРМЕ. Определи часть речи, затем форму: число, время, причастие, степень сравнения.",
       blocks: [

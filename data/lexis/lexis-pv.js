@@ -1,7 +1,7 @@
 window.LEXIS = window.LEXIS || [];
 window.LEXIS.push(
   {
-    id: "lx-pv-core", group: "Phrasal verbs", title: "Phrasal verbs: the essentials",
+    id: "lx-pv-core", group: "Phrasal verbs", title: "Essentials: put off, take up, give up, turn down…",
     rule: {
       intro: "Фразовый глагол — это глагол + частица, и смысл целого часто не выводится из частей. На олимпиаде нужно не только выбрать частицу, но и поставить глагол в правильную форму.",
       blocks: [
@@ -44,7 +44,7 @@ window.LEXIS.push(
     ]
   },
   {
-    id: "lx-pv-advanced", group: "Phrasal verbs", title: "Phrasal verbs: olympiad level",
+    id: "lx-pv-advanced", group: "Phrasal verbs", title: "Olympiad level: come up with, put up with, live up to…",
     rule: {
       intro: "Олимпиада любит трёхчастные глаголы (verb + adverb + preposition) и глаголы с несколькими значениями. Выучи их как единые слова — частицы в них не переставляются.",
       blocks: [
