@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#121212">
-<meta name="app-version" content="1adffa159e">
+<meta name="app-version" content="f1952f8541">
 <script>
 // Автообновление: браузер может до 10 минут показывать старую страницу из кэша GitHub Pages.
 // Сверяем свою версию с version.json (без кэша) и, если вышла новая, открываем её по новому адресу.
@@ -467,7 +467,8 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
       }
     }
     if (e.correct) return '<p class="exline">' + esc(e.show) + '</p><div class="key">✓ Every word is needed — the line is correct, so the answer is <b>V</b>.</div>';
-    return '<div class="puz text">' + esc(e.show) + '</div>';
+    // Не нашли место отметки — показываем как обычно, но с ответом, чтобы он не потерялся.
+    return '<div class="puz text">' + esc(e.show) + '</div>' + (e.strike ? '<div class="key">→ <b>' + esc(e.answer) + '</b></div>' : '');
   }
 
   function stepper(t, c) {
