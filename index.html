@@ -404,7 +404,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   function videoBlock(card) {
     var v = (window.VIDEOS || {})[card.id] || [];
     return '<div class="videos"><b>🎬 Video for your monologue</b>' +
-      '<p class="note" style="margin-top:4px">This is <b>not the official olympiad video</b> — the olympiad did not publish it. Watch one of these to see the festival, then speak about it. At the olympiad you will talk along with a different short clip.</p>' +
+      '<p class="note" style="margin-top:4px">This is <b>not the official olympiad video</b> — it is not in the open olympiad archive. Watch one of these to see the festival, then speak about it. At the olympiad you will talk along with a different short clip.</p>' +
       '<p class="note" style="margin-top:4px">The fact file below is in Russian on purpose: you read the facts in Russian and tell them in English.</p>' +
       (v.length ? '<ul>' + v.map(function (x) { return '<li><a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.label) + ' ↗</a></li>'; }).join("") + '</ul>' : '') + '</div>';
   }
