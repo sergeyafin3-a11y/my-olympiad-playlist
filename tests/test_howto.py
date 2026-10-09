@@ -67,7 +67,7 @@ class HowTo(unittest.TestCase):
         self.assertIn('src="data/howto.js?v=', html)
         self.assertIn('class="how"', html)
         # Плашку этапа на главной учитель попросила убрать (11.10): на экране её нет.
-        self.assertNotIn("variantSwitch() + stageNote()", html)
+        self.assertNotIn('class="stage"', html)
 
 
 if __name__ == "__main__":
