@@ -15,8 +15,10 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 def run_js(body):
     src = "\n".join([
         "var window = this;",
+        (ROOT / "data" / "variant-mun-msk-25-26.js").read_text(encoding="utf-8"),
         (ROOT / "data" / "variant.js").read_text(encoding="utf-8"),
         (ROOT / "data" / "howto.js").read_text(encoding="utf-8"),
+        (ROOT / "data" / "howto-mun.js").read_text(encoding="utf-8"),
         "JSON.stringify((function(){ var V = window.VARIANT, H = window.HOWTO; " + body + "})());",
     ])
     out = subprocess.run(["osascript", "-l", "JavaScript", "-e", src], capture_output=True, text=True, check=True)
@@ -43,14 +45,14 @@ class HowTo(unittest.TestCase):
           // Сверяем объяснение задания с ответами ЭТОГО же задания: слово «listen» в советах
           // к аудированию — не подсказка к анаграмме LISTEN из другого задания.
           var leaks = [];
-          V.parts.forEach(function(p){ p.tasks.forEach(function(t){
+          window.VARIANTS.forEach(function(VV){ VV.parts.forEach(function(p){ p.tasks.forEach(function(t){
             var h = H.tasks[t.id]; if (!h) return;
             var txt = " " + JSON.stringify(h).toLowerCase().replace(/[^a-z' ]+/g, " ") + " ";
             (t.items || []).forEach(function(it){
               var acc = t.type === "pair" ? [].concat.apply([], it.accept) : (t.type === "text" ? it.accept : []);
               acc.forEach(function(a){ a = String(a).toLowerCase(); if (a.length >= 4 && txt.indexOf(" " + a + " ") >= 0) leaks.push(t.id + ": " + a); });
             });
-          }); });
+          }); }); });
           return leaks;
         """)
         self.assertEqual(r, [])
