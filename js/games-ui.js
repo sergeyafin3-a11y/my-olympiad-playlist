@@ -53,7 +53,7 @@
     if (G.graded[id] != null) return;
     G.graded[id] = ok; D.grade(id, ok);
     if (ok) G.right++;
-    if (A.markActivity) A.markActivity();
+    if (A.markActivity && G.kind !== "speed") A.markActivity();
   }
 
   function start(kind) {
@@ -154,7 +154,7 @@
       if (other === id) { G.done[id] = 1; grade(id, true); }
       else {
         // Ошибка — минус обоим словам: и тому, что выбрано слева, и тому, чей перевод перепутан.
-        var leftId = side === "L" ? id : other; grade(leftId, false);
+        grade(id, false); grade(other, false);
         G.bad = d.xm;
       }
       G.sel = null; A.render(); return;
@@ -177,17 +177,20 @@
     }
     if (d.xnext) {
       G.i++; G.used = []; G.result = null; G.answer = null; G.typed = ""; A.render();
-      if (G.kind === "listen" && G.i < G.qs.length) setTimeout(function () { say(G.qs[G.i].term); }, 250);
+      var g = G;
+      if (g.kind === "listen" && g.i < g.qs.length) setTimeout(function () { if (G === g) say(g.qs[g.i].term); }, 250);
       return;
     }
     if (d.xstart) {
+      if (G.timer) return;
       G.started = true; A.render();
-      G.timer = setInterval(function () {
-        if (!G || G.kind !== "speed" || location.hash !== "#/words/speed") { stopTimer(); return; }
+      var sg = G, id = setInterval(function () {
+        if (G !== sg || !sg.timer) { clearInterval(id); return; }
         G.left--;
         var t = document.getElementById("gTimer"); if (t) t.textContent = G.left + " s";
-        if (G.left <= 0) { stopTimer(); G.over = true; A.render(); }
+        if (G.left <= 0) { stopTimer(); G.over = true; A.render(); if (G.answered && A.markActivity) A.markActivity(); }
       }, 1000);
+      G.timer = id;
       return;
     }
     if (d.xs != null) {
@@ -205,7 +208,11 @@
   });
   // Ушли со страницы игры — игру сбрасываем, таймер останавливаем.
   window.addEventListener("hashchange", function () {
-    var k = (location.hash.split("/")[2] || "");
-    if (!G || G.kind !== k) { stopTimer(); G = null; }
+    var p = location.hash.replace(/^#\/?/, "").split("/");
+    if (!G || p[0] !== "words" || p[1] !== G.kind) {
+      // Ушла из скоростного раунда раньше времени, но отвечала — день всё равно засчитан.
+      if (G && G.kind === "speed" && G.answered && !G.over && A.markActivity) A.markActivity();
+      stopTimer(); G = null;
+    }
   });
 })();

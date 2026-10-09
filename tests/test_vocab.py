@@ -186,6 +186,28 @@ class Games(unittest.TestCase):
         self.assertTrue(r["ok"])
         self.assertFalse(r["same"], "translations must be shuffled")
 
+    def test_match_round_never_puts_a_pair_opposite_itself_in_final_order(self):
+        # Ревью PR 24: сдвиг сверялся с левым столбцом до его второго перемешивания.
+        r = run_js(self.SEED + """
+          var bad = 0;
+          for (var k = 0; k < 40; k++) {
+            var round = V.matchRound(%s, 5, rnd);
+            if (round.left.every(function(x, i){ return round.right[i].id === x.id; })) bad++;
+          }
+          return bad;
+        """ % words(2))
+        self.assertEqual(r, 0)
+
+    def test_match_round_takes_one_word_per_translation(self):
+        # Ревью PR 24: big и large оба «большой» — две одинаковые кнопки справа, верный выбор засчитан ошибкой.
+        r = run_js(self.SEED + """
+          var l = [{id:"a",term:"big",tr:"большой",level:0},{id:"b",term:"large",tr:" Большой ",level:0},
+                   {id:"c",term:"small",tr:"маленький",level:1},{id:"d",term:"tiny",tr:"крошечный",level:1}];
+          return V.matchRound(l, 5, rnd).right.map(function(x){ return x.text.trim().toLowerCase(); }).sort();
+        """)
+        self.assertEqual(len(r), len(set(r)))
+        self.assertEqual(len(r), 3)
+
     def test_match_round_skips_words_without_translation(self):
         r = run_js(self.SEED + 'var l = %s; l[0].tr = ""; l[1].tr = ""; return V.matchRound(l, 5, rnd).left.length;' % words(4))
         self.assertEqual(r, 2)

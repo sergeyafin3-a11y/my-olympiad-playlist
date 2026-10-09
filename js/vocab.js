@@ -107,13 +107,16 @@
   function translated(list) { return list.filter(function (w) { return w.tr && String(w.tr).trim(); }); }
 
   // Пары «слово — перевод»: слабые слова первыми, переводы перемешаны.
+  // Одинаковый перевод — только у одного слова раунда: иначе справа две одинаковые кнопки и верный выбор засчитан ошибкой.
   function matchRound(list, n, rnd) {
-    var picked = pick(translated(list), n);
-    var left = picked.map(function (w) { return { id: w.id, text: w.term }; });
+    var seen = {}, picked = pick(translated(list), list.length).filter(function (w) {
+      var k = norm(w.tr); if (seen[k]) return false; seen[k] = 1; return true;
+    }).slice(0, n);
+    var left = shuffle(picked.map(function (w) { return { id: w.id, text: w.term }; }), rnd);
     var right = shuffle(picked.map(function (w) { return { id: w.id, text: w.tr }; }), rnd);
-    // Если перемешивание случайно оставило порядок — сдвигаем, иначе пары стоят друг напротив друга.
+    // Сверяем с уже окончательным левым столбцом: если все пары встали друг напротив друга — сдвигаем.
     if (right.length > 1 && right.every(function (x, i) { return x.id === left[i].id; })) right.push(right.shift());
-    return { left: shuffle(left, rnd), right: right };
+    return { left: left, right: right };
   }
 
   // Слова для сборки из букв: одно слово, 3–12 букв.

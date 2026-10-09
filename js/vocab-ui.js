@@ -58,7 +58,7 @@
 
   A.routes.words = function (parts) {
     if (parts[1] === "cards" || parts[1] === "quiz") return practice(parts[1]);
-    if (A.wordGames && A.wordGames[parts[1]]) { session = null; return A.wordGames[parts[1]](); }
+    if (A.wordGames && Object.prototype.hasOwnProperty.call(A.wordGames, parts[1])) { session = null; return A.wordGames[parts[1]](); }
     session = null;
     var q = (document.getElementById("wSearch") || {}).value || "";
     var h = '<div style="--c:' + COLOR + '"><div class="tabtop"></div>' +
