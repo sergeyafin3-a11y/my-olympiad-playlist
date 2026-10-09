@@ -4,7 +4,17 @@
   var A = window.App, K = window.Streak, esc = A.esc;
   var KEY = "olymp-streak";
   var S = K.empty();
-  try { var raw = JSON.parse(localStorage.getItem(KEY) || "null"); if (raw && Array.isArray(raw.days)) S = raw; } catch (e) {}
+  // Хранилище читаем перед каждой записью: открытая со вчера вкладка или вторая вкладка
+  // не должны затереть дни, записанные в другой. Испорченные поля заменяем пустыми.
+  function load() {
+    var s = K.empty();
+    try {
+      var raw = JSON.parse(localStorage.getItem(KEY) || "null");
+      if (raw && Array.isArray(raw.days)) s = { days: raw.days.filter(function (d) { return typeof d === "string"; }), best: +raw.best || 0, seen: Array.isArray(raw.seen) ? raw.seen : [] };
+    } catch (e) {}
+    return s;
+  }
+  S = load();
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
   function today() { return K.dayKey(new Date()); }
 
@@ -35,6 +45,7 @@
 
   // Огонёк на главной: сделано сегодня — горит; ещё нет — серый и напоминает, что делать.
   A.homeTop.push(function () {
+    S = load();
     var t = today(), n = K.current(S, t), done = S.days.indexOf(t) >= 0;
     if (done) return '<span class="streak on" title="Day streak"><span class="fl">🔥</span>' + n + (n === 1 ? ' day' : ' days') + ' in a row</span>';
     if (n > 0) return '<span class="streak off"><span class="fl">🔥</span>' + n + ' <small>· check one task today to keep it</small></span>';
@@ -53,13 +64,19 @@
       conf += '<i class="conf" style="left:' + Math.round(Math.random() * 100) + '%;background:' + colors[i % colors.length] +
         ';animation-duration:' + (2 + Math.random() * 2).toFixed(2) + 's;animation-delay:' + (Math.random() * .8).toFixed(2) + 's"></i>';
     }
+    over.setAttribute("aria-modal", "true");
     over.innerHTML = conf + '<div class="scard"><div class="em">' + m.emoji + '</div><div class="num">' + n + '</div><div class="lbl">day streak</div>' +
       '<h2>' + esc(m.title) + '</h2><p>' + esc(m.text) + '</p><p class="shot">📸 Screenshot it!</p><button type="button" data-sclose="1">Keep going 🔥</button></div>';
     document.body.appendChild(over);
-    over.addEventListener("click", function (e) { if (e.target === over || e.target.closest("[data-sclose]")) over.remove(); });
+    var close = function () { over.remove(); document.removeEventListener("keydown", onKey); };
+    var onKey = function (e) { if (e.key === "Escape") close(); };
+    document.addEventListener("keydown", onKey);
+    over.addEventListener("click", function (e) { if (e.target === over || e.target.closest("[data-sclose]")) close(); });
+    var btn = over.querySelector("[data-sclose]"); if (btn) btn.focus();
   }
 
   function markActivity() {
+    S = load();
     var r = K.record(S, today());
     if (!r.firstToday) return;
     S = r.state; save();

@@ -72,6 +72,13 @@ class Page(unittest.TestCase):
         self.assertIn('src="js/streak.js?v=', html)
         self.assertIn('src="js/streak-ui.js?v=', html)
 
+    def test_empty_checks_are_refused_everywhere(self):
+        # Ревью: пустая проверка в экзамене и пустой ввод в тесте слов засчитывали день.
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        vocab = (ROOT / "js" / "vocab-ui.js").read_text(encoding="utf-8")
+        self.assertIn('"Answer at least one question"', html)
+        self.assertIn('"Type at least one letter"', vocab)
+
 
 if __name__ == "__main__":
     unittest.main()

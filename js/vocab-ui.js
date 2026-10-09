@@ -226,6 +226,7 @@
       if (b.dataset.wpick) { session.answer = +b.dataset.wpick; gradeCurrent(session.answer === session.qs[session.i].a); A.render(); return; }
       if (b.dataset.wcheck) {
         var inp = document.getElementById("wType"); session.typed = inp ? inp.value : "";
+        if (!session.typed.trim()) { b.textContent = "Type at least one letter"; return; }
         var ok = Vo.checkTyped(session.qs[session.i].w, session.typed); session.answer = ok; gradeCurrent(ok); A.render(); return;
       }
       if (b.dataset.wnext) { session.i++; session.answer = null; session.typed = ""; A.render(); return; }
