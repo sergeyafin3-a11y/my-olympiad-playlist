@@ -37,6 +37,23 @@ class HowTo(unittest.TestCase):
         """)
         self.assertEqual(r, [])
 
+    def test_explanations_do_not_leak_answers(self):
+        # Объяснение учит решать, а не подсказывает ответ: ни одного слова из ответов на ввод.
+        r = run_js("""
+          var answers = [];
+          V.parts.forEach(function(p){ p.tasks.forEach(function(t){ (t.items || []).forEach(function(it){
+            var acc = t.type === "pair" ? [].concat.apply([], it.accept) : (t.type === "text" ? it.accept : []);
+            acc.forEach(function(a){ answers.push(String(a).toLowerCase()); });
+          }); }); });
+          var leaks = [];
+          Object.keys(H.tasks).forEach(function(id){
+            var txt = " " + JSON.stringify(H.tasks[id]).toLowerCase().replace(/[^a-z' ]+/g, " ") + " ";
+            answers.forEach(function(a){ if (a.length >= 4 && txt.indexOf(" " + a + " ") >= 0) leaks.push(id + ": " + a); });
+          });
+          return leaks;
+        """)
+        self.assertEqual(r, [])
+
     def test_stage_is_named_and_marked_as_hardest(self):
         r = run_js("return H.stage;")
         self.assertIn("заключительный", r["title"].lower())
