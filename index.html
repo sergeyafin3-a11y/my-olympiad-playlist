@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#121212">
-<meta name="app-version" content="db56fa5b11">
+<meta name="app-version" content="5dbfc51070">
 <script>
 // Автообновление: браузер может до 10 минут показывать старую страницу из кэша GitHub Pages.
 // Сверяем свою версию с version.json (без кэша) и, если вышла новая, открываем её по новому адресу.
@@ -242,6 +242,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
       <button id="plBack" aria-label="Back 10 seconds">↺10</button>
       <button class="pp" id="plPP" aria-label="Play">▶</button>
       <button id="plFwd" aria-label="Forward 10 seconds">10↻</button>
+      <button id="plClose" aria-label="Close the player">✕</button>
     </div>
   </div>
   <div class="seek"><span id="plCur">0:00</span><input type="range" id="plSeek" min="0" max="1500" step="1" value="0" aria-label="Seek"><span id="plDur">25:00</span></div>
@@ -519,6 +520,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     else if (ROUTES[parts[0]]) html = ROUTES[parts[0]](parts);
     else html = home();
     $("app").innerHTML = html;
+    syncPlayer(parts);
     drawTabs(parts[0]);
     if ($("wText")) updateWC();
     tickTimers();
@@ -656,6 +658,13 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   $("plFwd").addEventListener("click", function () { au.currentTime = Math.min(au.duration || 1e9, au.currentTime + 10); });
   $("plSeek").addEventListener("input", function (e) { au.currentTime = Number(e.target.value); });
   au.addEventListener("play", function () { document.body.classList.add("playing"); });
+  // Плеер живёт только на экране задания с аудио: ушли в другой раздел — останавливаем и прячем.
+  function closePlayer() { au.pause(); $("player").hidden = true; document.body.classList.remove("playing"); }
+  function syncPlayer(parts) {
+    var t = (parts[0] === "t" || parts[0] === "full") && byId(parts[1]);
+    if (!(t && t.audio)) closePlayer();
+  }
+  $("plClose").addEventListener("click", closePlayer);
   au.addEventListener("play", function () { $("plPP").textContent = "❚❚"; $("plPP").setAttribute("aria-label", "Pause"); });
   au.addEventListener("pause", function () { $("plPP").textContent = "▶"; $("plPP").setAttribute("aria-label", "Play"); });
   au.addEventListener("loadedmetadata", function () { $("plSeek").max = Math.floor(au.duration); $("plDur").textContent = fmt(au.duration); });
