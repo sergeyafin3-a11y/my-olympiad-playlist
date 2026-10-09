@@ -148,6 +148,9 @@ details.text[open] summary::after{content:"hide"}
 .how .ht{margin-top:8px;font-size:14px;color:var(--mute)}
 .stage{margin-top:14px;border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.5;background:#2A2410;border:1px solid #6B5A1E;color:#F3E6B5}
 .stage b{color:#FFE08A}
+.ex{margin-top:10px;border-radius:8px;background:#141414;border:1px dashed var(--line)}
+.ex summary{cursor:pointer;padding:8px 10px;font-size:14px;font-weight:600;color:var(--c);list-style:none}
+.ex pre{margin:0;padding:0 12px 12px;white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.6;color:#E2E2E2}
 .album h1{overflow-wrap:anywhere}
 @media (max-width:480px){.album{padding:14px;gap:12px}.album .sq{width:64px;height:64px;font-size:30px}.album h1{font-size:28px}}
 .howto{margin:12px 0 0;font-size:14px;line-height:1.5;color:#CFCFCF;background:var(--card);border-radius:10px;padding:10px 12px}
@@ -227,19 +230,20 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
 </div>
 <audio id="au" preload="none"></audio>
 
-<script src="data/videos.js?v=592561c663"></script>
-<script src="data/howto.js?v=592561c663"></script>
-<script src="data/variant.js?v=592561c663"></script>
-<script src="js/check.js?v=592561c663"></script>
-<script src="js/vocab.js?v=592561c663"></script>
-<script src="data/grammar/grammar-a1.js?v=592561c663"></script>
-<script src="data/grammar/grammar-a2.js?v=592561c663"></script>
-<script src="data/grammar/grammar-b1.js?v=592561c663"></script>
-<script src="data/grammar/grammar-b2.js?v=592561c663"></script>
-<script src="js/grammar.js?v=592561c663"></script>
-<script src="data/lexis/lexis-wf.js?v=592561c663"></script>
-<script src="data/lexis/lexis-pv.js?v=592561c663"></script>
-<script src="data/lexis/lexis-wp.js?v=592561c663"></script>
+<script src="data/videos.js?v=06aaab1d5f"></script>
+<script src="data/howto.js?v=06aaab1d5f"></script>
+<script src="data/variant.js?v=06aaab1d5f"></script>
+<script src="js/check.js?v=06aaab1d5f"></script>
+<script src="js/vocab.js?v=06aaab1d5f"></script>
+<script src="data/grammar/grammar-a1.js?v=06aaab1d5f"></script>
+<script src="data/grammar/grammar-a2.js?v=06aaab1d5f"></script>
+<script src="data/grammar/grammar-b1.js?v=06aaab1d5f"></script>
+<script src="data/grammar/grammar-b2.js?v=06aaab1d5f"></script>
+<script src="js/grammar.js?v=06aaab1d5f"></script>
+<script src="data/lexis/lexis-wf.js?v=06aaab1d5f"></script>
+<script src="data/lexis/lexis-pv.js?v=06aaab1d5f"></script>
+<script src="data/lexis/lexis-wp.js?v=06aaab1d5f"></script>
+<script src="data/explain.js?v=06aaab1d5f"></script>
 <script>
 (function () {
   var V = window.VARIANT, C = window.Check;
@@ -329,6 +333,9 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
       h += '<div class="pair">' + [0, 1].map(function (j) { return '<input class="inp" data-t="' + t.id + '" data-n="' + it.n + '" data-j="' + j + '" value="' + esc(p[j] || "") + '" placeholder="word ' + (j + 1) + '" autocomplete="off" autocapitalize="off" spellcheck="false"' + (checked ? ' disabled' : '') + '>'; }).join("") + '</div>';
     }
     if (r && !r.ok) h += '<div class="key">Answer: <b>' + esc(C.rightAnswer(t, it)) + '</b></div>';
+    // Разбор с ответом — спрятан, ученица открывает его сама, когда застряла или после проверки.
+    var ex = window.EXPLAIN && window.EXPLAIN[t.id] && window.EXPLAIN[t.id][it.n];
+    if (ex) h += '<details class="ex" data-ex="' + t.id + '#' + it.n + '"' + (checked || EXOPEN[t.id + '#' + it.n] ? ' open' : '') + '><summary>💡 Show how to solve</summary><pre>' + esc(ex) + '</pre></details>';
     return h + '</div>';
   }
 
@@ -402,10 +409,10 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   function howCard(t) {
     var H = window.HOWTO && window.HOWTO.tasks[t.id];
     if (!H) return "";
-    return '<details class="how" open><summary>📘 How to solve · Как решать</summary><div class="hb">' +
-      '<p class="hw"><b>Что проверяют:</b> ' + esc(H.what) + '</p>' +
+    return '<details class="how" open><summary>📘 How to solve</summary><div class="hb">' +
+      '<p class="hw"><b>What it tests:</b> ' + esc(H.what) + '</p>' +
       '<ol>' + H.steps.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ol>' +
-      (H.example ? '<div class="hx">✏️ <b>Пример:</b> ' + esc(H.example) + '</div>' : '') +
+      (H.example ? '<div class="hx">✏️ <b>Example:</b> ' + esc(H.example) + '</div>' : '') +
       (H.tip ? '<p class="ht">💡 ' + esc(H.tip) + '</p>' : '') + '</div></details>';
   }
   function stageNote() {
@@ -505,6 +512,12 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
       return '<a href="' + t.href + '"' + (on ? ' class="on" aria-current="page"' : '') + '><span aria-hidden="true">' + t.icon + '</span>' + t.label + '</a>';
     }).join("");
   }
+
+  // Открытые разборы помним, иначе нажатие на вариант ответа перерисует задание и свернёт их.
+  var EXOPEN = {};
+  document.addEventListener("toggle", function (e) {
+    var d = e.target; if (d && d.dataset && d.dataset.ex) EXOPEN[d.dataset.ex] = d.open;
+  }, true);
 
   // ---------- events ----------
   document.addEventListener("click", function (e) {
@@ -617,8 +630,8 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   render();
 })();
 </script>
-<script src="js/vocab-ui.js?v=592561c663"></script>
-<script src="js/grammar-ui.js?v=592561c663"></script>
-<script src="js/lexis-ui.js?v=592561c663"></script>
+<script src="js/vocab-ui.js?v=06aaab1d5f"></script>
+<script src="js/grammar-ui.js?v=06aaab1d5f"></script>
+<script src="js/lexis-ui.js?v=06aaab1d5f"></script>
 </body>
 </html>
