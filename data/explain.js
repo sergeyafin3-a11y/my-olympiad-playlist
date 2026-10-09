@@ -7,7 +7,7 @@
       1: "Short word: \"agreed\" = COMPLIED.\nLong word: \"elaborate or difficult\" = COMPLICATED.\n\ncompli     ed  = complied\ncompli CAT ed  = complicated\n\nThe hidden animal is CAT (кошка).",
       2: "Short word: \"suffer distress\" = AGONISE (agonize).\nLong word: \"make an enemy of\" = ANTAGONISE (antagonize).\n\n    agonise  = agonise\nANT agonise  = antagonise\n\nThe hidden animal is ANT (муравей) — at the start of the word.",
       3: "Short word: \"a soft cheese\" = BRIE.\nLong word: \"for a short stretch of time\" = BRIEFLY.\n\nbrie      = brie\nbrie FLY  = briefly\n\nThe hidden animal is FLY (муха) — at the end of the word.",
-      4: "Short word: \"a filled pastry\" = PIE.\nLong word: \"a marauder\" (someone who attacks ships) = PIRATE.\n\npi     e  = pie\npi RAT e  = pirate\n\nThe hidden animal is RAT (крыса).",
+      4: "Short word: \"a filled pastry\" = PIE.\nLong word: \"a marauder\" (a robber, грабитель) = PIRATE.\n\npi     e  = pie\npi RAT e  = pirate\n\nThe hidden animal is RAT (крыса).",
       5: "Short word: \"dishonest statements\" = LIES.\nLong word: \"events where winners are chosen at random from ticket holders\" = LOTTERIES.\n\nl       ies  = lies\nl OTTER ies  = lotteries\n\nThe hidden animal is OTTER (выдра).",
       6: "Short word: \"a male cat (name)\" = TOM (a tomcat).\nLong word: \"a place name or a name from a place\" = TOPONYM.\n\nto      m  = Tom\nto PONY m  = toponym\n\nThe hidden animal is PONY (пони).",
       7: "Short word: \"a component\" = PART.\nLong word: \"a defensive wall in a fortification\" = PARAPET (or RAMPART).\n\npar     t  = part\npar APE t  = parapet   → APE (обезьяна)\n\nAlso correct: RAM + part = rampart → RAM (баран)."
@@ -17,7 +17,7 @@
       9: "Look at the box: the word KEEPIN is inside a frame, and the letters TOUCH the frame.\nKEEP IN + touching → \"keep in touch\".\n\nAnswer: KEEP IN TOUCH = stay in contact (оставаться на связи). \"Keep in line\" is also accepted.",
       10: "Read the letters as sounds: n-i = \"an I\" = \"an eye\"; IV = the Roman number four = \"for\".\nnI + IV + nI → \"an eye — for — an eye\".\n\nAnswer: AN EYE FOR AN EYE = punish someone in the same way they hurt you (око за око).",
       11: "Read the left column from the bottom to the top: M-A-K-I-N-G goes UP → \"making up\".\nThe word LOST is written FOUR times → \"for lost\".\nThe picture of a clock = TIME.\n\nAnswer: MAKING UP FOR LOST TIME = doing a lot now because you lost time before (наверстать упущенное).",
-      12: "The odd numbers 1, 3, 5, 7, 9 are the \"odds\". They are OVER the word WHELMING.\nODDS over WHELMING → \"the odds are overwhelming\".\n\nAnswer: THE ODDS ARE OVERWHELMING = it is very likely; you have almost no chance against it (шансы подавляющие).",
+      12: "The odd numbers 1, 3, 5, 7, 9 are the \"odds\". They are OVER the word WHELMING.\nODDS over WHELMING → \"the odds are overwhelming\".\n\nAnswer: THE ODDS ARE OVERWHELMING = the chances against you are very big (почти без шансов).",
       13: "There is a list: BIG A, BIG B, BIG C, BIG D, … BIG F, BIG G. One line is empty — BIG E is missing.\n\"No big E\" sounds like \"no biggie\".\n\nAnswer: NO BIGGIE = no problem, it's not important (ерунда, ничего страшного).",
       14: "The word PLATE is at the top. The word STEP is written going UP (from the bottom to the top) and reaches the PLATE.\nSTEP + UP + TO + THE PLATE.\n\nAnswer: STEP UP TO THE PLATE = take responsibility, be ready to act (взять на себя ответственность)."
     },
@@ -29,7 +29,7 @@
       19: "\"The comedian really ___, with big, silly movements and exaggerated voices.\" — he acted too much on purpose.\nB \"hammed it up\" = acted in a very exaggerated way (переигрывал, кривлялся).\nAnswer: B.",
       20: "\"Jane was ___, hoping that a member of the hockey team would drop out.\" — she was ready to take someone's place.\nN \"waiting in the wings\" = ready to take a place when it is free (ждать своего часа).\nAnswer: N.",
       21: "\"The protest was just ___ designed to bring in the media.\" — a show for the cameras, not a real protest.\nP \"a dog and pony show\" = a big show to impress people, with little real meaning (показуха).\nAnswer: P.",
-      22: "\"I used to be very cynical…, but ever since surviving that car wreck, I have been ___!\" — now he thinks differently.\nJ \"singing a different tune\" = having a different opinion now (запеть по-другому). F \"getting into the groove\" (начать жить в своё удовольствие) is also accepted by the key.\nAnswer: J (or F)."
+      22: "\"I used to be very cynical…, but ever since surviving that car wreck, I have been ___!\" — now he thinks differently.\nJ \"singing a different tune\" = having a different opinion now (запеть по-другому). F \"getting into the groove\" (войти в ритм, в колею) is also accepted by the key.\nAnswer: J (or F)."
     },
     "uoe-4": {
       23: "Letters: T A E R H.\nGap 1: \"He spoke… from the ___\" → HEART (говорил от сердца).\nGap 2: \"the ___ beneath him bore his weight\" → EARTH (земля под ним).\nAnswer: HEART / EARTH.",
@@ -48,7 +48,7 @@
       34: "The Lake Poets were three English Romantic poets who lived in the Lake District: William Wordsworth, Samuel Taylor Coleridge and Robert Southey.\nAnswer: G.",
       35: "The Angry Young Men were British writers of the 1950s who wrote about anger at society: John Osborne, Kingsley Amis, Harold Pinter.\nAnswer: B.",
       36: "The Virginia dynasty = early US presidents from Virginia: Washington, Jefferson, Madison, Monroe. Description F lists Jefferson, Madison and Monroe — it is the only one that fits (John Adams in that list was from Massachusetts, but the official key still gives F).\nAnswer: F.",
-      37: "The Royalists (\"Cavaliers\") supported King Charles I and the House of Stuart in the English Civil War (1642–1651).\nAnswer: E.",
+      37: "The Royalists (\"Cavaliers\") supported King Charles I and the House of Stuart in the English Civil War (in the task: 1642-1652).\nAnswer: E.",
       38: "The log cabin presidents were born in poor wooden houses (log cabins): Andrew Jackson, Abraham Lincoln, Ulysses S. Grant, James Garfield.\nAnswer: K.",
       39: "Carpetbaggers was a rude name for Northerners who moved to the South after the Civil War. They carried bags made of carpet, and Southerners said they came to make money.\nAnswer: C.",
       40: "The Minutemen were American soldiers in 1774–1775 who had to be ready to fight \"in a minute\". Their first battles were Lexington and Concord.\nAnswer: J."
