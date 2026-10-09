@@ -98,7 +98,8 @@
     if (w[t]) return w[t];
     var tries = [t.replace(/'s$/, ""), t.replace(/ies$/, "y"), t.replace(/es$/, ""), t.replace(/s$/, ""),
                  t.replace(/ied$/, "y"), t.replace(/ed$/, ""), t.replace(/d$/, ""), t.replace(/ing$/, ""), t.replace(/ing$/, "e"), t.replace(/ly$/, "")];
-    for (var i = 0; i < tries.length; i++) if (tries[i] !== t && w[tries[i]]) return w[tries[i]];
+    // Основа короче трёх букв — уже не слово («thing» → «th»), такой перевод был бы чужим.
+    for (var i = 0; i < tries.length; i++) if (tries[i] !== t && tries[i].length >= 3 && w[tries[i]]) return w[tries[i]];
     return "";
   }
 

@@ -137,7 +137,8 @@
 
   var trTouched = false;
   function openSheet(entry, id) {
-    editId = id || null; pill.hidden = true; trTouched = false;
+    // Свой перевод у слова уже есть — не подменяем его словарным при правке написания.
+    editId = id || null; pill.hidden = true; trTouched = !!entry.tr;
     var auto = !entry.tr && entry.term ? Vo.lookup(entry.term, DICT) : "";
     if (auto) entry = Object.assign({}, entry, { tr: auto });
     sheet.innerHTML = '<h2>' + (id ? 'Edit word' : 'Add to My words') + '</h2>' +
