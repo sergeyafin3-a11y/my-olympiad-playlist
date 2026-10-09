@@ -31,8 +31,9 @@ class Wording(unittest.TestCase):
 
     def test_every_tab_explains_itself(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
-        # Results, Writing и Speaking — в index.html, остальные вкладки — в своих файлах
-        self.assertGreaterEqual(html.count('class="howto"'), 2)
+        # Results — подсказка, задания (в т.ч. Writing и Speaking) — карточка «Как решать»
+        self.assertGreaterEqual(html.count('class="howto"'), 1)
+        self.assertIn('class="how"', html)
         for name in ["lexis-ui.js", "grammar-ui.js", "vocab-ui.js"]:
             self.assertIn('class="howto"', (ROOT / "js" / name).read_text(encoding="utf-8"), name)
 
