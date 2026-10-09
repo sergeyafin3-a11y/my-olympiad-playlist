@@ -131,6 +131,10 @@ details.text[open] summary::after{content:"hide"}
 .actions .res small{font-family:var(--body);font-size:13px;color:var(--mute);font-weight:500}
 .next{margin-top:10px}
 .tabtop{height:14px}
+.videos{margin-top:12px;background:var(--card);border:1px solid color-mix(in srgb,var(--c) 50%,transparent);border-radius:12px;padding:12px 14px}
+.videos b{font-size:15px}
+.videos ul{margin:8px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+.videos a{color:var(--c);font-weight:600}
 .how{margin-top:14px;border:1px solid color-mix(in srgb,var(--c) 55%,transparent);background:color-mix(in srgb,var(--c) 10%,#141414);border-radius:12px}
 .how summary{cursor:pointer;padding:12px 14px;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:8px}
 .how summary::after{content:"hide";color:var(--mute);font-size:13px;font-weight:500}
@@ -221,18 +225,19 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
 </div>
 <audio id="au" preload="none"></audio>
 
-<script src="data/howto.js?v=3258e39db1"></script>
-<script src="data/variant.js?v=3258e39db1"></script>
-<script src="js/check.js?v=3258e39db1"></script>
-<script src="js/vocab.js?v=3258e39db1"></script>
-<script src="data/grammar/grammar-a1.js?v=3258e39db1"></script>
-<script src="data/grammar/grammar-a2.js?v=3258e39db1"></script>
-<script src="data/grammar/grammar-b1.js?v=3258e39db1"></script>
-<script src="data/grammar/grammar-b2.js?v=3258e39db1"></script>
-<script src="js/grammar.js?v=3258e39db1"></script>
-<script src="data/lexis/lexis-wf.js?v=3258e39db1"></script>
-<script src="data/lexis/lexis-pv.js?v=3258e39db1"></script>
-<script src="data/lexis/lexis-wp.js?v=3258e39db1"></script>
+<script src="data/videos.js?v=7c98145598"></script>
+<script src="data/howto.js?v=7c98145598"></script>
+<script src="data/variant.js?v=7c98145598"></script>
+<script src="js/check.js?v=7c98145598"></script>
+<script src="js/vocab.js?v=7c98145598"></script>
+<script src="data/grammar/grammar-a1.js?v=7c98145598"></script>
+<script src="data/grammar/grammar-a2.js?v=7c98145598"></script>
+<script src="data/grammar/grammar-b1.js?v=7c98145598"></script>
+<script src="data/grammar/grammar-b2.js?v=7c98145598"></script>
+<script src="js/grammar.js?v=7c98145598"></script>
+<script src="data/lexis/lexis-wf.js?v=7c98145598"></script>
+<script src="data/lexis/lexis-pv.js?v=7c98145598"></script>
+<script src="data/lexis/lexis-wp.js?v=7c98145598"></script>
 <script>
 (function () {
   var V = window.VARIANT, C = window.Check;
@@ -424,10 +429,20 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     return h;
   }
 
+  // Видео к монологу: официальных роликов нет, поэтому честно говорим, что это замена.
+  function videoBlock(card) {
+    var v = (window.VIDEOS || {})[card.id] || [];
+    return '<div class="videos"><b>🎬 Video for your monologue</b>' +
+      '<p class="note" style="margin-top:4px">This is <b>not the official olympiad video</b> — it is not in the open olympiad archive. Watch one of these to see the festival, then speak about it. At the olympiad you will talk along with a different short clip.</p>' +
+      '<p class="note" style="margin-top:4px">The fact file below is in Russian on purpose: you read the facts in Russian and tell them in English.</p>' +
+      (v.length ? '<ul>' + v.map(function (x) { return '<li><a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.label) + ' ↗</a></li>'; }).join("") + '</ul>' : '') + '</div>';
+  }
+
   function speaking(t) {
     var card = t.cards.filter(function (c) { return c.id === S.card; })[0] || t.cards[0], r = result(t);
     var h = '<div class="intro">Preparation – ' + t.timing.prep + ' minutes · Monologue: ' + esc(t.timing.monologue) + ' · Questions/Answers: ' + esc(t.timing.questions) + '</div>' +
       '<div class="cards2">' + t.cards.map(function (c) { return '<button class="opt' + (c.id === card.id ? ' sel' : '') + '" data-card="' + c.id + '">' + esc(c.label) + '</button>'; }).join("") + '</div>' +
+      videoBlock(card) +
       '<div class="timers">' + timerBtn("prep", t.timing.prep * 60, "preparation 15:00") + timerBtn("mono", 210, "monologue 3:30") + timerBtn("qa", 180, "questions 3:00") + '</div>' +
       '<div class="intro"><b>1. Monologue.</b> ' + esc(card.task) + '<div class="plan">' + card.plan.map(function (p) { return '<span>' + esc(p) + '</span>'; }).join("") + '</div><p style="margin:10px 0 0">' + esc(card.opinion) + '</p>' +
       '<p style="margin:10px 0 0"><b>2. Questions/Answers.</b> ' + esc(card.qa) + '</p><p class="note">' + esc(t.notesRule) + '</p></div>' +
@@ -598,8 +613,8 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   render();
 })();
 </script>
-<script src="js/vocab-ui.js?v=3258e39db1"></script>
-<script src="js/grammar-ui.js?v=3258e39db1"></script>
-<script src="js/lexis-ui.js?v=3258e39db1"></script>
+<script src="js/vocab-ui.js?v=7c98145598"></script>
+<script src="js/grammar-ui.js?v=7c98145598"></script>
+<script src="js/lexis-ui.js?v=7c98145598"></script>
 </body>
 </html>
