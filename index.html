@@ -131,6 +131,17 @@ details.text[open] summary::after{content:"hide"}
 .actions .res small{font-family:var(--body);font-size:13px;color:var(--mute);font-weight:500}
 .next{margin-top:10px}
 .tabtop{height:14px}
+.how{margin-top:14px;border:1px solid color-mix(in srgb,var(--c) 55%,transparent);background:color-mix(in srgb,var(--c) 10%,#141414);border-radius:12px}
+.how summary{cursor:pointer;padding:12px 14px;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:8px}
+.how summary::after{content:"hide";color:var(--mute);font-size:13px;font-weight:500}
+.how:not([open]) summary::after{content:"show"}
+.how .hb{padding:0 14px 14px;font-size:15px;line-height:1.55}
+.how .hw{margin:0 0 8px;color:#E6E6E6}
+.how ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.how .hx{margin-top:10px;background:#101010;border-radius:8px;padding:8px 10px;font-size:14px}
+.how .ht{margin-top:8px;font-size:14px;color:var(--mute)}
+.stage{margin-top:14px;border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.5;background:#2A2410;border:1px solid #6B5A1E;color:#F3E6B5}
+.stage b{color:#FFE08A}
 .album h1{overflow-wrap:anywhere}
 @media (max-width:480px){.album{padding:14px;gap:12px}.album .sq{width:64px;height:64px;font-size:30px}.album h1{font-size:28px}}
 .howto{margin:12px 0 0;font-size:14px;line-height:1.5;color:#CFCFCF;background:var(--card);border-radius:10px;padding:10px 12px}
@@ -210,17 +221,18 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
 </div>
 <audio id="au" preload="none"></audio>
 
-<script src="data/variant.js?v=7626762d46"></script>
-<script src="js/check.js?v=7626762d46"></script>
-<script src="js/vocab.js?v=7626762d46"></script>
-<script src="data/grammar/grammar-a1.js?v=7626762d46"></script>
-<script src="data/grammar/grammar-a2.js?v=7626762d46"></script>
-<script src="data/grammar/grammar-b1.js?v=7626762d46"></script>
-<script src="data/grammar/grammar-b2.js?v=7626762d46"></script>
-<script src="js/grammar.js?v=7626762d46"></script>
-<script src="data/lexis/lexis-wf.js?v=7626762d46"></script>
-<script src="data/lexis/lexis-pv.js?v=7626762d46"></script>
-<script src="data/lexis/lexis-wp.js?v=7626762d46"></script>
+<script src="data/howto.js?v=fc0fd658d0"></script>
+<script src="data/variant.js?v=fc0fd658d0"></script>
+<script src="js/check.js?v=fc0fd658d0"></script>
+<script src="js/vocab.js?v=fc0fd658d0"></script>
+<script src="data/grammar/grammar-a1.js?v=fc0fd658d0"></script>
+<script src="data/grammar/grammar-a2.js?v=fc0fd658d0"></script>
+<script src="data/grammar/grammar-b1.js?v=fc0fd658d0"></script>
+<script src="data/grammar/grammar-b2.js?v=fc0fd658d0"></script>
+<script src="js/grammar.js?v=fc0fd658d0"></script>
+<script src="data/lexis/lexis-wf.js?v=fc0fd658d0"></script>
+<script src="data/lexis/lexis-pv.js?v=fc0fd658d0"></script>
+<script src="data/lexis/lexis-wp.js?v=fc0fd658d0"></script>
 <script>
 (function () {
   var V = window.VARIANT, C = window.Check;
@@ -260,6 +272,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     var firstOpen = FULL.filter(function (t) { return earned(t) === null; })[0] || FULL[0];
     var h = '<header class="home-top"><span class="eyebrow">Your English, legendary</span><h1>Lexicon<br>Legend</h1>' +
       '<span class="pts">⭐ <b>' + total + '</b> / ' + max + ' points</span></header>' +
+      stageNote() +
       '<a class="hero" href="#/full/' + firstOpen.id + '"><div class="cover">FINAL</div><div><h2>Full exam</h2><p>Like at the olympiad · 3 parts · 4 h 15 min</p></div><span class="playbtn" aria-hidden="true">▶</span></a>';
     if (last) h += '<a class="continue" href="#/t/' + last.id + '"><b>▶ Continue:</b> ' + esc(SEC[last.section].title) + ' · ' + esc(last.title.split(" · ")[0]) + '</a>';
     h += '<h2 class="list-h">Sections</h2>';
@@ -348,10 +361,11 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
       '<div class="taskhead"><span class="sq" aria-hidden="true">' + s.icon + '</span><div><span class="eyebrow">' + esc(s.title) + (FULLMODE ? ' · full exam ' + (FULL.indexOf(t) + 1) + '/' + FULL.length : '') + '</span><h1>' + esc(t.title) + '</h1></div></div>' +
       '<div class="bar">' + fullBar(t) + (t.items ? '<span class="chip">' + range(t) + '</span>' : '') + (t.readMinutes ? timerBtn("read-" + t.id, t.readMinutes * 60, t.readMinutes + " min to read the text") : '') + '</div>';
 
-    if (t.type === "writing") return h + '<p class="howto">Write your story in the box below — it is <b>saved automatically</b>. Tick the 4 points when they are in your story. The <b>teacher</b> reads it and gives the points at the bottom.</p>' + writing(t) + nextLink(t) + '</div>';
-    if (t.type === "speaking") return h + '<p class="howto">Choose your card, <b>prepare with the timer</b>, then speak <b>without notes</b>. The teacher plays your partner, asks 2 questions and gives the points at the bottom.</p>' + speaking(t) + '</div>';
+    if (t.type === "writing") return h + howCard(t) + writing(t) + nextLink(t) + '</div>';
+    if (t.type === "speaking") return h + howCard(t) + speaking(t) + '</div>';
 
     var steps = (t.text || t.textRef ? ["Read the text"] : []).concat(t.audio ? ["Listen"] : [], ["Answer", "Check"]);
+    h += howCard(t);
     h += '<ol class="steps" aria-label="What to do">' + steps.map(function (x) { return '<li>' + x + '</li>'; }).join("") + '</ol>';
     h += '<div class="intro">' + esc(t.intro) + (t.example ? '<div class="example">' + esc(t.example) + '</div>' : '') + '</div>';
     if (t.wordBank) h += '<div class="bank">' + t.wordBank.map(function (w) { return '<span>' + esc(w) + '</span>'; }).join("") + '</div>';
@@ -375,6 +389,21 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     h += '<div class="actions">' + (checked ? '<button class="ghost" data-retry="' + t.id + '">↺ Try again</button><span class="res">' + r.got + ' <small>/ ' + r.max + ' points</small></span>'
                                             : '<button class="bigplay" data-check="' + t.id + '">✓ Check answers</button><span class="res"><small>' + r.items.filter(function (i) { return i.answered; }).length + ' / ' + r.max + ' answered</small></span>') + '</div>';
     return h + nextLink(t) + '</div>';
+  }
+
+  // «Как решать»: что проверяют, шаги, разобранный образец, совет — из data/howto.js.
+  function howCard(t) {
+    var H = window.HOWTO && window.HOWTO.tasks[t.id];
+    if (!H) return "";
+    return '<details class="how" open><summary>📘 How to solve · Как решать</summary><div class="hb">' +
+      '<p class="hw"><b>Что проверяют:</b> ' + esc(H.what) + '</p>' +
+      '<ol>' + H.steps.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ol>' +
+      (H.example ? '<div class="hx">✏️ <b>Пример:</b> ' + esc(H.example) + '</div>' : '') +
+      (H.tip ? '<p class="ht">💡 ' + esc(H.tip) + '</p>' : '') + '</div></details>';
+  }
+  function stageNote() {
+    var st = window.HOWTO && window.HOWTO.stage;
+    return st ? '<div class="stage"><b>⚠️ ' + esc(st.title) + '.</b> ' + esc(st.note) + '</div>' : "";
   }
 
   function stepper(t, c) {
@@ -569,8 +598,8 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   render();
 })();
 </script>
-<script src="js/vocab-ui.js?v=7626762d46"></script>
-<script src="js/grammar-ui.js?v=7626762d46"></script>
-<script src="js/lexis-ui.js?v=7626762d46"></script>
+<script src="js/vocab-ui.js?v=fc0fd658d0"></script>
+<script src="js/grammar-ui.js?v=fc0fd658d0"></script>
+<script src="js/lexis-ui.js?v=fc0fd658d0"></script>
 </body>
 </html>
