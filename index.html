@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#121212">
-<meta name="app-version" content="61fe8d52a9">
+<meta name="app-version" content="f1952f8541">
 <script>
 // Автообновление: браузер может до 10 минут показывать старую страницу из кэша GitHub Pages.
 // Сверяем свою версию с version.json (без кэша) и, если вышла новая, открываем её по новому адресу.
@@ -166,6 +166,9 @@ details.text[open] summary::after{content:"hide"}
 .how ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
 .how .hx{margin-top:10px;background:#101010;border-radius:8px;padding:8px 10px;font-size:14px}
 .how .ht{margin-top:8px;font-size:14px;color:var(--mute)}
+.exline{margin:8px 0 0;font-size:15px;line-height:1.6;background:#141414;border-radius:8px;padding:8px 10px}
+.xw{display:inline-block;white-space:nowrap;line-height:1.3;color:#FFB0B0;text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:var(--bad);background:var(--bad-bg);border:1.5px solid var(--bad);border-radius:6px;padding:1px 7px;font-weight:800;font-size:1.05em}
+.xw::after{content:" ← extra";text-decoration:none;display:inline-block;margin-left:4px;font-size:.75em;font-weight:700;color:var(--bad)}
 .ex{margin-top:10px;border-radius:8px;background:#141414;border:1px dashed var(--line)}
 .ex summary{cursor:pointer;padding:8px 10px;font-size:14px;font-weight:600;color:var(--c);list-style:none}
 .ex pre{margin:0;padding:0 12px 12px;white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.6;color:#E2E2E2}
@@ -249,25 +252,25 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
 </div>
 <audio id="au" preload="none"></audio>
 
-<script src="data/videos.js?v=fd92c76499"></script>
-<script src="data/howto.js?v=fd92c76499"></script>
-<script src="data/howto-mun.js?v=fd92c76499"></script>
-<script src="data/variant-mun-msk-25-26.js?v=fd92c76499"></script>
-<script src="data/variant.js?v=fd92c76499"></script>
-<script src="js/check.js?v=fd92c76499"></script>
-<script src="js/vocab.js?v=fd92c76499"></script>
-<script src="js/streak.js?v=fd92c76499"></script>
-<script src="data/grammar/grammar-a1.js?v=fd92c76499"></script>
-<script src="data/grammar/grammar-a2.js?v=fd92c76499"></script>
-<script src="data/grammar/grammar-b1.js?v=fd92c76499"></script>
-<script src="data/grammar/grammar-b2.js?v=fd92c76499"></script>
-<script src="js/grammar.js?v=fd92c76499"></script>
-<script src="data/lexis/lexis-wf.js?v=fd92c76499"></script>
-<script src="data/lexis/lexis-pv.js?v=fd92c76499"></script>
-<script src="data/lexis/lexis-wp.js?v=fd92c76499"></script>
-<script src="data/explain.js?v=fd92c76499"></script>
-<script src="data/explain-mun.js?v=fd92c76499"></script>
-<script src="data/dict.js?v=fd92c76499"></script>
+<script src="data/videos.js?v=0061ac0ca8"></script>
+<script src="data/howto.js?v=0061ac0ca8"></script>
+<script src="data/howto-mun.js?v=0061ac0ca8"></script>
+<script src="data/variant-mun-msk-25-26.js?v=0061ac0ca8"></script>
+<script src="data/variant.js?v=0061ac0ca8"></script>
+<script src="js/check.js?v=0061ac0ca8"></script>
+<script src="js/vocab.js?v=0061ac0ca8"></script>
+<script src="js/streak.js?v=0061ac0ca8"></script>
+<script src="data/grammar/grammar-a1.js?v=0061ac0ca8"></script>
+<script src="data/grammar/grammar-a2.js?v=0061ac0ca8"></script>
+<script src="data/grammar/grammar-b1.js?v=0061ac0ca8"></script>
+<script src="data/grammar/grammar-b2.js?v=0061ac0ca8"></script>
+<script src="js/grammar.js?v=0061ac0ca8"></script>
+<script src="data/lexis/lexis-wf.js?v=0061ac0ca8"></script>
+<script src="data/lexis/lexis-pv.js?v=0061ac0ca8"></script>
+<script src="data/lexis/lexis-wp.js?v=0061ac0ca8"></script>
+<script src="data/explain.js?v=0061ac0ca8"></script>
+<script src="data/explain-mun.js?v=0061ac0ca8"></script>
+<script src="data/dict.js?v=0061ac0ca8"></script>
 <script>
 (function () {
   // Вариантов несколько (муниципальный этап, финал); выбранный хранится в браузере.
@@ -413,7 +416,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     if (t.wordBank) h += '<div class="bank">' + t.wordBank.map(function (w) { return '<span>' + esc(w) + '</span>'; }).join("") + '</div>';
     if (t.examples) {
       h += '<div class="items">' + t.examples.map(function (e) {
-        return '<div class="it"><div class="q"><span class="n">' + esc(e.label) + '</span>example</div>' + (e.img ? '<div class="puz"><img src="' + esc(e.img) + '" alt="Example ' + esc(e.label) + '"></div>' : '<div class="puz text">' + esc(e.show) + '</div>') + '<div class="key">→ <b>' + esc(e.answer) + '</b></div></div>';
+        return '<div class="it"><div class="q"><span class="n">' + esc(e.label) + '</span>example</div>' + (e.img ? '<div class="puz"><img src="' + esc(e.img) + '" alt="Example ' + esc(e.label) + '"></div>' : exampleText(e)) + (e.strike || e.correct ? '' : '<div class="key">→ <b>' + esc(e.answer) + '</b></div>') + '</div>';
       }).join("") + '</div>';
     }
     if (t.text) h += textBlock(t, true);
@@ -450,6 +453,22 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     return '<div class="cards2" role="tablist" aria-label="Variant">' + LIST.map(function (x) {
       return '<button class="opt' + (x.id === V.id ? ' sel' : '') + '" data-variant="' + esc(x.id) + '" role="tab" aria-selected="' + (x.id === V.id) + '">' + esc(x.title) + '</button>';
     }).join("") + '</div>';
+  }
+
+  // Образец строки «найди лишнее слово»: лишнее слово зачёркнуто прямо в тексте,
+  // у верной строки — пометка «каждое слово нужно». Ребусы-образцы — как раньше, в белой рамке.
+  function exampleText(e) {
+    if (e.strike && e.near) {
+      var i = e.show.indexOf(e.near), w = e.near.search(new RegExp("\\b" + e.strike + "\\b"));
+      if (i >= 0 && w >= 0) {
+        var at = i + w, end = at + e.strike.length;
+        return '<p class="exline">' + esc(e.show.slice(0, at)) + '<del class="xw" title="extra word">' + esc(e.show.slice(at, end)) + '</del>' + esc(e.show.slice(end)) +
+          '</p><div class="key">✗ The word <b>' + esc(e.strike) + '</b> is extra — the sentence is correct without it, so the answer is <b>' + esc(e.answer) + '</b>.</div>';
+      }
+    }
+    if (e.correct) return '<p class="exline">' + esc(e.show) + '</p><div class="key">✓ Every word is needed — the line is correct, so the answer is <b>V</b>.</div>';
+    // Не нашли место отметки — показываем как обычно, но с ответом, чтобы он не потерялся.
+    return '<div class="puz text">' + esc(e.show) + '</div>' + (e.strike ? '<div class="key">→ <b>' + esc(e.answer) + '</b></div>' : '');
   }
 
   function stepper(t, c) {
@@ -680,9 +699,9 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   render();
 })();
 </script>
-<script src="js/vocab-ui.js?v=fd92c76499"></script>
-<script src="js/grammar-ui.js?v=fd92c76499"></script>
-<script src="js/lexis-ui.js?v=fd92c76499"></script>
-<script src="js/streak-ui.js?v=fd92c76499"></script>
+<script src="js/vocab-ui.js?v=0061ac0ca8"></script>
+<script src="js/grammar-ui.js?v=0061ac0ca8"></script>
+<script src="js/lexis-ui.js?v=0061ac0ca8"></script>
+<script src="js/streak-ui.js?v=0061ac0ca8"></script>
 </body>
 </html>
