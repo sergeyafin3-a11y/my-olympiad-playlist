@@ -31,7 +31,7 @@
       "You hear the conversation ONLY ONCE — answer while you listen, do not wait for the end.",
       "For questions about feelings, listen to HOW the person speaks, not only to the words."
     ],
-    tip: "Question 3 asks what is NOT TRUE: two options are true, choose the one that is false. Similar words (\"surprising\", \"unexpected\") can both sound right — choose the one that fits the speaker's words best."
+    tip: "Question 3 asks what is NOT TRUE: two options are true, choose the one that is false. When two options mean almost the same, listen for the exact word or feeling the speaker uses."
   };
 
   H.tasks["m-r1"] = {
@@ -104,8 +104,8 @@
       "For terms like metaphor or metonymy, remember what they mean and find an example that fits.",
       "Then work by elimination. Remember: some descriptions do not match any item."
     ],
-    example: "Examples NOT from the task: a euphemism is a soft, polite word for something unpleasant (\"passed away\" instead of \"died\"). Metonymy is calling a thing by the name of something close to it (\"the Kremlin said\" = the Russian government said).",
-    tip: "Two descriptions can be about the same person or style — read them to the end. After Check, read all the explanations: they help at the next olympiad."
+    example: "Examples NOT from the task: a euphemism is a soft, polite word for something unpleasant (\"passed away\" instead of \"died\"). An oxymoron puts two opposite words together (\"a deafening silence\").",
+    tip: "Read every description to the end before you choose. After Check, read all the explanations: they help at the next olympiad."
   };
 
   H.tasks["m-w1"] = {

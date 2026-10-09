@@ -81,6 +81,11 @@ class Variants(unittest.TestCase):
         for pid, _, mx, got in auto:
             self.assertEqual(got, mx, pid)
 
+    def test_writing_screen_does_not_hardcode_one_variant(self):
+        # Ревью PR 18: счётчик слов искал задание «writing-1» и падал на муниципальном (m-w1).
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        self.assertNotIn('byId("writing-1")', html)
+
     def test_page_loads_both_and_can_switch(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
         self.assertIn('src="data/variant-mun-msk-25-26.js?v=', html)

@@ -230,24 +230,24 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
 </div>
 <audio id="au" preload="none"></audio>
 
-<script src="data/videos.js?v=0cdbb51be0"></script>
-<script src="data/howto.js?v=0cdbb51be0"></script>
-<script src="data/howto-mun.js?v=0cdbb51be0"></script>
-<script src="data/variant-mun-msk-25-26.js?v=0cdbb51be0"></script>
-<script src="data/variant.js?v=0cdbb51be0"></script>
-<script src="js/check.js?v=0cdbb51be0"></script>
-<script src="js/vocab.js?v=0cdbb51be0"></script>
-<script src="data/grammar/grammar-a1.js?v=0cdbb51be0"></script>
-<script src="data/grammar/grammar-a2.js?v=0cdbb51be0"></script>
-<script src="data/grammar/grammar-b1.js?v=0cdbb51be0"></script>
-<script src="data/grammar/grammar-b2.js?v=0cdbb51be0"></script>
-<script src="js/grammar.js?v=0cdbb51be0"></script>
-<script src="data/lexis/lexis-wf.js?v=0cdbb51be0"></script>
-<script src="data/lexis/lexis-pv.js?v=0cdbb51be0"></script>
-<script src="data/lexis/lexis-wp.js?v=0cdbb51be0"></script>
-<script src="data/explain.js?v=0cdbb51be0"></script>
-<script src="data/explain-mun.js?v=0cdbb51be0"></script>
-<script src="data/dict.js?v=0cdbb51be0"></script>
+<script src="data/videos.js?v=3a26224b28"></script>
+<script src="data/howto.js?v=3a26224b28"></script>
+<script src="data/howto-mun.js?v=3a26224b28"></script>
+<script src="data/variant-mun-msk-25-26.js?v=3a26224b28"></script>
+<script src="data/variant.js?v=3a26224b28"></script>
+<script src="js/check.js?v=3a26224b28"></script>
+<script src="js/vocab.js?v=3a26224b28"></script>
+<script src="data/grammar/grammar-a1.js?v=3a26224b28"></script>
+<script src="data/grammar/grammar-a2.js?v=3a26224b28"></script>
+<script src="data/grammar/grammar-b1.js?v=3a26224b28"></script>
+<script src="data/grammar/grammar-b2.js?v=3a26224b28"></script>
+<script src="js/grammar.js?v=3a26224b28"></script>
+<script src="data/lexis/lexis-wf.js?v=3a26224b28"></script>
+<script src="data/lexis/lexis-pv.js?v=3a26224b28"></script>
+<script src="data/lexis/lexis-wp.js?v=3a26224b28"></script>
+<script src="data/explain.js?v=3a26224b28"></script>
+<script src="data/explain-mun.js?v=3a26224b28"></script>
+<script src="data/dict.js?v=3a26224b28"></script>
 <script>
 (function () {
   // Вариантов несколько (муниципальный этап, финал); выбранный хранится в браузере.
@@ -445,7 +445,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     var W = S.writing, r = result(t), checks = W.points || [];
     var h = '<div class="intro">' + esc(t.intro) + '<p class="premise">' + esc(t.premise) + '</p>' + esc(t.outro) + '<p style="margin:10px 0 0">' + esc(t.pointsLabel || "The story should contain") + '</p><ul class="points">' +
       t.points.map(function (p, i) { return '<li><label><input type="checkbox" data-wp="' + i + '"' + (checks[i] ? ' checked' : '') + '><span>' + esc(p) + '</span></label></li>'; }).join("") +
-      '</ul><p style="margin:10px 0 0"><b>Write ' + t.words.min + '-' + t.words.max + ' words.' + (t.needsTitle && !t.pointsLabel ? ' Your story must have a title.' : '') + '</b></p></div>' +
+      '</ul>' + (/words/.test(t.outro || "") ? '' : '<p style="margin:10px 0 0"><b>Write ' + t.words.min + '-' + t.words.max + ' words.' + (t.needsTitle && !t.pointsLabel ? ' Your story must have a title.' : '') + '</b></p>') + '</div>' +
       '<div class="timers">' + timerBtn("writing", PART_OF[t.id].minutes * 60, PART_OF[t.id].minutes + " min") + '</div>' +
       '<input class="inp" id="wTitle" placeholder="Title" value="' + esc(W.title || "") + '" style="max-width:none;font-weight:600">' +
       '<textarea class="essay" id="wText" placeholder="Once upon a time…">' + esc(W.text || "") + '</textarea><div class="wc" id="wc"></div>' +
@@ -569,7 +569,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
       else a[el.dataset.n] = el.value;
       save(); refreshCount(el.dataset.t); return;
     }
-    if (el.id === "wTitle") { S.writing.title = el.value; save(); return; }
+    if (el.id === "wTitle") { S.writing.title = el.value; save(); updateWC(); return; }
     if (el.id === "wText") { S.writing.text = el.value; save(); updateWC(); return; }
   });
   document.addEventListener("change", function (e) {
@@ -582,7 +582,11 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     if (t && res && !S.checked[tid]) res.textContent = C.score(t, S.ans[tid]).items.filter(function (i) { return i.answered; }).length + " / " + t.items.length + " answered";
   }
   function updateWC() {
-    var t = byId("writing-1"), n = (S.writing.text || "").trim().split(/\s+/).filter(Boolean).length, el = $("wc"), w = t.words;
+    // Задание письма у каждого варианта своё (writing-1, m-w1) — берём то, что есть в текущем.
+    var t = TASKS.filter(function (x) { return x.type === "writing"; })[0];
+    var words = function (x) { return (x || "").trim().split(/\s+/).filter(Boolean).length; };
+    // На муниципальном этапе название входит в число слов.
+    var n = words(S.writing.text) + (t.titleInCount ? words(S.writing.title) : 0), el = $("wc"), w = t.words;
     var cls = n >= w.min && n <= w.max ? "good" : n >= w.accMin && n <= w.accMax ? "ok" : "bad";
     el.className = "wc " + cls;
     el.textContent = n + " words · aim " + w.min + "–" + w.max + (cls === "ok" ? " (still accepted: " + w.accMin + "–" + w.accMax + ")" : cls === "bad" && n ? " (outside " + w.accMin + "–" + w.accMax + ")" : "");
@@ -647,8 +651,8 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   render();
 })();
 </script>
-<script src="js/vocab-ui.js?v=0cdbb51be0"></script>
-<script src="js/grammar-ui.js?v=0cdbb51be0"></script>
-<script src="js/lexis-ui.js?v=0cdbb51be0"></script>
+<script src="js/vocab-ui.js?v=3a26224b28"></script>
+<script src="js/grammar-ui.js?v=3a26224b28"></script>
+<script src="js/lexis-ui.js?v=3a26224b28"></script>
 </body>
 </html>

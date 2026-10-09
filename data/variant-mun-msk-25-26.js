@@ -248,6 +248,7 @@
             points: ["a title", "a rich relative", "a beautiful house"],
             words: { min: 200, max: 250, accMin: 180, accMax: 275 },
             needsTitle: true,
+            titleInCount: true,
             criteria: [
               { id: "task", t: "Решение коммуникативной задачи", max: 4 },
               { id: "org", t: "Организация текста", max: 4 },
