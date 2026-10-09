@@ -4,6 +4,26 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#121212">
+<meta name="app-version" content="db56fa5b11">
+<script>
+// Автообновление: браузер может до 10 минут показывать старую страницу из кэша GitHub Pages.
+// Сверяем свою версию с version.json (без кэша) и, если вышла новая, открываем её по новому адресу.
+(function () {
+  var mine = document.querySelector('meta[name="app-version"]').content;
+  fetch("version.json?nc=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (j) {
+    if (!j.v || j.v === mine) return;
+    // Два предохранителя от бесконечной перезагрузки: уже открыт адрес этой версии
+    // или уже пробовали в этой вкладке (sessionStorage бывает заблокирован — тогда хватит первого).
+    var q = new URLSearchParams(location.search);
+    if (q.get("r") === j.v) return;
+    var tried = null; try { tried = sessionStorage.getItem("olymp-updated-to"); } catch (e) {}
+    if (tried === j.v) return;
+    try { sessionStorage.setItem("olymp-updated-to", j.v); } catch (e) {}
+    q.set("r", j.v);
+    location.replace(location.pathname + "?" + q.toString() + location.hash);
+  }).catch(function () {});
+})();
+</script>
 <title>Lexicon Legend</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

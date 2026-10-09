@@ -25,11 +25,24 @@ def fingerprint():
     return h.hexdigest()[:10]
 
 
+META = re.compile(r'<meta name="app-version" content="[0-9a-f]*">')
+
+
+def page_version():
+    """Версия всей страницы: сама index.html (без своей метки) + все скрипты.
+    По ней открытая страница понимает, что на сервере уже новая, и перезагружается."""
+    html = META.sub('<meta name="app-version" content="">', INDEX.read_text(encoding="utf-8"))
+    return hashlib.sha1((html + fingerprint()).encode()).hexdigest()[:10]
+
+
 def main():
     v = fingerprint()
     html = INDEX.read_text(encoding="utf-8")
     INDEX.write_text(SRC.sub(lambda m: '<script src="%s?v=%s"' % (m.group(1), v), html), encoding="utf-8")
-    print("version", v)
+    pv = page_version()
+    INDEX.write_text(META.sub('<meta name="app-version" content="%s">' % pv, INDEX.read_text(encoding="utf-8")), encoding="utf-8")
+    (ROOT / "version.json").write_text('{"v":"%s"}\n' % pv, encoding="utf-8")
+    print("version", v, "page", pv)
 
 
 if __name__ == "__main__":
