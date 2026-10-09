@@ -40,16 +40,17 @@ class HowTo(unittest.TestCase):
     def test_explanations_do_not_leak_answers(self):
         # Объяснение учит решать, а не подсказывает ответ: ни одного слова из ответов на ввод.
         r = run_js("""
-          var answers = [];
-          V.parts.forEach(function(p){ p.tasks.forEach(function(t){ (t.items || []).forEach(function(it){
-            var acc = t.type === "pair" ? [].concat.apply([], it.accept) : (t.type === "text" ? it.accept : []);
-            acc.forEach(function(a){ answers.push(String(a).toLowerCase()); });
-          }); }); });
+          // Сверяем объяснение задания с ответами ЭТОГО же задания: слово «listen» в советах
+          // к аудированию — не подсказка к анаграмме LISTEN из другого задания.
           var leaks = [];
-          Object.keys(H.tasks).forEach(function(id){
-            var txt = " " + JSON.stringify(H.tasks[id]).toLowerCase().replace(/[^a-z' ]+/g, " ") + " ";
-            answers.forEach(function(a){ if (a.length >= 4 && txt.indexOf(" " + a + " ") >= 0) leaks.push(id + ": " + a); });
-          });
+          V.parts.forEach(function(p){ p.tasks.forEach(function(t){
+            var h = H.tasks[t.id]; if (!h) return;
+            var txt = " " + JSON.stringify(h).toLowerCase().replace(/[^a-z' ]+/g, " ") + " ";
+            (t.items || []).forEach(function(it){
+              var acc = t.type === "pair" ? [].concat.apply([], it.accept) : (t.type === "text" ? it.accept : []);
+              acc.forEach(function(a){ a = String(a).toLowerCase(); if (a.length >= 4 && txt.indexOf(" " + a + " ") >= 0) leaks.push(t.id + ": " + a); });
+            });
+          }); });
           return leaks;
         """)
         self.assertEqual(r, [])
