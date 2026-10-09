@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#121212">
-<meta name="app-version" content="bc0f532a75">
+<meta name="app-version" content="4203c62bf3">
 <script>
 // Автообновление: браузер может до 10 минут показывать старую страницу из кэша GitHub Pages.
 // Сверяем свою версию с version.json (без кэша) и, если вышла новая, открываем её по новому адресу.
@@ -249,24 +249,25 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
 </div>
 <audio id="au" preload="none"></audio>
 
-<script src="data/videos.js?v=3a26224b28"></script>
-<script src="data/howto.js?v=3a26224b28"></script>
-<script src="data/howto-mun.js?v=3a26224b28"></script>
-<script src="data/variant-mun-msk-25-26.js?v=3a26224b28"></script>
-<script src="data/variant.js?v=3a26224b28"></script>
-<script src="js/check.js?v=3a26224b28"></script>
-<script src="js/vocab.js?v=3a26224b28"></script>
-<script src="data/grammar/grammar-a1.js?v=3a26224b28"></script>
-<script src="data/grammar/grammar-a2.js?v=3a26224b28"></script>
-<script src="data/grammar/grammar-b1.js?v=3a26224b28"></script>
-<script src="data/grammar/grammar-b2.js?v=3a26224b28"></script>
-<script src="js/grammar.js?v=3a26224b28"></script>
-<script src="data/lexis/lexis-wf.js?v=3a26224b28"></script>
-<script src="data/lexis/lexis-pv.js?v=3a26224b28"></script>
-<script src="data/lexis/lexis-wp.js?v=3a26224b28"></script>
-<script src="data/explain.js?v=3a26224b28"></script>
-<script src="data/explain-mun.js?v=3a26224b28"></script>
-<script src="data/dict.js?v=3a26224b28"></script>
+<script src="data/videos.js?v=6ed9a6f1c4"></script>
+<script src="data/howto.js?v=6ed9a6f1c4"></script>
+<script src="data/howto-mun.js?v=6ed9a6f1c4"></script>
+<script src="data/variant-mun-msk-25-26.js?v=6ed9a6f1c4"></script>
+<script src="data/variant.js?v=6ed9a6f1c4"></script>
+<script src="js/check.js?v=6ed9a6f1c4"></script>
+<script src="js/vocab.js?v=6ed9a6f1c4"></script>
+<script src="js/streak.js?v=6ed9a6f1c4"></script>
+<script src="data/grammar/grammar-a1.js?v=6ed9a6f1c4"></script>
+<script src="data/grammar/grammar-a2.js?v=6ed9a6f1c4"></script>
+<script src="data/grammar/grammar-b1.js?v=6ed9a6f1c4"></script>
+<script src="data/grammar/grammar-b2.js?v=6ed9a6f1c4"></script>
+<script src="js/grammar.js?v=6ed9a6f1c4"></script>
+<script src="data/lexis/lexis-wf.js?v=6ed9a6f1c4"></script>
+<script src="data/lexis/lexis-pv.js?v=6ed9a6f1c4"></script>
+<script src="data/lexis/lexis-wp.js?v=6ed9a6f1c4"></script>
+<script src="data/explain.js?v=6ed9a6f1c4"></script>
+<script src="data/explain-mun.js?v=6ed9a6f1c4"></script>
+<script src="data/dict.js?v=6ed9a6f1c4"></script>
 <script>
 (function () {
   // Вариантов несколько (муниципальный этап, финал); выбранный хранится в браузере.
@@ -276,7 +277,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   var V = LIST.filter(function (x) { return x.id === picked; })[0] || LIST[0], C = window.Check;
   // Разделы-расширения (словарик, грамматика, лексика) живут в своих файлах
   // и регистрируют здесь свой маршрут #/<имя>; вкладка внизу появляется сама.
-  var ROUTES = {};
+  var ROUTES = {}, HOME_TOP = [];
   var KEY = "olymp-playlist-" + V.id;
   var S = { ans: {}, checked: {}, manual: {}, writing: {}, points: {}, card: "mardi", last: null, full: {} };
   try { var raw = localStorage.getItem(KEY); if (raw) S = Object.assign(S, JSON.parse(raw)); } catch (e) {}
@@ -309,7 +310,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     var total = sum(TASKS), max = sumMax(TASKS), last = S.last && byId(S.last);
     var firstOpen = FULL.filter(function (t) { return earned(t) === null; })[0] || FULL[0];
     var h = '<header class="home-top"><span class="eyebrow">Your English, legendary</span><h1>Lexicon<br>Legend</h1>' +
-      '<span class="pts">⭐ <b>' + total + '</b> / ' + max + ' points</span></header>' +
+      '<span class="pts">⭐ <b>' + total + '</b> / ' + max + ' points</span>' + HOME_TOP.map(function (f) { return f(); }).join("") + '</header>' +
       variantSwitch() +
       '<a class="hero" href="#/full/' + firstOpen.id + '"><div class="cover">' + (V.id.indexOf("final") === 0 ? "FINAL" : "MUN") + '</div><div><h2>Full exam</h2><p>Like at the olympiad · ' + examParts().length + ' parts · ' + examTime() + '</p></div><span class="playbtn" aria-hidden="true">▶</span></a>';
     if (last) h += '<a class="continue" href="#/t/' + last.id + '"><b>▶ Continue:</b> ' + esc(SEC[last.section].title) + ' · ' + esc(last.title.split(" · ")[0]) + '</a>';
@@ -671,12 +672,13 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   au.addEventListener("loadedmetadata", function () { $("plSeek").max = Math.floor(au.duration); $("plDur").textContent = fmt(au.duration); });
   au.addEventListener("timeupdate", function () { $("plCur").textContent = fmt(au.currentTime); $("plSeek").value = Math.floor(au.currentTime); });
 
-  window.App = { esc: esc, fmt: fmt, render: render, keepScroll: keepScroll, byId: byId, routes: ROUTES, variant: V, sections: SEC };
+  window.App = { esc: esc, fmt: fmt, render: render, keepScroll: keepScroll, byId: byId, routes: ROUTES, homeTop: HOME_TOP, variant: V, sections: SEC };
   render();
 })();
 </script>
-<script src="js/vocab-ui.js?v=3a26224b28"></script>
-<script src="js/grammar-ui.js?v=3a26224b28"></script>
-<script src="js/lexis-ui.js?v=3a26224b28"></script>
+<script src="js/vocab-ui.js?v=6ed9a6f1c4"></script>
+<script src="js/grammar-ui.js?v=6ed9a6f1c4"></script>
+<script src="js/lexis-ui.js?v=6ed9a6f1c4"></script>
+<script src="js/streak-ui.js?v=6ed9a6f1c4"></script>
 </body>
 </html>
