@@ -438,7 +438,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     return '<div class="videos"><b>🎬 Video for your monologue</b>' +
       '<p class="note" style="margin-top:4px">This is <b>not the official olympiad video</b> — it is not in the open olympiad archive. Watch one of these to see the festival, then speak about it. At the olympiad you will talk along with a different short clip.</p>' +
       '<p class="note" style="margin-top:4px">The fact file below is in Russian on purpose: you read the facts in Russian and tell them in English.</p>' +
-      (main ? '<div class="vframe"><iframe src="https://www.youtube-nocookie.com/embed/' + esc(main.embed) + '?rel=0" title="' + esc(main.label) + '" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div><p class="note" style="margin-top:6px">▶ ' + esc(main.label) + '. If the video does not load, try the links below.</p>' : '') +
+      (main ? '<div class="vframe"><iframe src="https://www.youtube-nocookie.com/embed/' + esc(main.embed) + '?rel=0&playsinline=1" title="' + esc(main.label) + '" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div><p class="note" style="margin-top:6px">▶ ' + esc(main.label) + '. If the video does not load, try the links below.</p>' : '') +
       (v.length ? '<ul>' + v.map(function (x) { return '<li><a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.label) + ' ↗</a></li>'; }).join("") + '</ul>' : '') + '</div>';
   }
 
