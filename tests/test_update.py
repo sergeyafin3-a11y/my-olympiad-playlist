@@ -28,6 +28,8 @@ class AutoUpdate(unittest.TestCase):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
         self.assertIn('fetch("version.json', html)
         self.assertIn("no-store", html)
+        # Ревью: при заблокированном sessionStorage страница перезагружалась бы без конца.
+        self.assertIn('q.get("r") === j.v', html)
 
 
 if __name__ == "__main__":
