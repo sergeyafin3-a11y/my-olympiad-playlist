@@ -40,7 +40,7 @@
   function ch(n, q, a, opts) { var i = { n: n, q: q, a: a }; if (opts) i.opts = opts; return i; }
   function abc(list) { return list.map(function (t, j) { return { k: "ABCD"[j], t: t }; }); }
 
-  window.VARIANT = {
+  var V = {
     id: "final-2025-26",
     title: "Final 2025/26",
     subtitle: "Всероссийская олимпиада · заключительный этап · 9–11",
@@ -360,4 +360,7 @@
       ]
     }
   };
+  window.VARIANT = V;
+  window.VARIANTS = window.VARIANTS || [];
+  window.VARIANTS.push(V);
 })();

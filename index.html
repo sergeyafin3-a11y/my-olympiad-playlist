@@ -230,24 +230,31 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
 </div>
 <audio id="au" preload="none"></audio>
 
-<script src="data/videos.js?v=1f198837e5"></script>
-<script src="data/howto.js?v=1f198837e5"></script>
-<script src="data/variant.js?v=1f198837e5"></script>
-<script src="js/check.js?v=1f198837e5"></script>
-<script src="js/vocab.js?v=1f198837e5"></script>
-<script src="data/grammar/grammar-a1.js?v=1f198837e5"></script>
-<script src="data/grammar/grammar-a2.js?v=1f198837e5"></script>
-<script src="data/grammar/grammar-b1.js?v=1f198837e5"></script>
-<script src="data/grammar/grammar-b2.js?v=1f198837e5"></script>
-<script src="js/grammar.js?v=1f198837e5"></script>
-<script src="data/lexis/lexis-wf.js?v=1f198837e5"></script>
-<script src="data/lexis/lexis-pv.js?v=1f198837e5"></script>
-<script src="data/lexis/lexis-wp.js?v=1f198837e5"></script>
-<script src="data/explain.js?v=1f198837e5"></script>
-<script src="data/dict.js?v=1f198837e5"></script>
+<script src="data/videos.js?v=0cdbb51be0"></script>
+<script src="data/howto.js?v=0cdbb51be0"></script>
+<script src="data/howto-mun.js?v=0cdbb51be0"></script>
+<script src="data/variant-mun-msk-25-26.js?v=0cdbb51be0"></script>
+<script src="data/variant.js?v=0cdbb51be0"></script>
+<script src="js/check.js?v=0cdbb51be0"></script>
+<script src="js/vocab.js?v=0cdbb51be0"></script>
+<script src="data/grammar/grammar-a1.js?v=0cdbb51be0"></script>
+<script src="data/grammar/grammar-a2.js?v=0cdbb51be0"></script>
+<script src="data/grammar/grammar-b1.js?v=0cdbb51be0"></script>
+<script src="data/grammar/grammar-b2.js?v=0cdbb51be0"></script>
+<script src="js/grammar.js?v=0cdbb51be0"></script>
+<script src="data/lexis/lexis-wf.js?v=0cdbb51be0"></script>
+<script src="data/lexis/lexis-pv.js?v=0cdbb51be0"></script>
+<script src="data/lexis/lexis-wp.js?v=0cdbb51be0"></script>
+<script src="data/explain.js?v=0cdbb51be0"></script>
+<script src="data/explain-mun.js?v=0cdbb51be0"></script>
+<script src="data/dict.js?v=0cdbb51be0"></script>
 <script>
 (function () {
-  var V = window.VARIANT, C = window.Check;
+  // Вариантов несколько (муниципальный этап, финал); выбранный хранится в браузере.
+  // Переключение перезагружает страницу: так ответы, таймеры и аудио каждого варианта не смешиваются.
+  var VKEY = "olymp-variant", LIST = window.VARIANTS || [window.VARIANT], picked = null;
+  try { picked = localStorage.getItem(VKEY); } catch (e) {}
+  var V = LIST.filter(function (x) { return x.id === picked; })[0] || LIST[0], C = window.Check;
   // Разделы-расширения (словарик, грамматика, лексика) живут в своих файлах
   // и регистрируют здесь свой маршрут #/<имя>; вкладка внизу появляется сама.
   var ROUTES = {};
@@ -284,8 +291,8 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     var firstOpen = FULL.filter(function (t) { return earned(t) === null; })[0] || FULL[0];
     var h = '<header class="home-top"><span class="eyebrow">Your English, legendary</span><h1>Lexicon<br>Legend</h1>' +
       '<span class="pts">⭐ <b>' + total + '</b> / ' + max + ' points</span></header>' +
-      stageNote() +
-      '<a class="hero" href="#/full/' + firstOpen.id + '"><div class="cover">FINAL</div><div><h2>Full exam</h2><p>Like at the olympiad · 3 parts · 4 h 15 min</p></div><span class="playbtn" aria-hidden="true">▶</span></a>';
+      variantSwitch() + stageNote() +
+      '<a class="hero" href="#/full/' + firstOpen.id + '"><div class="cover">' + (V.id.indexOf("final") === 0 ? "FINAL" : "MUN") + '</div><div><h2>Full exam</h2><p>Like at the olympiad · ' + examParts().length + ' parts · ' + examTime() + '</p></div><span class="playbtn" aria-hidden="true">▶</span></a>';
     if (last) h += '<a class="continue" href="#/t/' + last.id + '"><b>▶ Continue:</b> ' + esc(SEC[last.section].title) + ' · ' + esc(last.title.split(" · ")[0]) + '</a>';
     h += '<h2 class="list-h">Sections</h2>';
     V.sections.forEach(function (s) {
@@ -392,7 +399,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     if (t.text) h += textBlock(t, true);
     if (t.audio) {
       h += '<div class="listen"><button class="bigplay" data-play="' + t.audio.from + '" data-label="' + esc(t.audio.label) + '">▶ ' + esc(t.audio.label) + '</button>' +
-        (t.audio.skip ? '<button class="ghost" data-play="' + t.audio.skip.at + '" data-label="Task 3 · interview">⏭ ' + esc(t.audio.skip.label) + '</button>' : '') + '</div>';
+        (t.audio.skip ? '<button class="ghost" data-play="' + t.audio.skip.at + '" data-label="' + esc(t.audio.label) + '">⏭ ' + esc(t.audio.skip.label) + '</button>' : '') + '</div>';
       if (t.afterText) h += '<p class="note">' + esc(t.afterText) + '</p>';
     }
     if (t.textRef) h += textBlock(t, t.id === "lr-4a");
@@ -416,8 +423,16 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
       (H.example ? '<div class="hx">✏️ <b>Example:</b> ' + esc(H.example) + '</div>' : '') +
       (H.tip ? '<p class="ht">💡 ' + esc(H.tip) + '</p>' : '') + '</div></details>';
   }
+  function examParts() { return V.parts.filter(function (p) { return p.minutes; }); }
+  function examTime() { var m = examParts().reduce(function (a, p) { return a + p.minutes; }, 0); return Math.floor(m / 60) + " h" + (m % 60 ? " " + m % 60 + " min" : ""); }
+  function variantSwitch() {
+    if (LIST.length < 2) return "";
+    return '<div class="cards2" role="tablist" aria-label="Variant">' + LIST.map(function (x) {
+      return '<button class="opt' + (x.id === V.id ? ' sel' : '') + '" data-variant="' + esc(x.id) + '" role="tab" aria-selected="' + (x.id === V.id) + '">' + esc(x.title) + '</button>';
+    }).join("") + '</div>';
+  }
   function stageNote() {
-    var st = window.HOWTO && window.HOWTO.stage;
+    var H = window.HOWTO || {}, st = (H.stages || {})[V.id] || (V.id === "final-2025-26" ? H.stage : null);
     return st ? '<div class="stage"><b>⚠️ ' + esc(st.title) + '.</b> ' + esc(st.note) + '</div>' : "";
   }
 
@@ -428,9 +443,9 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
 
   function writing(t) {
     var W = S.writing, r = result(t), checks = W.points || [];
-    var h = '<div class="intro">' + esc(t.intro) + '<p class="premise">' + esc(t.premise) + '</p>' + esc(t.outro) + '<p style="margin:10px 0 0">The story should contain</p><ul class="points">' +
+    var h = '<div class="intro">' + esc(t.intro) + '<p class="premise">' + esc(t.premise) + '</p>' + esc(t.outro) + '<p style="margin:10px 0 0">' + esc(t.pointsLabel || "The story should contain") + '</p><ul class="points">' +
       t.points.map(function (p, i) { return '<li><label><input type="checkbox" data-wp="' + i + '"' + (checks[i] ? ' checked' : '') + '><span>' + esc(p) + '</span></label></li>'; }).join("") +
-      '</ul><p style="margin:10px 0 0"><b>Write ' + t.words.min + '-' + t.words.max + ' words. Your story must have a title.</b></p></div>' +
+      '</ul><p style="margin:10px 0 0"><b>Write ' + t.words.min + '-' + t.words.max + ' words.' + (t.needsTitle && !t.pointsLabel ? ' Your story must have a title.' : '') + '</b></p></div>' +
       '<div class="timers">' + timerBtn("writing", PART_OF[t.id].minutes * 60, PART_OF[t.id].minutes + " min") + '</div>' +
       '<input class="inp" id="wTitle" placeholder="Title" value="' + esc(W.title || "") + '" style="max-width:none;font-weight:600">' +
       '<textarea class="essay" id="wText" placeholder="Once upon a time…">' + esc(W.text || "") + '</textarea><div class="wc" id="wc"></div>' +
@@ -539,6 +554,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     }
     if (b.dataset.card) { S.card = b.dataset.card; save(); keepScroll(render); return; }
     if (b.dataset.tid) { toggleTimer(b); return; }
+    if (b.dataset.variant) { try { localStorage.setItem(VKEY, b.dataset.variant); } catch (e) {} location.hash = "#/"; location.reload(); return; }
     if (b.dataset.restart) { S.full[b.dataset.restart] = Date.now(); save(); tickTimers(); return; }
     if (b.id === "resetAll") {
       if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Sure? Tap again to erase everything"; return; }
@@ -631,8 +647,8 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   render();
 })();
 </script>
-<script src="js/vocab-ui.js?v=1f198837e5"></script>
-<script src="js/grammar-ui.js?v=1f198837e5"></script>
-<script src="js/lexis-ui.js?v=1f198837e5"></script>
+<script src="js/vocab-ui.js?v=0cdbb51be0"></script>
+<script src="js/grammar-ui.js?v=0cdbb51be0"></script>
+<script src="js/lexis-ui.js?v=0cdbb51be0"></script>
 </body>
 </html>
