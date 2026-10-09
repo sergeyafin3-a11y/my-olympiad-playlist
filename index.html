@@ -291,7 +291,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     var firstOpen = FULL.filter(function (t) { return earned(t) === null; })[0] || FULL[0];
     var h = '<header class="home-top"><span class="eyebrow">Your English, legendary</span><h1>Lexicon<br>Legend</h1>' +
       '<span class="pts">⭐ <b>' + total + '</b> / ' + max + ' points</span></header>' +
-      variantSwitch() + stageNote() +
+      variantSwitch() +
       '<a class="hero" href="#/full/' + firstOpen.id + '"><div class="cover">' + (V.id.indexOf("final") === 0 ? "FINAL" : "MUN") + '</div><div><h2>Full exam</h2><p>Like at the olympiad · ' + examParts().length + ' parts · ' + examTime() + '</p></div><span class="playbtn" aria-hidden="true">▶</span></a>';
     if (last) h += '<a class="continue" href="#/t/' + last.id + '"><b>▶ Continue:</b> ' + esc(SEC[last.section].title) + ' · ' + esc(last.title.split(" · ")[0]) + '</a>';
     h += '<h2 class="list-h">Sections</h2>';
@@ -430,10 +430,6 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     return '<div class="cards2" role="tablist" aria-label="Variant">' + LIST.map(function (x) {
       return '<button class="opt' + (x.id === V.id ? ' sel' : '') + '" data-variant="' + esc(x.id) + '" role="tab" aria-selected="' + (x.id === V.id) + '">' + esc(x.title) + '</button>';
     }).join("") + '</div>';
-  }
-  function stageNote() {
-    var H = window.HOWTO || {}, st = (H.stages || {})[V.id] || (V.id === "final-2025-26" ? H.stage : null);
-    return st ? '<div class="stage"><b>⚠️ ' + esc(st.title) + '.</b> ' + esc(st.note) + '</div>' : "";
   }
 
   function stepper(t, c) {
