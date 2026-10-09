@@ -135,6 +135,8 @@ details.text[open] summary::after{content:"hide"}
 .videos b{font-size:15px}
 .videos ul{margin:8px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
 .videos a{color:var(--c);font-weight:600}
+.vframe{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;margin-top:10px;border-radius:10px;overflow:hidden;background:#000}
+.vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .how{margin-top:14px;border:1px solid color-mix(in srgb,var(--c) 55%,transparent);background:color-mix(in srgb,var(--c) 10%,#141414);border-radius:12px}
 .how summary{cursor:pointer;padding:12px 14px;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:8px}
 .how summary::after{content:"hide";color:var(--mute);font-size:13px;font-weight:500}
@@ -225,19 +227,19 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
 </div>
 <audio id="au" preload="none"></audio>
 
-<script src="data/videos.js?v=7c98145598"></script>
-<script src="data/howto.js?v=7c98145598"></script>
-<script src="data/variant.js?v=7c98145598"></script>
-<script src="js/check.js?v=7c98145598"></script>
-<script src="js/vocab.js?v=7c98145598"></script>
-<script src="data/grammar/grammar-a1.js?v=7c98145598"></script>
-<script src="data/grammar/grammar-a2.js?v=7c98145598"></script>
-<script src="data/grammar/grammar-b1.js?v=7c98145598"></script>
-<script src="data/grammar/grammar-b2.js?v=7c98145598"></script>
-<script src="js/grammar.js?v=7c98145598"></script>
-<script src="data/lexis/lexis-wf.js?v=7c98145598"></script>
-<script src="data/lexis/lexis-pv.js?v=7c98145598"></script>
-<script src="data/lexis/lexis-wp.js?v=7c98145598"></script>
+<script src="data/videos.js?v=592561c663"></script>
+<script src="data/howto.js?v=592561c663"></script>
+<script src="data/variant.js?v=592561c663"></script>
+<script src="js/check.js?v=592561c663"></script>
+<script src="js/vocab.js?v=592561c663"></script>
+<script src="data/grammar/grammar-a1.js?v=592561c663"></script>
+<script src="data/grammar/grammar-a2.js?v=592561c663"></script>
+<script src="data/grammar/grammar-b1.js?v=592561c663"></script>
+<script src="data/grammar/grammar-b2.js?v=592561c663"></script>
+<script src="js/grammar.js?v=592561c663"></script>
+<script src="data/lexis/lexis-wf.js?v=592561c663"></script>
+<script src="data/lexis/lexis-pv.js?v=592561c663"></script>
+<script src="data/lexis/lexis-wp.js?v=592561c663"></script>
 <script>
 (function () {
   var V = window.VARIANT, C = window.Check;
@@ -432,9 +434,11 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   // Видео к монологу: официальных роликов нет, поэтому честно говорим, что это замена.
   function videoBlock(card) {
     var v = (window.VIDEOS || {})[card.id] || [];
+    var main = v.filter(function (x) { return x.embed; })[0];
     return '<div class="videos"><b>🎬 Video for your monologue</b>' +
       '<p class="note" style="margin-top:4px">This is <b>not the official olympiad video</b> — it is not in the open olympiad archive. Watch one of these to see the festival, then speak about it. At the olympiad you will talk along with a different short clip.</p>' +
       '<p class="note" style="margin-top:4px">The fact file below is in Russian on purpose: you read the facts in Russian and tell them in English.</p>' +
+      (main ? '<div class="vframe"><iframe src="https://www.youtube-nocookie.com/embed/' + esc(main.embed) + '?rel=0&playsinline=1" title="' + esc(main.label) + '" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div><p class="note" style="margin-top:6px">▶ ' + esc(main.label) + '. If the video does not load, try the links below.</p>' : '') +
       (v.length ? '<ul>' + v.map(function (x) { return '<li><a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.label) + ' ↗</a></li>'; }).join("") + '</ul>' : '') + '</div>';
   }
 
@@ -613,8 +617,8 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   render();
 })();
 </script>
-<script src="js/vocab-ui.js?v=7c98145598"></script>
-<script src="js/grammar-ui.js?v=7c98145598"></script>
-<script src="js/lexis-ui.js?v=7c98145598"></script>
+<script src="js/vocab-ui.js?v=592561c663"></script>
+<script src="js/grammar-ui.js?v=592561c663"></script>
+<script src="js/lexis-ui.js?v=592561c663"></script>
 </body>
 </html>
