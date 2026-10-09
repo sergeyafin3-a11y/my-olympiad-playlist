@@ -146,8 +146,6 @@ details.text[open] summary::after{content:"hide"}
 .how ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
 .how .hx{margin-top:10px;background:#101010;border-radius:8px;padding:8px 10px;font-size:14px}
 .how .ht{margin-top:8px;font-size:14px;color:var(--mute)}
-.stage{margin-top:14px;border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.5;background:#2A2410;border:1px solid #6B5A1E;color:#F3E6B5}
-.stage b{color:#FFE08A}
 .ex{margin-top:10px;border-radius:8px;background:#141414;border:1px dashed var(--line)}
 .ex summary{cursor:pointer;padding:8px 10px;font-size:14px;font-weight:600;color:var(--c);list-style:none}
 .ex pre{margin:0;padding:0 12px 12px;white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.6;color:#E2E2E2}
@@ -291,7 +289,7 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     var firstOpen = FULL.filter(function (t) { return earned(t) === null; })[0] || FULL[0];
     var h = '<header class="home-top"><span class="eyebrow">Your English, legendary</span><h1>Lexicon<br>Legend</h1>' +
       '<span class="pts">⭐ <b>' + total + '</b> / ' + max + ' points</span></header>' +
-      variantSwitch() + stageNote() +
+      variantSwitch() +
       '<a class="hero" href="#/full/' + firstOpen.id + '"><div class="cover">' + (V.id.indexOf("final") === 0 ? "FINAL" : "MUN") + '</div><div><h2>Full exam</h2><p>Like at the olympiad · ' + examParts().length + ' parts · ' + examTime() + '</p></div><span class="playbtn" aria-hidden="true">▶</span></a>';
     if (last) h += '<a class="continue" href="#/t/' + last.id + '"><b>▶ Continue:</b> ' + esc(SEC[last.section].title) + ' · ' + esc(last.title.split(" · ")[0]) + '</a>';
     h += '<h2 class="list-h">Sections</h2>';
@@ -430,10 +428,6 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     return '<div class="cards2" role="tablist" aria-label="Variant">' + LIST.map(function (x) {
       return '<button class="opt' + (x.id === V.id ? ' sel' : '') + '" data-variant="' + esc(x.id) + '" role="tab" aria-selected="' + (x.id === V.id) + '">' + esc(x.title) + '</button>';
     }).join("") + '</div>';
-  }
-  function stageNote() {
-    var H = window.HOWTO || {}, st = (H.stages || {})[V.id] || (V.id === "final-2025-26" ? H.stage : null);
-    return st ? '<div class="stage"><b>⚠️ ' + esc(st.title) + '.</b> ' + esc(st.note) + '</div>' : "";
   }
 
   function stepper(t, c) {

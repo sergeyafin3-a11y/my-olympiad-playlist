@@ -66,7 +66,8 @@ class HowTo(unittest.TestCase):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
         self.assertIn('src="data/howto.js?v=', html)
         self.assertIn('class="how"', html)
-        self.assertIn('class="stage"', html)
+        # Плашку этапа на главной учитель попросила убрать (11.10): на экране её нет.
+        self.assertNotIn('class="stage"', html)
 
 
 if __name__ == "__main__":
