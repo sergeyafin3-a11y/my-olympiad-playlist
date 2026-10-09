@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#121212">
-<meta name="app-version" content="5dbfc51070">
+<meta name="app-version" content="bc0f532a75">
 <script>
 // Автообновление: браузер может до 10 минут показывать старую страницу из кэша GitHub Pages.
 // Сверяем свою версию с version.json (без кэша) и, если вышла новая, открываем её по новому адресу.
@@ -657,7 +657,8 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   $("plBack").addEventListener("click", function () { au.currentTime = Math.max(0, au.currentTime - 10); });
   $("plFwd").addEventListener("click", function () { au.currentTime = Math.min(au.duration || 1e9, au.currentTime + 10); });
   $("plSeek").addEventListener("input", function (e) { au.currentTime = Number(e.target.value); });
-  au.addEventListener("play", function () { document.body.classList.add("playing"); });
+  // Закрытый плеер не должен оживать с экрана блокировки iPhone: тогда аудио играло бы невидимо.
+  au.addEventListener("play", function () { if ($("player").hidden) { au.pause(); return; } document.body.classList.add("playing"); });
   // Плеер живёт только на экране задания с аудио: ушли в другой раздел — останавливаем и прячем.
   function closePlayer() { au.pause(); $("player").hidden = true; document.body.classList.remove("playing"); }
   function syncPlayer(parts) {
