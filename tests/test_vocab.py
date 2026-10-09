@@ -107,6 +107,47 @@ class Practice(unittest.TestCase):
         self.assertEqual(r, "shifty — подозрительный\nleeway")
 
 
+class Lookup(unittest.TestCase):
+    """Перевод подставляется сам: всё, что есть в заданиях, есть во встроенном словарике."""
+
+    def lookup(self, terms):
+        src = "\n".join(["var window = this;", (ROOT / "data" / "dict.js").read_text(encoding="utf-8"),
+                         (ROOT / "js" / "vocab.js").read_text(encoding="utf-8"),
+                         "JSON.stringify(%s.map(function(t){ return window.Vocab.lookup(t, window.DICT); }));" % json.dumps(terms)])
+        return json.loads(subprocess.run(["osascript", "-l", "JavaScript", "-e", src], capture_output=True, text=True, check=True).stdout)
+
+    def test_words_phrases_and_case(self):
+        r = self.lookup(["contempt", "Leeway", "pull the wool over her eyes", "IN THE LIMELIGHT", "zzzqx"])
+        self.assertTrue(r[0] and r[1] and r[2] and r[3])
+        self.assertEqual(r[4], "")
+
+    def test_simple_word_forms_fall_back_to_the_base(self):
+        r = self.lookup(["contempts", "gossiped", "relying on"])
+        self.assertTrue(r[0], "contempts → contempt")
+        self.assertTrue(r[1], "gossiped → gossip")
+
+    def test_every_word_in_the_tasks_is_in_the_dictionary(self):
+        import glob, re
+        src = (ROOT / "data" / "dict.js").read_text(encoding="utf-8")
+        words = json.loads(src[src.index("window.DICT = ") + len("window.DICT = "):src.rindex(";\n})();")])["words"]
+        missing = set()
+        for f in [ROOT / "data" / "variant.js"] + [pathlib.Path(p) for p in glob.glob(str(ROOT / "data" / "lexis" / "*.js")) + glob.glob(str(ROOT / "data" / "grammar" / "*.js"))]:
+            for lit in re.findall(r'"((?:[^"\\]|\\.)*)"', f.read_text(encoding="utf-8")):
+                if re.search(r"[а-яА-ЯёЁ]", lit) and not re.search(r"[A-Za-z]{3}", lit):
+                    continue
+                for w in re.findall(r"[A-Za-z][A-Za-z'’-]*[A-Za-z]|[A-Za-z]", lit):
+                    w = w.replace("’", "'").lower().strip("'-")
+                    if len(w) >= 2 and w not in words:
+                        missing.add(w)
+        self.assertEqual(sorted(missing), [])
+
+    def test_screen_fills_translation(self):
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        self.assertIn('src="data/dict.js?v=', html)
+        ui = (ROOT / "js" / "vocab-ui.js").read_text(encoding="utf-8")
+        self.assertIn("Vo.lookup(", ui)
+
+
 class Page(unittest.TestCase):
     def test_page_loads_vocab_script(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")

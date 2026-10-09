@@ -6,6 +6,13 @@
   var W = [];
   try { W = JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) {}
   if (!Array.isArray(W)) W = [];
+  // Слова, сохранённые раньше без перевода, получают его из встроенного словарика.
+  var DICT = window.DICT;
+  (function () {
+    var changed = false;
+    W = W.map(function (w) { if (w.tr) return w; var tr = Vo.lookup(w.term, DICT); if (!tr) return w; changed = true; return Object.assign({}, w, { tr: tr }); });
+    if (changed) try { localStorage.setItem(KEY, JSON.stringify(W)); } catch (e) {}
+  })();
   function save() { try { localStorage.setItem(KEY, JSON.stringify(W)); return true; } catch (e) { return false; } }
   var COLOR = "#FF7AB6";
 
@@ -128,11 +135,15 @@
   var sheet = document.createElement("div"); sheet.className = "sheet"; sheet.hidden = true; document.body.appendChild(sheet);
   var pending = null, editId = null;
 
+  var trTouched = false;
   function openSheet(entry, id) {
-    editId = id || null; pill.hidden = true;
+    editId = id || null; pill.hidden = true; trTouched = false;
+    var auto = !entry.tr && entry.term ? Vo.lookup(entry.term, DICT) : "";
+    if (auto) entry = Object.assign({}, entry, { tr: auto });
     sheet.innerHTML = '<h2>' + (id ? 'Edit word' : 'Add to My words') + '</h2>' +
       '<label for="wsTerm">Word or phrase</label><input class="inp" id="wsTerm" value="' + esc(entry.term) + '" autocomplete="off" autocapitalize="off" spellcheck="false">' +
       '<label for="wsTr">Translation</label><input class="inp" id="wsTr" value="' + esc(entry.tr || "") + '" placeholder="перевод" autocomplete="off">' +
+      '<div class="note" id="wsAuto"' + (auto ? '' : ' hidden') + '>✓ Translation added automatically — you can change it.</div>' +
       (entry.ctx ? '<div class="ctx">“' + esc(entry.ctx) + '”</div>' : '') +
       '<div class="btns"><button class="bigplay" data-wsave="1">Save</button><button class="ghost" data-wcancel="1">Cancel</button>' +
       '<a id="wsLook" href="https://dictionary.cambridge.org/dictionary/english-russian/' + encodeURIComponent(entry.term.toLowerCase()) + '" target="_blank" rel="noopener">Look it up ↗</a></div>';
@@ -247,6 +258,12 @@
   var selT;
 
   document.addEventListener("input", function (e) {
+    // Перевод подбирается заново, пока ученица сама не правила поле перевода.
+    if (e.target.id === "wsTr") trTouched = true;
+    if (e.target.id === "wsTerm" && !trTouched) {
+      var tr = Vo.lookup(e.target.value, DICT), f = document.getElementById("wsTr"), n = document.getElementById("wsAuto");
+      if (f) f.value = tr; if (n) n.hidden = !tr;
+    }
     if (e.target.id === "wSearch") { var l = document.getElementById("wList"); if (l) l.innerHTML = list(e.target.value); }
   });
   document.addEventListener("keydown", function (e) {
