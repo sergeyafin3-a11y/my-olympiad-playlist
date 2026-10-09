@@ -158,8 +158,8 @@
             id: "m-u1", section: "uoe", title: "Task 1 · The King's Speech: extra words", type: "text",
             intro: "For items 1–15, read the text below and look carefully at each line. Some of the lines are correct, and some have a word which should not be there. If a line is correct put a tick. Use letter \"V\" as a tick. If a line has a word which should not be there, write the word in a given space. There are two examples at the beginning (0 and 00).",
             examples: [
-              { label: "0", show: "“The King's Speech” is a richly enjoyable, instantly absorbing true-life drama about the introverted stammerer King George VI and his exuberant Australian speech therapist Lionel Logue.", answer: "V" },
-              { label: "00", show: "These characters are performed with a pure theatrical gusto by Colin Firth as the miserably afflicted monarch, Geoffrey Rush as the twinkly eyed speech coach and Helena Bonham Carter as the Queen.", answer: "a" }
+              { label: "0", show: "“The King's Speech” is a richly enjoyable, instantly absorbing true-life drama about the introverted stammerer King George VI and his exuberant Australian speech therapist Lionel Logue.", answer: "V", correct: true },
+              { label: "00", show: "These characters are performed with a pure theatrical gusto by Colin Firth as the miserably afflicted monarch, Geoffrey Rush as the twinkly eyed speech coach and Helena Bonham Carter as the Queen.", answer: "a", near: "with a pure", strike: "a" }
             ],
             items: [
               tx(1, "The social and political background, having acutely observed and carefully woven into the film's fabric, is the Depression at home, the rise of fascism abroad, and the arrival of the mass media as a major force in our lives.", ["having"]),
