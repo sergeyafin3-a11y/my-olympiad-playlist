@@ -169,6 +169,70 @@ class Lookup(unittest.TestCase):
         self.assertIn("Vo.lookup(", ui)
 
 
+class Games(unittest.TestCase):
+    """Игры со словами: пары, сборка слова из букв, диктант, скоростной раунд."""
+    SEED = "var seed = 5; function rnd(){ seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }"
+
+    def test_match_round_pairs_words_with_their_translations(self):
+        r = run_js(self.SEED + """
+          var l = %s; var round = V.matchRound(l, 5, rnd);
+          var byId = {}; l.forEach(function(w){ byId[w.id] = w; });
+          return {n: round.left.length, right: round.right.length,
+                  ok: round.right.every(function(x){ return byId[x.id].tr === x.text; }),
+                  same: round.left.map(function(x){ return x.id; }).join() === round.right.map(function(x){ return x.id; }).join()};
+        """ % words(8))
+        self.assertEqual(r["n"], 5)
+        self.assertEqual(r["right"], 5)
+        self.assertTrue(r["ok"])
+        self.assertFalse(r["same"], "translations must be shuffled")
+
+    def test_match_round_never_puts_a_pair_opposite_itself_in_final_order(self):
+        # Ревью PR 24: сдвиг сверялся с левым столбцом до его второго перемешивания.
+        r = run_js(self.SEED + """
+          var bad = 0;
+          for (var k = 0; k < 40; k++) {
+            var round = V.matchRound(%s, 5, rnd);
+            if (round.left.every(function(x, i){ return round.right[i].id === x.id; })) bad++;
+          }
+          return bad;
+        """ % words(2))
+        self.assertEqual(r, 0)
+
+    def test_match_round_takes_one_word_per_translation(self):
+        # Ревью PR 24: big и large оба «большой» — две одинаковые кнопки справа, верный выбор засчитан ошибкой.
+        r = run_js(self.SEED + """
+          var l = [{id:"a",term:"big",tr:"большой",level:0},{id:"b",term:"large",tr:" Большой ",level:0},
+                   {id:"c",term:"small",tr:"маленький",level:1},{id:"d",term:"tiny",tr:"крошечный",level:1}];
+          return V.matchRound(l, 5, rnd).right.map(function(x){ return x.text.trim().toLowerCase(); }).sort();
+        """)
+        self.assertEqual(len(r), len(set(r)))
+        self.assertEqual(len(r), 3)
+
+    def test_match_round_skips_words_without_translation(self):
+        r = run_js(self.SEED + 'var l = %s; l[0].tr = ""; l[1].tr = ""; return V.matchRound(l, 5, rnd).left.length;' % words(4))
+        self.assertEqual(r, 2)
+
+    def test_scramble_uses_the_same_letters_in_another_order(self):
+        r = run_js(self.SEED + 'return ["gossip", "leeway", "contempt"].map(function(w){ var s = V.scramble(w, rnd); return [s.join(""), s.slice().sort().join(""), w.split("").sort().join("")]; });')
+        for shuffled, a, b in r:
+            self.assertEqual(a, b)
+        self.assertTrue(any(x[0] not in ("gossip", "leeway", "contempt") for x in r))
+
+    def test_buildable_words_are_single_and_short(self):
+        r = run_js('return V.buildable([{term:"gossip",tr:"x"},{term:"pull the wool",tr:"y"},{term:"a",tr:"z"},{term:"extraordinarily",tr:"q"}]).map(function(w){return w.term;});')
+        self.assertEqual(r, ["gossip"])
+
+    def test_speed_round_mixes_right_and_wrong_pairs(self):
+        r = run_js(self.SEED + """
+          var l = %s, items = V.speedRound(l, 20, rnd), byId = {};
+          l.forEach(function(w){ byId[w.id] = w; });
+          return items.map(function(it){ return [it.right, byId[it.w.id].tr === it.shown]; });
+        """ % words(6))
+        self.assertEqual(len(r), 20)
+        self.assertTrue(all(right == really for right, really in r))
+        self.assertTrue(any(x[0] for x in r) and any(not x[0] for x in r))
+
+
 class Page(unittest.TestCase):
     def test_page_loads_vocab_script(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
@@ -177,6 +241,34 @@ class Page(unittest.TestCase):
         self.assertIn('src="js/vocab-ui.js?v=', html)
         ui = (ROOT / "js" / "vocab-ui.js").read_text(encoding="utf-8")
         self.assertIn('A.routes.words', ui)
+
+
+class GamesPage(unittest.TestCase):
+    def test_four_games_are_on_my_words_and_count_for_the_streak(self):
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        self.assertIn('src="js/games-ui.js?v=', html)
+        self.assertLess(html.index("js/vocab-ui.js"), html.index("js/games-ui.js"))
+        ui = (ROOT / "js" / "vocab-ui.js").read_text(encoding="utf-8")
+        for route in ["#/words/match", "#/words/build", "#/words/listen", "#/words/speed"]:
+            self.assertIn(route, ui)
+        games = (ROOT / "js" / "games-ui.js").read_text(encoding="utf-8")
+        # Игры засчитывают день стрика сами: их кнопки не из списка проверок streak-ui.
+        self.assertIn("A.markActivity", games)
+        self.assertIn("A.markActivity = markActivity", (ROOT / "js" / "streak-ui.js").read_text(encoding="utf-8"))
+        self.assertIn('"Type at least one letter"', games)
+        self.assertIn('class="howto"', games)
+
+    def test_game_buttons_do_not_share_names_with_other_screens(self):
+        # Все модули слушают клики по всему документу: кнопка «Start» игры с именем data-gstart
+        # запускала смешанный тест грамматики.
+        import re
+        def names(txt):
+            return set(re.findall(r'data-([a-z]+)=', txt)) | set(m.lower() for m in re.findall(r'dataset\.([a-zA-Z]+)', txt))
+        games = names((ROOT / "js" / "games-ui.js").read_text(encoding="utf-8"))
+        others = set()
+        for f in ["index.html", "js/vocab-ui.js", "js/grammar-ui.js", "js/lexis-ui.js", "js/streak-ui.js"]:
+            others |= names((ROOT / f).read_text(encoding="utf-8"))
+        self.assertEqual(sorted(games & others), [])
 
 
 class Edit(unittest.TestCase):
