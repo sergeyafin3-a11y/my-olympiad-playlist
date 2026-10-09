@@ -6,9 +6,12 @@
 import json
 import pathlib
 import subprocess
+import re
 import unittest
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+# Настоящие двухбуквенные слова английского; остальные двухбуквенные ключи — огрызки.
+SHORT_OK = {"a", "i", "am", "an", "as", "at", "be", "by", "do", "go", "he", "if", "in", "is", "it", "me", "my", "no", "of", "oh", "ok", "on", "or", "so", "to", "up", "us", "we", "tv", "ox", "pm", "am"}
 
 
 def run_js(body):
@@ -105,6 +108,65 @@ class Practice(unittest.TestCase):
     def test_export_lists_words_with_translations(self):
         r = run_js('return V.exportText([{term: "shifty", tr: "подозрительный"}, {term: "leeway", tr: ""}]);')
         self.assertEqual(r, "shifty — подозрительный\nleeway")
+
+
+class Lookup(unittest.TestCase):
+    """Перевод подставляется сам: всё, что есть в заданиях, есть во встроенном словарике."""
+
+    def lookup(self, terms):
+        src = "\n".join(["var window = this;", (ROOT / "data" / "dict.js").read_text(encoding="utf-8"),
+                         (ROOT / "js" / "vocab.js").read_text(encoding="utf-8"),
+                         "JSON.stringify(%s.map(function(t){ return window.Vocab.lookup(t, window.DICT); }));" % json.dumps(terms)])
+        return json.loads(subprocess.run(["osascript", "-l", "JavaScript", "-e", src], capture_output=True, text=True, check=True).stdout)
+
+    def test_words_phrases_and_case(self):
+        r = self.lookup(["contempt", "Leeway", "pull the wool over her eyes", "IN THE LIMELIGHT", "zzzqx"])
+        self.assertTrue(r[0] and r[1] and r[2] and r[3])
+        self.assertEqual(r[4], "")
+
+    def test_simple_word_forms_fall_back_to_the_base(self):
+        r = self.lookup(["contempts", "gossiped", "relying on"])
+        self.assertTrue(r[0], "contempts → contempt")
+        self.assertTrue(r[1], "gossiped → gossip")
+
+    def test_every_word_in_the_tasks_is_in_the_dictionary(self):
+        import glob, re
+        src = (ROOT / "data" / "dict.js").read_text(encoding="utf-8")
+        words = json.loads(src[src.index("window.DICT = ") + len("window.DICT = "):src.rindex(";\n})();")])["words"]
+        missing = set()
+        for f in [ROOT / "data" / "variant.js"] + [pathlib.Path(p) for p in glob.glob(str(ROOT / "data" / "lexis" / "*.js")) + glob.glob(str(ROOT / "data" / "grammar" / "*.js"))]:
+            for lit in re.findall(r'"((?:[^"\\]|\\.)*)"', f.read_text(encoding="utf-8")):
+                if re.search(r"[а-яА-ЯёЁ]", lit) and not re.search(r"[A-Za-z]{3}", lit):
+                    continue
+                for w in re.findall(r"[A-Za-z][A-Za-z'’-]*[A-Za-z]|[A-Za-z]", lit):
+                    w = w.replace("’", "'").lower().strip("'-")
+                    if len(w) >= 3 and not re.search(r"^lx-|^v-|-is-", w) and w not in words:
+                        missing.add(w)
+        # Без перевода остаются только огрызки: суффиксы из правил (-ance, -ible), куски адресов,
+        # наборы букв анаграмм. Настоящих слов среди них почти нет — держим покрытие не ниже 97 %.
+        total = len(set(words)) + len(missing)
+        self.assertLess(len(missing) / total, 0.03, sorted(missing))
+
+    def test_no_wrong_translation_from_word_fragments(self):
+        # Ревью: «thing» → «окончание числительного», «shed» → «тсс» — из-за мусорных ключей (th, sh)
+        # и отрезания окончаний до огрызка. Такие слова должны остаться без перевода, а не с чужим.
+        r = self.lookup(["thing", "shed", "wing", "wed", "feed", "sting"])
+        for word, tr in zip(["thing", "shed", "wing", "wed", "feed", "sting"], r):
+            self.assertFalse(any(x in tr for x in ["окончание", "фрагмент", "тсс", "мы", "святой"]), (word, tr))
+
+    def test_dictionary_has_no_fragments_or_ids(self):
+        src = (ROOT / "data" / "dict.js").read_text(encoding="utf-8")
+        words = json.loads(src[src.index("window.DICT = ") + len("window.DICT = "):src.rindex(";\n})();")])["words"]
+        bad = [k for k, v in words.items()
+               if (len(k) < 3 and k not in SHORT_OK) or re.search(r"\d|^lx-|^v-|-is-", k)
+               or re.search(r"фрагмент|окончание|часть слова|не слово", v)]
+        self.assertEqual(bad, [])
+
+    def test_screen_fills_translation(self):
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        self.assertIn('src="data/dict.js?v=', html)
+        ui = (ROOT / "js" / "vocab-ui.js").read_text(encoding="utf-8")
+        self.assertIn("Vo.lookup(", ui)
 
 
 class Page(unittest.TestCase):

@@ -86,9 +86,26 @@
     return { opts: opts, a: opts.indexOf(entry.tr) };
   }
 
+  // Перевод из встроенного словарика: сначала целая фраза, потом слово, потом простые формы
+  // (books → book, gossiped → gossip). Нет в словарике — пусто, ученица впишет сама.
+  function lookup(term, dict) {
+    if (!dict) return "";
+    var t = norm(term).replace(/[^a-z' -]/g, "").replace(/\s+/g, " ").trim();
+    if (!t) return "";
+    if (dict.phrases && dict.phrases[t]) return dict.phrases[t];
+    if (t.indexOf(" ") >= 0) return "";
+    var w = dict.words || {};
+    if (w[t]) return w[t];
+    var tries = [t.replace(/'s$/, ""), t.replace(/ies$/, "y"), t.replace(/es$/, ""), t.replace(/s$/, ""),
+                 t.replace(/ied$/, "y"), t.replace(/ed$/, ""), t.replace(/d$/, ""), t.replace(/ing$/, ""), t.replace(/ing$/, "e"), t.replace(/ly$/, "")];
+    // Основа короче трёх букв — уже не слово («thing» → «th»), такой перевод был бы чужим.
+    for (var i = 0; i < tries.length; i++) if (tries[i] !== t && tries[i].length >= 3 && w[tries[i]]) return w[tries[i]];
+    return "";
+  }
+
   function exportText(list) {
     return list.map(function (w) { return w.term + (w.tr ? " — " + w.tr : ""); }).join("\n");
   }
 
-  window.Vocab = { norm: norm, add: add, update: update, rename: rename, remove: remove, checkTyped: checkTyped, grade: grade, pick: pick, shuffle: shuffle, choiceQuestion: choiceQuestion, exportText: exportText };
+  window.Vocab = { lookup: lookup, norm: norm, add: add, update: update, rename: rename, remove: remove, checkTyped: checkTyped, grade: grade, pick: pick, shuffle: shuffle, choiceQuestion: choiceQuestion, exportText: exportText };
 })();
