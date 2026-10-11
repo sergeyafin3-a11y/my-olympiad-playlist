@@ -43,9 +43,9 @@
   var V = {
     id: "final-2025-26",
     title: "Final 2025/26",
-    subtitle: "Всероссийская олимпиада · заключительный этап · 9–11",
+    subtitle: "All-Russian Olympiad · final stage · grades 9–11",
     audio: "media/listening-final-25-26.mp3",
-    source: { name: "Архив заданий ВсОШ · Центр педагогического мастерства", url: "https://xn--b1ayi3a.xn--l1afu.xn--p1ai/upload/files/Arhive_tasks/2025-26/final/engl/" },
+    source: { name: "Official task archive · Centre for Pedagogical Excellence (Moscow)", url: "https://xn--b1ayi3a.xn--l1afu.xn--p1ai/upload/files/Arhive_tasks/2025-26/final/engl/" },
     sections: [
       { id: "listening", title: "Listening", color: "#5B7CFF", icon: "🎧" },
       { id: "reading", title: "Reading", color: "#FF5C39", icon: "📖" },
@@ -254,13 +254,13 @@
             words: { min: 220, max: 250, accMin: 198, accMax: 275 },
             needsTitle: true,
             criteria: [
-              { id: "task", t: "Решение коммуникативной задачи", max: 9 },
-              { id: "org", t: "Организация текста", max: 3 },
-              { id: "lex", t: "Лексика", max: 3 },
-              { id: "gram", t: "Грамматика", max: 3 },
-              { id: "spell", t: "Орфография и пунктуация", max: 2 }
+              { id: "task", t: "Task completion", max: 9 },
+              { id: "org", t: "Organisation of the text", max: 3 },
+              { id: "lex", t: "Vocabulary", max: 3 },
+              { id: "gram", t: "Grammar", max: 3 },
+              { id: "spell", t: "Spelling and punctuation", max: 2 }
             ],
-            note: "При 0 баллов за решение коммуникативной задачи вся работа оценивается в 0. Меньше 198 слов — 0. Если больше 275 слов, проверяются только первые 250."
+            note: "If Task completion gets 0 points, the whole work gets 0. If more than 30% of the text is copied (it is the same as a published or Internet text), Task completion gets 0, so the whole work gets 0. Fewer than 198 words = 0 points. If there are more than 275 words, only the first 250 words are checked."
           }
         ]
       },
@@ -269,10 +269,10 @@
         tasks: [
           {
             id: "speaking-1", section: "speaking", title: "Vibrant Cultural Flavour of Carnivals", type: "speaking",
-            timing: { prep: 15, monologue: "3 – 3,5 minutes", questions: "2 - 3 minutes" },
+            timing: { prep: 15, total: "10 minutes", monologue: "3 – 3,5 minutes, depending on the duration of a video clip", questions: "2 - 3 minutes" },
             cards: [
               {
-                id: "mardi", label: "Set 1 Student 1 · Mardi Gras",
+                id: "mardi", label: "Set 1 Student 1 · Mardi Gras", place: "Новый Орлеан",
                 task: "As ‘a guide’, you take your fellow students from your school to a famous carnival in New Orleans, giving them an opportunity to immerse themselves into the unique culture of modern entertainment and comparing it with the old-age traditions. Using the video and information from the fact file, speak about the Carnival celebrations (Set 1 STUDENT 1: Mardi Gras):",
                 plan: ["Origins and History", "Festive Events", "Street culture: Costumes, Music, Food", "Cultural Significance"],
                 opinion: "Express your own opinion on why Carnivals are worth being attended by people from all over the world. Synchronize your presentation with the video.",
@@ -297,11 +297,11 @@
                     "Марди Гра - символ культурного разнообразия Нового Орлеана, сочетающий французские, испанские, африканские, карибские и местные традиции.",
                     "Праздник отражает творческий дух, чувство общности и устойчивость города.",
                     "Туристическая достопримечательность.",
-                    "Важная часть городской идентичности, наследия и семейных традиций."]]
+                    "Важная часть городской идентичности, наследия и семейных традиций."], "Символ культурного наследия:"]
                 ]
               },
               {
-                id: "maslenitsa", label: "Set 2 Student 2 · Maslenitsa",
+                id: "maslenitsa", label: "Set 2 Student 2 · Maslenitsa", place: "МАСЛЕНИЦА", partnerFirst: true,
                 task: "As ‘a guide’, you take your fellow students from your school to a famous Russian celebration of the end of winter – Maslenitsa, giving them an opportunity to immerse themselves into the unique culture of modern entertainment and comparing it with the old-age traditions. Using the video and information from the fact file, speak about the Carnival celebrations (Set 2 STUDENT 2: Maslenitsa):",
                 plan: ["Origins and History", "Festive Events", "Street culture: Costumes, Music, Food", "Cultural Significance"],
                 opinion: "Express your own opinion on why Carnivals are worth being attended by people from all over the world. Synchronize your presentation with the video.",
@@ -326,20 +326,21 @@
                     "Масленица отражает цикличность природы и древние сельскохозяйственные традиции Восточных славян.",
                     "Праздник - прощание с зимой, обновление и предстоящий духовный переход к посту.",
                     "Играет важную роль в укреплении семейных и общинных связей, объединяя людей в совместных гуляньях.",
-                    "Масленица — особый культурный бренд России, привлекающий туристов, поддерживающий народные ремёсла, фольклор и традиции."]]
+                    "Масленица — особый культурный бренд России, привлекающий туристов, поддерживающий народные ремёсла, фольклор и традиции."], "Символ культурного наследия:"]
                 ]
               }
             ],
             notesRule: "You can make notes during the preparation time, but YOU ARE NOT ALLOWED TO READ them during the presentation.",
+            recorded: "YOUR ANSWERS WILL BE RECORDED",
             criteria: [
-              { id: "mono", t: "Решение коммуникативной задачи · монолог", max: 6 },
-              { id: "dia", t: "Решение коммуникативной задачи · диалог", max: 5 },
-              { id: "org", t: "Организация речи", max: 3 },
-              { id: "lex", t: "Лексическое оформление речи", max: 2 },
-              { id: "gram", t: "Грамматическое оформление речи", max: 2 },
-              { id: "phon", t: "Фонетическое оформление речи", max: 2 }
+              { id: "mono", t: "Task completion · monologue", max: 6 },
+              { id: "dia", t: "Task completion · dialogue", max: 5 },
+              { id: "org", t: "Organisation of speech", max: 3 },
+              { id: "lex", t: "Vocabulary", max: 2 },
+              { id: "gram", t: "Grammar", max: 2 },
+              { id: "phon", t: "Pronunciation", max: 2 }
             ],
-            note: "Если участник читает выступление по записям, за весь ответ ставится 0. При 0 за монолог общая оценка — 0. Видеоролики к монологам в открытом архиве не опубликованы."
+            note: "If the monologue gets 0, the total for Speaking is 0. You get 0 for the answer if you read your notes for more than 50% of your monologue time. Questions: ask only WH-questions about the topic of the talk; yes/no questions and questions about your partner's opinion do not count, and a question does not count if you read your partner's fact file during the talk. Answers: \"Sorry, I don't know, I'll look it up on the Internet\" gets 0; use the fact file, and if the fact file does not have the answer, a possible (not silly) guess is accepted. The official videos for the monologues are not in the open archive, so this screen shows other videos about the same festivals."
           }
         ]
       }

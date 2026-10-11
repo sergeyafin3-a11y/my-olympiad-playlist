@@ -54,15 +54,15 @@
   // (10 вариантов): там грамматика проверяется через нужную форму слова в пропусках
   // и через задание «найди лишнее слово». Причина — для подсказки в приложении.
   var OLYMPIAD = {
-    "a1-articles": "лишний артикль в задании «найди лишнее слово»",
-    "a1-plurals-this-these": "множественное число в заданиях с пропусками",
-    "a2-past-simple": "формы неправильных глаголов в пропусках",
-    "a2-comparatives": "ловушка «most largest» в поиске лишнего слова",
-    "a2-quantifiers": "much / any и ловушка «no any» в поиске лишнего слова",
-    "b1-passive-basic": "причастие V3 в пропусках",
-    "b1-gerund-infinitive": "форма -ing в пропусках",
-    "b2-passive-advanced": "пассив и причастия в пропусках",
-    "b2-participle-clauses": "причастные обороты (having sold…) в поиске лишнего слова"
+    "a1-articles": "an extra article in the \"find the extra word\" task",
+    "a1-plurals-this-these": "plural forms in gap-fill tasks",
+    "a2-past-simple": "irregular verb forms in gaps",
+    "a2-comparatives": "the \"most largest\" trap in the \"find the extra word\" task",
+    "a2-quantifiers": "much / any and the \"no any\" trap in the \"find the extra word\" task",
+    "b1-passive-basic": "the past participle (V3) in gaps",
+    "b1-gerund-infinitive": "the -ing form in gaps",
+    "b2-passive-advanced": "the passive and participles in gaps",
+    "b2-participle-clauses": "participle clauses (having sold…) in the \"find the extra word\" task"
   };
 
   // Внутри уровня отмеченные темы идут первыми, остальные — в прежнем порядке.

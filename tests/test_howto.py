@@ -59,7 +59,7 @@ class HowTo(unittest.TestCase):
 
     def test_stage_is_named_and_marked_as_hardest(self):
         r = run_js("return H.stage;")
-        self.assertIn("заключительный", r["title"].lower())
+        self.assertIn("final stage", r["title"].lower())
         self.assertTrue(r["note"])
 
     def test_page_shows_it(self):

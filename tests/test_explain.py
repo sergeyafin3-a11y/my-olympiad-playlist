@@ -36,12 +36,11 @@ class Explain(unittest.TestCase):
         self.assertEqual(bad, [])
 
     def test_breakdowns_are_in_english(self):
-        # Объяснения — простым английским; по-русски только переводы в скобках.
+        # Объяснения — простым английским, целиком: с 11.10 и без русских переводов в скобках.
         bad = run_js("""
           var bad = [];
           Object.keys(E).forEach(function(t){ Object.keys(E[t]).forEach(function(n){
-            var noRu = E[t][n].replace(/\\([^)]*\\)/g, "");
-            if (/[а-яё]/i.test(noRu)) bad.push(t + "#" + n);
+            if (/[а-яё]/i.test(E[t][n])) bad.push(t + "#" + n);
           }); });
           return bad;
         """)

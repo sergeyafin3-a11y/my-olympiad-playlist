@@ -69,12 +69,24 @@
       return item.a.map(function (k) {
         var o = opts.filter(function (x) { return x.k === k; })[0];
         return o ? k + (task.longOpts ? "" : " · " + o.t) : k;
-      }).join("  или  ");
+      }).join("  or  ");
     }
     if (task.type === "text") return item.accept.join(" / ");
     if (task.type === "pair") return item.accept.map(function (w) { return w.join(" | "); }).join("  +  ");
     return "";
   }
 
-  window.Check = { norm: norm, score: score, rightAnswer: rightAnswer };
+  // Где остановить плеер: там, где начинается аудио следующего задания. Иначе после Task 2,
+  // который звучит один раз, сразу играл Task 3. Пропуск внутри задания (skip) — не граница.
+  function stopAfter(variant, from) {
+    var next = null;
+    variant.parts.forEach(function (p) { p.tasks.forEach(function (t) {
+      if (t.audio && t.audio.from > from && (next === null || t.audio.from < next)) next = t.audio.from;
+    }); });
+    var own = null;
+    variant.parts.forEach(function (p) { p.tasks.forEach(function (t) { if (t.audio && t.audio.from === from) own = t; }); });
+    return own ? next : null;
+  }
+
+  window.Check = { norm: norm, score: score, rightAnswer: rightAnswer, stopAfter: stopAfter };
 })();

@@ -56,9 +56,9 @@
   window.VARIANTS.push({
     id: "mun-msk-25-26",
     title: "Municipal 2025/26 · Moscow",
-    subtitle: "Всероссийская олимпиада · муниципальный этап · Москва · 10–11",
+    subtitle: "All-Russian Olympiad · municipal stage · Moscow · grades 10–11",
     audio: "media/listening-mun-msk-25-26.mp3",
-    source: { name: "Архив заданий ВсОШ · Центр педагогического мастерства", url: "https://xn--b1ayi3a.xn--l1afu.xn--p1ai/upload/files/Arhive_tasks/2025-26/mun/engl/" },
+    source: { name: "Official task archive · Centre for Pedagogical Excellence (Moscow)", url: "https://xn--b1ayi3a.xn--l1afu.xn--p1ai/upload/files/Arhive_tasks/2025-26/mun/engl/" },
     sections: [
       { id: "listening", title: "Listening", color: "#5B7CFF", icon: "🎧" },
       { id: "reading", title: "Reading", color: "#FF5C39", icon: "📖" },
@@ -250,13 +250,13 @@
             needsTitle: true,
             titleInCount: true,
             criteria: [
-              { id: "task", t: "Решение коммуникативной задачи", max: 4 },
-              { id: "org", t: "Организация текста", max: 4 },
-              { id: "lex", t: "Лексика", max: 4 },
-              { id: "gram", t: "Грамматика", max: 4 },
-              { id: "spell", t: "Орфография и пунктуация", max: 4 }
+              { id: "task", t: "Task completion", max: 4 },
+              { id: "org", t: "Organisation of the text", max: 4 },
+              { id: "lex", t: "Vocabulary", max: 4 },
+              { id: "gram", t: "Grammar", max: 4 },
+              { id: "spell", t: "Spelling and punctuation", max: 4 }
             ],
-            note: "При 0 баллов за решение коммуникативной задачи вся работа оценивается в 0. Меньше 180 слов — 0. Если 276 слов и более, проверяются только первые 250. Название входит в число слов."
+            note: "If Task completion gets 0 points, the whole work gets 0. Fewer than 180 words = 0 points. If there are 276 words or more, only the first 250 words are checked. The title counts as words too."
           }
         ]
       }
