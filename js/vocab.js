@@ -103,9 +103,51 @@
     return "";
   }
 
+  // ---------- игры ----------
+  function translated(list) { return list.filter(function (w) { return w.tr && String(w.tr).trim(); }); }
+
+  // Пары «слово — перевод»: слабые слова первыми, переводы перемешаны.
+  // Одинаковый перевод — только у одного слова раунда: иначе справа две одинаковые кнопки и верный выбор засчитан ошибкой.
+  function matchRound(list, n, rnd) {
+    var seen = {}, picked = pick(translated(list), list.length).filter(function (w) {
+      var k = norm(w.tr); if (seen[k]) return false; seen[k] = 1; return true;
+    }).slice(0, n);
+    var left = shuffle(picked.map(function (w) { return { id: w.id, text: w.term }; }), rnd);
+    var right = shuffle(picked.map(function (w) { return { id: w.id, text: w.tr }; }), rnd);
+    // Сверяем с уже окончательным левым столбцом: если все пары встали друг напротив друга — сдвигаем.
+    if (right.length > 1 && right.every(function (x, i) { return x.id === left[i].id; })) right.push(right.shift());
+    return { left: left, right: right };
+  }
+
+  // Слова для сборки из букв: одно слово, 3–12 букв.
+  function buildable(list) {
+    return list.filter(function (w) { return w.tr && /^[a-z'’-]{3,12}$/i.test(String(w.term).trim()); });
+  }
+  function scramble(term, rnd) {
+    var letters = String(term).split(""), out = letters;
+    for (var tries = 0; tries < 10; tries++) { out = shuffle(letters, rnd); if (out.join("") !== letters.join("")) break; }
+    return out;
+  }
+
+  // Скоростной раунд: пара «слово — перевод», примерно половина верных, половина с чужим переводом.
+  function speedRound(list, n, rnd) {
+    var tr = translated(list), items = [];
+    if (tr.length < 2) return items;
+    for (var i = 0; i < n; i++) {
+      var w = tr[Math.floor(rnd() * tr.length)];
+      var right = rnd() < 0.5, shown = w.tr;
+      if (!right) {
+        var others = tr.filter(function (x) { return norm(x.tr) !== norm(w.tr); });
+        if (others.length) shown = others[Math.floor(rnd() * others.length)].tr; else right = true;
+      }
+      items.push({ w: w, shown: shown, right: right });
+    }
+    return items;
+  }
+
   function exportText(list) {
     return list.map(function (w) { return w.term + (w.tr ? " — " + w.tr : ""); }).join("\n");
   }
 
-  window.Vocab = { lookup: lookup, norm: norm, add: add, update: update, rename: rename, remove: remove, checkTyped: checkTyped, grade: grade, pick: pick, shuffle: shuffle, choiceQuestion: choiceQuestion, exportText: exportText };
+  window.Vocab = { matchRound: matchRound, buildable: buildable, scramble: scramble, speedRound: speedRound, lookup: lookup, norm: norm, add: add, update: update, rename: rename, remove: remove, checkTyped: checkTyped, grade: grade, pick: pick, shuffle: shuffle, choiceQuestion: choiceQuestion, exportText: exportText };
 })();

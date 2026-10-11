@@ -15,6 +15,15 @@
   })();
   function save() { try { localStorage.setItem(KEY, JSON.stringify(W)); return true; } catch (e) { return false; } }
   var COLOR = "#FF7AB6";
+  // Игры (js/games-ui.js) живут в своём файле и работают со словарём только через это.
+  A.words = {
+    all: function () { return W; },
+    grade: function (id, ok) {
+      var w = W.filter(function (x) { return x.id === id; })[0]; if (!w) return;
+      var g = Vo.grade(w, ok, Date.now()); W = Vo.update(W, id, { level: g.level, seen: g.seen }); save();
+    },
+    color: COLOR
+  };
 
   var css = document.createElement("style");
   css.textContent = [
@@ -32,10 +41,14 @@
     ".lvl{display:inline-flex;gap:2px;margin-left:8px;vertical-align:2px}.lvl i{width:6px;height:6px;border-radius:50%;background:#3A3A3A}.lvl i.on{background:" + COLOR + "}",
     ".flash{margin-top:18px;background:linear-gradient(160deg,#3A1F2E,#1C1C1C);border-radius:16px;padding:28px 20px;min-height:240px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px}",
     ".flash .big{font-family:var(--head);font-weight:800;font-size:clamp(26px,7vw,38px);line-height:1.1;text-wrap:balance}",
-    ".flash .tr{font-size:20px;color:" + COLOR + ";font-weight:600}.flash .cx{font-size:14px;color:var(--mute);font-style:italic;max-width:52ch}",
+    // .tr на главной — сетка строки трека; в карточке перевод должен быть обычным блоком, иначе ужимается в 28px.
+    ".flash .tr{display:block;padding:0;margin:0;font-size:20px;color:" + COLOR + ";font-weight:600}.flash .cx{font-size:14px;color:var(--mute);font-style:italic;max-width:52ch}",
     ".prog{font-size:13px;color:var(--mute);margin-top:12px;font-variant-numeric:tabular-nums}",
     ".sheet .err{color:var(--bad);font-size:13px;margin-top:8px}",
     ".sheet textarea{width:100%;min-height:160px;margin-top:8px;background:#101010;border:1px solid var(--line);border-radius:8px;padding:8px;color:var(--ink)}",
+    ".games{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}",
+    ".games a{display:flex;flex-direction:column;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;text-decoration:none;color:var(--ink)}",
+    ".games a span{font-size:12px;color:var(--mute)}",
     ".empty{margin-top:18px;background:var(--card);border-radius:12px;padding:16px;color:var(--mute)}"
   ].join("\n");
   document.head.appendChild(css);
@@ -45,12 +58,15 @@
 
   A.routes.words = function (parts) {
     if (parts[1] === "cards" || parts[1] === "quiz") return practice(parts[1]);
+    if (A.wordGames && Object.prototype.hasOwnProperty.call(A.wordGames, parts[1])) { session = null; return A.wordGames[parts[1]](); }
     session = null;
     var q = (document.getElementById("wSearch") || {}).value || "";
     var h = '<div style="--c:' + COLOR + '"><div class="tabtop"></div>' +
       '<div class="album"><span class="sq" aria-hidden="true">💗</span><div><span class="eyebrow" style="color:#DADADA">Your dictionary</span><h1>My words</h1><p>' + W.length + ' saved</p></div></div>' +
-      '<p class="howto">In any task, <b>tap an English word</b> and press <b>＋ add</b> at the top of the screen. To save a phrase, select several words. Then learn them with <b>Flashcards</b> or a <b>Quiz</b>.</p>' +
-      '<div class="listen"><a class="bigplay" href="#/words/cards" style="text-decoration:none">▶ Flashcards</a><a class="ghost" href="#/words/quiz" style="text-decoration:none">✎ Quiz</a><button class="ghost" data-wnew="1">＋ Add word</button><button class="ghost" data-wcopy="1">⧉ Copy list</button></div>';
+      '<p class="howto">In any task, <b>tap an English word</b> and press <b>＋ add</b> at the top of the screen. To save a phrase, select several words. Then learn them with <b>Flashcards</b>, a <b>Quiz</b> or one of the <b>games</b> below.</p>' +
+      '<div class="listen"><a class="bigplay" href="#/words/cards" style="text-decoration:none">▶ Flashcards</a><a class="ghost" href="#/words/quiz" style="text-decoration:none">✎ Quiz</a><button class="ghost" data-wnew="1">＋ Add word</button><button class="ghost" data-wcopy="1">⧉ Copy list</button></div>' +
+      '<div class="games"><a href="#/words/match"><b>🧩 Match</b><span>Pair words and translations</span></a><a href="#/words/build"><b>🔤 Build the word</b><span>Put the letters in order</span></a>' +
+      '<a href="#/words/listen"><b>🎧 Listen &amp; write</b><span>Hear the word, type it</span></a><a href="#/words/speed"><b>⚡ Speed round</b><span>60 seconds: true or false?</span></a></div>';
     if (!W.length) {
       return h + '<div class="empty">No words yet — open any task in <b>Exam</b>, <b>Lexis</b> or <b>Grammar</b> and tap a word.</div></div>';
     }
