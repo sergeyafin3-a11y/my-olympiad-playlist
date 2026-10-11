@@ -159,7 +159,8 @@ class Lookup(unittest.TestCase):
         words = json.loads(src[src.index("window.DICT = ") + len("window.DICT = "):src.rindex(";\n})();")])["words"]
         bad = [k for k, v in words.items()
                if (len(k) < 3 and k not in SHORT_OK) or re.search(r"\d|^lx-|^v-|-is-", k)
-               or re.search(r"фрагмент|окончание|часть слова|не слово", v)]
+               or (re.search(r"фрагмент|окончание|часть слова|не слово", v) and k != "ending")]
+        # «ending» — настоящее слово из правил (the ending -able), и «окончание» — его перевод.
         self.assertEqual(bad, [])
 
     def test_screen_fills_translation(self):

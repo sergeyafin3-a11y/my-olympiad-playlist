@@ -159,7 +159,7 @@
     if (auto) entry = Object.assign({}, entry, { tr: auto });
     sheet.innerHTML = '<h2>' + (id ? 'Edit word' : 'Add to My words') + '</h2>' +
       '<label for="wsTerm">Word or phrase</label><input class="inp" id="wsTerm" value="' + esc(entry.term) + '" autocomplete="off" autocapitalize="off" spellcheck="false">' +
-      '<label for="wsTr">Translation</label><input class="inp" id="wsTr" value="' + esc(entry.tr || "") + '" placeholder="перевод" autocomplete="off">' +
+      '<label for="wsTr">Translation</label><input class="inp" id="wsTr" value="' + esc(entry.tr || "") + '" placeholder="translation" autocomplete="off">' +
       '<div class="note" id="wsAuto"' + (auto ? '' : ' hidden') + '>✓ Translation added automatically — you can change it.</div>' +
       (entry.ctx ? '<div class="ctx">“' + esc(entry.ctx) + '”</div>' : '') +
       '<div class="btns"><button class="bigplay" data-wsave="1">Save</button><button class="ghost" data-wcancel="1">Cancel</button>' +

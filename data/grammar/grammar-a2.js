@@ -3,307 +3,307 @@ window.GRAMMAR.push(
   {
     id: "a2-present-simple-vs-continuous", level: "A2", title: "Present Simple vs Present Continuous",
     rule: {
-      intro: "Present Simple — то, что бывает регулярно, привычки и факты. Present Continuous — то, что происходит прямо сейчас или в этот период.",
+      intro: "Present Simple is for things that happen regularly: habits and facts. Present Continuous is for things that are happening right now or around this time.",
       blocks: [
-        { h: "Present Simple: привычки и факты", rows: [
+        { h: "Present Simple: habits and facts", rows: [
           ["I / you / we / they + V", "I play football on Saturdays."],
           ["he / she / it + V-s", "She walks to school every day."],
-          ["отрицание: don't / doesn't + V", "He doesn't like coffee."],
-          ["вопрос: Do / Does + подлежащее + V", "Do you live near here?"]
+          ["negative: don't / doesn't + V", "He doesn't like coffee."],
+          ["question: Do / Does + subject + V", "Do you live near here?"]
         ] },
-        { h: "Present Continuous: сейчас", rows: [
+        { h: "Present Continuous: now", rows: [
           ["am / is / are + V-ing", "I'm doing my homework now."],
-          ["отрицание: am not / isn't / aren't + V-ing", "They aren't watching TV."],
-          ["вопрос: Am / Is / Are + подлежащее + V-ing", "Is it raining?"]
+          ["negative: am not / isn't / aren't + V-ing", "They aren't watching TV."],
+          ["question: Am / Is / Are + subject + V-ing", "Is it raining?"]
         ] },
-        { h: "Слова-подсказки", rows: [
+        { h: "Signal words", rows: [
           ["Simple: always, usually, often, every day, on Mondays", "We often go to the cinema."],
           ["Continuous: now, at the moment, Look!, Listen!", "Look! The bus is coming."]
         ] }
       ],
       tips: [
-        "Не забывайте -s у he/she/it: не \"She play tennis\", а \"She plays tennis\".",
-        "Глаголы состояния (know, like, love, want, understand) обычно не ставят в Continuous: не \"I am knowing\", а \"I know\".",
-        "В Continuous нужен глагол be: не \"I reading now\", а \"I'm reading now\"."
+        "Don't forget -s with he/she/it: not \"She play tennis\" but \"She plays tennis\".",
+        "State verbs (know, like, love, want, understand) are usually not used in Continuous: not \"I am knowing\" but \"I know\".",
+        "Continuous needs the verb be. In Russian we don't use this verb, but in English you need it: not \"I reading now\" but \"I'm reading now\"."
       ]
     },
     items: [
-      { type: "choice", q: "Listen! Somebody ___ the piano upstairs.", opts: ["plays", "is playing", "play"], a: 1, why: "Listen! — действие происходит прямо сейчас, нужен Present Continuous." },
-      { type: "choice", q: "My brother ___ football every Saturday.", opts: ["plays", "is playing", "play"], a: 0, why: "every Saturday — регулярное действие, Present Simple; he → plays." },
-      { type: "choice", q: "I ___ what you mean.", opts: ["understand", "am understanding", "understands"], a: 0, why: "understand — глагол состояния, в Continuous не употребляется." },
-      { type: "choice", q: "Look! It ___ outside. Take an umbrella.", opts: ["rains", "is raining", "rain"], a: 1, why: "Look! — дождь идёт сейчас, Present Continuous." },
-      { type: "text", q: "She usually ___ (walk) to school.", accept: ["walks"], why: "usually — привычка, Present Simple; she → окончание -s." },
-      { type: "text", q: "We ___ (not / watch) TV right now, we are doing our homework.", accept: ["aren't watching", "are not watching"], why: "right now — Present Continuous: are not + V-ing." },
-      { type: "text", q: "How often ___ (you / go) to the cinema?", accept: ["do you go"], why: "How often — вопрос о регулярности, Present Simple: do + you + V." },
-      { type: "choice", q: "At the moment Kate ___ for her exam.", opts: ["studies", "is studying", "study"], a: 1, why: "At the moment — сейчас, Present Continuous." },
-      { type: "choice", q: "Water ___ at 100 degrees.", opts: ["boils", "is boiling", "boil"], a: 0, why: "Научный факт — Present Simple; water (it) → boils." },
-      { type: "text", q: "Shh! The baby ___ (sleep).", accept: ["is sleeping"], why: "Shh! — действие происходит сейчас: is + sleeping." }
+      { type: "choice", q: "Listen! Somebody ___ the piano upstairs.", opts: ["plays", "is playing", "play"], a: 1, why: "Listen! means it is happening right now, so we need Present Continuous." },
+      { type: "choice", q: "My brother ___ football every Saturday.", opts: ["plays", "is playing", "play"], a: 0, why: "Every Saturday is a regular action, so Present Simple; he → plays." },
+      { type: "choice", q: "I ___ what you mean.", opts: ["understand", "am understanding", "understands"], a: 0, why: "Understand is a state verb. We don't use it in Continuous." },
+      { type: "choice", q: "Look! It ___ outside. Take an umbrella.", opts: ["rains", "is raining", "rain"], a: 1, why: "Look! means it is raining now, so Present Continuous." },
+      { type: "text", q: "She usually ___ (walk) to school.", accept: ["walks"], why: "Usually shows a habit, so Present Simple; she → add -s." },
+      { type: "text", q: "We ___ (not / watch) TV right now, we are doing our homework.", accept: ["aren't watching", "are not watching"], why: "Right now needs Present Continuous: are not + V-ing." },
+      { type: "text", q: "How often ___ (you / go) to the cinema?", accept: ["do you go"], why: "How often asks about a regular action, so Present Simple: do + you + V." },
+      { type: "choice", q: "At the moment Kate ___ for her exam.", opts: ["studies", "is studying", "study"], a: 1, why: "At the moment means now, so Present Continuous." },
+      { type: "choice", q: "Water ___ at 100 degrees.", opts: ["boils", "is boiling", "boil"], a: 0, why: "This is a scientific fact, so Present Simple; water (it) → boils." },
+      { type: "text", q: "Shh! The baby ___ (sleep).", accept: ["is sleeping"], why: "Shh! means it is happening now: is + sleeping." }
     ]
   },
   {
     id: "a2-past-simple", level: "A2", title: "Past Simple (regular and irregular verbs)",
     rule: {
-      intro: "Past Simple — законченное действие в прошлом, часто с указанием времени: yesterday, last week, two days ago, in 2020.",
+      intro: "Past Simple is for a finished action in the past. We often say when it happened: yesterday, last week, two days ago, in 2020.",
       blocks: [
-        { h: "Утверждение", rows: [
-          ["правильные: V + -ed", "We watched a film yesterday."],
+        { h: "Positive", rows: [
+          ["regular verbs: V + -ed", "We watched a film yesterday."],
           ["study → studied, stop → stopped", "I studied all evening."],
-          ["неправильные: 2-я форма", "go → went, buy → bought, see → saw"]
+          ["irregular verbs: 2nd form", "go → went, buy → bought, see → saw"]
         ] },
-        { h: "Отрицание и вопрос", rows: [
-          ["didn't + V (начальная форма)", "She didn't call me."],
-          ["Did + подлежащее + V?", "Did you see the match?"],
-          ["Wh- + did + подлежащее + V?", "Where did you go last summer?"]
+        { h: "Negative and question", rows: [
+          ["didn't + V (base form)", "She didn't call me."],
+          ["Did + subject + V?", "Did you see the match?"],
+          ["Wh- + did + subject + V?", "Where did you go last summer?"]
         ] },
-        { h: "Глагол be", rows: [
+        { h: "The verb be", rows: [
           ["I / he / she / it + was", "I was at home yesterday."],
           ["you / we / they + were", "Were you at the party?"]
         ] }
       ],
       tips: [
-        "После did / didn't глагол в начальной форме: не \"Did you went?\", а \"Did you go?\"",
-        "Не добавляйте -ed к неправильным глаголам: не \"goed\", а \"went\". Таблицу неправильных глаголов надо учить.",
-        "С ago, yesterday, last … нужен Past Simple, а не Present Perfect: \"I saw him two days ago.\""
+        "After did / didn't, use the base form of the verb: not \"Did you went?\" but \"Did you go?\"",
+        "Don't add -ed to irregular verbs: not \"goed\" but \"went\". You need to learn the list of irregular verbs.",
+        "With ago, yesterday, last … use Past Simple, not Present Perfect: \"I saw him two days ago.\""
       ]
     },
     items: [
-      { type: "choice", q: "We ___ to Sochi last summer.", opts: ["go", "went", "goed", "gone"], a: 1, why: "go — неправильный глагол, вторая форма — went." },
-      { type: "text", q: "I ___ (buy) new headphones yesterday.", accept: ["bought"], why: "buy — неправильный глагол: buy → bought." },
-      { type: "text", q: "She ___ (not / call) me last night.", accept: ["didn't call", "did not call"], why: "Отрицание: didn't + начальная форма глагола." },
-      { type: "choice", q: "___ you see the match on Sunday?", opts: ["Do", "Did", "Were"], a: 1, why: "on Sunday — прошлое; вопрос с глаголом see строится через Did." },
-      { type: "choice", q: "He didn't ___ his homework.", opts: ["do", "did", "does"], a: 0, why: "После didn't — начальная форма глагола." },
-      { type: "text", q: "They ___ (stop) the car near the river.", accept: ["stopped"], why: "stop → stopped: после короткого ударного слога согласная удваивается." },
-      { type: "choice", q: "Where ___ you yesterday evening?", opts: ["was", "were", "did"], a: 1, why: "Глагол be в прошлом: you → were." },
-      { type: "text", q: "We ___ (study) for the test all weekend.", accept: ["studied"], why: "study → studied: y после согласной меняется на i." },
-      { type: "choice", q: "My parents ___ married in 2005.", opts: ["get", "got", "getted"], a: 1, why: "in 2005 — прошлое; get → got." },
-      { type: "choice", q: "I ___ a great film two days ago.", opts: ["see", "saw", "have seen", "seen"], a: 1, why: "ago — точное время в прошлом, нужен Past Simple: saw." }
+      { type: "choice", q: "We ___ to Sochi last summer.", opts: ["go", "went", "goed", "gone"], a: 1, why: "Go is an irregular verb. Its second form is went." },
+      { type: "text", q: "I ___ (buy) new headphones yesterday.", accept: ["bought"], why: "Buy is an irregular verb: buy → bought." },
+      { type: "text", q: "She ___ (not / call) me last night.", accept: ["didn't call", "did not call"], why: "Negative: didn't + the base form of the verb." },
+      { type: "choice", q: "___ you see the match on Sunday?", opts: ["Do", "Did", "Were"], a: 1, why: "On Sunday is in the past. A question with the verb see uses Did." },
+      { type: "choice", q: "He didn't ___ his homework.", opts: ["do", "did", "does"], a: 0, why: "After didn't, use the base form of the verb." },
+      { type: "text", q: "They ___ (stop) the car near the river.", accept: ["stopped"], why: "Stop → stopped: after a short stressed syllable, we double the last consonant." },
+      { type: "choice", q: "Where ___ you yesterday evening?", opts: ["was", "were", "did"], a: 1, why: "The verb be in the past: you → were." },
+      { type: "text", q: "We ___ (study) for the test all weekend.", accept: ["studied"], why: "Study → studied: y after a consonant changes to i." },
+      { type: "choice", q: "My parents ___ married in 2005.", opts: ["get", "got", "getted"], a: 1, why: "In 2005 is in the past; get → got." },
+      { type: "choice", q: "I ___ a great film two days ago.", opts: ["see", "saw", "have seen", "seen"], a: 1, why: "Ago shows an exact time in the past, so we need Past Simple: saw." }
     ]
   },
   {
     id: "a2-past-continuous", level: "A2", title: "Past Continuous",
     rule: {
-      intro: "Past Continuous — действие, которое длилось в определённый момент в прошлом. Часто его прерывает короткое действие в Past Simple.",
+      intro: "Past Continuous is for an action that was in progress at a certain moment in the past. Often a short action in Past Simple interrupts it.",
       blocks: [
-        { h: "Форма", rows: [
+        { h: "Form", rows: [
           ["I / he / she / it + was + V-ing", "I was reading at 9 p.m."],
           ["you / we / they + were + V-ing", "They were playing football."],
           ["wasn't / weren't + V-ing", "We weren't sleeping."],
-          ["Was / Were + подлежащее + V-ing?", "What were you doing?"]
+          ["Was / Were + subject + V-ing?", "What were you doing?"]
         ] },
-        { h: "Когда использовать", rows: [
-          ["процесс в момент прошлого", "At 8 p.m. yesterday I was having dinner."],
-          ["длинное действие прерывается коротким (when)", "I was walking home when I met Max."],
-          ["два процесса одновременно (while)", "While I was cooking, she was setting the table."]
+        { h: "When to use it", rows: [
+          ["an action in progress at a moment in the past", "At 8 p.m. yesterday I was having dinner."],
+          ["a long action is interrupted by a short one (when)", "I was walking home when I met Max."],
+          ["two actions in progress at the same time (while)", "While I was cooking, she was setting the table."]
         ] }
       ],
       tips: [
-        "Длинный фон — Past Continuous, короткое событие — Past Simple: не \"I walked when I was meeting him\", а \"I was walking when I met him\".",
-        "Следите за was/were: не \"they was\", а \"they were\".",
-        "После while обычно идёт процесс: \"While we were listening to music, the lights went out.\""
+        "The long background action is Past Continuous, the short event is Past Simple: not \"I walked when I was meeting him\" but \"I was walking when I met him\".",
+        "Be careful with was/were: not \"they was\" but \"they were\".",
+        "After while we usually have an action in progress: \"While we were listening to music, the lights went out.\""
       ]
     },
     items: [
-      { type: "choice", q: "At 8 p.m. yesterday I ___ dinner.", opts: ["was having", "were having", "am having"], a: 0, why: "Процесс в момент прошлого; I → was + V-ing." },
-      { type: "choice", q: "While we ___ to music, the lights went out.", opts: ["are listening", "were listening", "was listening"], a: 1, why: "Длинный процесс в прошлом; we → were + V-ing." },
-      { type: "text", q: "She ___ (read) a book when I came in.", accept: ["was reading"], why: "Длинное действие, которое прервали: was + V-ing." },
-      { type: "text", q: "They ___ (not / sleep) at midnight.", accept: ["weren't sleeping", "were not sleeping"], why: "Процесс в момент прошлого, отрицание: weren't + V-ing." },
-      { type: "choice", q: "I was walking home when I ___ my old friend.", opts: ["was meeting", "met", "meet"], a: 1, why: "Короткое событие, прервавшее процесс, — Past Simple." },
-      { type: "choice", q: "What ___ you doing at 10 o'clock last night?", opts: ["did", "were", "was"], a: 1, why: "Вопрос в Past Continuous: were + you + V-ing." },
-      { type: "text", q: "It ___ (rain) when we left school.", accept: ["was raining"], why: "Фон в прошлом (шёл дождь): was + V-ing." },
-      { type: "choice", q: "When the teacher came in, the students ___ loudly.", opts: ["are talking", "were talking", "was talking"], a: 1, why: "Процесс уже шёл, когда учитель вошёл; students → were." },
-      { type: "choice", q: "Tom ___ his phone when he was riding his bike.", opts: ["dropped", "was dropping", "drops"], a: 0, why: "Уронить — короткое событие на фоне процесса, Past Simple." },
-      { type: "text", q: "While Anna ___ (cook), her brother was setting the table.", accept: ["was cooking"], why: "Два процесса одновременно: was + V-ing." }
+      { type: "choice", q: "At 8 p.m. yesterday I ___ dinner.", opts: ["was having", "were having", "am having"], a: 0, why: "An action in progress at a moment in the past; I → was + V-ing." },
+      { type: "choice", q: "While we ___ to music, the lights went out.", opts: ["are listening", "were listening", "was listening"], a: 1, why: "A long action in the past; we → were + V-ing." },
+      { type: "text", q: "She ___ (read) a book when I came in.", accept: ["was reading"], why: "A long action that was interrupted: was + V-ing." },
+      { type: "text", q: "They ___ (not / sleep) at midnight.", accept: ["weren't sleeping", "were not sleeping"], why: "An action in progress at a moment in the past, negative: weren't + V-ing." },
+      { type: "choice", q: "I was walking home when I ___ my old friend.", opts: ["was meeting", "met", "meet"], a: 1, why: "A short event that interrupted the long action is Past Simple." },
+      { type: "choice", q: "What ___ you doing at 10 o'clock last night?", opts: ["did", "were", "was"], a: 1, why: "A question in Past Continuous: were + you + V-ing." },
+      { type: "text", q: "It ___ (rain) when we left school.", accept: ["was raining"], why: "This is the background in the past (the rain was going on): was + V-ing." },
+      { type: "choice", q: "When the teacher came in, the students ___ loudly.", opts: ["are talking", "were talking", "was talking"], a: 1, why: "The talking was already going on when the teacher came in; students → were." },
+      { type: "choice", q: "Tom ___ his phone when he was riding his bike.", opts: ["dropped", "was dropping", "drops"], a: 0, why: "Dropping the phone is a short event during a longer action, so Past Simple." },
+      { type: "text", q: "While Anna ___ (cook), her brother was setting the table.", accept: ["was cooking"], why: "Two actions in progress at the same time: was + V-ing." }
     ]
   },
   {
     id: "a2-comparatives", level: "A2", title: "Comparatives and superlatives",
     rule: {
-      intro: "Сравнительная степень сравнивает два предмета (больше, лучше), превосходная выделяет один из группы (самый большой).",
+      intro: "The comparative compares two things (bigger, better). The superlative shows that one thing is the most in a group (the biggest).",
       blocks: [
-        { h: "Короткие прилагательные", rows: [
+        { h: "Short adjectives", rows: [
           ["adj + -er + than", "Moscow is bigger than Kazan."],
           ["the + adj + -est", "It's the hottest day of the year."],
           ["easy → easier → the easiest", "This test is easier."]
         ] },
-        { h: "Длинные прилагательные", rows: [
+        { h: "Long adjectives", rows: [
           ["more + adj + than", "My phone is more expensive than yours."],
           ["the most + adj", "Maths is the most interesting subject."]
         ] },
-        { h: "Исключения и as … as", rows: [
+        { h: "Exceptions and as … as", rows: [
           ["good → better → the best", "This is the best pizza in town."],
           ["bad → worse → the worst", "Today is worse than yesterday."],
           ["(not) as + adj + as", "I'm not as tall as my brother."]
         ] }
       ],
       tips: [
-        "Олимпиадная ловушка «most largest»: суффикс -est уже значит «самый», most с ним не ставится — the largest city (не the most largest), better (не more better).",
-        "Не смешивайте два способа: не \"more easier\", а \"easier\".",
-        "После сравнительной степени — than, а не that или as: \"She is older than me.\"",
-        "Перед превосходной степенью нужен the: не \"most beautiful city\", а \"the most beautiful city\"."
+        "Olympiad trap \"most largest\": the ending -est already means \"the most\", so don't add most. Say the largest city (not the most largest) and better (not more better).",
+        "Don't mix the two ways: not \"more easier\" but \"easier\".",
+        "After a comparative use than, not that or as: \"She is older than me.\"",
+        "You need the before a superlative: not \"most beautiful city\" but \"the most beautiful city\"."
       ]
     },
     items: [
-      { type: "choice", q: "This test is ___ than the last one.", opts: ["easy", "easier", "more easy", "easiest"], a: 1, why: "easy → easier: y меняется на i, добавляем -er." },
-      { type: "text", q: "Moscow is ___ (big) than Kazan.", accept: ["bigger"], why: "big → bigger: согласная удваивается." },
-      { type: "text", q: "This is the ___ (good) pizza in town.", accept: ["best"], why: "good → better → the best — исключение." },
-      { type: "choice", q: "My phone is ___ than yours.", opts: ["more expensive", "expensiver", "most expensive"], a: 0, why: "Длинное прилагательное: more + adj + than." },
-      { type: "choice", q: "Everest is ___ mountain in the world.", opts: ["the highest", "higher", "the most high"], a: 0, why: "Самая высокая из всех — превосходная степень: the highest." },
-      { type: "text", q: "Today is ___ (bad) than yesterday.", accept: ["worse"], why: "bad → worse → the worst — исключение." },
-      { type: "choice", q: "Maths is ___ interesting subject for me.", opts: ["most", "the most", "more"], a: 1, why: "Превосходная степень длинного прилагательного: the most + adj." },
-      { type: "choice", q: "My sister is not as tall ___ me.", opts: ["than", "as", "that"], a: 1, why: "Конструкция as … as: not as tall as." },
-      { type: "text", q: "It's the ___ (hot) day of the year.", accept: ["hottest"], why: "hot → the hottest: согласная удваивается." },
-      { type: "choice", q: "Your English is getting ___!", opts: ["better and better", "more good", "gooder"], a: 0, why: "good → better; \"всё лучше и лучше\" — better and better." }
+      { type: "choice", q: "This test is ___ than the last one.", opts: ["easy", "easier", "more easy", "easiest"], a: 1, why: "Easy → easier: y changes to i, then add -er." },
+      { type: "text", q: "Moscow is ___ (big) than Kazan.", accept: ["bigger"], why: "Big → bigger: we double the last consonant." },
+      { type: "text", q: "This is the ___ (good) pizza in town.", accept: ["best"], why: "Good → better → the best is an exception." },
+      { type: "choice", q: "My phone is ___ than yours.", opts: ["more expensive", "expensiver", "most expensive"], a: 0, why: "Expensive is a long adjective: more + adj + than." },
+      { type: "choice", q: "Everest is ___ mountain in the world.", opts: ["the highest", "higher", "the most high"], a: 0, why: "It is the highest of all, so we need the superlative: the highest." },
+      { type: "text", q: "Today is ___ (bad) than yesterday.", accept: ["worse"], why: "Bad → worse → the worst is an exception." },
+      { type: "choice", q: "Maths is ___ interesting subject for me.", opts: ["most", "the most", "more"], a: 1, why: "The superlative of a long adjective: the most + adj." },
+      { type: "choice", q: "My sister is not as tall ___ me.", opts: ["than", "as", "that"], a: 1, why: "The pattern is as … as: not as tall as." },
+      { type: "text", q: "It's the ___ (hot) day of the year.", accept: ["hottest"], why: "Hot → the hottest: we double the last consonant." },
+      { type: "choice", q: "Your English is getting ___!", opts: ["better and better", "more good", "gooder"], a: 0, why: "Good → better. To say that something keeps improving, use better and better." }
     ]
   },
   {
     id: "a2-will-going-to", level: "A2", title: "Future: will vs be going to",
     rule: {
-      intro: "Will — решение, принятое в момент речи, обещание, предсказание-мнение. Be going to — план, который уже есть, и прогноз по видимым признакам.",
+      intro: "Will is for a decision made at the moment of speaking, a promise, or a prediction based on opinion. Be going to is for a plan you already have, or a prediction based on what you can see.",
       blocks: [
-        { h: "Форма", rows: [
+        { h: "Form", rows: [
           ["will / won't + V", "I'll help you. I won't tell anyone."],
           ["am / is / are + going to + V", "We're going to visit Paris."],
           ["isn't / aren't going to + V", "He isn't going to study medicine."]
         ] },
         { h: "Will", rows: [
-          ["решение прямо сейчас", "The phone is ringing! — I'll answer it."],
-          ["обещание, предложение помощи", "I promise I won't be late."],
-          ["предсказание-мнение (I think, maybe)", "Maybe people will live on Mars."]
+          ["a decision made right now", "The phone is ringing! — I'll answer it."],
+          ["a promise, an offer to help", "I promise I won't be late."],
+          ["a prediction based on opinion (I think, maybe)", "Maybe people will live on Mars."]
         ] },
         { h: "Be going to", rows: [
-          ["заранее принятый план", "I've saved money. I'm going to buy a laptop."],
-          ["прогноз по тому, что видим", "Look at those clouds! It's going to rain."]
+          ["a plan made earlier", "I've saved money. I'm going to buy a laptop."],
+          ["a prediction based on what we see", "Look at those clouds! It's going to rain."]
         ] }
       ],
       tips: [
-        "После will — глагол без to: не \"I will to go\", а \"I will go\".",
-        "В going to нужен глагол be: не \"I going to\", а \"I'm going to\".",
-        "Если решение уже принято до разговора, это going to: \"We've bought tickets. We're going to fly to Rome.\""
+        "After will, use the verb without to: not \"I will to go\" but \"I will go\".",
+        "Going to needs the verb be: not \"I going to\" but \"I'm going to\".",
+        "If the decision was made before the conversation, use going to: \"We've bought tickets. We're going to fly to Rome.\""
       ]
     },
     items: [
-      { type: "choice", q: "Look at those black clouds! It ___ rain.", opts: ["will", "is going to", "rains"], a: 1, why: "Прогноз по видимым признакам (тучи) — be going to." },
-      { type: "choice", q: "— I'm thirsty. — Wait, I ___ get you some water.", opts: ["will", "am going to", "going to"], a: 0, why: "Решение помочь принято прямо сейчас — will." },
-      { type: "text", q: "We have bought tickets. We ___ (visit) Paris in May.", accept: ["are going to visit", "are visiting"], why: "Билеты уже куплены — это план: are going to visit (договорённость можно выразить и Present Continuous: are visiting)." },
-      { type: "choice", q: "I promise I ___ tell anyone.", opts: ["won't", "not going to", "don't"], a: 0, why: "Обещание — will; отрицание: won't." },
-      { type: "text", q: "The phone is ringing! — ___ (I / answer) it.", accept: ["I'll answer", "I will answer"], why: "Решение в момент речи — will: I'll answer." },
-      { type: "choice", q: "She has saved money because she ___ buy a new laptop.", opts: ["will", "is going to", "going"], a: 1, why: "Деньги уже копит — план принят заранее, be going to." },
-      { type: "choice", q: "Maybe people ___ live on Mars one day.", opts: ["will", "is going to", "are live"], a: 0, why: "Предположение без видимых признаков (maybe) — will." },
-      { type: "text", q: "He ___ (be going to / not / study) medicine. He has decided to become a designer.", accept: ["isn't going to study", "is not going to study"], why: "Решение уже принято — be going to; отрицание: isn't going to." },
-      { type: "choice", q: "Oh no, I forgot my wallet! — Don't worry, I ___ pay for you.", opts: ["will", "am going to", "pay"], a: 0, why: "Предложение помощи, решённое в момент речи, — will." },
-      { type: "choice", q: "What ___ you going to do after school?", opts: ["are", "will", "do"], a: 0, why: "В going to нужен be: are you going to." }
+      { type: "choice", q: "Look at those black clouds! It ___ rain.", opts: ["will", "is going to", "rains"], a: 1, why: "A prediction based on what we see (the clouds), so be going to." },
+      { type: "choice", q: "— I'm thirsty. — Wait, I ___ get you some water.", opts: ["will", "am going to", "going to"], a: 0, why: "The decision to help is made right now, so will." },
+      { type: "text", q: "We have bought tickets. We ___ (visit) Paris in May.", accept: ["are going to visit", "are visiting"], why: "The tickets are already bought, so it is a plan: are going to visit. For an arrangement you can also use Present Continuous: are visiting." },
+      { type: "choice", q: "I promise I ___ tell anyone.", opts: ["won't", "not going to", "don't"], a: 0, why: "A promise uses will; the negative is won't." },
+      { type: "text", q: "The phone is ringing! — ___ (I / answer) it.", accept: ["I'll answer", "I will answer"], why: "A decision at the moment of speaking uses will: I'll answer." },
+      { type: "choice", q: "She has saved money because she ___ buy a new laptop.", opts: ["will", "is going to", "going"], a: 1, why: "She is already saving money, so the plan was made earlier: be going to." },
+      { type: "choice", q: "Maybe people ___ live on Mars one day.", opts: ["will", "is going to", "are live"], a: 0, why: "A guess with nothing we can see (maybe), so will." },
+      { type: "text", q: "He ___ (be going to / not / study) medicine. He has decided to become a designer.", accept: ["isn't going to study", "is not going to study"], why: "The decision is already made, so be going to; the negative is isn't going to." },
+      { type: "choice", q: "Oh no, I forgot my wallet! — Don't worry, I ___ pay for you.", opts: ["will", "am going to", "pay"], a: 0, why: "An offer to help, decided at the moment of speaking, uses will." },
+      { type: "choice", q: "What ___ you going to do after school?", opts: ["are", "will", "do"], a: 0, why: "Going to needs be: are you going to." }
     ]
   },
   {
     id: "a2-quantifiers", level: "A2", title: "some / any / much / many / a lot of",
     rule: {
-      intro: "Эти слова обозначают количество. Выбор зависит от типа предложения и от того, можно ли предмет посчитать.",
+      intro: "These words show quantity. Your choice depends on the type of sentence and on whether you can count the thing.",
       blocks: [
         { h: "some / any", rows: [
-          ["some — утверждение", "I've got some friends in Spain."],
-          ["any — вопрос и отрицание", "Are there any cafés here? There isn't any milk."],
-          ["some — просьба и предложение", "Would you like some tea? Can I have some water?"]
+          ["some — positive sentences", "I've got some friends in Spain."],
+          ["any — questions and negatives", "Are there any cafés here? There isn't any milk."],
+          ["some — requests and offers", "Would you like some tea? Can I have some water?"]
         ] },
         { h: "much / many / a lot of", rows: [
-          ["many + исчисляемые (мн. ч.)", "How many apples do you need?"],
-          ["much + неисчисляемые", "We don't have much time."],
-          ["a lot of — с любыми, чаще в утверждении", "There are a lot of people here."]
+          ["many + countable nouns (plural)", "How many apples do you need?"],
+          ["much + uncountable nouns", "We don't have much time."],
+          ["a lot of — with any noun, more often in positive sentences", "There are a lot of people here."]
         ] }
       ],
       tips: [
-        "Олимпиадная ловушка «no any»: после no второе отрицание не нужно — There is no milk (не no any milk). И a few ≠ few: a few friends — несколько (хватает), few friends — мало (почти нет).",
-        "Деньги, время, вода, информация — неисчисляемые: не \"many money\", а \"much money\".",
-        "В утвердительном предложении лучше a lot of, а не much: не \"I have much homework\", а \"I have a lot of homework\".",
-        "В вежливой просьбе и предложении — some, хотя это вопрос: \"Would you like some cake?\""
+        "Olympiad trap \"no any\": after no you don't need a second negative word. Say There is no milk (not no any milk). Also, a few is not the same as few: a few friends means some friends (enough), few friends means not many (almost none).",
+        "Money, time, water and information are uncountable: not \"many money\" but \"much money\".",
+        "In positive sentences a lot of is better than much: not \"I have much homework\" but \"I have a lot of homework\".",
+        "In polite requests and offers use some, even though it is a question: \"Would you like some cake?\""
       ]
     },
     items: [
-      { type: "choice", q: "There isn't ___ milk in the fridge.", opts: ["some", "any", "many"], a: 1, why: "Отрицание — any; milk неисчисляемое, many не подходит." },
-      { type: "choice", q: "How ___ apples do you need?", opts: ["much", "many", "any"], a: 1, why: "apples — исчисляемые, How many." },
-      { type: "choice", q: "How ___ money have you got?", opts: ["many", "much", "a lot"], a: 1, why: "money — неисчисляемое, How much." },
-      { type: "text", q: "Can I have ___ (some / any) water, please?", accept: ["some"], why: "Вежливая просьба — some." },
-      { type: "choice", q: "She has got ___ friends at school.", opts: ["a lot of", "much", "any"], a: 0, why: "Утверждение с исчисляемым существительным — a lot of." },
-      { type: "text", q: "We don't have ___ (much / many) time.", accept: ["much"], why: "time — неисчисляемое, значит much." },
-      { type: "text", q: "Are there ___ (some / any) good cafés near here?", accept: ["any"], why: "Обычный вопрос — any." },
-      { type: "choice", q: "I don't eat ___ sweets.", opts: ["much", "many", "some"], a: 1, why: "sweets — исчисляемые во мн. ч., в отрицании — many." },
-      { type: "choice", q: "There are ___ people in the park today.", opts: ["much", "a lot of", "any"], a: 1, why: "Утверждение, people исчисляемое — a lot of." },
-      { type: "text", q: "Would you like ___ (some / any) tea?", accept: ["some"], why: "Предложение (Would you like…?) — some." }
+      { type: "choice", q: "There isn't ___ milk in the fridge.", opts: ["some", "any", "many"], a: 1, why: "It is a negative, so any. Milk is uncountable, so many doesn't fit." },
+      { type: "choice", q: "How ___ apples do you need?", opts: ["much", "many", "any"], a: 1, why: "Apples are countable, so How many." },
+      { type: "choice", q: "How ___ money have you got?", opts: ["many", "much", "a lot"], a: 1, why: "Money is uncountable, so How much." },
+      { type: "text", q: "Can I have ___ (some / any) water, please?", accept: ["some"], why: "A polite request uses some." },
+      { type: "choice", q: "She has got ___ friends at school.", opts: ["a lot of", "much", "any"], a: 0, why: "A positive sentence with a countable noun, so a lot of." },
+      { type: "text", q: "We don't have ___ (much / many) time.", accept: ["much"], why: "Time is uncountable, so much." },
+      { type: "text", q: "Are there ___ (some / any) good cafés near here?", accept: ["any"], why: "A normal question uses any." },
+      { type: "choice", q: "I don't eat ___ sweets.", opts: ["much", "many", "some"], a: 1, why: "Sweets are countable and plural; in a negative, use many." },
+      { type: "choice", q: "There are ___ people in the park today.", opts: ["much", "a lot of", "any"], a: 1, why: "A positive sentence, and people is countable, so a lot of." },
+      { type: "text", q: "Would you like ___ (some / any) tea?", accept: ["some"], why: "An offer (Would you like…?) uses some." }
     ]
   },
   {
     id: "a2-present-perfect", level: "A2", title: "Present Perfect: ever, never, just, already, yet",
     rule: {
-      intro: "Present Perfect связывает прошлое с настоящим: важен результат или опыт, а не точное время.",
+      intro: "Present Perfect connects the past with the present. The result or the experience is important, not the exact time.",
       blocks: [
-        { h: "Форма", rows: [
+        { h: "Form", rows: [
           ["have / has + V3", "I have seen this film."],
           ["haven't / hasn't + V3", "She hasn't finished yet."],
-          ["Have / Has + подлежащее + V3?", "Have you ever been to London?"]
+          ["Have / Has + subject + V3?", "Have you ever been to London?"]
         ] },
-        { h: "Слова-маркеры", rows: [
-          ["ever — когда-нибудь (вопрос)", "Have you ever eaten sushi?"],
-          ["never — никогда", "I have never flown."],
-          ["just — только что", "They have just arrived."],
-          ["already — уже", "We have already seen it."],
-          ["yet — ещё (отрицание), уже (вопрос); в конце", "I haven't done it yet. Have you finished yet?"]
+        { h: "Signal words", rows: [
+          ["ever — at any time (in questions)", "Have you ever eaten sushi?"],
+          ["never — at no time", "I have never flown."],
+          ["just — a very short time ago", "They have just arrived."],
+          ["already — before now, earlier than expected", "We have already seen it."],
+          ["yet — up to now (negatives and questions); at the end", "I haven't done it yet. Have you finished yet?"]
         ] }
       ],
       tips: [
-        "С точным временем в прошлом (yesterday, last year, ago) — Past Simple: не \"I have been there last year\", а \"I went there last year\".",
-        "ever, never, just, already ставятся между have и V3, а yet — в конце: \"I have just eaten\", \"I haven't eaten yet\".",
-        "been to — съездил и вернулся; gone to — уехал и ещё там: \"She has been to Italy\" (опыт)."
+        "With an exact past time (yesterday, last year, ago) use Past Simple: not \"I have been there last year\" but \"I went there last year\".",
+        "Ever, never, just and already go between have and V3, but yet goes at the end: \"I have just eaten\", \"I haven't eaten yet\".",
+        "Been to means went and came back; gone to means went and is still there: \"She has been to Italy\" (experience)."
       ]
     },
     items: [
-      { type: "choice", q: "Have you ___ been to London?", opts: ["ever", "never", "yet"], a: 0, why: "Вопрос об опыте «когда-нибудь» — ever." },
-      { type: "text", q: "I have ___ (never / ever) eaten sushi.", accept: ["never"], why: "Утверждение «никогда не ел» — never." },
-      { type: "choice", q: "She has ___ finished her homework. She's free now.", opts: ["just", "yet", "ever"], a: 0, why: "«Только что закончила» — just; yet ставится в конце, ever — в вопросах." },
-      { type: "choice", q: "I haven't done my project ___.", opts: ["already", "yet", "just"], a: 1, why: "В отрицании в конце предложения — yet («ещё не»)." },
+      { type: "choice", q: "Have you ___ been to London?", opts: ["ever", "never", "yet"], a: 0, why: "A question about experience (at any time in your life) uses ever." },
+      { type: "text", q: "I have ___ (never / ever) eaten sushi.", accept: ["never"], why: "A positive sentence that means \"not at any time\" uses never." },
+      { type: "choice", q: "She has ___ finished her homework. She's free now.", opts: ["just", "yet", "ever"], a: 0, why: "She finished a very short time ago, so just. Yet goes at the end, and ever is for questions." },
+      { type: "choice", q: "I haven't done my project ___.", opts: ["already", "yet", "just"], a: 1, why: "In a negative, at the end of the sentence, use yet (\"not up to now\")." },
       { type: "text", q: "We ___ (already / see) this film.", accept: ["have already seen"], why: "have + already + V3: see → seen." },
-      { type: "text", q: "He ___ (not / finish) the book yet.", accept: ["hasn't finished", "has not finished"], why: "he → has; отрицание: hasn't + V3." },
-      { type: "choice", q: "Oh no! Somebody ___ my bike!", opts: ["has stolen", "have stolen", "stealed"], a: 0, why: "Важен результат сейчас; somebody → has; steal → stolen." },
-      { type: "choice", q: "Has she ___ to Italy?", opts: ["be", "been", "was"], a: 1, why: "После has — третья форма: been." },
+      { type: "text", q: "He ___ (not / finish) the book yet.", accept: ["hasn't finished", "has not finished"], why: "He → has; negative: hasn't + V3." },
+      { type: "choice", q: "Oh no! Somebody ___ my bike!", opts: ["has stolen", "have stolen", "stealed"], a: 0, why: "The result now is important; somebody → has; steal → stolen." },
+      { type: "choice", q: "Has she ___ to Italy?", opts: ["be", "been", "was"], a: 1, why: "After has, use the third form: been." },
       { type: "text", q: "They ___ (just / arrive).", accept: ["have just arrived"], why: "have + just + V3: arrive → arrived." },
-      { type: "choice", q: "I ___ to Paris last year.", opts: ["have been", "went", "have gone"], a: 1, why: "last year — точное время в прошлом, нужен Past Simple." }
+      { type: "choice", q: "I ___ to Paris last year.", opts: ["have been", "went", "have gone"], a: 1, why: "Last year is an exact time in the past, so we need Past Simple." }
     ]
   },
   {
     id: "a2-must-have-to-should", level: "A2", title: "must / have to / should",
     rule: {
-      intro: "Must и have to выражают обязанность, should — совет. Mustn't — запрет, а don't have to — «не обязательно».",
+      intro: "Must and have to show that something is necessary. Should gives advice. Mustn't means it is not allowed, but don't have to means it is not necessary.",
       blocks: [
-        { h: "Обязанность и запрет", rows: [
-          ["must + V — надо (так считает говорящий, правило)", "I must call my grandma."],
-          ["have to / has to + V — надо (из-за обстоятельств)", "She has to wear a uniform."],
-          ["mustn't + V — нельзя", "You mustn't cross the road on a red light."],
-          ["don't / doesn't have to + V — не обязательно", "I don't have to get up early on Sunday."]
+        { h: "Necessity and rules", rows: [
+          ["must + V — necessary (the speaker thinks so, or it is a rule)", "I must call my grandma."],
+          ["have to / has to + V — necessary (because of the situation)", "She has to wear a uniform."],
+          ["mustn't + V — not allowed", "You mustn't cross the road on a red light."],
+          ["don't / doesn't have to + V — not necessary", "I don't have to get up early on Sunday."]
         ] },
-        { h: "Совет", rows: [
+        { h: "Advice", rows: [
           ["should / shouldn't + V", "You should go to bed early."],
-          ["Should I …? — просьба о совете", "Should I take an umbrella?"]
+          ["Should I …? — asking for advice", "Should I take an umbrella?"]
         ] },
-        { h: "Прошлое и вопросы", rows: [
-          ["had to + V — пришлось", "Yesterday I had to wait an hour."],
+        { h: "Past and questions", rows: [
+          ["had to + V — it was necessary", "Yesterday I had to wait an hour."],
           ["Do / Does … have to …?", "Do we have to bring our books?"]
         ] }
       ],
       tips: [
-        "После must и should — глагол без to: не \"You must to go\", а \"You must go\".",
-        "mustn't ≠ don't have to: \"You mustn't run\" — нельзя, \"You don't have to run\" — можно не бежать.",
-        "У must нет прошедшего времени — используйте had to: \"I had to stay at home.\""
+        "After must and should, use the verb without to: not \"You must to go\" but \"You must go\".",
+        "Mustn't is not the same as don't have to: \"You mustn't run\" means running is not allowed; \"You don't have to run\" means you can run if you want, but it is not necessary.",
+        "Must has no past form, so use had to: \"I had to stay at home.\""
       ]
     },
     items: [
-      { type: "choice", q: "You look tired. You ___ go to bed early.", opts: ["should", "must to", "have"], a: 0, why: "Совет — should + глагол без to." },
-      { type: "choice", q: "Students ___ use phones during exams. It's a school rule.", opts: ["mustn't", "don't have to", "shouldn't to"], a: 0, why: "Правило-запрет — mustn't («нельзя»)." },
-      { type: "choice", q: "Tomorrow is Sunday, so I ___ get up early.", opts: ["mustn't", "don't have to", "haven't to"], a: 1, why: "«Не обязательно» — don't have to." },
-      { type: "text", q: "She ___ (have to) wear a uniform at her school.", accept: ["has to"], why: "she → has to." },
-      { type: "text", q: "You ___ (not / should) eat so much fast food.", accept: ["shouldn't", "should not"], why: "Совет «не стоит» — shouldn't + V." },
-      { type: "choice", q: "___ we have to bring our books tomorrow?", opts: ["Do", "Must", "Should"], a: 0, why: "Вопрос с have to строится через Do." },
-      { type: "text", q: "Yesterday I ___ (have to) wait for the bus for an hour.", accept: ["had to"], why: "Обязанность в прошлом — had to." },
-      { type: "choice", q: "You ___ cross the road when the light is red. It's dangerous!", opts: ["mustn't", "don't have to", "must"], a: 0, why: "Опасно — значит запрет: mustn't." },
-      { type: "choice", q: "He ___ study harder if he wants to pass.", opts: ["should", "shoulds", "should to"], a: 0, why: "should не меняется по лицам и стоит без to." },
-      { type: "text", q: "My dad ___ (not / have to) work on Saturdays.", accept: ["doesn't have to", "does not have to"], why: "he → doesn't have to: «не обязан»." }
+      { type: "choice", q: "You look tired. You ___ go to bed early.", opts: ["should", "must to", "have"], a: 0, why: "This is advice, so should + verb without to." },
+      { type: "choice", q: "Students ___ use phones during exams. It's a school rule.", opts: ["mustn't", "don't have to", "shouldn't to"], a: 0, why: "A rule that forbids something uses mustn't (\"not allowed\")." },
+      { type: "choice", q: "Tomorrow is Sunday, so I ___ get up early.", opts: ["mustn't", "don't have to", "haven't to"], a: 1, why: "It is not necessary, so don't have to." },
+      { type: "text", q: "She ___ (have to) wear a uniform at her school.", accept: ["has to"], why: "She → has to." },
+      { type: "text", q: "You ___ (not / should) eat so much fast food.", accept: ["shouldn't", "should not"], why: "Advice not to do something uses shouldn't + V." },
+      { type: "choice", q: "___ we have to bring our books tomorrow?", opts: ["Do", "Must", "Should"], a: 0, why: "A question with have to uses Do." },
+      { type: "text", q: "Yesterday I ___ (have to) wait for the bus for an hour.", accept: ["had to"], why: "Necessity in the past uses had to." },
+      { type: "choice", q: "You ___ cross the road when the light is red. It's dangerous!", opts: ["mustn't", "don't have to", "must"], a: 0, why: "It is dangerous, so it is not allowed: mustn't." },
+      { type: "choice", q: "He ___ study harder if he wants to pass.", opts: ["should", "shoulds", "should to"], a: 0, why: "Should never changes its form (no -s) and is used without to." },
+      { type: "text", q: "My dad ___ (not / have to) work on Saturdays.", accept: ["doesn't have to", "does not have to"], why: "He → doesn't have to: it is not necessary for him." }
     ]
   }
 );

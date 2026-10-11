@@ -7,7 +7,7 @@
   H.stages = H.stages || {};
 
   H.stages["mun-msk-25-26"] = {
-    title: "Municipal stage 2025/26 · Moscow (муниципальный этап)",
+    title: "Municipal stage 2025/26 · Moscow",
     note: "These are last year's (2025/26) tasks of the stage you write next, in November — the best practice for it. It has four parts: Listening (15 min, 15 points), Reading (45 min, 20 points), Use of English (60 min, 45 points) and Writing (60 min, 20 points). The maximum is 100 points. In Listening, Reading and Use of English every correct answer = 1 point, a wrong or empty answer = 0, so always write something. In Use of English tasks 1–3 spelling counts: one wrong letter = 0 points for that answer. Writing is checked by five criteria, 4 points each."
   };
 
@@ -68,7 +68,7 @@
       "If every word is needed, the line is correct — type V.",
       "Type only ONE word, exactly as it is in the line."
     ],
-    example: "Example 0: the whole line is correct → V. Example 00: the line says \"a pure theatrical gusto\". Gusto (energy, enjoyment — увлечённость) is an uncountable noun here, so the article \"a\" is extra → a.",
+    example: "Example 0: the whole line is correct → V. Example 00: the line says \"a pure theatrical gusto\". Gusto (energy and enjoyment) is an uncountable noun here, so the article \"a\" is extra → a.",
     tip: "Usually 2–4 lines in a text are correct. Check the meaning too: sometimes the extra word makes the sentence say the opposite of the facts."
   };
 

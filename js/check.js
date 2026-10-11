@@ -69,12 +69,23 @@
       return item.a.map(function (k) {
         var o = opts.filter(function (x) { return x.k === k; })[0];
         return o ? k + (task.longOpts ? "" : " · " + o.t) : k;
-      }).join("  или  ");
+      }).join("  or  ");
     }
     if (task.type === "text") return item.accept.join(" / ");
     if (task.type === "pair") return item.accept.map(function (w) { return w.join(" | "); }).join("  +  ");
     return "";
   }
 
-  window.Check = { norm: norm, score: score, rightAnswer: rightAnswer };
+  // Где остановить плеер: там, где начинается аудио следующего задания после текущей точки.
+  // Иначе после Task 2, который звучит один раз, сразу играл Task 3. Считается от любой
+  // позиции — после паузы, перемотки и пропуска внутри задания.
+  function stopAfter(variant, at) {
+    var next = null;
+    variant.parts.forEach(function (p) { p.tasks.forEach(function (t) {
+      if (t.audio && t.audio.from > at && (next === null || t.audio.from < next)) next = t.audio.from;
+    }); });
+    return next;
+  }
+
+  window.Check = { norm: norm, score: score, rightAnswer: rightAnswer, stopAfter: stopAfter };
 })();

@@ -5,7 +5,7 @@
 (function () {
   window.HOWTO = {
     stage: {
-      title: "Final stage 2025/26 (заключительный этап)",
+      title: "Final stage 2025/26",
       note: "This is the last and the hardest stage of the olympiad — only the best students in Russia write it. The tasks here are harder and stranger than at the school and municipal stages. It is OK if a lot is difficult: this is the \"super level\"."
     },
     tasks: {
@@ -76,7 +76,7 @@
           "Write the two words one under the other and compare the letters. The extra letters are the animal.",
           "Type both words in the two boxes."
         ],
-        example: "Example 0: \"Fell\" = tumbled; \"a plant that rolls in the desert\" = tumbleweed. tumbl + EWE + ed = tumbleweed. EWE = a female sheep.",
+        example: "Example 0: \"Fell\" = tumbled; \"… of a plant used to symbolise desolation or an awkward silence\" = tumbleweed (a dry plant that the wind rolls across the desert). tumbl + EWE + ed = tumbleweed. EWE = a female sheep.",
         tip: "The animal can be very short (3–5 letters). Stuck? Tap \"💡 Show how to solve\" under a question to see the full answer, step by step."
       },
       "uoe-2": {
@@ -135,8 +135,8 @@
           "Choose your card: Mardi Gras (New Orleans) or Maslenitsa.",
           "The fact file is in RUSSIAN on purpose: you read the facts in Russian and tell them in English, in your own words.",
           "15 minutes to prepare: a plan with 4 parts (history, events, street culture, why it matters) + your opinion. You cannot read your notes while you speak.",
-          "Talk for 3–3.5 minutes. Then answer 2 questions from your partner (the teacher plays your partner).",
-          "Then you ask your partner 2 questions — only Wh-questions (what, when, why…)."
+          "Talk for 3–3.5 minutes (it depends on the length of the video). Then answer 2 questions from your partner (the teacher plays your partner).",
+          "Your partner also gives a talk, and you ask 2 questions — only Wh-questions (what, when, why…). Student 1 (Mardi Gras) speaks first; Student 2 (Maslenitsa) first listens and asks, then speaks."
         ],
         tip: "At the real olympiad you speak along with a short video about the festival. Watch the video on this screen first."
       }
