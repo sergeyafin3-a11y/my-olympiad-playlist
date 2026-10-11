@@ -35,7 +35,7 @@ window.GRAMMAR.push(
       { type: "text", q: "___ (be) you ready for the test?", accept: ["are"], why: "In a question, to be goes before the subject: Are you...?" },
       { type: "text", q: "It ___ (not / be) cold today.", accept: ["isn't", "is not"], why: "It + is; the negative is is not (isn't)." },
       { type: "choice", q: "___ your brother good at football?", opts: ["Am", "Is", "Are"], a: 1, why: "Your brother = he, so the question starts with Is." },
-      { type: "choice", q: "Where ___ my headphones?", opts: ["is", "are", "am"], a: 1, why: "Headphones is plural, so we use are." },
+      { type: "choice", q: "Where ___ my headphones?", opts: ["is", "are", "am"], a: 1, why: "\"Headphones\" is a plural word, so we use are." },
       { type: "text", q: "I ___ (not / be) hungry.", accept: ["am not", "'m not"], why: "With I, the negative is am not. There is no form \"amn't\"." },
       { type: "choice", q: "— Are you from Moscow? — Yes, I ___.", opts: ["am", "'m", "is"], a: 0, why: "In a short \"yes\" answer, don't use the short form: Yes, I am." }
     ]
@@ -109,12 +109,12 @@ window.GRAMMAR.push(
     },
     items: [
       { type: "choice", q: "There ___ a big park near my house.", opts: ["is", "are", "am"], a: 0, why: "A park is singular, so there is." },
-      { type: "choice", q: "There ___ three cafes in our street.", opts: ["is", "are", "be"], a: 1, why: "Three cafes is plural, so there are." },
+      { type: "choice", q: "There ___ three cafes in our street.", opts: ["is", "are", "be"], a: 1, why: "\"Three cafes\" is plural, so there are." },
       { type: "text", q: "There ___ (be) some milk in the fridge.", accept: ["is"], why: "Milk is uncountable, so there is." },
-      { type: "text", q: "There ___ (not / be) any students in the classroom.", accept: ["aren't", "are not"], why: "Students is plural: there aren't any." },
+      { type: "text", q: "There ___ (not / be) any students in the classroom.", accept: ["aren't", "are not"], why: "\"Students\" is plural: there aren't any." },
       { type: "choice", q: "___ there a bank near here?", opts: ["Is", "Are", "Does"], a: 0, why: "A bank is singular, so the question is Is there...?" },
       { type: "choice", q: "How many students ___ there in your class?", opts: ["is", "are", "do"], a: 1, why: "After how many comes a plural noun, so are there." },
-      { type: "text", q: "___ (be) there any good shops in your town?", accept: ["are"], why: "Shops is plural, so the question is Are there...?" },
+      { type: "text", q: "___ (be) there any good shops in your town?", accept: ["are"], why: "\"Shops\" is plural, so the question is Are there...?" },
       { type: "choice", q: "There ___ any bread left.", opts: ["isn't", "aren't", "not"], a: 0, why: "Bread is uncountable, so there isn't." },
       { type: "text", q: "There ___ (not / be) a TV in my room.", accept: ["isn't", "is not"], why: "A TV is singular: there isn't (is not)." },
       { type: "choice", q: "— Is there a swimming pool at your school? — No, there ___.", opts: ["isn't", "aren't", "not is"], a: 0, why: "The short answer repeats is: No, there isn't." }
@@ -234,7 +234,7 @@ window.GRAMMAR.push(
       { type: "choice", q: "We love ___ school.", opts: ["our", "us", "we"], a: 0, why: "We → our." },
       { type: "choice", q: "Is this ___ bag, Tom?", opts: ["you", "your", "yours"], a: 1, why: "Before a noun, use your." },
       { type: "text", q: "This is ___ (Kate) phone.", accept: ["Kate's"], why: "It belongs to a person: name + 's, Kate's phone." },
-      { type: "choice", q: "My ___ room is very big. (my mum and dad)", opts: ["parent's", "parents'", "parents"], a: 1, why: "Parents is plural and ends in -s, so we add only an apostrophe: parents'." },
+      { type: "choice", q: "My ___ room is very big. (my mum and dad)", opts: ["parent's", "parents'", "parents"], a: 1, why: "\"Parents\" is plural and ends in -s, so we add only an apostrophe: parents'." },
       { type: "text", q: "They live in a small flat. ___ (they) flat is near the river.", accept: ["their"], why: "They → their." },
       { type: "choice", q: "The dog is eating ___ food.", opts: ["it's", "its", "it"], a: 1, why: "For an animal or a thing, use its; it's = it is." },
       { type: "text", q: "My ___ (brother) friends are funny. (I have only one brother.)", accept: ["brother's"], why: "One brother: brother + 's, my brother's friends." },

@@ -4,7 +4,7 @@
 (function () {
   window.EXPLAIN = {
     "uoe-1": {
-      1: "Short word: \"agreed\" = COMPLIED.\nLong word: \"elaborate or difficult\" = COMPLICATED.\n\ncompli     ed  = complied\ncompli CAT ed  = complicated\n\nThe hidden animal is CAT (a cat).",
+      1: "Short word: \"agreed\" = COMPLIED.\nLong word: \"elaborate or difficult\" = COMPLICATED.\n\ncompli     ed  = complied\ncompli CAT ed  = complicated\n\nThe hidden animal is CAT (a pet that says \"meow\").",
       2: "Short word: \"suffer distress\" = AGONISE (agonize).\nLong word: \"make an enemy of\" = ANTAGONISE (antagonize).\n\n    agonise  = agonise\nANT agonise  = antagonise\n\nThe hidden animal is ANT (a small insect) — at the start of the word.",
       3: "Short word: \"a soft cheese\" = BRIE.\nLong word: \"for a short stretch of time\" = BRIEFLY.\n\nbrie      = brie\nbrie FLY  = briefly\n\nThe hidden animal is FLY (a small flying insect) — at the end of the word.",
       4: "Short word: \"a filled pastry\" = PIE.\nLong word: \"a marauder\" (a robber) = PIRATE.\n\npi     e  = pie\npi RAT e  = pirate\n\nThe hidden animal is RAT (an animal like a big mouse).",
@@ -37,7 +37,7 @@
       25: "Letters: R M O E F R.\nGap 1: \"The ___ structure endured longer than expected\" → FORMER (earlier, old).\nGap 2: \"they finally resolved to ___ what custom alone had preserved\" → REFORM (change to make better).\nAnswer: FORMER / REFORM.",
       26: "Letters: T D R I C E.\nGap 1: \"History would likely ___ her with the discovery\" → CREDIT (credit someone with something = say that they did it).\nGap 2: \"she worked to ___ public recognition away from herself\" → DIRECT (send in some direction).\nAnswer: CREDIT / DIRECT.",
       27: "Letters: G N E A D R.\nGap 1: \"Every ___ contains the possibility of growth\" → DANGER.\nGap 2: \"like a seed of a ___\" → GARDEN.\nAnswer: DANGER / GARDEN.",
-      28: "Letters: O B W L E.\nGap 1: \"what lay ___ the surface\" → BELOW (under).\nGap 2: \"offered his arm like an ___ through a crowd\" → ELBOW (the middle of your arm).\nAnswer: BELOW / ELBOW.",
+      28: "Letters: O B W L E.\nGap 1: \"what lay ___ the surface\" → BELOW (under).\nGap 2: \"offered his arm like an ___ through a crowd\" → ELBOW (the joint where your arm bends).\nAnswer: BELOW / ELBOW.",
       29: "Letters: R A E S P.\nGap 1: \"She tried to ___ him unnecessary pain\" → SPARE (spare someone pain = save them from pain).\nGap 2: \"the truth would ___ through his defenses\" → SPEAR (go through, like a sharp stick).\nAnswer: SPARE / SPEAR.",
       30: "Letters: T L N R A E.\nGap 1: \"A ___ life teaches you to travel light\" → RENTAL (living in flats you rent).\nGap 2: \"what he ___ was that commitment is not a place you own\" → LEARNT (understood).\nAnswer: RENTAL / LEARNT."
     },

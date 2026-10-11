@@ -23,7 +23,7 @@ window.GRAMMAR.push(
       tips: [
         "In Russian you say \"I live here three years\" in the present, but in English you need Present Perfect: I have lived here for three years (not I live here for three years).",
         "If you name a time in the past, you can't use Present Perfect: I saw him yesterday (not I have seen him yesterday).",
-        "\"Starting in 2020\" is since 2020, not from 2020: She has played tennis since 2020."
+        "From 2020 until now = since 2020 (not from 2020): She has played tennis since 2020."
       ]
     },
     items: [
@@ -71,7 +71,7 @@ window.GRAMMAR.push(
       { type: "choice", q: "She ___ three songs this morning.", opts: ["has been writing", "has written", "have written"], a: 1, why: "We say how many results (three songs), so Present Perfect Simple. She → has." },
       { type: "choice", q: "I ___ Anna since we were five.", opts: ["have been knowing", "have known", "am knowing"], a: 1, why: "Know is a state verb. It is not used in Continuous." },
       { type: "choice", q: "Your hands are covered in paint! What ___?", opts: ["you have been doing", "have you been doing", "you been doing"], a: 1, why: "In a question, have comes before the subject: What have you been doing?" },
-      { type: "text", q: "Why are you out of breath? ___ (you / run)?", accept: ["have you been running"], why: "We see signs of a recent action (you can't breathe), so we ask in Present Perfect Continuous." },
+      { type: "text", q: "Why are you out of breath? ___ (you / run)?", accept: ["have you been running"], why: "We see signs of a recent action (you are breathing fast), so we ask in Present Perfect Continuous." },
       { type: "text", q: "We ___ (practise) this dance for three months, but it still isn't perfect.", accept: ["have been practising", "'ve been practising", "have been practicing", "'ve been practicing", "have practised", "'ve practised", "have practiced", "'ve practiced"], why: "For three months, still going on: Present Perfect Continuous (Simple is also OK)." },
       { type: "choice", q: "How long ___ learning English?", opts: ["are you", "have you been", "did you"], a: 1, why: "How long + an action up to now: have you been + V-ing." },
       { type: "choice", q: "I've been ___ my phone for an hour and I still can't find it.", opts: ["look for", "looking for", "looked for"], a: 1, why: "After been in this tense we need the V-ing form." },
@@ -175,7 +175,7 @@ window.GRAMMAR.push(
       ],
       tips: [
         "After if and when, don't use will for the future: If you come, I'll show you (not If you will come).",
-        "\"If I knew\" is not If I would know but If I knew: If I knew the answer, I would tell you.",
+        "After if, use the past form, not would: If I knew the answer, I would tell you (not \"If I would know\").",
         "Unless = if not, so you don't need another negative after it: Unless you hurry, you'll be late."
       ]
     },
@@ -223,9 +223,9 @@ window.GRAMMAR.push(
       { type: "text", q: "The new sports centre ___ (open) last month.", accept: ["was opened"], why: "Last month: Past Simple Passive, was + V3." },
       { type: "choice", q: "My bike ___ yesterday!", opts: ["stole", "was stolen", "is stolen"], a: 1, why: "The bike didn't steal anything; someone stole it, so was stolen." },
       { type: "text", q: "These phones ___ (make) in China.", accept: ["are made"], why: "The subject is plural, present time: are + V3." },
-      { type: "choice", q: "The letters ___ by the postman this morning.", opts: ["were delivered", "was delivered", "delivered"], a: 0, why: "Letters is plural, past time: were + V3." },
+      { type: "choice", q: "The letters ___ by the postman this morning.", opts: ["were delivered", "was delivered", "delivered"], a: 0, why: "\"Letters\" is plural, past time: were + V3." },
       { type: "text", q: "The windows ___ (not / clean) last week.", accept: ["weren't cleaned", "were not cleaned"], why: "Negative in Past Simple Passive: were not + V3." },
-      { type: "choice", q: "___ the tickets sold online?", opts: ["Do", "Are", "Is"], a: 1, why: "In a passive question, be goes first. Tickets is plural, so Are." },
+      { type: "choice", q: "___ the tickets sold online?", opts: ["Do", "Are", "Is"], a: 1, why: "In a passive question, be goes first. \"Tickets\" is plural, so Are." },
       { type: "choice", q: "Harry Potter was written ___ J. K. Rowling.", opts: ["by", "with", "from"], a: 0, why: "In the passive, the doer comes after by." }
     ]
   },
@@ -303,7 +303,7 @@ window.GRAMMAR.push(
       { type: "text", q: "Would you mind ___ (open) the window?", accept: ["opening"], why: "Mind + V-ing." },
       { type: "text", q: "We hope ___ (visit) London next year.", accept: ["to visit"], why: "Hope + to V." },
       { type: "choice", q: "He's good at ___ basketball.", opts: ["play", "to play", "playing"], a: 2, why: "After the preposition at: V-ing." },
-      { type: "choice", q: "I stopped ___ a drink because I was thirsty.", opts: ["to buy", "buying", "buy"], a: 0, why: "He stopped in order to buy something: stop to do." },
+      { type: "choice", q: "I stopped ___ a drink because I was thirsty.", opts: ["to buy", "buying", "buy"], a: 0, why: "I stopped in order to buy something: stop to do." },
       { type: "text", q: "Remember ___ (lock) the door when you leave!", accept: ["to lock"], why: "A thing you need to do in the future: remember to do." },
       { type: "text", q: "I'll never forget ___ (meet) my favourite singer last year.", accept: ["meeting"], why: "A memory of something that already happened: forget doing." },
       { type: "choice", q: "My parents let me ___ to the party.", opts: ["go", "to go", "going"], a: 0, why: "Let + V without to." },

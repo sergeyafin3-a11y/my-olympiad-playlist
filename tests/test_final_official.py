@@ -65,6 +65,14 @@ class Player(unittest.TestCase):
         self.assertEqual(r, [622, 864, None, None])
         self.assertIn("C.stopAfter(V, sec)", HTML.replace("window.Check", "C"))
 
+    def test_stop_is_recomputed_from_any_position(self):
+        # Ревью PR 25: после паузы ▶ играл Task 2 и без остановки Task 3; перемотка за границу
+        # ставила паузу в случайном месте и отключала остановку совсем.
+        r = run_js("return [C.stopAfter(V, 622), C.stopAfter(V, 700), C.stopAfter(V, 10), C.stopAfter(V, 900)];")
+        self.assertEqual(r, [864, 864, 622, None])
+        for hook in ['addEventListener("play", resyncStop)', 'addEventListener("seeked", resyncStop)']:
+            self.assertIn(hook, HTML)
+
 
 if __name__ == "__main__":
     unittest.main()

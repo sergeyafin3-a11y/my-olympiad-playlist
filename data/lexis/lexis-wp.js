@@ -69,7 +69,7 @@ window.LEXIS.push(
         ] }
       ],
       tips: [
-        "Colours in idioms are not the same as in Russian: envy is green (green with envy), not yellow.",
+        "Colours in idioms do not always match Russian, so learn them as whole phrases: green with envy, feel blue (sad), see red (get very angry).",
         "Look for clues in the context: “on stage”, “before the show” → a theatre idiom (break a leg).",
         "Learn an idiom with a little story: The surprise was ruined when Tom let the cat out of the bag."
       ]
@@ -99,7 +99,7 @@ window.LEXIS.push(
           ["Check the form", "the form is the same for all three: if one needs -s, all of them do."]
         ] },
         { h: "Common words with many meanings", rows: [
-          ["bank, spring, fair, light", "side of a river/bank for money; season/metal coil/natural water source; just/pale (hair)/market with fun; not heavy/what lets us see/set on fire"],
+          ["bank, spring, fair, light", "side of a river/a place that keeps your money; season/metal coil/natural water source; just/light, blond (hair)/market with fun; not heavy/what lets us see/set on fire"],
           ["train, match, note, present", "a vehicle on rails/practise; a stick to make fire/a game/go well together; a short message/a musical sound/notice; here, not away/a gift/now"],
           ["crane, bark, mean, play", "a lifting machine/a tall bird/stretch (your neck); a dog's sound/the outside of a tree; have a meaning/unkind, not generous/average; have fun, act/a theatre piece"]
         ] }
@@ -113,7 +113,7 @@ window.LEXIS.push(
     items: [
       { type: "text", q: "We had a picnic on the ___ of the river. / She opened a savings account at the local ___. / You can ___ on me — I'll be there.", accept: ["bank"], why: "bank = side of a river; a place for money; bank on = trust, depend on." },
       { type: "text", q: "The box is so ___ that a child could carry it. / Turn off the ___ before you leave. / Could you ___ the candles on the cake?", accept: ["light"], why: "light = not heavy; what lets us see; set on fire." },
-      { type: "text", q: "It isn't ___ that he gets more pocket money than me. / She has ___ hair and blue eyes. / We bought wooden toys at the village ___.", accept: ["fair"], why: "fair = just, equal for all; pale (hair); an outdoor market." },
+      { type: "text", q: "It isn't ___ that he gets more pocket money than me. / She has ___ hair and blue eyes. / We bought wooden toys at the village ___.", accept: ["fair"], why: "fair = just, equal for all; light, blond (hair); an outdoor market." },
       { type: "text", q: "Strike a ___ to light the fire. / The football ___ was cancelled because of snow. / Her shoes don't ___ her dress.", accept: ["match"], why: "match = a stick to make fire; a game; go well together." },
       { type: "text", q: "Cherry trees blossom in late ___. / The old mattress has a broken ___. / We drank cold water from a mountain ___.", accept: ["spring"], why: "spring = the season; a metal coil; a natural water source." },
       { type: "text", q: "We took the early ___ to Moscow. / Athletes ___ every day before the Olympics. / I lost my ___ of thought when the phone rang.", accept: ["train"], why: "train = a vehicle on rails; practise; a line (of thought)." },

@@ -134,7 +134,7 @@ window.GRAMMAR.push(
       ],
       tips: [
         "The main mistake is question word order. Not \"She asked where did I live\" but \"She asked where I lived\". You also don't need a question mark at the end.",
-        "In Russian we say \"asked whether I would go\" with a special word, and in English this is if/whether, not \"that\": \"He asked if I would go\".",
+        "In a reported yes/no question, use if or whether, not \"that\": \"Will you go?\" → He asked if I would go.",
         "Offer, suggest and refuse report the whole meaning: \"Shall I help?\" → \"He offered to help\"."
       ]
     },
@@ -210,7 +210,7 @@ window.GRAMMAR.push(
       ],
       tips: [
         "In guesses, the opposite of must is can't, not mustn't: \"He can't be serious\", not \"He mustn't be serious\" (mustn't means it is not allowed).",
-        "\"He has probably left\" = must have left, not \"must leave\" or \"should have left\" (should have is blame: \"you should have done it\").",
+        "\"I'm sure he has left\" = He must have left, not \"must leave\" or \"should have left\" (should have is blame: \"you should have done it\").",
         "Couldn't have + V3 also means \"I'm sure it didn't happen\". Could have + V3 means \"it was possible, but it didn't happen\" or \"maybe it happened\"."
       ]
     },

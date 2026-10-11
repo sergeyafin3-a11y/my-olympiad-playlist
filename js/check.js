@@ -76,16 +76,15 @@
     return "";
   }
 
-  // Где остановить плеер: там, где начинается аудио следующего задания. Иначе после Task 2,
-  // который звучит один раз, сразу играл Task 3. Пропуск внутри задания (skip) — не граница.
-  function stopAfter(variant, from) {
+  // Где остановить плеер: там, где начинается аудио следующего задания после текущей точки.
+  // Иначе после Task 2, который звучит один раз, сразу играл Task 3. Считается от любой
+  // позиции — после паузы, перемотки и пропуска внутри задания.
+  function stopAfter(variant, at) {
     var next = null;
     variant.parts.forEach(function (p) { p.tasks.forEach(function (t) {
-      if (t.audio && t.audio.from > from && (next === null || t.audio.from < next)) next = t.audio.from;
+      if (t.audio && t.audio.from > at && (next === null || t.audio.from < next)) next = t.audio.from;
     }); });
-    var own = null;
-    variant.parts.forEach(function (p) { p.tasks.forEach(function (t) { if (t.audio && t.audio.from === from) own = t; }); });
-    return own ? next : null;
+    return next;
   }
 
   window.Check = { norm: norm, score: score, rightAnswer: rightAnswer, stopAfter: stopAfter };

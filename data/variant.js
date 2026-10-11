@@ -340,7 +340,7 @@
               { id: "gram", t: "Grammar", max: 2 },
               { id: "phon", t: "Pronunciation", max: 2 }
             ],
-            note: "If the monologue gets 0, the total for Speaking is 0. You get 0 for the answer if you read your notes for more than 50% of your monologue time. Questions: ask only WH-questions about the topic of the talk; yes/no questions and questions about your partner's opinion do not count, and a question does not count if you read your partner's fact file during the talk. Answers: \"Sorry, I don't know, I'll look it up on the Internet\" gets 0; use the fact file, and if the fact file does not have the answer, a possible (not silly) guess is accepted. The official videos for the monologues are not in the open archive, so this screen shows other videos about the same festivals."
+            note: "Speak, do not read: you get 0 for the whole answer if you read your talk from your notes (more than 50% of your monologue time). If the monologue gets 0, the total for Speaking is 0. Questions: ask only WH-questions about the topic of the talk; yes/no questions and questions about your partner's opinion do not count, and a question does not count if you read your partner's fact file during the talk. Answers: \"Sorry, I don't know, I'll look it up on the Internet\" gets 0; use the fact file, and if the fact file does not have the answer, a possible (not silly) guess is accepted. The official videos for the monologues are not in the open archive, so this screen shows other videos about the same festivals."
           }
         ]
       }

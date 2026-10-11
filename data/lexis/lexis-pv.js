@@ -147,7 +147,7 @@ window.LEXIS.push(
         ] }
       ],
       tips: [
-        "Think of the “rival” word: wait FOR = await; get married TO = marry; reply TO = answer. The second word has no preposition.",
+        "Think of the synonym with a preposition: wait FOR = await; get married TO = marry; reply TO = answer. The second word has no preposition.",
         "A noun can have a preposition when the verb has none: a discussion about the film, but discuss the film.",
         "In a “find the extra word” task, check every preposition after a verb: He entered into the hall → into is extra."
       ]
