@@ -85,6 +85,9 @@
     if (location.hash === "" || location.hash === "#/") A.keepScroll(A.render);
   }
 
+  // Игры со словами зовут это сами: у них свои кнопки, которых нет в списке ниже.
+  A.markActivity = markActivity;
+
   // Действия, которые засчитывают день: проверка задания в экзамене, грамматике, лексике и занятия словами.
   var COUNTS = ["check", "gcheck", "lcheck", "wgrade", "wcheck", "wpick"];
   document.addEventListener("click", function (e) {
