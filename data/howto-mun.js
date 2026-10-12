@@ -60,7 +60,7 @@
   };
 
   H.tasks["m-u1"] = {
-    what: "Find the extra word: some lines of a film review have one word that must not be there. Other lines are correct.",
+    what: "Find the extra word: some lines of a text have one word that must not be there. Other lines are correct.",
     steps: [
       "Read the whole line slowly. Then read it again and ask: is every word needed?",
       "Try to take out one word. If the sentence becomes correct and keeps its meaning, this is the extra word.",
