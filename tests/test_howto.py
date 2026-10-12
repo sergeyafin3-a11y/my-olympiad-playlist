@@ -16,9 +16,11 @@ def run_js(body):
     src = "\n".join([
         "var window = this;",
         (ROOT / "data" / "variant-mun-msk-25-26.js").read_text(encoding="utf-8"),
+        (ROOT / "data" / "variant-reg-25-26.js").read_text(encoding="utf-8"),
         (ROOT / "data" / "variant.js").read_text(encoding="utf-8"),
         (ROOT / "data" / "howto.js").read_text(encoding="utf-8"),
         (ROOT / "data" / "howto-mun.js").read_text(encoding="utf-8"),
+        (ROOT / "data" / "howto-reg.js").read_text(encoding="utf-8"),
         "JSON.stringify((function(){ var V = window.VARIANT, H = window.HOWTO; " + body + "})());",
     ])
     out = subprocess.run(["osascript", "-l", "JavaScript", "-e", src], capture_output=True, text=True, check=True)

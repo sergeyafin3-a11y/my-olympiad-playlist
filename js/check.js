@@ -39,10 +39,11 @@
     }, 0);
     // По критериям ВсОШ ноль за содержание (письмо) или за монолог (устная часть) обнуляет всё.
     // Пока этот критерий не выставлен, работа считается непроверенной: иначе 0/9 на экране
-    // соседствовал бы с ненулевой суммой.
-    var gate = task.type === "writing" ? "task" : "mono";
-    var marked = marks[gate] != null;
-    if (!marked || Number(marks[gate]) === 0) got = 0;
+    // соседствовал бы с ненулевой суммой. В критериях регионального Speaking такого правила нет —
+    // там задание пишет zeroGate: null, и сумма считается как есть.
+    var gate = task.type === "writing" ? "task" : (task.zeroGate === undefined ? "mono" : task.zeroGate);
+    var marked = gate ? marks[gate] != null : task.criteria.some(function (c) { return marks[c.id] != null; });
+    if (!marked || (gate && Number(marks[gate]) === 0)) got = 0;
     return { got: got, max: max, items: [], marked: marked };
   }
 
@@ -87,5 +88,27 @@
     return next;
   }
 
-  window.Check = { norm: norm, score: score, rightAnswer: rightAnswer, stopAfter: stopAfter };
+  // Скрипт для голоса компьютера: по репликам, без меток говорящих («A:», «Presenter:» —
+  // голос читал их вслух, и «A» путалась с буквой ответа), по предложениям — но не по точке
+  // внутри числа («10.8 million» читалось как «10.» и «8 million»). Длинное предложение режем
+  // ещё и по запятым: Chrome обрывает реплику длиннее ~15 секунд.
+  function speechParts(text) {
+    var out = [];
+    String(text).split(/\n+/).forEach(function (line) {
+      line = line.replace(/^[^:\n]{1,30}:\s*/, "").trim();
+      (line.match(/(?:[^.!?]|[.!?](?=[^\s.!?]))+[.!?]*/g) || []).forEach(function (sent) {
+        sent = sent.trim(); if (!sent) return;
+        while (sent.length > 160) {
+          var cut = Math.max(sent.lastIndexOf(", ", 160), sent.lastIndexOf("; ", 160), sent.lastIndexOf(" - ", 160));
+          if (cut < 40) cut = sent.lastIndexOf(" ", 160);
+          if (cut < 1) break;
+          out.push(sent.slice(0, cut + 1).trim()); sent = sent.slice(cut + 1).trim();
+        }
+        if (sent) out.push(sent);
+      });
+    });
+    return out;
+  }
+
+  window.Check = { norm: norm, score: score, rightAnswer: rightAnswer, stopAfter: stopAfter, speechParts: speechParts };
 })();

@@ -134,7 +134,7 @@ class Lookup(unittest.TestCase):
         src = (ROOT / "data" / "dict.js").read_text(encoding="utf-8")
         words = json.loads(src[src.index("window.DICT = ") + len("window.DICT = "):src.rindex(";\n})();")])["words"]
         missing = set()
-        for f in [ROOT / "data" / "variant.js"] + [pathlib.Path(p) for p in glob.glob(str(ROOT / "data" / "lexis" / "*.js")) + glob.glob(str(ROOT / "data" / "grammar" / "*.js"))]:
+        for f in [ROOT / "data" / "variant.js", ROOT / "data" / "variant-reg-25-26.js"] + [pathlib.Path(p) for p in glob.glob(str(ROOT / "data" / "lexis" / "*.js")) + glob.glob(str(ROOT / "data" / "grammar" / "*.js"))]:
             for lit in re.findall(r'"((?:[^"\\]|\\.)*)"', f.read_text(encoding="utf-8")):
                 if re.search(r"[а-яА-ЯёЁ]", lit) and not re.search(r"[A-Za-z]{3}", lit):
                     continue

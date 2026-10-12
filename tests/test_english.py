@@ -14,8 +14,8 @@ import unittest
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 CYR = re.compile(r"[А-Яа-яЁё]")
-DATA = ["data/variant-mun-msk-25-26.js", "data/variant.js", "data/howto.js", "data/howto-mun.js",
-        "data/explain.js", "data/explain-mun.js", "data/videos.js",
+DATA = ["data/variant-mun-msk-25-26.js", "data/variant-reg-25-26.js", "data/variant.js", "data/howto.js", "data/howto-mun.js",
+        "data/howto-reg.js", "data/explain.js", "data/explain-mun.js", "data/explain-reg.js", "data/videos.js",
         "data/grammar/grammar-a1.js", "data/grammar/grammar-a2.js", "data/grammar/grammar-b1.js", "data/grammar/grammar-b2.js",
         "data/lexis/lexis-wf.js", "data/lexis/lexis-pv.js", "data/lexis/lexis-wp.js"]
 

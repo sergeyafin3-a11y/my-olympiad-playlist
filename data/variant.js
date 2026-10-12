@@ -241,7 +241,7 @@
         id: "writing", title: "Writing", minutes: 75, max: 20,
         tasks: [
           {
-            id: "writing-1", section: "writing", title: "Short story · The mysterious book", type: "writing",
+            id: "writing-1", section: "writing", title: "Short story · The mysterious book", type: "writing", placeholder: "Once upon a time…",
             intro: "An English language magazine invites young people to participate in a writing competition. The participant must write a short story based on the following premise:",
             premise: "A young person finds a mysterious book in a library. This book contains not just words, but three encrypted messages in the form of riddles. Each solved riddle helps the person to understand an important truth and changes their life's course.",
             outro: "You decide to take part and write the short story.",
