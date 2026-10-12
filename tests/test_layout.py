@@ -10,7 +10,7 @@ HTML = (ROOT / "index.html").read_text(encoding="utf-8")
 class Tabs(unittest.TestCase):
     def test_tab_bar_lists_every_section_in_order(self):
         tabs = re.findall(r'\{ href: "(#/[a-z]*)", icon: "[^"]+", label: "([^"]+)"', HTML)
-        self.assertEqual([t[0] for t in tabs], ["#/", "#/lexis", "#/grammar", "#/words", "#/results"])
+        self.assertEqual([t[0] for t in tabs], ["#/", "#/warmup", "#/lexis", "#/grammar", "#/words", "#/results"])
         self.assertIn('class="tabbar"', HTML)
 
     def test_home_no_longer_stacks_practice_sections(self):
