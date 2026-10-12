@@ -240,7 +240,7 @@
           {
             // Критерии — из файла ответов (с. 17–19): 4 балла за решение задачи и по 4 за четыре критерия оформления.
             // Объём 200–250 слов, допустимо 180–275; от 276 слов проверяются первые 250.
-            id: "m-w1", section: "writing", title: "Story · Stories Wanted", type: "writing",
+            id: "m-w1", section: "writing", title: "Story · Stories Wanted", type: "writing", placeholder: "Once upon a time…",
             intro: "You see the following notice in an English youth magazine and decide to send your story.",
             premise: "Stories Wanted. Write a story for our magazine. The story must end with the sentence: Jim happened to see the letter and decided to book a ticket for the first train heading home.",
             outro: "Write 200-250 words (the title is included in the word count).",

@@ -135,6 +135,26 @@ class Regional(unittest.TestCase):
         self.assertIn("if (t.afterText) h += ", HTML)
         self.assertLess(HTML.index("if (t.afterText) h += "), HTML.index("if (t.audio) {"))
 
+    def test_computer_voice_keeps_numbers_drops_speaker_labels_and_short_pieces(self):
+        # Ревью PR 26: «10.8 million» читалось как «10.» + «8 million» — ученица отвечала бы False на вопрос 4 (ключ — True).
+        r = run_js("""
+          var a = C.speechParts("In fact, it's estimated that 10.8 million gallons were released. Then it stopped.");
+          var b = C.speechParts("A: It sounds great.\\nMichelangelo Cerracchio: Well, yes.");
+          var long = C.speechParts("It's true that damages were awarded only in 2008, after a long series of appeals, and the amount was cut again and again, while many of the people who had suffered were no longer alive to receive anything at all from the company.");
+          return {a: a, b: b, maxLen: Math.max.apply(null, long.map(function(x){ return x.length; })), joined: long.join(" ")};
+        """)
+        self.assertEqual(r["a"][0], "In fact, it's estimated that 10.8 million gallons were released.")
+        self.assertEqual(r["b"], ["It sounds great.", "Well, yes."])
+        self.assertLessEqual(r["maxLen"], 170)
+        self.assertIn("2008", r["joined"])
+        self.assertIn("C.speechParts(", HTML)
+
+    def test_listening_instruction_comes_before_the_voice_button(self):
+        self.assertLess(HTML.index("if (t.afterText) h += "), HTML.index("if (!t.audio && t.script) h += scriptBlock(t);"))
+
+    def test_home_does_not_promise_audio_when_there_is_none(self):
+        self.assertIn("V.audio ? ", HTML[HTML.index("Official tasks") - 300:HTML.index("Official tasks") + 300])
+
 
 if __name__ == "__main__":
     unittest.main()

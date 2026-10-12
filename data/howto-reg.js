@@ -10,7 +10,7 @@
 
   H.stages["reg-2025-26"] = {
     title: "Regional stage 2025/26",
-    note: "These are last year's (2025/26) tasks of the regional stage — the stage after the municipal one. It is much harder than the municipal stage: the texts and tasks are at about C1 level, and they are similar to the final. There are two days. The written day has Listening and Reading (1 hour 15 minutes, 40 points), Use of English (45 minutes, 20 points) and Writing (60 minutes, 20 points). Speaking is on a separate day (about 10 minutes with a partner, 20 points). The maximum is 100 points. The official Listening recording is not published, so your teacher reads the transcript aloud, or the computer voice reads it. It is OK if a lot is difficult: the goal is to learn how these tasks work."
+    note: "These are last year's (2025/26) tasks of the regional stage — the stage after the municipal one. It is much harder than the municipal stage: the texts and tasks are at about C1 level, and they are similar to the final. The written tour has Listening and Reading (1 hour 15 minutes, 40 points), Use of English (45 minutes, 20 points) and Writing (60 minutes, 20 points). Speaking is a separate tour (about 10 minutes with a partner, 20 points); in 2026/27 the regional stage in English is on 24 and 25 February. The maximum is 100 points. The official Listening recording is not published, so your teacher reads the transcript aloud, or the computer voice reads it. It is OK if a lot is difficult: the goal is to learn how these tasks work."
   };
 
   // Общий шаг для трёх заданий на аудирование: записи нет, читаем официальный скрипт.
@@ -20,14 +20,14 @@
     what: "Listening: a business journalist talks about how companies are responsible for their actions. Is each sentence true or false?",
     steps: [
       NO_AUDIO,
-      "Before the listening starts, read sentences 1–10. Underline key words: numbers, years, money, \"all\", \"more… than\", \"as big as\".",
+      "Before the listening starts, read sentences 1–10. Underline key words in each sentence: names, numbers, years, words about time and amount.",
       "You hear the text TWICE, as at the real olympiad. Listen the first time and mark your answers.",
       "Listen the second time and check the answers you are not sure about. (The computer voice reads the text once — press the button again for the second time.)",
       "A (True) = the speaker says the same thing in other words. B (False) = the speaker says something different, or does not say it at all.",
       "Open the transcript only after you answer, and check your mistakes with it."
     ],
     example: "An example that is NOT from the task: you hear \"Our school started a recycling project last year, and now most classes take part.\" The sentence \"All classes take part in the project\" → B (False): most is not all.",
-    tip: "There is no \"Not given\" here. If the speaker does not say it, choose B (False). Many false sentences change only one detail: a number, a date, \"all\" instead of \"some\", or a comparison (\"as big as\", \"more than\")."
+    tip: "There is no \"Not given\" here. If the speaker does not say it, choose B (False). Many false sentences change only one small detail: a number, a date, an amount or a comparison. Check every detail, not only the general idea."
   };
 
   H.tasks["r-l2"] = {
@@ -40,7 +40,7 @@
       "The speaker often says the idea in other words. The option with the same word as the text is not always right — check the meaning."
     ],
     example: "An example that is NOT from the task: you hear \"I was so nervous before the exam, but in the end it was easy.\" The question \"How did she feel after the exam?\" A nervous, B relieved, C bored → B: \"nervous\" was before the exam, not after it.",
-    tip: "Question 11 asks what is NOT TRUE: two options are true, choose the false one. When a question asks about the most important moment or reason, the speaker may name several things. Listen for words like \"but\", \"actually\" or \"the main thing\" that show which one matters most."
+    tip: "Question 11 asks what is NOT TRUE: two options are true, choose the false one. When a question asks about the most important moment or reason, the speaker may name several things. Listen to the whole answer before you choose."
   };
 
   H.tasks["r-lr3"] = {
@@ -53,7 +53,7 @@
       "Check each sentence two times: \"Is it in the article?\" (you can look at the text again) and \"Is it in the interview?\". Then choose the letter."
     ],
     example: "An example that is NOT from the task: an article about a school trip says \"the food was cheap\". In an interview a student says \"the food was cheap and very tasty\". \"The food was cheap\" → A (both). \"The food was tasty\" → C (only the interview). \"The food was free\" → D (neither).",
-    tip: "In the article many students speak, in the interview only one. \"The student\" in a sentence can be any student from the article. Similar words are not the same idea: if a speaker mentions an idea only to say that it is wrong, this idea is NOT expressed. Strong words like always, never, only, all must be in the material, too."
+    tip: "In the article many students speak, in the interview only one. \"The student\" in a sentence can be any student from the article. Similar words are not the same idea: check that the material really says this, not just uses the same words. Every part of the sentence must be in the material."
   };
 
   H.tasks["r-r4"] = {
@@ -113,14 +113,14 @@
     what: "Writing: a review of a festival of young people's startups for a youth magazine, 200–250 words, with a title.",
     steps: [
       "A review describes an event and gives your opinion. Talk to the reader, use strong adjectives and your own feelings. If the text is not a review of the festival, you get 0 for the whole work.",
-      "List the 9 content points — ALL of them must be in your review: 1) a title, 2) an introduction, 3) the most surprising futuristic startup, 4) what makes it unique, 5) its impact on society in the years to come, 6) possible challenges for young startups, 7) and 8) quotes from TWO visitors (each quote is a separate point), 9) your feelings: are such festivals important for young people?",
+      "List the 9 content points — each one gives you points, so put ALL of them in your review: 1) a title, 2) an introduction, 3) the most surprising futuristic startup, 4) what makes it unique, 5) its impact on society in the years to come, 6) possible challenges for young startups, 7) and 8) quotes from TWO visitors (each quote is a separate point), 9) your feelings: are such festivals important for young people?",
       "Plan your paragraphs: title → introduction (what, where, who) → the startup and what makes it unique → its impact on society in the future → challenges for young startups + the two quotes → your feelings and a short conclusion.",
       "Write the quotes as direct speech with quotation marks, and say who the visitor is.",
       "Count your words: 200–250 (the title counts too). Fewer than 180 words = 0 points. After 275 words only the first 250 are checked.",
       "Read it again: are all 9 points there? Check tenses, spelling, commas and full stops. Write it yourself: a copied text gets 0."
     ],
     example: "A quote that is NOT from the task: \"I never thought a school student could build a robot like this,\" said Anna, a teacher who visited the festival with her class.",
-    tip: "Check the list before you finish. If even one of the 9 points is missing (for example, you give only one quote), Task completion gets 0 — and then the whole review gets 0. Task completion gives 10 of the 20 points: it is the most important criterion."
+    tip: "Task completion gives 10 of the 20 points: 1 point for the right style (neutral, friendly, not too formal) and 1 point for each content point, 2 for the two quotes. A missing point loses its points (one quote instead of two = minus 1). Check the list before you finish."
   };
 
   H.tasks["r-s1"] = {

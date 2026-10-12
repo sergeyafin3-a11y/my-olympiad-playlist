@@ -292,7 +292,7 @@
               { id: "gram", t: "Grammar", max: 3 },
               { id: "spell", t: "Spelling and punctuation", max: 2 }
             ],
-            note: "If Task completion gets 0 points, the whole work gets 0. Task completion gets 0 if the text is not a review of the festival, if the 9 content points are not all there (the title and every point of the list; quotes from two visitors count as two points), if there are fewer than 180 words, or if more than 30% of the text is copied (the same as a published or Internet text). Fewer than 180 words = 0 points. If there are more than 275 words, only the first 250 words are checked. The title counts as words too."
+            note: "If Task completion gets 0 points, the whole work gets 0. Task completion (10 points) = 1 point for the right style (neutral, not too formal) + 1 point for each content point: title, introduction, the most surprising startup, what makes it unique, its impact on society, possible challenges, your opinion about such festivals — and 2 points for the quotes (1 point if you quote only one visitor). A missing point loses only its own points. Task completion gets 0 if the text is not a review of the festival, if none of the 9 content points are covered, if there are fewer than 180 words, or if more than 30% of the text is copied (the same as a published or Internet text). Fewer than 180 words = 0 points. If there are more than 275 words, only the first 250 words are checked. The title counts as words too."
           }
         ]
       },

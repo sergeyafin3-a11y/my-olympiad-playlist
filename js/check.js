@@ -88,5 +88,27 @@
     return next;
   }
 
-  window.Check = { norm: norm, score: score, rightAnswer: rightAnswer, stopAfter: stopAfter };
+  // Скрипт для голоса компьютера: по репликам, без меток говорящих («A:», «Presenter:» —
+  // голос читал их вслух, и «A» путалась с буквой ответа), по предложениям — но не по точке
+  // внутри числа («10.8 million» читалось как «10.» и «8 million»). Длинное предложение режем
+  // ещё и по запятым: Chrome обрывает реплику длиннее ~15 секунд.
+  function speechParts(text) {
+    var out = [];
+    String(text).split(/\n+/).forEach(function (line) {
+      line = line.replace(/^[^:\n]{1,30}:\s*/, "").trim();
+      (line.match(/(?:[^.!?]|[.!?](?=[^\s.!?]))+[.!?]*/g) || []).forEach(function (sent) {
+        sent = sent.trim(); if (!sent) return;
+        while (sent.length > 160) {
+          var cut = Math.max(sent.lastIndexOf(", ", 160), sent.lastIndexOf("; ", 160), sent.lastIndexOf(" - ", 160));
+          if (cut < 40) cut = sent.lastIndexOf(" ", 160);
+          if (cut < 1) break;
+          out.push(sent.slice(0, cut + 1).trim()); sent = sent.slice(cut + 1).trim();
+        }
+        if (sent) out.push(sent);
+      });
+    });
+    return out;
+  }
+
+  window.Check = { norm: norm, score: score, rightAnswer: rightAnswer, stopAfter: stopAfter, speechParts: speechParts };
 })();
