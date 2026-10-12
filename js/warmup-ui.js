@@ -1,10 +1,11 @@
 // Вкладка Warm-up: разминки на 5–10 минут из data/warmups.js.
-// Список — две группы (разговор и навык) с фильтром по части олимпиады; страница разминки —
-// вопросы и слова (разговор) или задания со спрятанными ответами (навык).
+// Учитель 12.10: «ничего не понимаю» — поэтому наверху выбор этапа (по умолчанию муниципальный,
+// на нём сейчас подготовка), а внутри — части экзамена в порядке олимпиады. На карточке — что это:
+// 💬 Talk (поговорить на тему) или ✏️ Practice (короткое упражнение). Без фильтров.
 // Кнопка «Done» отмечает разминку и засчитывает день 🔥 — как проверка задания.
 (function () {
   var A = window.App, W = window.WARMUPS || [], esc = A.esc;
-  var KEY = "olymp-warmups", COLOR = "#FFB347";
+  var KEY = "olymp-warmups", STAGE_KEY = "olymp-warmup-stage", COLOR = "#FFB347";
   // { id: "2026-10-12" } — день, когда разминку сделали. Испорченное значение (массив, строка) — заново.
   var done = {};
   try { var raw = JSON.parse(localStorage.getItem(KEY) || "{}"); if (raw && typeof raw === "object" && !Array.isArray(raw)) done = raw; } catch (e) {}
@@ -12,13 +13,21 @@
   // Разминку можно делать на каждом уроке: «сделано» — только сегодня, завтра кнопка снова есть.
   function doneToday(id) { return done[id] === today(); }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {} }
-  var filter = "all";
-  var FILTERS = [["all", "All"], ["talk", "💬 Talk"], ["listening", "🎧 Listening"], ["reading", "📖 Reading"],
-                 ["uoe", "🧩 Use of English"], ["culture", "🏛️ Culture"], ["writing", "✍️ Writing"], ["speaking", "🎤 Speaking"]];
-  var GROUPS = [
-    { kind: "talk", title: "Talk", icon: "💬", color: "#FFB347", sub: "10-minute conversations on topics from real olympiad texts" },
-    { kind: "drill", title: "Skill warm-ups", icon: "⚡", color: "#5B7CFF", sub: "5–10 minutes of practice before a task" }
+  var STAGES = [["mun", "Municipal"], ["reg", "Regional"], ["final", "Final"]];
+  var stage = "mun";
+  try { var st = localStorage.getItem(STAGE_KEY); if (st === "reg" || st === "final") stage = st; } catch (e) {}
+  var PARTS = [
+    ["any", "☕", "Any lesson", "Start any lesson with a short chat"],
+    ["listening", "🎧", "Listening", ""],
+    ["reading", "📖", "Reading", ""],
+    ["uoe", "🧩", "Use of English", ""],
+    ["writing", "✍️", "Writing", ""],
+    ["speaking", "🎤", "Speaking", ""]
   ];
+  var KIND = {
+    talk: { label: "💬 Talk", color: "#FFB347", what: "Talk" },
+    drill: { label: "✏️ Practice", color: "#5B7CFF", what: "Practice" }
+  };
 
   var css = document.createElement("style");
   css.textContent = [
@@ -29,6 +38,7 @@
     ".wu-card{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;margin-top:8px;padding:12px 14px;border-radius:12px;background:var(--card);border:1px solid var(--line);text-decoration:none}",
     ".wu-card:hover{border-color:var(--g)}",
     ".wu-card .em{font-size:24px;line-height:1}",
+    ".wu-kind{display:block;font-size:12px;font-weight:700;letter-spacing:.02em;margin-bottom:2px}",
     ".wu-name{display:block;font-family:var(--head);font-size:17px;font-weight:700;line-height:1.2;color:var(--ink)}",
     ".wu-before{display:block;margin-top:3px;font-size:13px;color:var(--mute);line-height:1.35}",
     ".wu-card .st{font-size:12px;color:var(--dim);white-space:nowrap;text-align:right}",
@@ -46,8 +56,6 @@
   document.head.appendChild(css);
 
   function byId(id) { return W.filter(function (w) { return w.id === id; })[0]; }
-  // Разговор привязан к заданию (target): «Dream jobs» стоит и под Talk, и под Listening.
-  function shown(w) { return filter === "all" || w.section === filter || w.target === filter; }
 
   A.routes.warmup = function (parts) {
     var w = parts[1] && byId(parts[1]);
@@ -55,29 +63,34 @@
   };
 
   function list() {
+    var mine = W.filter(function (w) { return w.stages.indexOf(stage) >= 0; });
     var h = '<div style="--c:' + COLOR + '"><div class="tabtop"></div>' +
-      '<div class="album"><span class="sq" aria-hidden="true">☕</span><div><span class="eyebrow" style="color:#DADADA">Start here</span><h1>Warm-ups</h1><p>' + W.length + ' warm-ups · 5–10 minutes each</p></div></div>' +
-      '<p class="howto">Start a lesson or a task with a warm-up. <b>Talk</b> — answer questions on a topic from a real olympiad text. <b>Skill</b> — a short practice before one task. Answers are hidden: say yours first.</p>' +
-      '<div class="cards2" role="tablist" aria-label="Filter">' + FILTERS.map(function (f) {
-        return '<button class="opt' + (filter === f[0] ? ' sel' : '') + '" data-wufilter="' + f[0] + '" role="tab" aria-selected="' + (filter === f[0]) + '">' + esc(f[1]) + '</button>';
+      '<div class="album"><span class="sq" aria-hidden="true">☕</span><div><span class="eyebrow" style="color:#DADADA">Start of the lesson</span><h1>Warm-ups</h1><p>5–10 minutes each</p></div></div>' +
+      '<p class="howto">A warm-up is 5–10 minutes at the start of a lesson. Choose the stage, then the part of the exam you will practise today. ' +
+      '<b>💬 Talk</b> — talk about a topic from a real olympiad text. <b>✏️ Practice</b> — a short exercise before the task; the answers are hidden.</p>' +
+      '<div class="cards2" role="tablist" aria-label="Stage">' + STAGES.map(function (x) {
+        return '<button class="opt' + (stage === x[0] ? ' sel' : '') + '" data-wustage="' + x[0] + '" role="tab" aria-selected="' + (stage === x[0]) + '">' + esc(x[1]) + '</button>';
       }).join("") + '</div>';
-    GROUPS.forEach(function (g) {
-      var items = W.filter(function (w) { return w.kind === g.kind && shown(w); });
+    PARTS.forEach(function (p) {
+      var items = mine.filter(function (w) { return w.part === p[0]; });
       if (!items.length) return;
-      h += '<div class="wu-group" style="--g:' + g.color + '"><span class="ic" aria-hidden="true">' + g.icon + '</span><h2>' + esc(g.title) + '</h2></div><p class="wu-sub">' + esc(g.sub) + '</p>';
-      items.forEach(function (w) {
-        h += '<a class="wu-card" href="#/warmup/' + w.id + '" style="--g:' + g.color + '"><span class="em" aria-hidden="true">' + w.icon + '</span>' +
-          '<span><span class="wu-name">' + esc(w.title) + '</span><span class="wu-before">' + esc(w.before) + '</span></span>' +
+      h += '<div class="wu-group" style="--g:' + COLOR + '"><span class="ic" aria-hidden="true">' + p[1] + '</span><h2>' + esc(p[2]) + '</h2></div>' + (p[3] ? '<p class="wu-sub">' + esc(p[3]) + '</p>' : '');
+      // Сначала разговор, потом упражнение: так и идёт урок.
+      items.sort(function (x, y) { return (x.kind === "talk" ? 0 : 1) - (y.kind === "talk" ? 0 : 1); }).forEach(function (w) {
+        var k = KIND[w.kind];
+        h += '<a class="wu-card" href="#/warmup/' + w.id + '" style="--g:' + k.color + '"><span class="em" aria-hidden="true">' + w.icon + '</span>' +
+          '<span><span class="wu-kind" style="color:' + k.color + '">' + k.label + '</span><span class="wu-name">' + esc(w.title) + '</span><span class="wu-before">' + esc(w.before) + '</span></span>' +
           '<span class="st' + (doneToday(w.id) ? ' done' : '') + '">' + (doneToday(w.id) ? '✓ today' : w.minutes + ' min') + '</span></a>';
       });
     });
+    if (stage !== "mun") h += '<p class="note" style="margin-top:18px">Now we are getting ready for the municipal stage — these are for later.</p>';
     return h + '</div>';
   }
 
   function page(w) {
-    var g = GROUPS.filter(function (x) { return x.kind === w.kind; })[0];
-    var h = '<div style="--c:' + g.color + '"><a class="back" href="#/warmup">← Warm-ups</a>' +
-      '<div class="taskhead"><span class="sq" aria-hidden="true">' + w.icon + '</span><div><span class="eyebrow">' + esc(g.title) + ' · ' + w.minutes + ' min</span><h1>' + esc(w.title) + '</h1></div></div>' +
+    var k = KIND[w.kind];
+    var h = '<div style="--c:' + k.color + '"><a class="back" href="#/warmup">← Warm-ups</a>' +
+      '<div class="taskhead"><span class="sq" aria-hidden="true">' + w.icon + '</span><div><span class="eyebrow">' + esc(k.label) + ' · ' + w.minutes + ' min</span><h1>' + esc(w.title) + '</h1></div></div>' +
       '<p class="howto">' + esc(w.goal) + '</p>' +
       '<p class="note"><b>Before:</b> ' + esc(w.before) + '</p>' +
       '<ol class="wu-steps" aria-label="What to do">' + w.steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join("") + '</ol>';
@@ -99,7 +112,7 @@
 
   document.addEventListener("click", function (e) {
     var b = e.target.closest("button"); if (!b) return;
-    if (b.dataset.wufilter) { filter = b.dataset.wufilter; A.keepScroll(A.render); return; }
+    if (b.dataset.wustage) { stage = b.dataset.wustage; try { localStorage.setItem(STAGE_KEY, stage); } catch (e) {} A.keepScroll(A.render); return; }
     if (b.dataset.wuword) { if (A.words && A.words.offer) A.words.offer(b.dataset.wuword, (byId((location.hash.split("/")[2] || "")) || {}).title); return; }
     if (b.dataset.wuall) { document.querySelectorAll(".wu-item details").forEach(function (d) { d.open = true; }); return; }
     if (b.dataset.wudone) {

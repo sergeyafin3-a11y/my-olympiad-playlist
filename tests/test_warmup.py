@@ -94,6 +94,31 @@ class Warmups(unittest.TestCase):
         self.assertIn("A.words = {", (ROOT / "js" / "vocab-ui.js").read_text(encoding="utf-8"))
         self.assertIn("offer:", (ROOT / "js" / "vocab-ui.js").read_text(encoding="utf-8"))
 
+    def test_split_by_stage_municipal_first_and_by_exam_part(self):
+        # Учитель 12.10: «ничего не понимаю — раздели на муниципальные, региональные и всероссийские,
+        # сейчас фокус на муниципальном». Внутри этапа — по частям экзамена, как на олимпиаде.
+        r = run_js("""
+          var bad = [], STAGES = ["mun", "reg", "final"], PARTS = ["any", "listening", "reading", "uoe", "writing", "speaking"];
+          W.forEach(function(w){
+            if (!Array.isArray(w.stages) || !w.stages.length || w.stages.some(function(s){ return STAGES.indexOf(s) < 0; })) bad.push(w.id + ": stages");
+            if (PARTS.indexOf(w.part) < 0) bad.push(w.id + ": part");
+          });
+          var mun = W.filter(function(w){ return w.stages.indexOf("mun") >= 0; });
+          var parts = {}; mun.forEach(function(w){ parts[w.part] = 1; });
+          return {bad: bad, mun: mun.length, munSpeaking: mun.filter(function(w){ return w.part === "speaking"; }).length, parts: Object.keys(parts).sort()};
+        """)
+        self.assertEqual(r["bad"], [])
+        self.assertGreaterEqual(r["mun"], 12)
+        self.assertEqual(r["munSpeaking"], 0, "на муниципальном этапе нет устной части")
+        for p in ["listening", "reading", "uoe", "writing"]:
+            self.assertIn(p, r["parts"])
+        ui = (ROOT / "js" / "warmup-ui.js").read_text(encoding="utf-8")
+        self.assertIn("data-wustage", ui)
+        self.assertIn('stage = "mun"', ui)
+        self.assertNotIn("data-wufilter", ui)
+        for label in ["💬 Talk", "✏️ Practice", "Municipal", "Regional", "Final"]:
+            self.assertIn(label, ui)
+
 
 if __name__ == "__main__":
     unittest.main()
