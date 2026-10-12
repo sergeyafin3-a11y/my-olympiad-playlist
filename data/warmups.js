@@ -32,7 +32,7 @@
       goal: "Talk about jobs and careers before you listen to a pilot's story.",
       steps: ["Answer each question in 2–3 sentences.", "Give a reason for every answer: because…, that's why…", "Use words from the list."],
       questions: [
-        "What did you want to be when you were a child? Do you still want it?",
+        "What did you want to be when you were a child? Do you still want to?",
         "Which job do you think is the most exciting? Which is the most difficult?",
         "Would you like a job where you travel a lot? Why or why not?",
         "What is more important in a job: money, interesting work or free time?",
@@ -125,9 +125,9 @@
       questions: [
         "Which invention of the last ten years is the most useful?",
         "If you started a company, what would it do?",
-        "What problems of the world could young people solve?",
+        "Which of the world's problems could young people help to solve?",
         "Why do many new companies fail?",
-        "Would you like to visit a festival of startups? What would you ask the inventors?"
+        "Would you like to visit a startup festival? What would you ask the inventors?"
       ],
       words: ["a startup", "an investor", "innovative", "futuristic", "a challenge", "to launch", "an impact", "unique"]
     },
@@ -174,7 +174,7 @@
         "Is it easier to move abroad alone or with your family?",
         "What should a person learn before they move to a new country?"
       ],
-      words: ["abroad", "to settle", "to adapt", "homesick", "a culture shock", "a scholarship", "the local language", "an exchange student"]
+      words: ["abroad", "to settle", "to adapt", "homesick", "culture shock", "a scholarship", "the local language", "an exchange student"]
     },
     {
       id: "t-ads", kind: "talk", section: "talk", target: "uoe", icon: "📢", minutes: 10,
@@ -195,14 +195,14 @@
       id: "t-smalltalk", kind: "talk", section: "talk", target: "speaking", icon: "☕", minutes: 5,
       title: "Small talk",
       before: "Municipal 2024/25 · Use of English Task 1 (conversation skills)",
-      goal: "Practise starting and keeping a conversation — a 5-minute start of any lesson.",
+      goal: "Practise starting a conversation and keeping it going — a five-minute warm-up for any lesson.",
       steps: ["The teacher starts with a simple question.", "Answer and ask a question back every time: And you?, What about you?", "Keep the conversation going for 5 minutes."],
       questions: [
         "How was your week?",
         "What was the best moment of your weekend?",
         "What are you looking forward to?",
         "What did you watch or read recently?",
-        "What is the weather like today, and how does it change your mood?"
+        "What is the weather like today, and how does it affect your mood?"
       ],
       words: ["by the way", "actually", "to look forward to", "it depends", "I see what you mean", "really?", "how come?", "that sounds…"]
     },
@@ -247,8 +247,8 @@
       goal: "Choose the right part of speech and add the right prefix or suffix.",
       steps: ["Look at the words around the gap: which part of speech do you need?", "Check the meaning: do you need a negative word (un-, in-, dis-, im-)? A plural?", "Say the word and spell it."],
       items: [
-        { q: "She speaks with great ___ about her work. (ENTHUSIASTIC)", a: "enthusiasm — after \"great\" we need a noun." },
-        { q: "The results were completely ___ — nobody expected them. (PREDICT)", a: "unpredictable — adjective + negative prefix." },
+        { q: "She talks ___ about her work. (ENTHUSIASM)", a: "enthusiastically — after a verb we need an adverb: enthusiasm → enthusiastic → enthusiastically." },
+        { q: "The weather in the mountains is completely ___ — it can change in minutes. (PREDICT)", a: "unpredictable — an adjective + the negative prefix un-." },
         { q: "Nobody made him help — he did it ___. (VOLUNTARY)", a: "voluntarily — an adverb (how he did it): by his own choice." },
         { q: "The town is famous for its beautiful ___. (ARCHITECT)", a: "architecture — a noun: the style of buildings." },
         { q: "The new rules will improve the ___ of children on the roads. (SAFE)", a: "safety — after \"the\" and before \"of\" we need a noun." },
@@ -267,7 +267,7 @@
         { q: "If you don't hurry, you'll miss the bus. — UNLESS — You'll miss the bus ___.", a: "unless you hurry" },
         { q: "The weather was so bad that we stayed at home. — SUCH — It was ___ that we stayed at home.", a: "such bad weather" },
         { q: "I'm sure she forgot about the meeting. — MUST — She ___ about the meeting.", a: "must have forgotten" },
-        { q: "You should start revising for the exam now. — TIME — It's ___ revising for the exam.", a: "time you started" },
+        { q: "You should start revising for the exam now. — TIME — It's ___ revising for the exam.", a: "time you started (also: time to start)" },
         { q: "It wasn't necessary for him to come, so he stayed at home. — NEED — He ___ come.", a: "did not need to (also: had no need to)" },
         { q: "She started learning Spanish three years ago. — BEEN — She ___ Spanish for three years.", a: "has been learning" }
       ]
@@ -294,15 +294,15 @@
       steps: ["The teacher reads the question.", "Answer in one sentence.", "These topics came up in past years, so they are worth knowing."],
       items: [
         { q: "What is the Smithsonian?", a: "A research institution and group of museums in the USA, founded with money left by an English scientist (James Smithson)." },
-        { q: "What is the Ashmolean?", a: "A museum of the University of Oxford — the oldest public museum of art, archaeology and natural history in Britain." },
+        { q: "What is the Ashmolean?", a: "The museum of the University of Oxford, opened in 1683 — Britain's oldest public museum. Today it is a museum of art and archaeology." },
         { q: "Where is Land's End?", a: "At the far western end of Cornwall, in the south-west of England." },
         { q: "Which city is called \"the Athens of the North\"?", a: "Edinburgh, the capital of Scotland." },
         { q: "What is the Fringe?", a: "An arts festival in Edinburgh every August, for about three weeks." },
         { q: "Where do you kiss the Blarney Stone, and what does it give you?", a: "At Blarney Castle in Ireland; the legend says it gives you the gift of eloquence (speaking well)." },
-        { q: "What is Gretna Green famous for?", a: "A Scottish village where English couples used to come to marry quickly." },
+        { q: "What is Gretna Green famous for?", a: "A Scottish village just over the border where young English couples used to run away to marry without their parents' permission." },
         { q: "What does a spin doctor do?", a: "Advises a politician or a party and makes them look good in the media." },
         { q: "What does \"to keep up with the Joneses\" mean?", a: "To buy and do the same things as the people around you, so that you look as successful as they are." },
-        { q: "What is a whodunit?", a: "A detective story that is like a puzzle: who did the crime?" }
+        { q: "What is a whodunit?", a: "A detective story or film that is like a puzzle: the reader tries to guess who committed the crime." }
       ]
     },
     {
@@ -312,8 +312,8 @@
       goal: "Say the word from its English definition — the skill of the regional crossword.",
       steps: ["The teacher reads the definition and the first letter.", "Say the word as fast as you can and spell it."],
       items: [
-        { q: "a person who travels to see a place for pleasure (t…)", a: "tourist" },
-        { q: "very old and from a long time ago (a…)", a: "ancient" },
+        { q: "a person who visits a place for pleasure, usually on holiday (t…)", a: "tourist" },
+        { q: "from a time thousands of years ago, as in ___ Greece or ___ Rome (a…)", a: "ancient" },
         { q: "to make something smaller in size or amount (r…)", a: "reduce" },
         { q: "a thing that you have done successfully with effort (a…)", a: "achievement (also: accomplishment)" },
         { q: "not common; happening only a few times (r…)", a: "rare" },
@@ -342,8 +342,8 @@
       goal: "Plan a story in 2 minutes from a first or a last sentence, like the municipal Writing.",
       steps: ["Read the sentence.", "Say the plan in 4 steps: start → problem → what happened → end. If it is the last sentence, your story must lead to it.", "Say one sentence with a past tense and one linking word (suddenly, as soon as, by the time).", "Remember: the real task also asks for a title and some things that must be in the story."],
       items: [
-        { q: "First sentence: \"The phone rang in the middle of the night.\"", a: "Example plan: who called → bad or surprising news → the character's decision → a calm or happy end. Many plans are possible — check the 4 steps and the past tenses." },
-        { q: "Last sentence: \"…and that is why I will never open a strange email again.\"", a: "Example plan: an email with a prize → the character clicks → problems (lost money or data) → the lesson. The story must end with the given words." },
+        { q: "First sentence: \"The phone rang in the middle of the night.\"", a: "Example plan: who called → bad or surprising news → the character's decision → a calm or happy ending. Many plans are possible — check the 4 steps and the past tenses." },
+        { q: "Last sentence: \"…and that is why I will never open a suspicious email again.\"", a: "Example plan: an email with a prize → the character clicks → problems (lost money or data) → the lesson. The story must end with the given words." },
         { q: "First sentence: \"Nobody noticed the old man with the map.\"", a: "Example plan: a street or a station → the narrator helps him → the map leads to a surprise → what the narrator learnt." },
         { q: "Last sentence: \"She finally understood why her grandmother had kept the key.\"", a: "Example plan: an old key is found → a mystery → a box or a letter → the answer about the grandmother. Use the Past Perfect for earlier events." },
         { q: "First sentence: \"It was supposed to be an ordinary school trip.\"", a: "Example plan: the trip starts → something goes wrong (lost, storm, closed museum) → the class solves it → why it became the best trip." }
@@ -360,7 +360,7 @@
         { q: "\"Education is the most powerful weapon which you can use to change the world.\" (Nelson Mandela)", a: "Meaning: knowledge gives people the power to change their lives and their country. Example idea: a person from a poor family who becomes a doctor." },
         { q: "\"The only way to do great work is to love what you do.\" (Steve Jobs)", a: "Meaning: we are best at things we love. Possible disagreement: sometimes we must do great work that we do not love. Give an example." },
         { q: "\"Knowledge is power.\" (usually attributed to Francis Bacon)", a: "Meaning: people who know more can make better decisions and have more influence. Example idea: a scientist, an inventor, or a person who reads the news critically." },
-        { q: "\"The best way to predict the future is to create it.\" (often attributed to Peter Drucker)", a: "Meaning: do not wait — act and build your future. Example idea: a young person who starts a startup or a school project." }
+        { q: "\"The best way to predict the future is to create it.\" (often attributed to Peter Drucker)", a: "Meaning: do not wait — act and build your future. Example idea: a young person who launches a startup or a school project." }
       ]
     }
   ];
