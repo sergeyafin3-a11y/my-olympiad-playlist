@@ -22,7 +22,9 @@
       var w = W.filter(function (x) { return x.id === id; })[0]; if (!w) return;
       var g = Vo.grade(w, ok, Date.now()); W = Vo.update(W, id, { level: g.level, seen: g.seen }); save();
     },
-    color: COLOR
+    color: COLOR,
+    // Предложить сохранить слово или фразу целиком (кнопки-слова в разминках).
+    offer: function (term, ctx) { showPill({ term: term, ctx: ctx || "" }); }
   };
 
   var css = document.createElement("style");
