@@ -39,10 +39,11 @@
     }, 0);
     // По критериям ВсОШ ноль за содержание (письмо) или за монолог (устная часть) обнуляет всё.
     // Пока этот критерий не выставлен, работа считается непроверенной: иначе 0/9 на экране
-    // соседствовал бы с ненулевой суммой.
-    var gate = task.type === "writing" ? "task" : "mono";
-    var marked = marks[gate] != null;
-    if (!marked || Number(marks[gate]) === 0) got = 0;
+    // соседствовал бы с ненулевой суммой. В критериях регионального Speaking такого правила нет —
+    // там задание пишет zeroGate: null, и сумма считается как есть.
+    var gate = task.type === "writing" ? "task" : (task.zeroGate === undefined ? "mono" : task.zeroGate);
+    var marked = gate ? marks[gate] != null : task.criteria.some(function (c) { return marks[c.id] != null; });
+    if (!marked || (gate && Number(marks[gate]) === 0)) got = 0;
     return { got: got, max: max, items: [], marked: marked };
   }
 
