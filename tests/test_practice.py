@@ -19,9 +19,9 @@ HTML = (ROOT / "index.html").read_text(encoding="utf-8")
 KEYS = {
     "2324": {
         "m-u1": ["far", "have", "too", "V", "of", "within", "a", "V", "made", "be", "being", "of", "V", "remains", "it"],
-        "m-u2": ["for Suzy to reach", "will have gone off", "such terrible weather that", "take plenty of exercise/do plenty of exercise/have plenty of exercise/get plenty of exercise", "set off",
-                 "was Vicki's favourite subject", "if it is sunny/if it gets sunny", "about time that he took/about time he started taking",
-                 "would rather have gone", "would have the rubbish taken"],
+        "m-u2": ["for Suzy to reach", "will have gone off", "such terrible weather that", "take plenty of exercise/do plenty of exercise/have plenty of exercise/get plenty of exercise/take plenty of exercises/do plenty of exercises/have plenty of exercises/get plenty of exercises", "set off",
+                 "was Vicki's favourite subject", "if it is sunny/if it gets sunny", "about time that he took/about time that he had/about time that he showed/about time that he expressed/about time he started taking/about time he started having/about time her husband took",
+                 "would rather have gone", "would have the rubbish taken/would have the rubbish thrown/would have the rubbish cleaned"],
         "m-u3": ["coproduction/co-production", "nervous", "refuel", "miscalculated", "disappearance", "discomfort", "underestimated",
                  "supersonic", "superhero", "overconfident"],
         "m-u4": list("JEKAHMLFGB"),
@@ -78,8 +78,9 @@ class Practice(unittest.TestCase):
                 got = r[year + ":" + tid]
                 self.assertEqual(len(got), len(want), (year, tid))
                 for i, (g, w) in enumerate(zip(got, want)):
-                    alts = {norm(a) for a in re.split(r"[/;]", w)}
-                    self.assertIn(norm(g[0]), alts, (year, tid, i + 1, g, w))
+                    # Весь набор допустимых ответов — как в официальном ключе: ни потерянных, ни придуманных.
+                    alts = sorted(norm(a) for a in re.split(r"[/;]", w))
+                    self.assertEqual(sorted(norm(x) for x in g), alts, (year, tid, i + 1))
 
     def test_full_marks_with_the_key_and_ids_do_not_clash(self):
         r = run_js("""
@@ -101,6 +102,13 @@ class Practice(unittest.TestCase):
         # В баллы и в полный экзамен идут только задания варианта (TASKS), не отработка.
         self.assertIn("function sum(list)", HTML)
         self.assertNotIn("PTASKS.forEach(function (t) { TASKS.push", HTML)
+
+    def test_practice_stays_outside_the_timed_exam(self):
+        # Ревью PR 29: #/full/<отработка> падал в fullBar; ссылки на отработку уводили из экзамена на время;
+        # «Continue: Use of English · Practice» на главной не говорил, что продолжить.
+        self.assertIn('FULLMODE = parts[0] === "full" && !PARENT[parts[1]]', HTML)
+        self.assertIn("if (PRACTICE[t.id] && !FULLMODE)", HTML)
+        self.assertIn("PARENT[last.id] ? last.title", HTML)
 
 
 if __name__ == "__main__":

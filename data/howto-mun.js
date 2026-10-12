@@ -69,7 +69,7 @@
       "Type only ONE word, exactly as it is in the line."
     ],
     example: "Example 0: the whole line is correct → V. Example 00: the line says \"a pure theatrical gusto\". Gusto (energy and enjoyment) is an uncountable noun here, so the article \"a\" is extra → a.",
-    tip: "Usually 2–4 lines in a text are correct. Check the meaning too: sometimes the extra word makes the sentence say the opposite of the facts."
+    tip: "Usually 1–3 lines in a text are correct (in 2022–2026: 3, 3, 1 and 2 lines). Check the meaning too: sometimes the extra word makes the sentence say the opposite of the facts."
   };
 
   H.tasks["m-u2"] = {
@@ -97,11 +97,11 @@
   };
 
   H.tasks["m-u4"] = {
-    what: "Culture and language: match 10 people, buildings, books and terms with their descriptions A–N. Some descriptions are extra.",
+    what: "Culture and language: match 10 items (people, places, buildings, books, idioms, terms) with their descriptions. Some descriptions are extra.",
     steps: [
       "This task tests knowledge of British and American history, culture and literary terms.",
       "First match the ones you know for sure. Look for clues: dates, places, famous names, nicknames.",
-      "For terms like metaphor or metonymy, remember what they mean and find an example that fits.",
+      "For terms and idioms, remember what they mean and find the description that fits.",
       "Then work by elimination. Remember: some descriptions do not match any item."
     ],
     example: "Examples NOT from the task: a euphemism is a soft, polite word for something unpleasant (\"passed away\" instead of \"died\"). An oxymoron puts two opposite words together (\"a deafening silence\").",
