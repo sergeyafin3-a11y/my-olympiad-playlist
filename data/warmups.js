@@ -1,16 +1,17 @@
 // Разминки (warm-ups) на 5–10 минут: перед уроком или перед заданием олимпиады.
-// talk — разговор на тему из настоящих текстов вариантов (муниципальный, региональный, финал);
-//   target — к какой части олимпиады он ведёт (для фильтра):
+// talk — разговор на тему из настоящих текстов вариантов (муниципальный, региональный, финал):
 //   на муниципальном этапе нет устной части, поэтому разговор и есть тренировка Speaking,
 //   а заодно ученица заранее слышит слова будущего текста.
 // drill — пять-восемь коротких заданий на навык конкретного задания олимпиады.
 //   Предложения придуманы нами, а не взяты из олимпиадных заданий: задания остаются нерешёнными.
 //   Исключение — «Culture flash»: факты из официальных Task 4 прошлых лет, их и надо знать.
+// У каждой разминки stages — этапы (mun, reg, final) и part — часть экзамена; порядок в массиве
+// внутри части — порядок заданий олимпиады (Task 1, Task 2…).
 (function () {
   window.WARMUPS = [
     // ---------- разговор ----------
     {
-      id: "t-speech", kind: "talk", section: "talk", target: "uoe", icon: "🎙️", minutes: 10,
+      id: "t-speech", kind: "talk", stages: ["mun"], part: "uoe", icon: "🎙️", minutes: 10,
       title: "Speaking in public",
       before: "Municipal 2025/26 · Use of English Task 1 (The King's Speech)",
       goal: "Talk about fear and confidence. The text about the film \"The King's Speech\" uses these words.",
@@ -26,7 +27,7 @@
       words: ["confidence", "to stammer", "to overcome a fear", "embarrassment", "a speech", "an audience", "to broadcast", "a monarch"]
     },
     {
-      id: "t-jobs", kind: "talk", section: "talk", target: "listening", icon: "✈️", minutes: 10,
+      id: "t-jobs", kind: "talk", stages: ["mun"], part: "listening", icon: "✈️", minutes: 10,
       title: "Dream jobs",
       before: "Municipal 2025/26 · Listening Task 1 (a pilot)",
       goal: "Talk about jobs and careers before you listen to a pilot's story.",
@@ -42,7 +43,7 @@
       words: ["a career", "to train as", "a qualification", "experience", "to be promoted", "a captain", "to dream of", "rewarding"]
     },
     {
-      id: "t-roots", kind: "talk", section: "talk", target: "reading", icon: "🌳", minutes: 10,
+      id: "t-roots", kind: "talk", stages: ["mun"], part: "reading", icon: "🌳", minutes: 10,
       title: "Family roots",
       before: "Municipal 2025/26 · Reading Task 1 (ancestral roots)",
       goal: "Talk about family history and identity before reading a text about ancestors.",
@@ -57,7 +58,7 @@
       words: ["ancestors", "roots", "identity", "heritage", "to trace", "a descendant", "to belong", "a tradition"]
     },
     {
-      id: "t-sleep", kind: "talk", section: "talk", target: "reading", icon: "⏰", minutes: 10,
+      id: "t-sleep", kind: "talk", stages: ["mun"], part: "reading", icon: "⏰", minutes: 10,
       title: "Mornings and sleep",
       before: "Municipal 2025/26 · Reading Task 2 (alarm clocks)",
       goal: "Talk about sleep habits before reading a text about alarm clocks.",
@@ -72,7 +73,7 @@
       words: ["to wake up", "to oversleep", "to snooze", "a routine", "rhythm", "to be exhausted", "a deep sleep", "to go off (about an alarm)"]
     },
     {
-      id: "t-music", kind: "talk", section: "talk", target: "uoe", icon: "🎻", minutes: 10,
+      id: "t-music", kind: "talk", stages: ["mun"], part: "uoe", icon: "🎻", minutes: 10,
       title: "Music and the brain",
       before: "Municipal 2025/26 · Use of English Task 3 (Einstein and the violin)",
       goal: "Talk about music and learning before a text about Einstein, who played the violin.",
@@ -87,7 +88,7 @@
       words: ["an instrument", "a violinist", "to focus", "a string quartet", "creative", "a scientist", "to practise", "a daydream"]
     },
     {
-      id: "t-festivals", kind: "talk", section: "talk", target: "speaking", icon: "🎉", minutes: 10,
+      id: "t-festivals", kind: "talk", stages: ["final"], part: "speaking", icon: "🎉", minutes: 10,
       title: "Festivals and traditions",
       before: "Final 2025/26 · Speaking (Mardi Gras and Maslenitsa)",
       goal: "Describe a festival like a guide — the same skill as in the final's Speaking.",
@@ -102,7 +103,7 @@
       words: ["to celebrate", "a parade", "a costume", "a custom", "to originate", "a symbol", "cultural heritage", "a crowd"]
     },
     {
-      id: "t-writers", kind: "talk", section: "talk", target: "speaking", icon: "📚", minutes: 10,
+      id: "t-writers", kind: "talk", stages: ["reg"], part: "speaking", icon: "📚", minutes: 10,
       title: "Great Russian writers",
       before: "Regional 2025/26 · Speaking (Tolstoy, Pushkin, Dostoevsky, Chekhov)",
       goal: "Talk about writers and books in English — the topic of the regional Speaking.",
@@ -117,7 +118,7 @@
       words: ["a novel", "a short story", "a poet", "a screen adaptation", "a character", "a masterpiece", "to be published", "a contribution"]
     },
     {
-      id: "t-startups", kind: "talk", section: "talk", target: "writing", icon: "🚀", minutes: 10,
+      id: "t-startups", kind: "talk", stages: ["reg"], part: "writing", icon: "🚀", minutes: 10,
       title: "Startups and the future",
       before: "Regional 2025/26 · Writing (a review of a startup festival)",
       goal: "Talk about new ideas and inventions before writing a review.",
@@ -132,7 +133,7 @@
       words: ["a startup", "an investor", "innovative", "futuristic", "a challenge", "to launch", "an impact", "unique"]
     },
     {
-      id: "t-silence", kind: "talk", section: "talk", target: "reading", icon: "🤫", minutes: 10,
+      id: "t-silence", kind: "talk", stages: ["reg"], part: "reading", icon: "🤫", minutes: 10,
       title: "Talking and listening",
       before: "Regional 2025/26 · Reading Task 4 (The Sound of Silence)",
       goal: "Talk about conversations: who talks, who listens, and why silence can be useful.",
@@ -147,7 +148,7 @@
       words: ["to interrupt", "silence", "a pause", "to dominate", "to pay attention", "a listener", "to express an opinion", "awkward"]
     },
     {
-      id: "t-business", kind: "talk", section: "talk", target: "listening", icon: "🌍", minutes: 10,
+      id: "t-business", kind: "talk", stages: ["reg"], part: "listening", icon: "🌍", minutes: 10,
       title: "Companies and the planet",
       before: "Regional 2025/26 · Listening Task 1 (corporate responsibility)",
       goal: "Talk about business and the environment before listening to a business journalist.",
@@ -162,7 +163,7 @@
       words: ["responsibility", "an oil spill", "pollution", "compensation", "sustainable", "to damage", "the environment", "a risk"]
     },
     {
-      id: "t-abroad", kind: "talk", section: "talk", target: "listening", icon: "🧳", minutes: 10,
+      id: "t-abroad", kind: "talk", stages: ["reg"], part: "listening", icon: "🧳", minutes: 10,
       title: "Living and studying abroad",
       before: "Regional 2025/26 · Listening Task 2 and Task 3",
       goal: "Talk about moving to another country before a conversation and an interview on this topic.",
@@ -177,7 +178,7 @@
       words: ["abroad", "to settle", "to adapt", "homesick", "culture shock", "a scholarship", "the local language", "an exchange student"]
     },
     {
-      id: "t-ads", kind: "talk", section: "talk", target: "uoe", icon: "📢", minutes: 10,
+      id: "t-ads", kind: "talk", stages: ["mun"], part: "uoe", icon: "📢", minutes: 10,
       title: "Advertising everywhere",
       before: "Municipal 2023/24 · Use of English Task 1 (advertising)",
       goal: "Talk about adverts and media — a common olympiad topic.",
@@ -192,9 +193,9 @@
       words: ["an advert", "a brand", "a sponsor", "to persuade", "a consumer", "a logo", "a commercial", "to target"]
     },
     {
-      id: "t-smalltalk", kind: "talk", section: "talk", target: "speaking", icon: "☕", minutes: 5,
+      id: "t-smalltalk", kind: "talk", stages: ["mun", "reg", "final"], part: "any", icon: "☕", minutes: 5,
       title: "Small talk",
-      before: "Municipal 2024/25 · Use of English Task 1 (conversation skills)",
+      before: "Any lesson · any stage",
       goal: "Practise starting a conversation and keeping it going — a five-minute warm-up for any lesson.",
       steps: ["The teacher starts with a simple question.", "Answer and ask a question back every time: And you?, What about you?", "Keep the conversation going for 5 minutes."],
       questions: [
@@ -209,7 +210,7 @@
 
     // ---------- навык ----------
     {
-      id: "d-extra", kind: "drill", section: "uoe", icon: "🔍", minutes: 5,
+      id: "d-extra", kind: "drill", stages: ["mun"], part: "uoe", icon: "🔍", minutes: 5,
       title: "Spot the extra word",
       before: "Use of English · Task 1 (extra word) — Municipal",
       goal: "Find the one word that should not be there — fast.",
@@ -226,9 +227,9 @@
       ]
     },
     {
-      id: "d-paraphrase", kind: "drill", section: "listening", icon: "🎧", minutes: 5,
+      id: "d-paraphrase", kind: "drill", stages: ["mun", "reg", "final"], part: "listening", icon: "🎧", minutes: 5,
       title: "Same or different?",
-      before: "Listening Task 1 and Reading — true / false",
+      before: "Listening Task 1 (true / false) — every stage",
       goal: "Train the main skill of true/false tasks: the same idea in other words.",
       steps: ["The teacher reads sentence A, the student reads sentence B.", "Does sentence A tell us that sentence B is true? Yes (True) or no (False)? Explain which words show it."],
       items: [
@@ -241,7 +242,22 @@
       ]
     },
     {
-      id: "d-wordform", kind: "drill", section: "uoe", icon: "🧱", minutes: 7,
+      id: "d-transform", kind: "drill", stages: ["mun"], part: "uoe", icon: "🔁", minutes: 7,
+      title: "Key word transformations",
+      before: "Use of English · Task 2 — Municipal",
+      goal: "Say the same thing with the key word. Use 3–5 words, do not change the key word.",
+      steps: ["Find the structure the key word needs.", "Check the tense.", "Count the words: contractions are not allowed."],
+      items: [
+        { q: "If you don't hurry, you'll miss the bus. — UNLESS — You'll miss the bus ___.", a: "unless you hurry" },
+        { q: "The weather was so bad that we stayed at home. — SUCH — It was ___ that we stayed at home.", a: "such bad weather" },
+        { q: "I'm sure she forgot about the meeting. — MUST — She ___ about the meeting.", a: "must have forgotten" },
+        { q: "You should start revising for the exam now. — TIME — It's ___ revising for the exam.", a: "time you started (also: time to start)" },
+        { q: "It wasn't necessary for him to come, so he stayed at home. — NEED — He ___ come.", a: "did not need to (also: had no need to)" },
+        { q: "She started learning Spanish three years ago. — BEEN — She ___ Spanish for three years.", a: "has been learning" }
+      ]
+    },
+    {
+      id: "d-wordform", kind: "drill", stages: ["mun"], part: "uoe", icon: "🧱", minutes: 7,
       title: "Word families",
       before: "Use of English · Task 3 (word formation) — Municipal",
       goal: "Choose the right part of speech and add the right prefix or suffix.",
@@ -258,22 +274,7 @@
       ]
     },
     {
-      id: "d-transform", kind: "drill", section: "uoe", icon: "🔁", minutes: 7,
-      title: "Key word transformations",
-      before: "Use of English · Task 2 — Municipal",
-      goal: "Say the same thing with the key word. Use 3–5 words, do not change the key word.",
-      steps: ["Find the structure the key word needs.", "Check the tense.", "Count the words: contractions are not allowed."],
-      items: [
-        { q: "If you don't hurry, you'll miss the bus. — UNLESS — You'll miss the bus ___.", a: "unless you hurry" },
-        { q: "The weather was so bad that we stayed at home. — SUCH — It was ___ that we stayed at home.", a: "such bad weather" },
-        { q: "I'm sure she forgot about the meeting. — MUST — She ___ about the meeting.", a: "must have forgotten" },
-        { q: "You should start revising for the exam now. — TIME — It's ___ revising for the exam.", a: "time you started (also: time to start)" },
-        { q: "It wasn't necessary for him to come, so he stayed at home. — NEED — He ___ come.", a: "did not need to (also: had no need to)" },
-        { q: "She started learning Spanish three years ago. — BEEN — She ___ Spanish for three years.", a: "has been learning" }
-      ]
-    },
-    {
-      id: "d-glue", kind: "drill", section: "reading", icon: "🧩", minutes: 5,
+      id: "d-glue", kind: "drill", stages: ["mun"], part: "reading", icon: "🧩", minutes: 5,
       title: "Glue words",
       before: "Reading Task 2 (missing sentences) — Municipal",
       goal: "Find the \"hooks\" — words that connect a sentence with the text before it.",
@@ -287,7 +288,7 @@
       ]
     },
     {
-      id: "d-culture", kind: "drill", section: "culture", icon: "🏛️", minutes: 7,
+      id: "d-culture", kind: "drill", stages: ["mun"], part: "uoe", icon: "🏛️", minutes: 7,
       title: "Culture flash",
       before: "Use of English · Task 4 (culture) — Municipal",
       goal: "Facts from the official Task 4 of the Moscow municipal stage in 2022/23 and 2023/24. Say the answer before you open it.",
@@ -306,7 +307,7 @@
       ]
     },
     {
-      id: "d-definitions", kind: "drill", section: "uoe", icon: "🔤", minutes: 5,
+      id: "d-definitions", kind: "drill", stages: ["reg"], part: "uoe", icon: "🔤", minutes: 5,
       title: "Definition race",
       before: "Use of English · Task 1 (crossword) — Regional",
       goal: "Say the word from its English definition — the skill of the regional crossword.",
@@ -321,7 +322,7 @@
       ]
     },
     {
-      id: "d-compounds", kind: "drill", section: "uoe", icon: "🔗", minutes: 5,
+      id: "d-compounds", kind: "drill", stages: ["reg"], part: "uoe", icon: "🔗", minutes: 5,
       title: "Compound adjectives",
       before: "Use of English · Task 2 (compound adjectives) — Regional",
       goal: "Make an adjective from two parts that describes a person or a situation.",
@@ -336,7 +337,7 @@
       ]
     },
     {
-      id: "d-story", kind: "drill", section: "writing", icon: "✍️", minutes: 10,
+      id: "d-story", kind: "drill", stages: ["mun"], part: "writing", icon: "✍️", minutes: 10,
       title: "Story starters",
       before: "Writing · a story — Municipal",
       goal: "Plan a story in 2 minutes from a first or a last sentence, like the municipal Writing.",
@@ -350,7 +351,7 @@
       ]
     },
     {
-      id: "d-quote", kind: "drill", section: "writing", icon: "💬", minutes: 10,
+      id: "d-quote", kind: "drill", stages: ["mun"], part: "writing", icon: "💬", minutes: 10,
       title: "Quote chat",
       before: "Writing · comment on a quotation — Municipal (2022/23, 2023/24)",
       goal: "Explain a quotation and give your opinion with an example — the plan of the essay task.",
