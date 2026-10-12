@@ -1,11 +1,12 @@
 // Разминки (warm-ups) на 5–10 минут: перед уроком или перед заданием олимпиады.
-// talk — разговор на тему из настоящих текстов вариантов (муниципальный, региональный, финал);
-//   stages — этапы (mun, reg, final), part — часть экзамена, к которой ведёт разминка:
+// talk — разговор на тему из настоящих текстов вариантов (муниципальный, региональный, финал):
 //   на муниципальном этапе нет устной части, поэтому разговор и есть тренировка Speaking,
 //   а заодно ученица заранее слышит слова будущего текста.
 // drill — пять-восемь коротких заданий на навык конкретного задания олимпиады.
 //   Предложения придуманы нами, а не взяты из олимпиадных заданий: задания остаются нерешёнными.
 //   Исключение — «Culture flash»: факты из официальных Task 4 прошлых лет, их и надо знать.
+// У каждой разминки stages — этапы (mun, reg, final) и part — часть экзамена; порядок в массиве
+// внутри части — порядок заданий олимпиады (Task 1, Task 2…).
 (function () {
   window.WARMUPS = [
     // ---------- разговор ----------
@@ -194,7 +195,7 @@
     {
       id: "t-smalltalk", kind: "talk", stages: ["mun", "reg", "final"], part: "any", icon: "☕", minutes: 5,
       title: "Small talk",
-      before: "Any lesson · the topic is from Municipal 2024/25 (conversation skills)",
+      before: "Any lesson · any stage",
       goal: "Practise starting a conversation and keeping it going — a five-minute warm-up for any lesson.",
       steps: ["The teacher starts with a simple question.", "Answer and ask a question back every time: And you?, What about you?", "Keep the conversation going for 5 minutes."],
       questions: [
@@ -226,9 +227,9 @@
       ]
     },
     {
-      id: "d-paraphrase", kind: "drill", stages: ["mun"], part: "listening", icon: "🎧", minutes: 5,
+      id: "d-paraphrase", kind: "drill", stages: ["mun", "reg", "final"], part: "listening", icon: "🎧", minutes: 5,
       title: "Same or different?",
-      before: "Listening Task 1 and Reading — true / false",
+      before: "Listening Task 1 (true / false) — every stage",
       goal: "Train the main skill of true/false tasks: the same idea in other words.",
       steps: ["The teacher reads sentence A, the student reads sentence B.", "Does sentence A tell us that sentence B is true? Yes (True) or no (False)? Explain which words show it."],
       items: [
@@ -238,6 +239,21 @@
         { q: "A: She left the job because she wanted to travel. — B: She was fired from her job.", a: "False: she left because she wanted to; nobody fired her." },
         { q: "A: The tickets were cheaper than we expected. — B: We paid less than we thought.", a: "True: the same idea in other words." },
         { q: "A: The project was successful at first, but later it failed. — B: The project was never successful.", a: "False: it was successful at first." }
+      ]
+    },
+    {
+      id: "d-transform", kind: "drill", stages: ["mun"], part: "uoe", icon: "🔁", minutes: 7,
+      title: "Key word transformations",
+      before: "Use of English · Task 2 — Municipal",
+      goal: "Say the same thing with the key word. Use 3–5 words, do not change the key word.",
+      steps: ["Find the structure the key word needs.", "Check the tense.", "Count the words: contractions are not allowed."],
+      items: [
+        { q: "If you don't hurry, you'll miss the bus. — UNLESS — You'll miss the bus ___.", a: "unless you hurry" },
+        { q: "The weather was so bad that we stayed at home. — SUCH — It was ___ that we stayed at home.", a: "such bad weather" },
+        { q: "I'm sure she forgot about the meeting. — MUST — She ___ about the meeting.", a: "must have forgotten" },
+        { q: "You should start revising for the exam now. — TIME — It's ___ revising for the exam.", a: "time you started (also: time to start)" },
+        { q: "It wasn't necessary for him to come, so he stayed at home. — NEED — He ___ come.", a: "did not need to (also: had no need to)" },
+        { q: "She started learning Spanish three years ago. — BEEN — She ___ Spanish for three years.", a: "has been learning" }
       ]
     },
     {
@@ -255,21 +271,6 @@
         { q: "There are many ___ between the two stories. (SIMILAR)", a: "similarities — a noun, plural (\"many\")." },
         { q: "His behaviour was so rude that it was completely ___ for a teacher. (ACCEPT)", a: "unacceptable — an adjective; \"so rude\" shows the negative meaning." },
         { q: "We need to ___ our knowledge before the exam. (WIDE)", a: "widen — a verb (to + verb); -en makes verbs: wide → widen." }
-      ]
-    },
-    {
-      id: "d-transform", kind: "drill", stages: ["mun"], part: "uoe", icon: "🔁", minutes: 7,
-      title: "Key word transformations",
-      before: "Use of English · Task 2 — Municipal",
-      goal: "Say the same thing with the key word. Use 3–5 words, do not change the key word.",
-      steps: ["Find the structure the key word needs.", "Check the tense.", "Count the words: contractions are not allowed."],
-      items: [
-        { q: "If you don't hurry, you'll miss the bus. — UNLESS — You'll miss the bus ___.", a: "unless you hurry" },
-        { q: "The weather was so bad that we stayed at home. — SUCH — It was ___ that we stayed at home.", a: "such bad weather" },
-        { q: "I'm sure she forgot about the meeting. — MUST — She ___ about the meeting.", a: "must have forgotten" },
-        { q: "You should start revising for the exam now. — TIME — It's ___ revising for the exam.", a: "time you started (also: time to start)" },
-        { q: "It wasn't necessary for him to come, so he stayed at home. — NEED — He ___ come.", a: "did not need to (also: had no need to)" },
-        { q: "She started learning Spanish three years ago. — BEEN — She ___ Spanish for three years.", a: "has been learning" }
       ]
     },
     {

@@ -114,7 +114,8 @@ class Warmups(unittest.TestCase):
             self.assertIn(p, r["parts"])
         ui = (ROOT / "js" / "warmup-ui.js").read_text(encoding="utf-8")
         self.assertIn("data-wustage", ui)
-        self.assertIn('stage = "mun"', ui)
+        self.assertIn('var FOCUS = "mun"', ui)
+        self.assertIn("stage = FOCUS", ui)
         self.assertNotIn("data-wufilter", ui)
         for label in ["💬 Talk", "✏️ Practice", "Municipal", "Regional", "Final"]:
             self.assertIn(label, ui)

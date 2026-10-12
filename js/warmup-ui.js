@@ -14,8 +14,15 @@
   function doneToday(id) { return done[id] === today(); }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {} }
   var STAGES = [["mun", "Municipal"], ["reg", "Regional"], ["final", "Final"]];
-  var stage = "mun";
-  try { var st = localStorage.getItem(STAGE_KEY); if (st === "reg" || st === "final") stage = st; } catch (e) {}
+  // К какому этапу готовимся сейчас: он открыт по умолчанию и помечен «now». Сменить — одна строка.
+  var FOCUS = "mun";
+  // Свой выбор этапа запоминается; если его ещё нет — берём этап варианта, открытого во вкладке Exam.
+  var stage = FOCUS;
+  try {
+    var st = localStorage.getItem(STAGE_KEY), vid = localStorage.getItem("olymp-variant") || "";
+    if (st === "mun" || st === "reg" || st === "final") stage = st;
+    else if (vid.indexOf("reg") === 0) stage = "reg"; else if (vid.indexOf("final") === 0) stage = "final";
+  } catch (e) {}
   var PARTS = [
     ["any", "☕", "Any lesson", "Start any lesson with a short chat"],
     ["listening", "🎧", "Listening", ""],
@@ -25,8 +32,8 @@
     ["speaking", "🎤", "Speaking", ""]
   ];
   var KIND = {
-    talk: { label: "💬 Talk", color: "#FFB347", what: "Talk" },
-    drill: { label: "✏️ Practice", color: "#5B7CFF", what: "Practice" }
+    talk: { label: "💬 Talk", color: "#FFB347" },
+    drill: { label: "✏️ Practice", color: "#5B7CFF" }
   };
 
   var css = document.createElement("style");
@@ -38,6 +45,7 @@
     ".wu-card{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;margin-top:8px;padding:12px 14px;border-radius:12px;background:var(--card);border:1px solid var(--line);text-decoration:none}",
     ".wu-card:hover{border-color:var(--g)}",
     ".wu-card .em{font-size:24px;line-height:1}",
+    ".nw{white-space:nowrap}",
     ".wu-kind{display:block;font-size:12px;font-weight:700;letter-spacing:.02em;margin-bottom:2px}",
     ".wu-name{display:block;font-family:var(--head);font-size:17px;font-weight:700;line-height:1.2;color:var(--ink)}",
     ".wu-before{display:block;margin-top:3px;font-size:13px;color:var(--mute);line-height:1.35}",
@@ -63,14 +71,15 @@
   };
 
   function list() {
-    var mine = W.filter(function (w) { return w.stages.indexOf(stage) >= 0; });
+    var mine = W.filter(function (w) { return (w.stages || []).indexOf(stage) >= 0; });
     var h = '<div style="--c:' + COLOR + '"><div class="tabtop"></div>' +
       '<div class="album"><span class="sq" aria-hidden="true">☕</span><div><span class="eyebrow" style="color:#DADADA">Start of the lesson</span><h1>Warm-ups</h1><p>5–10 minutes each</p></div></div>' +
-      '<p class="howto">A warm-up is 5–10 minutes at the start of a lesson. Choose the stage, then the part of the exam you will practise today. ' +
-      '<b>💬 Talk</b> — talk about a topic from a real olympiad text. <b>✏️ Practice</b> — a short exercise before the task; the answers are hidden.</p>' +
+      '<p class="howto">A warm-up is 5–10 minutes at the start of a lesson. Choose the stage, then find the part of the exam below. ' +
+      '<b class="nw">💬 Talk</b> — talk about a topic from a real olympiad text. <b class="nw">✏️ Practice</b> — a short exercise before the task; the answers are hidden.</p>' +
       '<div class="cards2" role="tablist" aria-label="Stage">' + STAGES.map(function (x) {
-        return '<button class="opt' + (stage === x[0] ? ' sel' : '') + '" data-wustage="' + x[0] + '" role="tab" aria-selected="' + (stage === x[0]) + '">' + esc(x[1]) + '</button>';
-      }).join("") + '</div>';
+        return '<button class="opt' + (stage === x[0] ? ' sel' : '') + '" data-wustage="' + x[0] + '" role="tab" aria-selected="' + (stage === x[0]) + '">' + esc(x[1]) + (x[0] === FOCUS ? ' · now' : '') + '</button>';
+      }).join("") + '</div>' +
+      (stage !== FOCUS ? '<p class="note">We are getting ready for the ' + esc(STAGES.filter(function (x) { return x[0] === FOCUS; })[0][1].toLowerCase()) + ' stage now — these warm-ups are for later.</p>' : '');
     PARTS.forEach(function (p) {
       var items = mine.filter(function (w) { return w.part === p[0]; });
       if (!items.length) return;
@@ -83,7 +92,6 @@
           '<span class="st' + (doneToday(w.id) ? ' done' : '') + '">' + (doneToday(w.id) ? '✓ today' : w.minutes + ' min') + '</span></a>';
       });
     });
-    if (stage !== "mun") h += '<p class="note" style="margin-top:18px">Now we are getting ready for the municipal stage — these are for later.</p>';
     return h + '</div>';
   }
 
