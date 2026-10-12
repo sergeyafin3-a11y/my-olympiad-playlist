@@ -5,12 +5,16 @@
 (function () {
   var A = window.App, W = window.WARMUPS || [], esc = A.esc;
   var KEY = "olymp-warmups", COLOR = "#FFB347";
+  // { id: "2026-10-12" } — день, когда разминку сделали. Испорченное значение (массив, строка) — заново.
   var done = {};
-  try { done = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) {}
+  try { var raw = JSON.parse(localStorage.getItem(KEY) || "{}"); if (raw && typeof raw === "object" && !Array.isArray(raw)) done = raw; } catch (e) {}
+  function today() { var d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+  // Разминку можно делать на каждом уроке: «сделано» — только сегодня, завтра кнопка снова есть.
+  function doneToday(id) { return done[id] === today(); }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {} }
   var filter = "all";
   var FILTERS = [["all", "All"], ["talk", "💬 Talk"], ["listening", "🎧 Listening"], ["reading", "📖 Reading"],
-                 ["uoe", "🧩 Use of English"], ["culture", "🏛️ Culture"], ["writing", "✍️ Writing"]];
+                 ["uoe", "🧩 Use of English"], ["culture", "🏛️ Culture"], ["writing", "✍️ Writing"], ["speaking", "🎤 Speaking"]];
   var GROUPS = [
     { kind: "talk", title: "Talk", icon: "💬", color: "#FFB347", sub: "10-minute conversations on topics from real olympiad texts" },
     { kind: "drill", title: "Skill warm-ups", icon: "⚡", color: "#5B7CFF", sub: "5–10 minutes of practice before a task" }
@@ -31,7 +35,9 @@
     ".wu-card .st.done{color:var(--acc);font-weight:700}",
     ".wu-q{margin:10px 0 0;padding-left:22px}.wu-q li{margin:8px 0;font-size:16px;line-height:1.45}",
     ".wu-words{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}",
-    ".wu-words span{border-radius:999px;padding:4px 12px;background:var(--card);border:1px solid var(--line);font-size:14px}",
+    ".wu-words button{border-radius:999px;padding:5px 12px;background:var(--card);border:1px solid var(--line);font-size:14px;color:var(--ink)}",
+    ".wu-steps{margin:12px 0 0;padding-left:22px;color:var(--mute);font-size:14px}.wu-steps li{margin:4px 0;line-height:1.4}",
+    ".wu-done{font-weight:700;color:var(--acc)}",
     ".wu-item{margin-top:10px;padding:12px 14px;border-radius:12px;background:var(--card)}",
     ".wu-item .q{font-size:16px;line-height:1.45}.wu-item .q b{color:var(--c)}",
     ".wu-item details{margin-top:8px}.wu-item summary{cursor:pointer;color:var(--c);font-weight:600;font-size:14px}",
@@ -40,7 +46,8 @@
   document.head.appendChild(css);
 
   function byId(id) { return W.filter(function (w) { return w.id === id; })[0]; }
-  function shown(w) { return filter === "all" || w.section === filter; }
+  // Разговор привязан к заданию (target): «Dream jobs» стоит и под Talk, и под Listening.
+  function shown(w) { return filter === "all" || w.section === filter || w.target === filter; }
 
   A.routes.warmup = function (parts) {
     var w = parts[1] && byId(parts[1]);
@@ -61,7 +68,7 @@
       items.forEach(function (w) {
         h += '<a class="wu-card" href="#/warmup/' + w.id + '" style="--g:' + g.color + '"><span class="em" aria-hidden="true">' + w.icon + '</span>' +
           '<span><span class="wu-name">' + esc(w.title) + '</span><span class="wu-before">' + esc(w.before) + '</span></span>' +
-          '<span class="st' + (done[w.id] ? ' done' : '') + '">' + (done[w.id] ? '✓ done' : w.minutes + ' min') + '</span></a>';
+          '<span class="st' + (doneToday(w.id) ? ' done' : '') + '">' + (doneToday(w.id) ? '✓ today' : w.minutes + ' min') + '</span></a>';
       });
     });
     return h + '</div>';
@@ -73,18 +80,19 @@
       '<div class="taskhead"><span class="sq" aria-hidden="true">' + w.icon + '</span><div><span class="eyebrow">' + esc(g.title) + ' · ' + w.minutes + ' min</span><h1>' + esc(w.title) + '</h1></div></div>' +
       '<p class="howto">' + esc(w.goal) + '</p>' +
       '<p class="note"><b>Before:</b> ' + esc(w.before) + '</p>' +
-      '<ol class="steps" aria-label="What to do">' + w.steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join("") + '</ol>';
+      '<ol class="wu-steps" aria-label="What to do">' + w.steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join("") + '</ol>';
     if (w.kind === "talk") {
       h += '<h2 class="list-h" style="font-size:18px">Questions</h2><ol class="wu-q">' + w.questions.map(function (q) { return '<li>' + esc(q) + '</li>'; }).join("") + '</ol>' +
-        '<h2 class="list-h" style="font-size:18px">Useful words</h2><p class="note" style="margin-top:2px">Tap a word to save it to My words.</p><div class="wu-words">' + w.words.map(function (x) { return '<span>' + esc(x) + '</span>'; }).join("") + '</div>';
+        '<h2 class="list-h" style="font-size:18px">Useful words</h2><p class="note" style="margin-top:2px">Tap a word or phrase to save it to My words — with the translation.</p><div class="wu-words">' +
+        w.words.map(function (x) { return '<button type="button" data-wuword="' + esc(x) + '">' + esc(x) + '</button>'; }).join("") + '</div>';
     } else {
       h += '<div class="listen"><button class="ghost" data-wuall="1">👀 Show all answers</button></div>' +
         w.items.map(function (it, i) {
           return '<div class="wu-item"><div class="q"><b>' + (i + 1) + '.</b> ' + esc(it.q) + '</div><details><summary>Show answer</summary><div class="a">' + esc(it.a) + '</div></details></div>';
         }).join("");
     }
-    h += '<div class="listen" style="margin-top:18px">' + (done[w.id]
-      ? '<span class="res">✓ Done</span><a class="ghost" href="#/warmup" style="text-decoration:none">More warm-ups</a>'
+    h += '<div class="listen" style="margin-top:18px;align-items:center">' + (doneToday(w.id)
+      ? '<span class="wu-done">✓ Done today</span><a class="ghost" href="#/warmup" style="text-decoration:none">More warm-ups</a>'
       : '<button class="bigplay" data-wudone="' + esc(w.id) + '">✓ Done</button>') + '</div>';
     return h + '</div>';
   }
@@ -92,9 +100,10 @@
   document.addEventListener("click", function (e) {
     var b = e.target.closest("button"); if (!b) return;
     if (b.dataset.wufilter) { filter = b.dataset.wufilter; A.keepScroll(A.render); return; }
+    if (b.dataset.wuword) { if (A.words && A.words.offer) A.words.offer(b.dataset.wuword, (byId((location.hash.split("/")[2] || "")) || {}).title); return; }
     if (b.dataset.wuall) { document.querySelectorAll(".wu-item details").forEach(function (d) { d.open = true; }); return; }
     if (b.dataset.wudone) {
-      done[b.dataset.wudone] = new Date().toISOString().slice(0, 10); save();
+      done[b.dataset.wudone] = today(); save();
       if (A.markActivity) A.markActivity();
       A.keepScroll(A.render);
     }

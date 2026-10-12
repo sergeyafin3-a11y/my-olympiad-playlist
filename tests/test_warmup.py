@@ -63,6 +63,37 @@ class Warmups(unittest.TestCase):
         bad = json.loads(subprocess.run(["osascript", "-l", "JavaScript", "-e", src], capture_output=True, text=True, check=True).stdout)
         self.assertEqual(bad, [])
 
+    def test_warmups_do_not_give_away_answers_of_the_app_variants(self):
+        # Ревью PR 27: Culture flash раскрывал 6 из 10 ответов Task 4 муниципального 2025/26,
+        # а слова к теме «музыка» — ответ Task 3 (physicist). Разминка идёт ДО задания.
+        files = ["data/variant-mun-msk-25-26.js", "data/variant-reg-25-26.js", "data/variant.js", "data/warmups.js"]
+        src = "\n".join(["var window = this;"] + [(ROOT / f).read_text(encoding="utf-8") for f in files] + ["""JSON.stringify((function(){
+          var ans = [];
+          window.VARIANTS.forEach(function(v){ v.parts.forEach(function(p){ p.tasks.forEach(function(t){
+            if (t.section !== "uoe") return;
+            // В «лишнем слове» ответы — служебные слова (being, so, of): они есть в любом тексте.
+            if ((t.examples || []).some(function(e){ return e.strike || e.correct; })) return;
+            (t.items || []).forEach(function(it){
+              (it.accept || []).forEach(function(a){ a = String(a).toLowerCase(); if (a.length >= 5) ans.push(a); });
+              if (t.longOpts && it.q && it.q.length < 40) ans.push(it.q.toLowerCase().replace(/^the /, ""));
+            });
+          }); }); });
+          // Обычные слова из инструкций — не подсказка: «listen», «learnt», «heart» —
+          // ответы анаграмм финала, но встречаются в любом тексте.
+          var COMMON = ["listen", "learnt", "heart"];
+          var text = JSON.stringify(window.WARMUPS).toLowerCase();
+          return ans.filter(function(a){ return COMMON.indexOf(a) < 0 && text.indexOf(a) >= 0; });
+        })());"""])
+        hits = json.loads(subprocess.run(["osascript", "-l", "JavaScript", "-e", src], capture_output=True, text=True, check=True).stdout)
+        self.assertEqual(hits, [])
+
+    def test_word_chips_save_the_whole_phrase(self):
+        ui = (ROOT / "js" / "warmup-ui.js").read_text(encoding="utf-8")
+        self.assertIn("data-wuword", ui)
+        self.assertIn("A.words.offer", ui)
+        self.assertIn("A.words = {", (ROOT / "js" / "vocab-ui.js").read_text(encoding="utf-8"))
+        self.assertIn("offer:", (ROOT / "js" / "vocab-ui.js").read_text(encoding="utf-8"))
+
 
 if __name__ == "__main__":
     unittest.main()
