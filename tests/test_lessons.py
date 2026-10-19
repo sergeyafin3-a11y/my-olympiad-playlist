@@ -80,6 +80,42 @@ class Lessons(unittest.TestCase):
         self.assertIn("window.App.taskTop", HTML)
         self.assertIn("Back to the lesson", (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8"))
 
+    def test_lessons_have_pictures_and_games(self):
+        # Учитель 19.10: «скучно, без картинок; больше интерактива, игр, чтобы что-то двигать;
+        # в warm-up — спикинг». Картинки — бесплатные фото Unsplash (Pinterest — чужие права).
+        r = run_js("""
+          var bad = [], kinds = {};
+          L.forEach(function(l){
+            if (!/^https:\\/\\/images\\.unsplash\\.com\\/photo-/.test(l.cover || "")) bad.push(l.id + " cover");
+            (l.steps || []).forEach(function(s, i){
+              if (!/^https:\\/\\/images\\.unsplash\\.com\\/photo-/.test(s.image || "")) bad.push(l.id + " step " + i + " image");
+              s.blocks.forEach(function(b){
+                kinds[b.type] = 1;
+                if (b.type === "sort") b.cards.forEach(function(c){ if (!b.buckets.some(function(x){ return x.id === c.b; })) bad.push("sort " + c.t); });
+                if (b.type === "gapfill") Object.keys(b.key).forEach(function(g){
+                  if (b.text.indexOf("[" + g + "]") < 0) bad.push("gap " + g);
+                  if (!b.cards.some(function(c){ return c.k === b.key[g]; })) bad.push("gap card " + g);
+                  if (!(b.why && b.why[g])) bad.push("gap why " + g); });
+                if (b.type === "hookhunt") b.hooks.forEach(function(h){ if (b.text.indexOf(h) < 0) bad.push("hook " + h); });
+                if (b.type === "binword") b.items.forEach(function(it){ if (it.extra && (" " + it.text + " ").indexOf(" " + it.extra + " ") < 0) bad.push("bin " + it.text); if (!it.why) bad.push("bin why"); });
+              });
+            });
+          });
+          var l2 = L.filter(function(x){ return x.id === "l2"; })[0];
+          var warm = l2.steps[0].blocks.map(function(b){ return b.type; });
+          return {bad: bad, kinds: Object.keys(kinds).sort(), warm: warm};
+        """)
+        self.assertEqual(r["bad"], [])
+        # Учитель: «зумерское, мемы, стикеры» — мемы в формате эмодзи и текста (без чужих фото).
+        for k in ["thisorthat", "speak", "binword", "hookhunt", "sort", "gapfill", "meme"]:
+            self.assertIn(k, r["kinds"])
+        self.assertIn("speak", r["warm"])
+        self.assertIn("ls-sticker", (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8"))
+        self.assertIn("thisorthat", r["warm"])
+        ui = (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8")
+        for hook in ["data-lsdrag", "data-lsdrop", "pointerdown", "elementFromPoint"]:
+            self.assertIn(hook, ui)
+
 
 if __name__ == "__main__":
     unittest.main()
