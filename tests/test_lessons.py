@@ -116,6 +116,41 @@ class Lessons(unittest.TestCase):
         for hook in ["data-lsdrag", "data-lsdrop", "pointerdown", "elementFromPoint"]:
             self.assertIn(hook, ui)
 
+    def test_every_step_renders_while_its_timer_runs(self):
+        # Ревью PR 32: var left в игре «sort» затенял функцию таймера left(end) — шаг с идущим
+        # таймером падал «left is not a function». Рисуем каждый шаг урока с запущенным таймером.
+        stub = """
+          var window = this, store = {};
+          var el = function(){ return {textContent: "", appendChild: function(){}, classList: {add: function(){}, remove: function(){}}}; };
+          var document = {createElement: el, head: {appendChild: function(){}}, body: {appendChild: function(){}},
+                          addEventListener: function(){}, querySelectorAll: function(){ return []; }};
+          var localStorage = {getItem: function(k){ return store[k] || null; }, setItem: function(k, v){ store[k] = v; }};
+          var location = {hash: "#/lesson/l2"};
+          window.addEventListener = function(){}; var setInterval = function(){};
+          window.App = {esc: function(s){ return String(s); }, render: function(){}, keepScroll: function(f){ f(); }, routes: {}, words: {}};
+        """
+        src_files = [(ROOT / f).read_text(encoding="utf-8") for f in ["data/lessons.js"]]
+        ui = (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8")
+        js = stub + "\n".join(src_files) + """
+          var errs = [];
+          window.LESSONS.forEach(function(l){ (l.steps || []).forEach(function(s, i){
+            var keys = [null];
+            s.blocks.forEach(function(b, k){ if (b.type === "timer") keys.push(l.id + ":" + i + ":" + k); if (b.type === "speak") keys.push(l.id + ":" + i + ":" + k + "s"); });
+            keys.forEach(function(key){
+              var o = {}; o[l.id] = i;
+              store["olymp-lessons"] = JSON.stringify({step: o, timer: key ? {key: key, end: Date.now() + 60000} : null});
+              window.App.routes = {};
+              (function(){ """ + ui + """ })();
+              try { var html = window.App.routes.lesson(["lesson", l.id]); if (key && html.indexOf("ls-clock") < 0) errs.push(l.id + ":" + i + " no clock"); }
+              catch (e) { errs.push(l.id + ":" + i + " timer " + key + ": " + e.message); }
+            });
+          }); });
+          JSON.stringify(errs);
+        """
+        out = subprocess.run(["osascript", "-l", "JavaScript", "-e", js], capture_output=True, text=True)
+        self.assertEqual(out.returncode, 0, out.stderr[-500:])
+        self.assertEqual(json.loads(out.stdout), [])
+
 
 if __name__ == "__main__":
     unittest.main()

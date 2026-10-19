@@ -37,7 +37,7 @@
             { type: "thisorthat", items: [
               { a: "☀️ Early bird", b: "🌙 Night owl", ask: "Why? Give two reasons." },
               { a: "⏰ Alarm clock", b: "📱 Phone alarm", ask: "Which one is better for your sleep? Why?" },
-              { a: "😴 Snooze", b: "🚀 Get up at once", ask: "What happens to you when you press snooze?" }
+              { a: "😴 Snooze", b: "🚀 Get up right away", ask: "What happens to you when you press snooze?" }
             ] },
             { type: "speak", title: "🎤 Talk for one minute: my perfect morning", seconds: 60,
               plan: ["What time do you wake up?", "What do you do first?", "What helps you feel awake?", "Why is this morning perfect for you?"],
@@ -63,10 +63,10 @@
               { h: "⚙️ Grammar", t: "tense, singular or plural, a question and its answer." }
             ] },
             { type: "meme", style: "drake", no: "Reading only the sentence before the gap", yes: "Reading the sentence before AND after the gap" },
-            { type: "text", text: "🔎 **Hook hunt!** Tap the 6 hooks in this text." },
+            { type: "text", text: "🔎 **Hook hunt!** Tap the 6 reference words and linkers in this text." },
             { type: "hookhunt",
-              text: "My grandmother never used an alarm clock. She woke up with the sun. However, this was easy in a small village. Such a quiet life is rare today. Cities are noisy, and they never really sleep. Therefore, most of us need an alarm.",
-              hooks: ["She", "However", "this", "Such", "they", "Therefore"] },
+              text: "My grandmother never used an alarm clock. She woke up with the sun. But that was easy in a small village. Such a quiet life is rare today. Cities are noisy. They never really sleep. Therefore, most of us need an alarm.",
+              hooks: ["She", "But", "that", "Such", "They", "Therefore"] },
             { type: "steps", title: "How to solve", items: [
               "Read the whole text quickly for the main idea (2 minutes).",
               "Read sentences A–K. Underline the hooks.",
@@ -102,7 +102,7 @@
                 "1": "A: \"This\" = going to bed late. The next sentence explains the biology.",
                 "2": "B: \"this late body clock\" = melatonin comes two hours later. The next sentence shows what schools do.",
                 "3": "C: \"results\" of the later start → students get better marks.",
-                "D": "D is extra: it says the opposite of the whole text, and \"however\" has nothing to contrast with."
+                "D": "D is extra: it contradicts the text (a teenager's body clock makes early mornings hard), and the sentence after each gap does not follow from it."
               } }
           ]
         },
@@ -115,7 +115,7 @@
           ]
         },
         {
-          stage: "feedback", title: "Check and discuss", minutes: 5, image: img("1543269865-cbf427effbad"), sticker: "no cap: how did it go? 🧢",
+          stage: "feedback", title: "Check and discuss", minutes: 5, image: img("1543269865-cbf427effbad"), sticker: "real talk: how did it go? 🗣️",
           blocks: [
             { type: "text", text: "✅ Press **✓ Check answers** in the task. Then read **💡 Show how to solve** under the gaps you got wrong." },
             { type: "talk", items: [

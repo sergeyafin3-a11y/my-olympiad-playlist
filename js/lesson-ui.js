@@ -213,10 +213,11 @@
       }).join("") + '</div><p class="ls-score">' + (n === b.hooks.length ? '<span class="ls-win">🎉 All ' + n + ' hooks found!</span>' : '🔎 Found ' + n + ' of ' + b.hooks.length) + '</p></div>';
     }
     if (b.type === "sort") {
-      var sg = game(key), placed = sg.placed || {}, left = b.cards.filter(function (c, j) { return !placed[j]; });
+      // rest, а не left: left — функция таймера, var здесь затенял её во всём block().
+      var sg = game(key), placed = sg.placed || {}, rest = b.cards.filter(function (c, j) { return !placed[j]; });
       return '<div class="ls-game"><div class="ls-pool">' + b.cards.map(function (c, j) {
         return placed[j] ? '' : '<span class="ls-chip' + (sg.sel === j ? ' sel' : '') + (sg.miss === j ? ' miss' : '') + '" data-lsdrag="' + key + ':' + j + '" role="button" tabindex="0">' + esc(c.t) + '</span>';
-      }).join("") + (left.length ? '' : '<span class="ls-win">🎉 All sorted!</span>') + '</div><div class="ls-buckets">' + b.buckets.map(function (bk) {
+      }).join("") + (rest.length ? '' : '<span class="ls-win">🎉 All sorted!</span>') + '</div><div class="ls-buckets">' + b.buckets.map(function (bk) {
         return '<div class="ls-bucket" data-lsdrop="' + key + ':' + bk.id + '"><b>' + esc(bk.label) + '</b>' +
           b.cards.map(function (c, j) { return placed[j] === bk.id ? '<span class="ls-chip">' + esc(c.t) + '</span>' : ''; }).join("") + '</div>';
       }).join("") + '</div></div>';
@@ -335,11 +336,14 @@
     if (d.ghost) d.ghost.remove();
     document.querySelectorAll(".over").forEach(function (x) { x.classList.remove("over"); });
     var cp = d.ref.split(":"), card = cp.pop(), key = cp.join(":"), g = game(key);
-    if (!d.moved) { g.sel = g.sel === (blockOf(key).type === "sort" ? +card : card) ? null : (blockOf(key).type === "sort" ? +card : card); A.keepScroll(A.render); return; }
+    if (!d.moved) { g.miss = null; g.sel = g.sel === (blockOf(key).type === "sort" ? +card : card) ? null : (blockOf(key).type === "sort" ? +card : card); A.keepScroll(A.render); return; }
     var under = document.elementFromPoint(e.clientX, e.clientY), drop = under && under.closest("[data-lsdrop]");
     if (drop) place(d.ref, drop.dataset.lsdrop);
   });
-  document.addEventListener("pointercancel", function () { if (drag && drag.ghost) drag.ghost.remove(); drag = null; });
+  document.addEventListener("pointercancel", function () {
+    if (drag && drag.ghost) drag.ghost.remove(); drag = null;
+    document.querySelectorAll(".over").forEach(function (x) { x.classList.remove("over"); });
+  });
   // Нажатие на корзину или пропуск, когда карточка выбрана нажатием; нажатие на занятый пропуск — вернуть карточку.
   document.addEventListener("click", function (e) {
     var drop = e.target.closest && e.target.closest("[data-lsdrop]"); if (!drop) return;
