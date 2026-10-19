@@ -24,7 +24,7 @@ def run_js(body):
 class Lessons(unittest.TestCase):
     def test_lesson_tab_comes_first(self):
         tabs = re.findall(r'\{ href: "(#/[a-z]*)", icon: "[^"]+", label: "([^"]+)"', HTML)
-        self.assertEqual([t[0] for t in tabs], ["#/lesson", "#/", "#/warmup", "#/lexis", "#/grammar", "#/words", "#/results"])
+        self.assertEqual([t[0] for t in tabs], ["#/lesson", "#/", "#/lexis", "#/grammar", "#/words", "#/results"])
         for f in ["data/lessons.js", "js/lesson-ui.js"]:
             self.assertIn('src="' + f + '?v=', HTML)
 

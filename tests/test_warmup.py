@@ -21,9 +21,11 @@ def run_js(body):
 
 
 class Warmups(unittest.TestCase):
-    def test_tab_is_second_after_exam(self):
+    def test_no_separate_tab_warmups_live_inside_lessons(self):
+        # Учитель 19.10: «удали плашку Warm-up снизу — у каждого урока будет свой warm-up».
+        # Раздел остаётся по адресу #/warmup, чтобы урок мог на него сослаться, но вкладки нет.
         tabs = re.findall(r'\{ href: "(#/[a-z]*)", icon: "[^"]+", label: "([^"]+)"', HTML)
-        self.assertEqual([t[0] for t in tabs], ["#/lesson", "#/", "#/warmup", "#/lexis", "#/grammar", "#/words", "#/results"])
+        self.assertNotIn("#/warmup", [t[0] for t in tabs])
         self.assertIn('src="data/warmups.js?v=', HTML)
         self.assertIn('src="js/warmup-ui.js?v=', HTML)
 
