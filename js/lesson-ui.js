@@ -110,6 +110,8 @@
   // Варианты викторины показываем в своём порядке для каждого вопроса: в данных верный — первый,
   // и без перемешивания ответ угадывался бы по месту.
   function order(n, seed) { var o = []; for (var j = 0; j < n; j++) o.push(j); var r = seed % n; return o.slice(r).concat(o.slice(0, r)); }
+  // Сдвиг зависит от текста вопроса, а не только от номера: иначе место верного ответа шло бы по кругу.
+  function seedOf(s) { var h = 0; for (var c = 0; c < s.length; c++) h = (h * 31 + s.charCodeAt(c)) % 9973; return h; }
 
   function block(l, i, k, b) {
     var key = l.id + ":" + i + ":" + k;
@@ -136,7 +138,7 @@
       return b.items.map(function (it, n) {
         var pk = key + ":" + n, sel = picked[pk];
         return '<div class="ls-q"><div class="qq"><b>' + (n + 1) + '.</b> ' + esc(it.q) + '</div><div class="opts">' +
-          order(it.opts.length, n + k).map(function (j) { var c = sel == null ? '' : j === it.a ? 'right' : j === sel ? 'wrong' : ''; return '<button class="' + c + '" data-lspick="' + pk + ':' + j + '">' + esc(it.opts[j]) + '</button>'; }).join("") +
+          order(it.opts.length, seedOf(it.q)).map(function (j) { var c = sel == null ? '' : j === it.a ? 'right' : j === sel ? 'wrong' : ''; return '<button class="' + c + '" data-lspick="' + pk + ':' + j + '">' + esc(it.opts[j]) + '</button>'; }).join("") +
           '</div>' + (sel != null ? '<p class="why">' + (sel === it.a ? '✓ ' : '✗ ') + rich(it.why) + '</p>' : '') + '</div>';
       }).join("");
     }
@@ -177,4 +179,5 @@
     var h = location.hash;
     if (st.from && !/^#\/(t|lesson)\//.test(h) && h !== "#/lesson") { st.from = null; save(); }
   });
+  A.render();
 })();

@@ -34,7 +34,7 @@
               { q: "Key word transformation: \"It's a pity I can't drive.\" WISH → I ___ drive.", opts: ["wish I could", "wish I can", "wish I would"], a: 0,
                 why: "wish + past (could) for a wish about the present. \"wish I can\" is not possible." },
               { q: "Word formation: \"The results were ___ — nobody thought they would be so good.\" (EXPECT)", opts: ["unexpected", "expectation", "expected"], a: 0,
-                why: "We need an adjective with a negative meaning: nobody expected them → unexpected." },
+                why: "We need an adjective with the prefix un- (= not): nobody expected them → unexpected." },
               { q: "Extra word or a correct line? \"Despite the rain, we went for a walk.\"", opts: ["Correct (V)", "Extra: the", "Extra: for"], a: 0,
                 why: "Every word is needed. Remember: despite the rain, but in spite of the rain." }
             ] },
@@ -53,14 +53,14 @@
             { type: "text", text: "**At the olympiad:** Reading — 45 minutes, 20 points, two tasks. **Task 2:** a text with 10 gaps and 11 sentences (A–K). One sentence is extra." },
             { type: "text", text: "Every sentence is connected to the text around it. We call these connections **hooks**. There are four kinds:" },
             { type: "hooks", items: [
-              { h: "Reference words", t: "this, that, these, such, it, they, one, the same — they point back to something in the sentence BEFORE the gap." },
+              { h: "Reference words", t: "this, that, these, such, it, they, one, the same — they point back to something said just before. In the missing sentence they point to the sentence before the gap; in the sentence after the gap they point to the missing sentence." },
               { h: "Linkers", t: "however, but, so, therefore, as a result, also, instead, for example — they show the logic: contrast, result, addition." },
               { h: "Repeated words", t: "the same word, a synonym or a word from the same topic before or after the gap." },
               { h: "Grammar", t: "tense, singular or plural, a question and its answer." }
             ] },
             { type: "example", title: "Look at an example",
               text: "Many teenagers find it hard to get up early. ___ . This is why some scientists suggest starting school later.",
-              opts: ["Their body clock works differently from adults'.", "However, some of them love mornings."], a: 0,
+              opts: ["Their body clocks work differently from adults'.", "However, some of them love mornings."], a: 0,
               why: "After the gap: \"This is why…\" — we need a REASON before it. Sentence A gives the reason (the body clock). Sentence B has \"however\", a contrast, and does not explain \"this is why\"." },
             { type: "steps", title: "How to solve", items: [
               "Read the whole text quickly for the main idea (2 minutes).",
@@ -109,7 +109,7 @@
         {
           stage: "feedback", title: "Check and discuss", minutes: 5,
           blocks: [
-            { type: "text", text: "Press **✓ Check answers** in the task. Then open **💡 Show how to solve** under the gaps you got wrong." },
+            { type: "text", text: "Press **✓ Check answers** in the task. Then read **💡 Show how to solve** under the gaps you got wrong." },
             { type: "talk", items: [
               "Which gap was the easiest? Which hook helped you?",
               "Which gap was the hardest? Why?",
