@@ -23,7 +23,7 @@ def run_js(body):
 class Warmups(unittest.TestCase):
     def test_tab_is_second_after_exam(self):
         tabs = re.findall(r'\{ href: "(#/[a-z]*)", icon: "[^"]+", label: "([^"]+)"', HTML)
-        self.assertEqual([t[0] for t in tabs], ["#/", "#/warmup", "#/lexis", "#/grammar", "#/words", "#/results"])
+        self.assertEqual([t[0] for t in tabs], ["#/lesson", "#/", "#/warmup", "#/lexis", "#/grammar", "#/words", "#/results"])
         self.assertIn('src="data/warmups.js?v=', HTML)
         self.assertIn('src="js/warmup-ui.js?v=', HTML)
 
