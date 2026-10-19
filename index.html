@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#121212">
-<meta name="app-version" content="b283911889">
+<meta name="app-version" content="a26b19080c">
 <script>
 // Автообновление: браузер может до 10 минут показывать старую страницу из кэша GitHub Pages.
 // Сверяем свою версию с version.json (без кэша) и, если вышла новая, открываем её по новому адресу.
@@ -615,12 +615,12 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   window.addEventListener("hashchange", function () { if ("speechSynthesis" in window) speechSynthesis.cancel(); render(); window.scrollTo(0, 0); });
 
   // ---------- tabs ----------
-  // Вкладки внизу: урок, экзамен, разминки, лексика, грамматика, словарик, результаты.
+  // Вкладки внизу: урок, экзамен, лексика, грамматика, словарик, результаты.
+  // Разминок отдельной вкладкой нет (учитель 19.10): warm-up — первый шаг каждого урока.
   // Вкладка показывается, только если её раздел подключён (у расширений — свой файл).
   var TABS = [
     { href: "#/lesson", icon: "🎓", label: "Lesson", route: "lesson" },
     { href: "#/", icon: "🎧", label: "Exam", route: "" },
-    { href: "#/warmup", icon: "☕", label: "Warm-up", route: "warmup" },
     { href: "#/lexis", icon: "🔥", label: "Lexis", route: "lexis" },
     { href: "#/grammar", icon: "📐", label: "Grammar", route: "grammar" },
     { href: "#/words", icon: "💗", label: "Words", route: "words" },
