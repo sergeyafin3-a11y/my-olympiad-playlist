@@ -11,7 +11,7 @@
   window.LESSONS = [
     {
       id: "l1", date: "2026-10-12", title: "Use of English: the extra word and key word transformations", emoji: "🧩",
-      cover: img("m01-queen"),
+      cover: img("m11-succeed-happy"),
       summary: "We checked Use of English (all four tasks) and learnt how to solve Task 1 and Task 2.",
       links: [
         { href: "#/t/m-u1", label: "🗑️ Task 1 · Extra word" },
@@ -115,7 +115,7 @@
           ]
         },
         {
-          stage: "feedback", title: "Check and discuss", minutes: 5, image: img("m11-succeed-happy"),
+          stage: "feedback", title: "Check and discuss", minutes: 5, image: img("m01-queen"),
           blocks: [
             { type: "text", text: "✅ Press **✓ Check answers** in the task. Then read **💡 Show how to solve** under the gaps you got wrong." },
             { type: "talk", items: [
