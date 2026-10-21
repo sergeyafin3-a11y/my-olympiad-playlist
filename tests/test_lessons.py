@@ -83,7 +83,7 @@ class Lessons(unittest.TestCase):
 
     def test_lessons_have_pictures_and_games(self):
         # Учитель 19.10: «скучно, без картинок; больше интерактива, игр, чтобы что-то двигать;
-        # в warm-up — спикинг». Картинки — бесплатные фото Unsplash (Pinterest — чужие права).
+        # в warm-up — спикинг». Картинки — мемы, которые выбрала учитель (media/memes).
         r = run_js("""
           var bad = [], kinds = {}, pics = [];
           L.forEach(function(l){
