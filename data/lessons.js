@@ -3,15 +3,15 @@
 // Всё на английском и обращено к ученице: учитель показывает приложение через демонстрацию экрана,
 // а объясняет сам — поэтому здесь нет комментариев для учителя (они у учителя отдельно).
 // Учитель 19.10: «скучно» — поэтому игры (выбросить слово, найти крючки, разложить по корзинам,
-// перетащить предложения в пропуски), разговор в warm-up и фото. Фото — бесплатные с Unsplash
-// (Pinterest — чужие права и запрет показа на других сайтах). Свои упражнения придуманы нами,
+// перетащить предложения в пропуски), разговор в warm-up и картинки. Картинки — мемы в стиле
+// affirmation memes, которые учитель выбрала и прислала сама (22.10), лежат в media/memes. Свои упражнения придуманы нами,
 // настоящее олимпиадное задание идёт целиком в production. Типы блоков рисует js/lesson-ui.js.
 (function () {
-  function img(id) { return "https://images.unsplash.com/photo-" + id + "?w=900&h=420&fit=crop&q=70&auto=format"; }
+  function img(name) { return "media/memes/" + name + ".jpg"; }
   window.LESSONS = [
     {
       id: "l1", date: "2026-10-12", title: "Use of English: the extra word and key word transformations", emoji: "🧩",
-      cover: img("1581544291234-31340be4b1b8"),
+      cover: img("m01-queen"),
       summary: "We checked Use of English (all four tasks) and learnt how to solve Task 1 and Task 2.",
       links: [
         { href: "#/t/m-u1", label: "🗑️ Task 1 · Extra word" },
@@ -21,8 +21,8 @@
       ]
     },
     {
-      id: "l2", date: "2026-10-19", title: "Reading: missing sentences", emoji: "📖",
-      cover: img("1677161190157-9f4f3432c3b4"),
+      id: "l2", date: "2026-10-22", title: "Reading: missing sentences", emoji: "📖",
+      cover: img("m02-reading"),
       aims: [
         "🗣️ Talk about mornings and sleep.",
         "🪝 Learn how Reading Task 2 works and how to find \"hooks\".",
@@ -30,7 +30,7 @@
       ],
       steps: [
         {
-          stage: "warm-up", title: "Warm-up", minutes: 7, image: img("1499933374294-4584851497cc"), sticker: "rise & shine ☀️",
+          stage: "warm-up", title: "Warm-up", minutes: 7, image: img("m07-morning"),
           blocks: [
             { type: "meme", style: "pov", text: "POV: your alarm goes off for the fifth time and you still press snooze", emoji: "😵‍💫" },
             { type: "text", text: "**This or that?** Choose one — then answer the question." },
@@ -52,7 +52,7 @@
           ]
         },
         {
-          stage: "presentation", title: "How Reading Task 2 works", minutes: 10, image: img("1776057441344-38e0587ad1e6"), sticker: "hooks = cheat code 🪝",
+          stage: "presentation", title: "How Reading Task 2 works", minutes: 10, image: img("m08-brain"),
           blocks: [
             { type: "text", text: "📖 **At the olympiad:** Reading — 45 minutes, 20 points, two tasks. **Task 2:** a text with 10 gaps and 11 sentences (A–K). One sentence is extra." },
             { type: "text", text: "🧩 Every sentence is connected to the text around it, like a puzzle piece. We call these connections **hooks**:" },
@@ -78,7 +78,7 @@
           ]
         },
         {
-          stage: "practice", title: "Hooks in action", minutes: 8, image: img("1730804518415-75297e8d2a41"), sticker: "drag it, drop it 🫳",
+          stage: "practice", title: "Hooks in action", minutes: 8, image: img("m09-focus"),
           blocks: [
             { type: "text", text: "🗂️ **Sort the hooks.** Drag each word to the right box (or tap the word, then tap the box)." },
             { type: "sort",
@@ -107,7 +107,7 @@
           ]
         },
         {
-          stage: "production", title: "Olympiad task", minutes: 17, image: img("1613578519724-22fdb5d06388"), sticker: "main character energy ✨",
+          stage: "production", title: "Olympiad task", minutes: 17, image: img("m10-lock-in"),
           blocks: [
             { type: "text", text: "🏆 Now a real task from the Moscow municipal stage 2025/26: **Reading Task 2** — \"How I learned to love my alarm clock\". Use your hooks!" },
             { type: "timer", minutes: 15, label: "15 minutes for the task" },
@@ -115,7 +115,7 @@
           ]
         },
         {
-          stage: "feedback", title: "Check and discuss", minutes: 5, image: img("1543269865-cbf427effbad"), sticker: "real talk: how did it go? 🗣️",
+          stage: "feedback", title: "Check and discuss", minutes: 5, image: img("m11-succeed-happy"),
           blocks: [
             { type: "text", text: "✅ Press **✓ Check answers** in the task. Then read **💡 Show how to solve** under the gaps you got wrong." },
             { type: "talk", items: [
@@ -127,7 +127,7 @@
           ]
         },
         {
-          stage: "wrap-up", title: "Wrap-up and homework", minutes: 3, image: img("1534685785745-60a2cea0ec34"), sticker: "you ate that 💅",
+          stage: "wrap-up", title: "Wrap-up and homework", minutes: 3, image: img("m12-proud"),
           blocks: [
             { type: "meme", style: "me", top: "Me at the start of the lesson:", a: "🤔", bottom: "Me after finding all the hooks:", b: "🕵️‍♀️✨" },
             { type: "list", title: "🌟 Today you learnt", items: [
@@ -146,13 +146,13 @@
         }
       ]
     },
-    { id: "l3", date: "2026-10-26", title: "Writing: a story", emoji: "✍️", cover: img("1471107340929-a87cd0f5b5f3"),
+    { id: "l3", date: "2026-10-26", title: "Writing: a story", emoji: "✍️", cover: img("m03-studying"),
       aims: ["How a story is checked: the five criteria.", "Plan a story that ends with a given sentence.", "Useful words for telling a story."] },
-    { id: "l4", date: "2026-11-02", title: "Writing: an essay on a quotation · Culture", emoji: "📚", cover: img("1524995997946-a1c2e315a42f"),
+    { id: "l4", date: "2026-11-02", title: "Writing: an essay on a quotation · Culture", emoji: "📚", cover: img("m04-smort"),
       aims: ["How to comment on a quotation.", "Examples from history and literature.", "Use of English Task 4: culture."] },
-    { id: "l5", date: "2026-11-09", title: "Mock exam: review", emoji: "📝", cover: img("1488190211105-8b0e65b80b4e"),
+    { id: "l5", date: "2026-11-09", title: "Mock exam: review", emoji: "📝", cover: img("m05-you-can"),
       aims: ["We check the mock exam together.", "Your weakest part: extra practice."] },
-    { id: "l6", date: "2026-11-16", title: "Final practice before the olympiad", emoji: "🏔️", cover: img("1534685785745-60a2cea0ec34"),
+    { id: "l6", date: "2026-11-16", title: "Final practice before the olympiad", emoji: "🏔️", cover: img("m06-succeed"),
       aims: ["Quick practice of every task.", "Time and strategy on the day."] }
   ];
 })();

@@ -55,7 +55,8 @@
     ".ls-links a{display:block;margin-top:8px;padding:12px 14px;border-radius:12px;background:var(--card);color:var(--ink);text-decoration:none}",
     ".ls-links a small{display:block;color:var(--mute);margin-top:2px}",
     ".ls-nav{display:flex;justify-content:space-between;gap:10px;margin-top:22px}",
-    ".ls-hero{display:block;width:100%;height:170px;object-fit:cover;border-radius:16px;margin-top:14px;background:#1d1d1d}",
+    // Мемы учителя — с надписями: показываем целиком (contain), без обрезки, на мягком фоне.
+    ".ls-hero{display:block;width:100%;height:auto;max-height:340px;object-fit:contain;border-radius:16px;margin-top:14px;background:#1d1d1d}",
     ".ls-thumb{width:64px;height:64px;border-radius:12px;object-fit:cover;background:#1d1d1d}",
     ".ls-card .ls-when{display:block;font-size:12px;font-weight:700;color:var(--c);letter-spacing:.02em;margin-bottom:2px}",
     ".ls-photo{position:relative}",
@@ -114,8 +115,8 @@
   // «Сегодня» — урок с сегодняшней датой, а если сегодня урока нет — ближайший следующий.
   function current() { var t = today(); return LS.filter(function (l) { return l.date >= t; })[0] || LS[LS.length - 1]; }
   // **жирный** в тексте урока — без HTML в данных.
-  // Обложка урока — та же фотография Unsplash, только квадратная и маленькая.
-  function thumb(u) { return u.replace(/w=\d+&h=\d+/, "w=160&h=160"); }
+  // Обложка урока в списке — та же картинка, маленьким квадратом (обрезка через CSS).
+  function thumb(u) { return u; }
   function rich(s) { return esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>"); }
 
   A.routes.lesson = function (parts) {
@@ -156,8 +157,7 @@
     if (s.image) h += '<div class="ls-photo"><img class="ls-hero" src="' + esc(s.image) + '" alt="" loading="lazy">' + (s.sticker ? '<span class="ls-sticker">' + esc(s.sticker) + '</span>' : '') + '</div>';
     s.blocks.forEach(function (b, k) { h += block(l, i, k, b); });
     h += '<div class="ls-nav">' + (i > 0 ? '<button class="ghost" data-lsgo="' + l.id + ':' + (i - 1) + '">← Back</button>' : '<span></span>') +
-      (i < l.steps.length - 1 ? '<button class="bigplay" data-lsgo="' + l.id + ':' + (i + 1) + '">Next: ' + esc(l.steps[i + 1].title) + ' →</button>' : '<a class="ghost" href="#/lesson" style="text-decoration:none">Finish ✓</a>') + '</div>' +
-      '<p class="ls-credit">Photos: Unsplash</p>';
+      (i < l.steps.length - 1 ? '<button class="bigplay" data-lsgo="' + l.id + ':' + (i + 1) + '">Next: ' + esc(l.steps[i + 1].title) + ' →</button>' : '<a class="ghost" href="#/lesson" style="text-decoration:none">Finish ✓</a>') + '</div>';
     return h + '</div>';
   }
 

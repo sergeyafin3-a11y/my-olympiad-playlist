@@ -32,13 +32,14 @@ class Lessons(unittest.TestCase):
         r = run_js("return L.map(function(l){ return [l.id, l.date, l.title, (l.steps || []).length]; });")
         dates = [x[1] for x in r]
         self.assertEqual(dates, sorted(dates))
-        self.assertIn("2026-10-19", dates)
+        # Урок Reading перенесён учителем с 19.10 на четверг 22.10.
+        self.assertIn("2026-10-22", dates)
         self.assertTrue(all(d < "2026-11-21" for d in dates))
         self.assertTrue(all(x[2] for x in r))
 
     def test_todays_lesson_is_a_full_50_minute_ppp_lesson(self):
         r = run_js("""
-          var l = L.filter(function(x){ return x.date === "2026-10-19"; })[0];
+          var l = L.filter(function(x){ return x.date === "2026-10-22"; })[0];
           return {mins: l.steps.reduce(function(a, s){ return a + s.minutes; }, 0), kinds: l.steps.map(function(s){ return s.stage; }),
                   blocks: l.steps.map(function(s){ return s.blocks.length; })};
         """)
@@ -82,13 +83,14 @@ class Lessons(unittest.TestCase):
 
     def test_lessons_have_pictures_and_games(self):
         # Учитель 19.10: «скучно, без картинок; больше интерактива, игр, чтобы что-то двигать;
-        # в warm-up — спикинг». Картинки — бесплатные фото Unsplash (Pinterest — чужие права).
+        # в warm-up — спикинг». Картинки — мемы, которые выбрала учитель (media/memes).
         r = run_js("""
-          var bad = [], kinds = {};
+          var bad = [], kinds = {}, pics = [];
           L.forEach(function(l){
-            if (!/^https:\\/\\/images\\.unsplash\\.com\\/photo-/.test(l.cover || "")) bad.push(l.id + " cover");
+            // Учитель 22.10 прислала свои мемы-картинки (affirmation memes) — они лежат в media/memes.
+            if (!/^media\\/memes\\/.+\\.jpg$/.test(l.cover || "")) bad.push(l.id + " cover"); else pics.push(l.cover);
             (l.steps || []).forEach(function(s, i){
-              if (!/^https:\\/\\/images\\.unsplash\\.com\\/photo-/.test(s.image || "")) bad.push(l.id + " step " + i + " image");
+              if (!/^media\\/memes\\/.+\\.jpg$/.test(s.image || "")) bad.push(l.id + " step " + i + " image"); else pics.push(s.image);
               s.blocks.forEach(function(b){
                 kinds[b.type] = 1;
                 if (b.type === "sort") b.cards.forEach(function(c){ if (!b.buckets.some(function(x){ return x.id === c.b; })) bad.push("sort " + c.t); });
@@ -103,14 +105,17 @@ class Lessons(unittest.TestCase):
           });
           var l2 = L.filter(function(x){ return x.id === "l2"; })[0];
           var warm = l2.steps[0].blocks.map(function(b){ return b.type; });
-          return {bad: bad, kinds: Object.keys(kinds).sort(), warm: warm};
+          return {bad: bad, kinds: Object.keys(kinds).sort(), warm: warm, pics: pics};
         """)
         self.assertEqual(r["bad"], [])
+        self.assertEqual([p for p in r["pics"] if not (ROOT / p).is_file()], [])
+        self.assertEqual(len(set(r["pics"])), 12, "12 картинок учителя — каждая на своём месте")
         # Учитель: «зумерское, мемы, стикеры» — мемы в формате эмодзи и текста (без чужих фото).
         for k in ["thisorthat", "speak", "binword", "hookhunt", "sort", "gapfill", "meme"]:
             self.assertIn(k, r["kinds"])
         self.assertIn("speak", r["warm"])
-        self.assertIn("ls-sticker", (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8"))
+        # Мемы показываются целиком, без обрезки и без наших стикеров поверх надписей.
+        self.assertIn("object-fit:contain", (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8"))
         self.assertIn("thisorthat", r["warm"])
         ui = (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8")
         for hook in ["data-lsdrag", "data-lsdrop", "pointerdown", "elementFromPoint"]:
