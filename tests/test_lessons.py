@@ -67,7 +67,11 @@ class Lessons(unittest.TestCase):
     def test_real_task_has_a_breakdown_for_every_gap(self):
         r = run_js("""
           var t = null; V.parts.forEach(function(p){ p.tasks.forEach(function(x){ if (x.id === "m-r2") t = x; }); });
-          return t.items.filter(function(it){ return (E["m-r2"][it.n] || "").indexOf("Answer: " + it.a[0]) < 0; }).map(function(it){ return it.n; });
+          var bad = t.items.filter(function(it){ return (E["m-r2"][it.n] || "").indexOf("Answer: " + it.a[0]) < 0; }).map(function(it){ return it.n; });
+          // Домашний пирог: тот же «💡 Show how to solve» под каждым пропуском.
+          var h = null; Object.keys(P).forEach(function(k){ P[k].forEach(function(x){ if (x.id === "p-r2-2425") h = x; }); });
+          if (!h) return ["no p-r2-2425"];
+          return bad.concat(h.items.filter(function(it){ return (E["p-r2-2425"] && E["p-r2-2425"][it.n] || "").indexOf("Answer: " + it.a[0]) < 0; }).map(function(it){ return "pie " + it.n; }));
         """)
         self.assertEqual(r, [])
 
@@ -164,6 +168,10 @@ class Lessons(unittest.TestCase):
 # Официальный ключ Reading Task 2 муниципального этапа Москвы 2024/25
 # (ans-engl-10-11-mun-msk-24-25.pdf, всош.цпм.рф): пропуски 1–10, лишнее — H.
 KEY_2425 = "GBKEIDCAJF"
+TASK_FILES = ["data/variant-mun-msk-25-26.js", "data/practice-mun.js"]
+# Учитель 22.10: «поменяем местами» — на уроке разбираем текст 2025/26 про будильник (m-r2),
+# а пирог Цветаевой 2024/25 — домашнее задание на 15 минут (отработка p-r2-2425).
+IN_CLASS, HOMEWORK = "m-r2", "p-r2-2425"
 
 
 def render_step(lesson_id, step, clicks=(), typed=(), with_store=False):
@@ -181,7 +189,7 @@ def render_step(lesson_id, step, clicks=(), typed=(), with_store=False):
                     render: function(){}, keepScroll: function(f){ f(); }, routes: {}, words: {}};
     """.replace("LID", lesson_id)
     clicks_js = json.dumps(list(clicks))
-    js = stub + (ROOT / "data" / "lessons.js").read_text(encoding="utf-8") + """
+    js = stub + "".join((ROOT / f).read_text(encoding="utf-8") for f in TASK_FILES) + (ROOT / "data" / "lessons.js").read_text(encoding="utf-8") + """
       var o = {}; o["LID"] = STEP; store["olymp-lessons"] = JSON.stringify({step: o});
     """.replace("LID", lesson_id).replace("STEP", str(step)) + (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8") + """
       JSON.parse(CLICKS).forEach(function(c){
@@ -242,7 +250,7 @@ def sheet_session(actions, paper=None):
       window.App = {esc: function(s){ return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); },
                     render: function(){ paint(); }, keepScroll: function(f){ f(); }, routes: {}, words: {}};
     """.replace("INIT", json.dumps(json.dumps(init)))
-    js += (ROOT / "data" / "lessons.js").read_text(encoding="utf-8") + (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8")
+    js += "".join((ROOT / f).read_text(encoding="utf-8") for f in TASK_FILES + ["data/lessons.js", "js/lesson-ui.js"])
     js += """
       paint();
       function find(n, kind){ return els.filter(function(x){ return x.dataset.pin === "SHEET:" + n && x.cl[kind === "cell" ? "ls-cell" : "ls-pin"]; })[0]; }
@@ -276,7 +284,8 @@ class ReadingLessonIsClear(unittest.TestCase):
           var l = L.filter(function(x){ return x.id === "l2"; })[0], t = null;
           V.parts.forEach(function(p){ p.tasks.forEach(function(x){ if (x.id === "m-r2") t = x; }); });
           var key = {}; t.items.forEach(function(it){ key[it.n] = it.a[0]; });
-          return {steps: l.steps, intro: t.intro, key: key};
+          var opts = {}; t.opts.forEach(function(o){ opts[o.k] = o.t; });
+          return {steps: l.steps, intro: t.intro, key: key, opts: opts, text: t.text};
         """)
 
     def test_right_after_the_warm_up_the_real_task_and_what_to_do(self):
@@ -285,13 +294,11 @@ class ReadingLessonIsClear(unittest.TestCase):
         types = [b["type"] for b in meet["blocks"]]
         self.assertIn("paper", types, "сразу после разминки — настоящее задание целиком, как на олимпиаде")
         paper = [b for b in meet["blocks"] if b["type"] == "paper"][0]
-        # Инструкция — слово в слово официальная (та же, что у задания 2025/26 в приложении).
-        self.assertEqual(paper["instruction"], r["intro"])
-        self.assertIn("2024/25", paper["source"])
-        text = " ".join(paper["paras"])
-        self.assertEqual(re.findall(r"\[(\d+)\]", text), [str(n) for n in range(1, 11)])
-        self.assertEqual([o["k"] for o in paper["opts"]], list("ABCDEFGHIJK"))
-        self.assertIn("By Marina's own admission", paper["opts"][10]["t"])
+        # Текст — из самого задания 2025/26: тот же, что на его странице, без копии в уроке.
+        self.assertEqual(paper.get("task"), IN_CLASS)
+        self.assertIn("2025/26", paper["source"])
+        self.assertEqual(re.findall(r"\((\d+)\)", " ".join(r["text"])), [str(n) for n in range(1, 11)])
+        self.assertEqual(sorted(r["opts"]), list("ABCDEFGHIJK"))
         # Ниже задания — что с ним делать, простыми пунктами; ключа на экране нет.
         after = types[types.index("paper") + 1:]
         self.assertIn("list", after)
@@ -299,15 +306,28 @@ class ReadingLessonIsClear(unittest.TestCase):
         self.assertIn("What you have to do", todo["title"])
         self.assertGreaterEqual(len(todo["items"]), 4)
 
-    def test_the_sheet_is_the_official_text_word_for_word(self):
+    def test_the_pie_text_is_the_homework(self):
+        r = self.l2()
+        tasks = lambda st: [b["task"] for b in r["steps"][st]["blocks"] if b["type"] == "task"]
+        stages = [st["stage"] for st in r["steps"]]
+        self.assertEqual(tasks(stages.index("production")), [HOMEWORK])
+        self.assertEqual(tasks(stages.index("feedback")), [HOMEWORK])
+        self.assertIn("Homework", r["steps"][stages.index("production")]["title"])
+        links = [x["href"] for b in r["steps"][-1]["blocks"] if b["type"] == "links" for x in b["items"]]
+        self.assertEqual(links[0], "#/t/" + HOMEWORK)
+
+    def test_the_homework_is_the_official_text_word_for_word(self):
         # Ревью PR 35: «neat» → «nice» проходило все тесты. Сверяем по словам с текстом официального
         # PDF (tests/fixtures/reading2-mun-2425.txt — выписка из tasks-engl-10-11-mun-msk-24-25.pdf).
-        paper = [b for b in self.l2()["steps"][1]["blocks"] if b["type"] == "paper"][0]
-        def words(t):
-            return re.findall(r"[a-z0-9]+", t.lower().replace("’", "'").replace("‘", "'"))
+        t = run_js("""var t = null; Object.keys(P).forEach(function(k){ P[k].forEach(function(x){ if (x.id === "%s") t = x; }); });
+                      return {intro: t.intro, text: t.text, opts: t.opts, key: t.items.map(function(it){ return it.a[0]; }).join(""), src: t.source};""" % HOMEWORK)
+        def words(x):
+            return re.findall(r"[a-z0-9]+", x.lower().replace("’", "'").replace("‘", "'"))
         official = (ROOT / "tests" / "fixtures" / "reading2-mun-2425.txt").read_text(encoding="utf-8")
-        ours = " ".join([paper["instruction"]] + paper["paras"] + [o["k"] + ") " + o["t"] for o in paper["opts"]])
-        self.assertEqual(words(ours.replace("[", "(").replace("]", ")")), words(official))
+        ours = " ".join([t["intro"]] + [p.replace("_", " ") for p in t["text"]] + [o["k"] + ") " + o["t"] for o in t["opts"]])
+        self.assertEqual(words(ours), words(official))
+        self.assertEqual(t["key"], KEY_2425)
+        self.assertIn("2024/25", t["src"])
 
     def test_one_gap_solved_together_step_by_step_before_any_exercise(self):
         r = self.l2()
@@ -317,18 +337,17 @@ class ReadingLessonIsClear(unittest.TestCase):
         self.assertEqual(len(walk), 1, "один пропуск того же текста решаем вместе, по шагам")
         w = walk[0]
         self.assertIn("[" + str(w["gap"]) + "]", w["context"])
-        self.assertEqual(w["answer"], KEY_2425[w["gap"] - 1], "ответ разбора — по официальному ключу")
+        self.assertEqual(w["answer"], r["key"][str(w["gap"])], "ответ разбора — по официальному ключу 2025/26")
         # Ревью PR 35: в 2024/25 и 2025/26 у шести пропусков одинаковые буквы (3 — K, 9 — J…).
-        # Разобранный пропуск не должен совпадать с ответом задания, которое Варя решает потом.
-        self.assertNotEqual(w["answer"], r["key"][str(w["gap"])], "разбор подсказал бы ответ задания 2025/26")
+        # Разобранный на уроке пропуск не должен совпадать с ответом домашнего пирога.
+        self.assertNotEqual(w["answer"], KEY_2425[w["gap"] - 1], "разбор подсказал бы ответ домашнего задания")
         self.assertGreaterEqual(len(w["steps"]), 3)
         self.assertTrue(all(s["q"] and s["a"] for s in w["steps"]))
         # Потом пропуск сам: верный вариант — по официальному ключу.
         quiz = [b for b in together["blocks"] if b["type"] == "quiz"][0]["items"][0]
         gap = int(re.search(r"Gap (\d+)", quiz["q"]).group(1))
-        self.assertTrue(quiz["opts"][quiz["a"]].startswith(KEY_2425[gap - 1] + "."))
-        self.assertNotEqual(KEY_2425[gap - 1], r["key"][str(gap)], "пропуск «сама» подсказал бы ответ задания 2025/26")
-        # Какое предложение лишнее в 2024/25 — не говорим: в 2025/26 эта буква — чей-то ответ.
+        self.assertTrue(quiz["opts"][quiz["a"]].startswith(r["key"][str(gap)] + "."))
+        self.assertNotEqual(KEY_2425[gap - 1], r["key"][str(gap)], "пропуск «сама» подсказал бы ответ домашнего задания")
         self.assertNotIn("extra sentence of this task", json.dumps(together))
         kinds = [b["type"] for s in r["steps"][:3] for b in s["blocks"]]
         for game in ["hookhunt", "sort", "gapfill"]:
@@ -358,7 +377,7 @@ class ReadingLessonIsClear(unittest.TestCase):
         self.assertGreaterEqual(briefs, 6)
 
     def test_the_lesson_does_not_give_away_the_real_task(self):
-        # Задание 2025/26 Варя решает в production — до него в уроке нет ни его предложений, ни букв.
+        # Домашний пирог (2024/25) Варя решает в production — до него в уроке нет ни его предложений, ни букв.
         # Ревью PR 35: сравнивали только начало предложения и по исходнику с ** и фигурными
         # кавычками — цитата из середины или «**They say** …» проходили. Теперь: строки урока
         # до production, по словам, любые 6 слов подряд.
@@ -367,12 +386,13 @@ class ReadingLessonIsClear(unittest.TestCase):
         def runs(ws):
             return {" ".join(ws[i:i + 6]) for i in range(len(ws) - 5)}
         r = run_js("""
-          var t = null; V.parts.forEach(function(p){ p.tasks.forEach(function(x){ if (x.id === "m-r2") t = x; }); });
+          var t = null, m = null; Object.keys(P).forEach(function(k){ P[k].forEach(function(x){ if (x.id === "HOMEWORK") t = x; }); });
+          V.parts.forEach(function(p){ p.tasks.forEach(function(x){ if (x.id === "m-r2") m = x; }); });
           var l = L.filter(function(x){ return x.id === "l2"; })[0], before = [];
           for (var i = 0; l.steps[i].stage !== "production"; i++) before.push(l.steps[i]);
-          var key = {}; t.items.forEach(function(it){ key[it.n] = it.a[0]; });
+          var key = {}; m.items.forEach(function(it){ key[it.n] = it.a[0]; });
           return {real: t.opts.map(function(o){ return o.t; }).concat(t.text), lesson: JSON.stringify(before), key: key};
-        """)
+        """.replace("HOMEWORK", HOMEWORK))
         real = set()
         for piece in r["real"]:
             real |= runs(words(piece))
@@ -392,7 +412,7 @@ class ReadingLessonIsClear(unittest.TestCase):
         # вариантах, не встречаются в шаге за пределами самого упражнения.
         r = self.l2()
         blocks = r["steps"][2]["blocks"]
-        paper = {o["k"]: o["t"] for b in r["steps"][1]["blocks"] if b["type"] == "paper" for o in b["opts"]}
+        paper = r["opts"]
         def words(t):
             return {w for w in re.findall(r"[a-z]+", t.lower()) if len(w) >= 5}
         leaks = []
@@ -417,6 +437,7 @@ class ReadingLessonIsClear(unittest.TestCase):
     def test_the_real_task_is_drawn_like_the_olympiad_sheet(self):
         html = render_step("l2", 1)
         self.assertIn("ls-paper", html)
+        self.assertIn("How I learned to love my alarm clock", html)
         for n in range(1, 11):
             self.assertIn("(%d) <input" % n, html)
         self.assertEqual(len(re.findall(r'<b>[A-K]\)</b>', html)), 11)

@@ -264,6 +264,45 @@
           ch(10, "The Great Western Railroad", ["A"])
         ]
       }
+    ],
+    // Reading Task 2 2024/25 — домашнее задание урока 22.10 (учитель поменяла местами: на уроке —
+    // текст 2025/26 про будильник, на дом — пирог Цветаевой). Текст, инструкция и ключ — с. 6–7
+    // заданий и с. 7 ответов 2024/25; переносы строк склеены, слова оригинала не тронуты.
+    "m-r2": [
+      {
+        id: "p-r2-2425", section: "reading", type: "choice", longOpts: true,
+        title: "Practice · Task 2 · Moscow municipal 2024/25",
+        source: SRC_2425,
+        opts: [
+          { k: "A", t: "It gives desserts a very similar signature sourish hint with a unique creamy consistency." },
+          { k: "B", t: "The latter would often say the pies were so good, with sweet filling (or ‘zalivka’) and contrasting tang from the apples, that the recipe spread across the country bearing Marina’s name." },
+          { k: "C", t: "Today, the peculiarity of the pie still lies in its delicate sour cream dough." },
+          { k: "D", t: "Marina Tsvetaeva herself was born on one of those apple-scented October days, when the sky is motionless and fallen leaves are blanketed by the first frosty fog." },
+          { k: "E", t: "According to another theory, which sounds more plausible, the pie came from the Tsvetaevs’ neighbors." },
+          { k: "F", t: "Some say that chilling it in the fridge for 3-5 hours makes it even tenderer and creamier in texture." },
+          { k: "G", t: "It is unclear how it came to be associated with Marina Tsvetaeva, a famous poetess, incredibly talented and rebellious, living in the early twentieth century Russia." },
+          { k: "H", t: "In addition to the traditional recipe with apples, there are also more other variants with fruit and berry fillings, like pears and strawberries." },
+          { k: "I", t: "There would always be a samovar on the ready and the table would be laid with sweet pies made with delicious sour cream." },
+          { k: "J", t: "These have a slightly sour taste, which goes so well with the thin shortcrust pastry and delicate sour cream based filling." },
+          { k: "K", t: "By Marina’s own admission, she could only write poetry and was completely useless in the kitchen." }
+        ],
+        intro: "For items 1–10, read the passage below and choose which of the sentences A–K fit into the numbered gaps in the text. There is one extra sentence which does not fit in any of the gaps.",
+        text: [
+          "Tsvetaeva apple pie (tsvetaevski pirog) is a neat little dessert familiar to both Russian home bakers and poetry lovers. (1) ______.",
+          "One of the unofficial stories has it that the pie was loved by the family of Marina Tsvetaeva and often baked and served by Marina and her sister Anastasia at tea time, when they were young ladies and spent their holidays and summers at a dacha in Tarusa with relatives and closest friends. (2) ______.",
+          "In reality, there is no paper trail to confirm this story. (3) ______. She admitted she was generally hopeless and awful at cooking and housekeeping, too. (4) ______.",
+          "In her memoirs, Anastasia recalls a large cozy garden with apple trees and a veranda. (5) ______. Indeed, sour cream was and is the most important ingredient of the pie, along with apples.",
+          "(6) ______. That is why Russian fans of Tsvetaeva’s poetry usually celebrate her birthday by making her favorite apple pie.",
+          "(7) ______. In fact, adding sour cream into the dough makes the piecrust tenderer and richer in taste. And the same goes with the filling. Some say that sour cream is a good Slavic alternative to cream cheese. (8) ______.",
+          "The best apple varieties for Tsvetaeva apple pie are Antonovka or Bogatyr, which can be picked in late autumn. (9) ______. Although the traditional version of the pie calls for apples, sour cream base also goes perfectly with lots of other fruits and especially berries. So why not try adding strawberries into the recipe, the most summerish berries?",
+          "The pie is equally delicious when served warm or cooled. (10) ______. Enjoy a slice with a cup of black tea!"
+        ],
+        // Ключ — с. 7 файла ответов 2024/25: G B K E I D C A J F; лишнее предложение — H.
+        items: [
+          ch(1, "Gap (1)", ["G"]), ch(2, "Gap (2)", ["B"]), ch(3, "Gap (3)", ["K"]), ch(4, "Gap (4)", ["E"]), ch(5, "Gap (5)", ["I"]),
+          ch(6, "Gap (6)", ["D"]), ch(7, "Gap (7)", ["C"]), ch(8, "Gap (8)", ["A"]), ch(9, "Gap (9)", ["J"]), ch(10, "Gap (10)", ["F"])
+        ]
+      }
     ]
   };
 })();
