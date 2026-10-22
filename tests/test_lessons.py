@@ -206,7 +206,8 @@ class ReadingLessonIsClear(unittest.TestCase):
         return run_js("""
           var l = L.filter(function(x){ return x.id === "l2"; })[0], t = null;
           V.parts.forEach(function(p){ p.tasks.forEach(function(x){ if (x.id === "m-r2") t = x; }); });
-          return {steps: l.steps, intro: t.intro, opts: t.opts || null};
+          var key = {}; t.items.forEach(function(it){ key[it.n] = it.a[0]; });
+          return {steps: l.steps, intro: t.intro, key: key};
         """)
 
     def test_right_after_the_warm_up_the_real_task_and_what_to_do(self):
@@ -228,7 +229,16 @@ class ReadingLessonIsClear(unittest.TestCase):
         todo = [b for b in meet["blocks"] if b["type"] == "list"][0]
         self.assertIn("What you have to do", todo["title"])
         self.assertGreaterEqual(len(todo["items"]), 4)
-        self.assertNotIn("GBKEIDCAJF", json.dumps(paper))
+
+    def test_the_sheet_is_the_official_text_word_for_word(self):
+        # Ревью PR 35: «neat» → «nice» проходило все тесты. Сверяем по словам с текстом официального
+        # PDF (tests/fixtures/reading2-mun-2425.txt — выписка из tasks-engl-10-11-mun-msk-24-25.pdf).
+        paper = [b for b in self.l2()["steps"][1]["blocks"] if b["type"] == "paper"][0]
+        def words(t):
+            return re.findall(r"[a-z0-9]+", t.lower().replace("’", "'").replace("‘", "'"))
+        official = (ROOT / "tests" / "fixtures" / "reading2-mun-2425.txt").read_text(encoding="utf-8")
+        ours = " ".join([paper["instruction"]] + paper["paras"] + [o["k"] + ") " + o["t"] for o in paper["opts"]])
+        self.assertEqual(words(ours.replace("[", "(").replace("]", ")")), words(official))
 
     def test_one_gap_solved_together_step_by_step_before_any_exercise(self):
         r = self.l2()
@@ -239,19 +249,27 @@ class ReadingLessonIsClear(unittest.TestCase):
         w = walk[0]
         self.assertIn("[" + str(w["gap"]) + "]", w["context"])
         self.assertEqual(w["answer"], KEY_2425[w["gap"] - 1], "ответ разбора — по официальному ключу")
+        # Ревью PR 35: в 2024/25 и 2025/26 у шести пропусков одинаковые буквы (3 — K, 9 — J…).
+        # Разобранный пропуск не должен совпадать с ответом задания, которое Варя решает потом.
+        self.assertNotEqual(w["answer"], r["key"][str(w["gap"])], "разбор подсказал бы ответ задания 2025/26")
         self.assertGreaterEqual(len(w["steps"]), 3)
         self.assertTrue(all(s["q"] and s["a"] for s in w["steps"]))
         # Потом пропуск сам: верный вариант — по официальному ключу.
         quiz = [b for b in together["blocks"] if b["type"] == "quiz"][0]["items"][0]
         gap = int(re.search(r"Gap (\d+)", quiz["q"]).group(1))
         self.assertTrue(quiz["opts"][quiz["a"]].startswith(KEY_2425[gap - 1] + "."))
+        self.assertNotEqual(KEY_2425[gap - 1], r["key"][str(gap)], "пропуск «сама» подсказал бы ответ задания 2025/26")
+        # Какое предложение лишнее в 2024/25 — не говорим: в 2025/26 эта буква — чей-то ответ.
+        self.assertNotIn("extra sentence of this task", json.dumps(together))
         kinds = [b["type"] for s in r["steps"][:3] for b in s["blocks"]]
         for game in ["hookhunt", "sort", "gapfill"]:
             self.assertNotIn(game, kinds, "упражнения — после того, как поняли задание")
 
     def test_every_exercise_says_what_to_do(self):
         r = self.l2()
-        games = ["walk", "quiz", "hookhunt", "sort", "gapfill", "task"]
+        # Разминку учитель одобрила как есть (22.10: «вармап хороший»), её не трогаем; но любая игра
+        # после неё — со своим «What to do».
+        games = ["walk", "quiz", "hookhunt", "sort", "gapfill", "task", "binword", "thisorthat", "speak"]
         bad, briefs = [], 0
         for i, s in enumerate(r["steps"][1:], 1):
             seen_brief = False
@@ -273,12 +291,18 @@ class ReadingLessonIsClear(unittest.TestCase):
     def test_the_lesson_does_not_give_away_the_real_task(self):
         # Задание 2025/26 Варя решает в production — до него в уроке не должно быть его предложений.
         src = (ROOT / "data" / "lessons.js").read_text(encoding="utf-8")
-        opts = run_js("""
+        # Ревью PR 35: в задании кавычки и апострофы фигурные, в уроке — прямые; сравниваем без них.
+        def norm(t):
+            return re.sub(r"\s+", " ", re.sub(r"[’‘'“”\"–—-]", "", t)).lower()
+        r = run_js("""
           var t = null; V.parts.forEach(function(p){ p.tasks.forEach(function(x){ if (x.id === "m-r2") t = x; }); });
-          return (t.opts || []).map(function(o){ return typeof o === "string" ? o : (o.t || o.text || ""); });
+          return {opts: t.opts.map(function(o){ return o.t; }), text: t.text};
         """)
-        self.assertGreaterEqual(len(opts), 11)
-        self.assertEqual([o for o in opts if o[:40].strip() and re.sub(r"^[A-K]\)\s*", "", o)[:40] in src], [])
+        self.assertGreaterEqual(len(r["opts"]), 11)
+        pieces = r["opts"] + [x for p in r["text"] for x in re.split(r"(?<=[.!?])\s+", p)]
+        pieces = [norm(re.sub(r"\(\d+\)\s*_+\.?", "", x)).strip() for x in pieces]
+        lesson = norm(src)
+        self.assertEqual([x for x in pieces if len(x) >= 30 and x[:30] in lesson], [])
 
     def test_the_real_task_is_drawn_like_the_olympiad_sheet(self):
         html = render_step("l2", 1)
@@ -295,6 +319,10 @@ class ReadingLessonIsClear(unittest.TestCase):
         w = [b for b in r["steps"][2]["blocks"] if b["type"] == "walk"][0]
         first_a = w["steps"][0]["a"].split("**")[0][:25]
         self.assertNotIn(first_a, before, "ответ первого шага — только по нажатию")
+        second_q = w["steps"][1]["q"].split("**")[-1][:20]
+        self.assertNotIn(second_q, before, "следующий шаг — только после «Show»")
+        # Один вопрос — без номера «1.»: рядом «Gap 8», номера путаются.
+        self.assertNotRegex(before, r"<b>1\.</b> Gap")
         key = "l2:2:%d" % [b["type"] for b in r["steps"][2]["blocks"]].index("walk")
         after = render_step("l2", 2, [["lswalk", key]])
         self.assertIn(first_a, after)

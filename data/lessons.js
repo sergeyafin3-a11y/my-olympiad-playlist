@@ -91,48 +91,53 @@
               "You can use every letter **only once**. **One sentence is extra** — it does not fit any gap.",
               "**1 point** for each correct gap — **10 points** for the task."
             ] },
-            { type: "text", text: "⏱️ At the olympiad, Reading has **45 minutes** for two tasks (20 points) — so about **20 minutes** for this one." }
+            { type: "text", text: "⏱️ At the olympiad, Reading has **45 minutes** for two tasks (20 points) — so about **20 minutes** for this one. Today you will try it in **15**." }
           ]
         },
         {
           stage: "presentation", title: "Solve one gap together", minutes: 6, image: img("m08-brain"),
           blocks: [
-            { type: "brief", title: "Together: gap 3", items: [
-              "This is gap 3 of the pie text you have just seen.",
+            { type: "brief", title: "Together: gap 6", items: [
+              "This is gap 6 of the pie text you have just seen, and three of the sentences A–K.",
               "Press **👀 Show** to open the next step: the sentence before the gap, the sentence after it, then the right letter."
             ] },
-            { type: "walk", gap: 3, answer: "K",
-              context: "In reality, there is no paper trail to confirm this story. [3]. She admitted she was generally hopeless and awful at cooking and housekeeping, too.",
+            { type: "walk", gap: 6, answer: "D",
+              context: "Indeed, sour cream was and is the most important ingredient of the pie, along with apples. [6]. That is why Russian fans of Tsvetaeva's poetry usually celebrate her birthday by making her favorite apple pie.",
+              opts: [
+                { k: "C", t: "Today, the peculiarity of the pie still lies in its delicate sour cream dough." },
+                { k: "D", t: "Marina Tsvetaeva herself was born on one of those apple-scented October days, when the sky is motionless and fallen leaves are blanketed by the first frosty fog." },
+                { k: "H", t: "In addition to the traditional recipe with apples, there are also more other variants with fruit and berry fillings, like pears and strawberries." }
+              ],
               steps: [
-                { q: "👀 Read the sentence **before** the gap. What does it tell us?",
-                  a: "Nobody can prove the story about Marina and the pie: there is \"no paper trail\". So the next sentences explain **why we doubt it**." },
+                { q: "👀 Read the sentence **before** the gap. What is it about?",
+                  a: "Sour cream and apples, the most important things in the pie. In the text, gap 6 starts a **new paragraph**, so the missing sentence can start a new idea." },
                 { q: "👀 Read the sentence **after** the gap. Which words are hooks?",
-                  a: "**She** — who is she? The sentence before the gap does not name a woman, so the missing sentence must name her. **admitted … too** — she ALSO said she was bad at something." },
-                { q: "🔎 Now read sentences A–K. Which one names a woman and says she is bad at something?",
-                  a: "**K)** By **Marina's** own **admission**, she could only write poetry and was completely **useless in the kitchen**." },
+                  a: "**That is why** — the missing sentence must give the **reason**. **her birthday** — so the missing sentence is probably about the day she was born." },
+                { q: "🔎 Now read sentences C, D and H. Which one gives a reason to bake the pie on her birthday?",
+                  a: "**D)** Marina Tsvetaeva herself was **born** on one of those **apple-scented** October days…" },
                 { q: "✅ Check the hooks on both sides of the gap.",
-                  a: "Marina → **She** · admission → **admitted** · useless in the kitchen → hopeless at cooking … **too**. It fits! Write **3 – K** and cross out K." }
+                  a: "apples → **apple-scented** · was **born** → her **birthday** · D is the reason → **That is why**. C and H are about the pie, not about her birthday. Write **6 – D** and cross out D." }
               ] },
-            { type: "text", text: "🪝 **She**, **admission → admitted**, **too** — these words connect the missing sentence to the text around it. We call them **hooks**." },
-            { type: "brief", title: "Your turn: gap 9", items: [
-              "Read the text around gap 9 below.",
+            { type: "text", text: "🪝 **That is why**, **born → birthday**, **apples → apple-scented** — these words connect the missing sentence to the text around it. We call them **hooks**." },
+            { type: "brief", title: "Your turn: gap 8", items: [
+              "Read the text before gap 8 below. After gap 8 a new paragraph starts.",
               "Find the hook and tap the sentence that fits."
             ] },
             { type: "quiz", items: [
-              { q: "Gap 9. \"The best apple varieties for Tsvetaeva apple pie are Antonovka or Bogatyr, which can be picked in late autumn. (9) ______. Although the traditional version of the pie calls for apples, sour cream base also goes perfectly with lots of other fruits and especially berries.\" Which sentence fits gap 9?",
+              { q: "Gap 8. \"In fact, adding sour cream into the dough makes the piecrust tenderer and richer in taste. And the same goes with the filling. Some say that sour cream is a good Slavic alternative to cream cheese. (8) ______.\" Which sentence fits gap 8?",
                 opts: [
-                  "J. These have a slightly sour taste, which goes so well with the thin shortcrust pastry and delicate sour cream based filling.",
-                  "H. In addition to the traditional recipe with apples, there are also more other variants with fruit and berry fillings, like pears and strawberries.",
+                  "A. It gives desserts a very similar signature sourish hint with a unique creamy consistency.",
+                  "C. Today, the peculiarity of the pie still lies in its delicate sour cream dough.",
                   "F. Some say that chilling it in the fridge for 3-5 hours makes it even tenderer and creamier in texture."
                 ], a: 0,
-                why: "**J**: **These** = Antonovka and Bogatyr — two kinds of apples, so it is plural: These **have**. H is a trap: the sentence after the gap already says this about other fruits and berries — in fact, H is the extra sentence of this task. F is about the finished pie in the fridge, not about apples." }
+                why: "**A**: **It** = sour cream, and **very similar** = like cream cheese. C starts a new idea with \"Today\" and does not continue the cream cheese idea. F is a trap: it starts with **Some say** again, but there \"it\" is the pie in the fridge — and the sentence before the gap is about sour cream." }
             ] },
             { type: "text", text: "🪝 **Four kinds of hooks** — look for them in every Reading Task 2:" },
             { type: "hooks", items: [
-              { h: "👉 Reference words", t: "she, they, these, it, this, such, the latter — they point back to something said before. **These** have a slightly sour taste = the apples." },
-              { h: "🔗 Linkers", t: "however, but, so, therefore, that is why, in fact, also, instead — they show the logic: contrast, result, addition." },
-              { h: "🔁 Repeated words", t: "the same word, a synonym or a word from the same topic: admission → **admitted**, useless in the kitchen → **hopeless at cooking**." },
-              { h: "⚙️ Grammar", t: "singular or plural, tense: **These have** — more than one thing." }
+              { h: "👉 Reference words", t: "she, they, these, it, this, such, the latter — they point back to something said before. **It** gives desserts a very similar… taste: it = sour cream." },
+              { h: "🔗 Linkers", t: "however, but, so, therefore, that is why, in fact, also, instead — they show the logic: contrast, result, addition. **That is why** → the sentence before gives the reason." },
+              { h: "🔁 Repeated words", t: "the same word, a synonym or a word from the same topic: was **born** → her **birthday**, **apples** → **apple-scented**." },
+              { h: "⚙️ Grammar", t: "singular or plural, tense: **It gives** — one thing; **they give** — more than one." }
             ] },
             { type: "meme", style: "drake", no: "Reading only the sentence before the gap", yes: "Reading the sentence before AND after the gap" }
           ]
@@ -149,7 +154,7 @@
               text: "My grandmother never used an alarm clock. She woke up with the sun. But that was easy in a small village. Such a quiet life is rare today. Cities are noisy. They never really sleep. Therefore, most of us need an alarm.",
               hooks: ["She", "But", "that", "Such", "They", "Therefore"] },
             { type: "brief", title: "Exercise 2 of 3 · Sort the hooks", items: [
-              "There are two kinds of hook words: 👉 words that **point back** to something said before, and 🔗 words that **link ideas** (contrast, result, addition).",
+              "Two of the four kinds of hooks: 👉 words that **point back** to something said before, and 🔗 words that **link ideas** (contrast, result, addition).",
               "Drag each word into the right box.",
               "On a phone or tablet: tap the word, then tap the box."
             ], example: "**the latter** → 👉 Points back · **but** → 🔗 Links ideas" },
@@ -186,7 +191,7 @@
         {
           stage: "production", title: "Olympiad task", minutes: 17, image: img("m10-lock-in"),
           blocks: [
-            { type: "text", text: "🏆 Now the real thing: **Reading Task 2** from the Moscow municipal stage **2025/26** — \"How I learned to love my alarm clock\". The same format as the pie text: 10 gaps, 11 sentences A–K, one is extra." },
+            { type: "text", text: "🏆 Now your turn: **Reading Task 2** from the Moscow municipal stage **2025/26** — \"How I learned to love my alarm clock\". The same format as the pie text: 10 gaps, 11 sentences A–K, one is extra." },
             { type: "brief", title: "The olympiad task · 15 minutes", items: [
               "Start the timer below, then open the task.",
               "Read the whole text quickly: what is it about? (2 minutes)",
@@ -194,7 +199,7 @@
               "For each gap, read the sentence **before** and the sentence **after** it. Choose a letter.",
               "Do the easy gaps first. You can use every letter **only once**.",
               "One sentence is extra: at the end, check that it does not fit anywhere.",
-              "Don't press **✓ Check answers** yet — we check together in the next step."
+              "Don't open **💡 Show how to solve** and don't press **✓ Check answers** yet — we check together in the next step."
             ] },
             { type: "timer", minutes: 15, label: "15 minutes for the task" },
             { type: "task", task: "m-r2", label: "Open Reading Task 2" }
@@ -206,7 +211,7 @@
             { type: "brief", title: "Check your answers", items: [
               "Open the task and press **✓ Check answers** at the bottom.",
               "How many points out of 10?",
-              "For every wrong gap, open **💡 Show how to solve** and find the hook you missed.",
+              "For every wrong gap, read **💡 Show how to solve** under it and find the hook you missed.",
               "Then come back and answer the three questions below."
             ] },
             { type: "task", task: "m-r2", label: "Back to Reading Task 2" },
