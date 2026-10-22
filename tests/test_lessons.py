@@ -289,20 +289,61 @@ class ReadingLessonIsClear(unittest.TestCase):
         self.assertGreaterEqual(briefs, 6)
 
     def test_the_lesson_does_not_give_away_the_real_task(self):
-        # Задание 2025/26 Варя решает в production — до него в уроке не должно быть его предложений.
-        src = (ROOT / "data" / "lessons.js").read_text(encoding="utf-8")
-        # Ревью PR 35: в задании кавычки и апострофы фигурные, в уроке — прямые; сравниваем без них.
-        def norm(t):
-            return re.sub(r"\s+", " ", re.sub(r"[’‘'“”\"–—-]", "", t)).lower()
+        # Задание 2025/26 Варя решает в production — до него в уроке нет ни его предложений, ни букв.
+        # Ревью PR 35: сравнивали только начало предложения и по исходнику с ** и фигурными
+        # кавычками — цитата из середины или «**They say** …» проходили. Теперь: строки урока
+        # до production, по словам, любые 6 слов подряд.
+        def words(t):
+            return re.findall(r"[a-z0-9]+", t.lower().replace("’", "'"))
+        def runs(ws):
+            return {" ".join(ws[i:i + 6]) for i in range(len(ws) - 5)}
         r = run_js("""
           var t = null; V.parts.forEach(function(p){ p.tasks.forEach(function(x){ if (x.id === "m-r2") t = x; }); });
-          return {opts: t.opts.map(function(o){ return o.t; }), text: t.text};
+          var l = L.filter(function(x){ return x.id === "l2"; })[0], before = [];
+          for (var i = 0; l.steps[i].stage !== "production"; i++) before.push(l.steps[i]);
+          var key = {}; t.items.forEach(function(it){ key[it.n] = it.a[0]; });
+          return {real: t.opts.map(function(o){ return o.t; }).concat(t.text), lesson: JSON.stringify(before), key: key};
         """)
-        self.assertGreaterEqual(len(r["opts"]), 11)
-        pieces = r["opts"] + [x for p in r["text"] for x in re.split(r"(?<=[.!?])\s+", p)]
-        pieces = [norm(re.sub(r"\(\d+\)\s*_+\.?", "", x)).strip() for x in pieces]
-        lesson = norm(src)
-        self.assertEqual([x for x in pieces if len(x) >= 30 and x[:30] in lesson], [])
+        real = set()
+        for piece in r["real"]:
+            real |= runs(words(piece))
+        lesson = words(r["lesson"].replace("**", " ").replace("\\", " "))
+        self.assertEqual(sorted(runs(lesson) & real), [])
+        # Пропуски, у которых в 2024/25 и 2025/26 одна и та же буква, урок до задания не называет.
+        text = r["lesson"].lower()
+        shared = [n for n in range(1, 11) if KEY_2425[n - 1] == r["key"][str(n)]]
+        self.assertEqual(sorted(set(shared)), [1, 3, 4, 5, 9, 10])
+        hits = [n for n in shared if re.search(r"\bgaps? %d\b|\b%d\s*[–=-]\s*%s\b" % (n, n, KEY_2425[n - 1].lower()), text)]
+        self.assertEqual(hits, [])
+
+    def test_hints_stay_hidden_until_asked(self):
+        # Ревью PR 35, второй круг: блоки шага видны все сразу, и подсказки под разбором
+        # («born → birthday», «It gives desserts a very similar…») выдавали ответ до «Show».
+        # Слова верного предложения, которых нет ни в тексте вокруг пропуска, ни в других
+        # вариантах, не встречаются в шаге за пределами самого упражнения.
+        r = self.l2()
+        blocks = r["steps"][2]["blocks"]
+        paper = {o["k"]: o["t"] for b in r["steps"][1]["blocks"] if b["type"] == "paper" for o in b["opts"]}
+        def words(t):
+            return {w for w in re.findall(r"[a-z]+", t.lower()) if len(w) >= 5}
+        leaks = []
+        for k, b in enumerate(blocks):
+            if b["type"] == "walk":
+                right, around = paper[b["answer"]], b["context"] + " ".join(o["t"] for o in b["opts"] if o["k"] != b["answer"])
+                # Варианты разбора — те же предложения, что на листе задания, слово в слово.
+                self.assertEqual([o["t"] for o in b["opts"]], [paper[o["k"]] for o in b["opts"]])
+            elif b["type"] == "quiz":
+                it = b["items"][0]
+                right = it["opts"][it["a"]]
+                around = it["q"] + " ".join(o for j, o in enumerate(it["opts"]) if j != it["a"])
+                for o in it["opts"]:
+                    self.assertEqual(o[3:], paper[o[0]])
+            else:
+                continue
+            secret = words(right) - words(around)
+            rest = json.dumps([x for j, x in enumerate(blocks) if j != k and x["type"] not in ("walk", "quiz")]).lower()
+            leaks += sorted(w for w in secret if re.search(r"\b%s\b" % w, rest))
+        self.assertEqual(leaks, [])
 
     def test_the_real_task_is_drawn_like_the_olympiad_sheet(self):
         html = render_step("l2", 1)

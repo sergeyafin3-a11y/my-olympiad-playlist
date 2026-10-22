@@ -116,9 +116,8 @@
                 { q: "🔎 Now read sentences C, D and H. Which one gives a reason to bake the pie on her birthday?",
                   a: "**D)** Marina Tsvetaeva herself was **born** on one of those **apple-scented** October days…" },
                 { q: "✅ Check the hooks on both sides of the gap.",
-                  a: "apples → **apple-scented** · was **born** → her **birthday** · D is the reason → **That is why**. C and H are about the pie, not about her birthday. Write **6 – D** and cross out D." }
+                  a: "was **born** → her **birthday** · D gives the reason → **That is why** · apple-scented days → her favorite **apple pie**. C and H are about the pie, not about her birthday. Write **6 – D** and cross out D. 🪝 Words like these connect a missing sentence to the text around it. We call them **hooks**." }
               ] },
-            { type: "text", text: "🪝 **That is why**, **born → birthday**, **apples → apple-scented** — these words connect the missing sentence to the text around it. We call them **hooks**." },
             { type: "brief", title: "Your turn: gap 8", items: [
               "Read the text before gap 8 below. After gap 8 a new paragraph starts.",
               "Find the hook and tap the sentence that fits."
@@ -134,10 +133,10 @@
             ] },
             { type: "text", text: "🪝 **Four kinds of hooks** — look for them in every Reading Task 2:" },
             { type: "hooks", items: [
-              { h: "👉 Reference words", t: "she, they, these, it, this, such, the latter — they point back to something said before. **It** gives desserts a very similar… taste: it = sour cream." },
-              { h: "🔗 Linkers", t: "however, but, so, therefore, that is why, in fact, also, instead — they show the logic: contrast, result, addition. **That is why** → the sentence before gives the reason." },
-              { h: "🔁 Repeated words", t: "the same word, a synonym or a word from the same topic: was **born** → her **birthday**, **apples** → **apple-scented**." },
-              { h: "⚙️ Grammar", t: "singular or plural, tense: **It gives** — one thing; **they give** — more than one." }
+              { h: "👉 Reference words", t: "she, they, these, it, this, such, the latter — they point back to something said before. I bought a new phone. **It** was cheap. (it = the phone)" },
+              { h: "🔗 Linkers", t: "however, but, so, therefore, that is why, in fact, also, instead — they show the logic: contrast, result, addition. **However** → the next idea is the opposite." },
+              { h: "🔁 Repeated words", t: "the same word, a synonym or a word from the same topic: a **phone** → this **gadget**, she was **born** → her **birthday**." },
+              { h: "⚙️ Grammar", t: "singular or plural, tense: **it is** — one thing; **they are** — more than one." }
             ] },
             { type: "meme", style: "drake", no: "Reading only the sentence before the gap", yes: "Reading the sentence before AND after the gap" }
           ]
