@@ -105,6 +105,12 @@ class Practice(unittest.TestCase):
         self.assertIn("function sum(list)", HTML)
         self.assertNotIn("PTASKS.forEach(function (t) { TASKS.push", HTML)
 
+    def test_every_text_has_a_heading(self):
+        # Ревью PR 36: у пирога в бумаге нет заголовка, и страница показывала пустой «📄».
+        r = run_js("""var bad = []; Object.keys(P).forEach(function(k){ P[k].forEach(function(t){
+          if (t.text && !t.textTitle) bad.push(t.id); }); }); return bad;""")
+        self.assertEqual(r, [])
+
     def test_practice_stays_outside_the_timed_exam(self):
         # Ревью PR 29: #/full/<отработка> падал в fullBar; ссылки на отработку уводили из экзамена на время;
         # «Continue: Use of English · Practice» на главной не говорил, что продолжить.

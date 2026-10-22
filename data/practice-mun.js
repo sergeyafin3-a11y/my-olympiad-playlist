@@ -272,6 +272,8 @@
       {
         id: "p-r2-2425", section: "reading", type: "choice", longOpts: true,
         title: "Practice · Task 2 · Moscow municipal 2024/25",
+        // У текста в бумаге нет заголовка; textTitle — только подпись для блока с текстом.
+        textTitle: "Text for items 1–10",
         source: SRC_2425,
         opts: [
           { k: "A", t: "It gives desserts a very similar signature sourish hint with a unique creamy consistency." },

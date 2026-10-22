@@ -70,7 +70,7 @@
               "You can use every letter **only once**. **One sentence is extra** — it does not fit any gap.",
               "**1 point** for each correct gap — **10 points** for the task."
             ] },
-            { type: "text", text: "⏱️ At the olympiad, Reading has **45 minutes** for two tasks (20 points) — so about **20 minutes** for this one. Today you will try it in **15**." }
+            { type: "text", text: "⏱️ At the olympiad, Reading has **45 minutes** for two tasks (20 points) — so about **20 minutes** for this one." }
           ]
         },
         {
@@ -112,8 +112,8 @@
             ] },
             { type: "text", text: "🪝 **Four kinds of hooks** — look for them in every Reading Task 2:" },
             { type: "hooks", items: [
-              { h: "👉 Reference words", t: "she, they, these, it, this, such, the latter — they point back to something said before. I bought a new phone. **It** was cheap. (it = the phone)" },
-              { h: "🔗 Linkers", t: "however, but, so, therefore, that is why, in fact, also, instead — they show the logic: contrast, result, addition. **However** → the next idea is the opposite." },
+              { h: "👉 Reference words", t: "she, they, these, those, it, this, such, here — they point back to something said before. I bought a new phone. **It** was cheap. (it = the phone)" },
+              { h: "🔗 Linkers", t: "however, but, so, therefore, also, instead — they show the logic: contrast, result, addition. **However** → the next idea is the opposite." },
               { h: "🔁 Repeated words", t: "the same word, a synonym or a word from the same topic: a **phone** → this **gadget**, **lunch** → the **meal**." },
               { h: "⚙️ Grammar", t: "singular or plural, tense: **it is** — one thing; **they are** — more than one." }
             ] },
@@ -135,7 +135,7 @@
               "Two of the four kinds of hooks: 👉 words that **point back** to something said before, and 🔗 words that **link ideas** (contrast, result, addition).",
               "Drag each word into the right box.",
               "On a phone or tablet: tap the word, then tap the box."
-            ], example: "**the latter** → 👉 Points back · **but** → 🔗 Links ideas" },
+            ], example: "**those** → 👉 Points back · **but** → 🔗 Links ideas" },
             { type: "sort",
               buckets: [{ id: "ref", label: "👉 Points back" }, { id: "link", label: "🔗 Links ideas" }],
               cards: [

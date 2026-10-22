@@ -256,7 +256,7 @@ def sheet_session(actions, paper=None):
       function find(n, kind){ return els.filter(function(x){ return x.dataset.pin === "SHEET:" + n && x.cl[kind === "cell" ? "ls-cell" : "ls-pin"]; })[0]; }
       JSON.parse(ACTIONS).forEach(function(a){
         if (a[0] === "input") { var el = find(a[1], a[2]); el.value = a[3]; fire("input", {target: el}); }
-        if (a[0] === "key") { var ev = {target: find(a[1], a[2]), code: a[3], key: a[4], defaultPrevented: false, preventDefault: function(){ ev.defaultPrevented = true; }};
+        if (a[0] === "key") { var ev = {target: find(a[1], a[2]), code: a[3], key: a[4], repeat: !!a[5], defaultPrevented: false, preventDefault: function(){ ev.defaultPrevented = true; }};
                               fire("keydown", ev); prevented.push(ev.defaultPrevented); }
         if (a[0] === "click") { var id = a[1] + "=" + a[2], b = btns[id];
           if (!b) { b = btns[id] = {dataset: {}, textContent: ""}; b.dataset[a[1]] = a[2]; b.closest = function(sel){ return sel === "button" ? b : null; }; }
@@ -402,6 +402,11 @@ class ReadingLessonIsClear(unittest.TestCase):
         text = r["lesson"].lower()
         shared = [n for n in range(1, 11) if KEY_2425[n - 1] == r["key"][str(n)]]
         self.assertEqual(sorted(set(shared)), [1, 3, 4, 5, 9, 10])
+        # Крючки, которыми решается домашний пирог, а в тексте про будильник их нет: «the latter» (B),
+        # «that is why» (после D), «in fact» (после C). До задания урок ими не учит — ревью PR 36.
+        self.assertEqual([w for w in ["the latter", "that is why", "in fact"] if w in text], [])
+        # Шаг 2 больше не обещает решить текст за 15 минут: на уроке его разбираем, на время — дома пирог.
+        self.assertNotIn("today you will try it", text)
         hits = [n for n in shared if re.search(r"\bgaps? %d\b|\b%d\s*[–=-]\s*%s\b" % (n, n, KEY_2425[n - 1].lower()), text)]
         self.assertEqual(hits, [])
 
@@ -489,6 +494,21 @@ class ReadingLessonIsClear(unittest.TestCase):
         self.assertEqual(r["prevented"], [True, True, True], "русская буква в поле не попадает")
         latin = sheet_session([["key", 4, "pin", "KeyD", "d"]])
         self.assertEqual(latin["prevented"], [False], "латиницу не трогаем — она придёт обычным вводом")
+
+    def test_holding_a_key_does_not_fill_the_table(self):
+        # Ревью PR 36: зажатая клавиша — автоповтор — шла по клеткам и заполняла всю таблицу.
+        r = sheet_session([["input", 1, "cell", "d"], ["key", 2, "cell", "KeyD", "d", True], ["key", 2, "cell", "KeyD", "\u0432", True]])
+        self.assertEqual(r["val"]["1"], ["D", "D"])
+        self.assertEqual(r["val"]["2"], ["", ""])
+        self.assertEqual(r["prevented"], [True, True])
+
+    def test_a_wrong_key_keeps_the_letter(self):
+        # Ревью PR 36: в латинской раскладке Z или цифра стирали сохранённую букву, в русской — нет.
+        r = sheet_session([["input", 3, "pin", "k"], ["input", 3, "pin", "z"], ["input", 4, "pin", "e"], ["input", 4, "pin", "7"]])
+        self.assertEqual(r["val"]["3"], ["K", "K"])
+        self.assertEqual(r["val"]["4"], ["E", "E"])
+        gone = sheet_session([["input", 3, "pin", "k"], ["input", 3, "pin", ""]])
+        self.assertEqual(gone["val"]["3"], ["", ""], "стёрла сама — пусто")
 
     def test_clear_asks_twice_and_then_clears(self):
         r = sheet_session([["input", 3, "pin", "k"], ["click", "lspclear", SHEET]])

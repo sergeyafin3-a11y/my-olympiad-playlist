@@ -220,7 +220,8 @@
     if (b.type === "hooks") return '<div class="ls-hooks">' + b.items.map(function (x) { return '<div><b>' + esc(x.h) + '</b>' + rich(x.t) + '</div>'; }).join("") + '</div>';
     if (b.type === "reveal") return '<details class="ls-box"><summary><b>' + esc(b.label) + '</b></summary><p class="ls-text">' + rich(b.text) + '</p></details>';
     // Настоящее задание: букву можно напечатать прямо в пропуске или в таблице — это одно и то же поле.
-    // Проверки нет нарочно: ключ 2024/25 совпадает с заданием 2025/26 в шести пропусках.
+    // Проверки нет нарочно: у задания урока (2025/26) и домашнего пирога (2024/25) шесть общих букв в ключе —
+    // проверка на уроке выдала бы больше половины домашнего задания.
     // Текст берётся из самого задания (b.task) — тот же, что на его странице, без копии в уроке.
     if (b.type === "paper") {
       var src = b.task ? taskById(b.task) : b;
@@ -384,6 +385,8 @@
     var el = e.target; if (!el.dataset || el.dataset.pin == null) return;
     var p = el.dataset.pin.split(":"), n = p.pop(), pk = p.join(":"), mine = sheetOf(pk);
     var got = el.value.toUpperCase().split("").map(function (ch) { return CYR[ch] || ch; }).filter(function (ch) { return /[A-K]/.test(ch); });
+    // Не та клавиша (Z, цифра) — буква остаётся, как и в русской раскладке; стереть можно только стиранием.
+    if (!got.length && el.value !== "") { el.value = mine[n] || ""; return; }
     // Без maxlength: в полное поле дописалась вторая буква — убираем старую, остаётся новая.
     if (got.length > 1 && got.indexOf(mine[n]) >= 0) got.splice(got.indexOf(mine[n]), 1);
     put(el, pk, n, got.length ? got[got.length - 1] : "");
@@ -391,6 +394,8 @@
   // Физическая клавиатура в русской раскладке: клавиша D даёт «в», а по виду это B. Берём клавишу, а не символ.
   document.addEventListener("keydown", function (e) {
     var el = e.target; if (!el.dataset || el.dataset.pin == null) return;
+    // Зажатая клавиша — автоповтор: без этого буква шла по клеткам и заполняла всю таблицу.
+    if (e.repeat) { e.preventDefault(); return; }
     var m = /^Key([A-Z])$/.exec(e.code || "");
     if (!m || !e.key || e.key.length !== 1 || /[A-Za-z]/.test(e.key) || e.ctrlKey || e.metaKey || e.altKey) return;
     e.preventDefault();
