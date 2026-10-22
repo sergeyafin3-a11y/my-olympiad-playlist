@@ -104,7 +104,21 @@
     "@keyframes lsShake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}",
     "@keyframes lsBin{0%{transform:scale(1)}50%{transform:scale(1.25) rotate(-6deg)}100%{transform:scale(1)}}",
     "@media (prefers-reduced-motion: reduce){.ls-sent button.w.bin,.ls-sent button.w.miss,.ls-chip.miss{animation:none}}",
-    ".ls-back{display:inline-block;margin-top:10px;padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid #2EC4D6;color:var(--ink);text-decoration:none;font-weight:600;font-size:14px}"
+    ".ls-back{display:inline-block;margin-top:10px;padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid #2EC4D6;color:var(--ink);text-decoration:none;font-weight:600;font-size:14px}",
+    // Настоящее задание — светлым листом, как бланк олимпиады: сразу видно, что это не упражнение, а оно самое.
+    ".ls-paper{margin-top:12px;padding:16px;border-radius:6px;background:#FBF8F1;color:#1A1A1A;font-family:Georgia,'Times New Roman',serif;font-size:15px;line-height:1.55;box-shadow:0 8px 24px rgba(0,0,0,.35)}",
+    ".ls-paper .src{font-family:inherit;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6B6457;border-bottom:1px solid #D9D2C3;padding-bottom:6px;margin-bottom:10px}",
+    ".ls-paper p{margin:0 0 10px}.ls-paper .ins{font-weight:700}",
+    ".ls-paper .opts{border-top:1px solid #D9D2C3;padding-top:10px;margin-top:4px}.ls-paper .opts p{margin:0 0 7px}",
+    ".ls-pgap{font-weight:700;color:#B3261E;white-space:nowrap}",
+    ".ls-grid{display:grid;grid-template-columns:repeat(10,1fr);border:1px solid #8A8478;margin-top:10px;font-size:13px;text-align:center}",
+    ".ls-grid span{border-left:1px solid #8A8478;padding:3px 0}.ls-grid span:nth-child(10n+1){border-left:0}.ls-grid .e{border-top:1px solid #8A8478;height:26px}",
+    // «What to do» перед каждым упражнением: что сделать, по пунктам, и пример.
+    ".ls-brief{margin-top:14px;padding:14px;border-radius:14px;background:rgba(255,214,102,.10);border:1px solid rgba(255,214,102,.55)}",
+    ".ls-brief h3{font-size:16px;margin-bottom:4px}.ls-brief .lbl{margin:6px 0 0;font-size:13px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:.04em}",
+    ".ls-brief .ls-ex{margin-top:8px;font-size:15px;line-height:1.45}",
+    ".ls-walk ol{margin:10px 0 0;padding-left:22px}.ls-walk li{margin:10px 0;line-height:1.45}.ls-walk li .why{margin-top:4px;font-size:15px;color:var(--ink)}",
+    ".ls-walk .ls-pgap{color:var(--c)}"
   ].join("\n");
   document.head.appendChild(css);
 
@@ -118,6 +132,8 @@
   // Обложка урока в списке — та же картинка, маленьким квадратом (обрезка через CSS).
   function thumb(u) { return u; }
   function rich(s) { return esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>"); }
+  // Пропуск [3] в тексте задания — как на бланке: «(3) ________».
+  function gaps(html) { return html.replace(/\[(\d+)\]/g, '<span class="ls-pgap">($1) ________</span>'); }
 
   A.routes.lesson = function (parts) {
     var l = parts[1] && byId(parts[1]);
@@ -178,6 +194,23 @@
     if (b.type === "words") return '<div class="ls-words">' + b.items.map(function (x) { return '<button type="button" data-lsword="' + esc(x) + '">' + esc(x) + '</button>'; }).join("") + '</div>';
     if (b.type === "hooks") return '<div class="ls-hooks">' + b.items.map(function (x) { return '<div><b>' + esc(x.h) + '</b>' + rich(x.t) + '</div>'; }).join("") + '</div>';
     if (b.type === "reveal") return '<details class="ls-box"><summary><b>' + esc(b.label) + '</b></summary><p class="ls-text">' + rich(b.text) + '</p></details>';
+    if (b.type === "paper") {
+      var cells = ""; for (var c = 1; c <= 10; c++) cells += '<span>' + c + '</span>';
+      for (c = 1; c <= 10; c++) cells += '<span class="e"></span>';
+      return '<div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p class="ins">' + esc(b.instruction) + '</p>' +
+        b.paras.map(function (x) { return '<p>' + gaps(esc(x)) + '</p>'; }).join("") +
+        '<div class="opts">' + b.opts.map(function (o) { return '<p><b>' + esc(o.k) + ')</b> ' + esc(o.t) + '</p>'; }).join("") + '</div>' +
+        '<div class="ls-grid" aria-label="Answer table">' + cells + '</div></div>';
+    }
+    if (b.type === "brief") return '<div class="ls-brief"><h3>📋 ' + esc(b.title) + '</h3><p class="lbl">What to do</p><ol class="ls-ol">' +
+      b.items.map(function (x) { return '<li>' + rich(x) + '</li>'; }).join("") + '</ol>' + (b.example ? '<p class="ls-ex"><b>Example:</b> ' + rich(b.example) + '</p>' : '') + '</div>';
+    // Разбор пропуска по шагам: вопрос шага виден, ответ открывается по «Show», и только тогда — следующий шаг.
+    if (b.type === "walk") {
+      var wn = game(key).n || 0;
+      return '<div class="ls-game ls-walk"><div class="ls-gap">' + gaps(esc(b.context)) + '</div><ol>' + b.steps.map(function (x, j) {
+        return j > wn ? '' : '<li><b>' + rich(x.q) + '</b>' + (j < wn ? '<p class="why">' + rich(x.a) + '</p>' : '') + '</li>';
+      }).join("") + '</ol>' + (wn < b.steps.length ? '<button class="bigplay" data-lswalk="' + key + '">👀 Show</button>' : '<p class="ls-win">✅ Gap ' + esc(b.gap) + ' = ' + esc(b.answer) + '</p>') + '</div>';
+    }
     if (b.type === "timer") {
       var on = st.timer && st.timer.key === key;
       return '<div class="ls-timer"><b class="ls-clock" data-key="' + key + '">' + (on ? left(st.timer.end) : b.minutes + ':00') + '</b><button class="ghost" data-lstimer="' + key + '" data-min="' + b.minutes + '">' + (on ? '↺ Restart' : '▶ ' + esc(b.label)) + '</button></div>';
@@ -293,6 +326,7 @@
       A.keepScroll(A.render); return;
     }
     if (d.lscheck) { game(d.lscheck).checked = true; A.keepScroll(A.render); return; }
+    if (d.lswalk) { var wg = game(d.lswalk); wg.n = (wg.n || 0) + 1; A.keepScroll(A.render); return; }
     if (d.lsreset) { games[d.lsreset] = {}; A.keepScroll(A.render); return; }
     if (d.lsword) { if (A.words && A.words.offer) A.words.offer(d.lsword, "Lesson"); return; }
     if (d.lstimer) { st.timer = { key: d.lstimer, end: Date.now() + (+d.min) * 60000 }; save(); A.keepScroll(A.render); return; }

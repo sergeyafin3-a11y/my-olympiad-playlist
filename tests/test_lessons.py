@@ -110,6 +110,10 @@ class Lessons(unittest.TestCase):
         self.assertEqual(r["bad"], [])
         self.assertEqual([p for p in r["pics"] if not (ROOT / p).is_file()], [])
         self.assertEqual(len(set(r["pics"])), 12, "12 картинок учителя — каждая на своём месте")
+        # Обложка урока видна только в списке уроков, поэтому может стать и картинкой шага;
+        # но внутри урока шаги друг друга не повторяют.
+        steps = run_js("return L.map(function(l){ return (l.steps || []).map(function(s){ return s.image; }); });")
+        self.assertEqual([s for s in steps if len(set(s)) != len(s)], [])
         # Учитель: «зумерское, мемы, стикеры» — мемы в формате эмодзи и текста (без чужих фото).
         for k in ["thisorthat", "speak", "binword", "hookhunt", "sort", "gapfill", "meme"]:
             self.assertIn(k, r["kinds"])
@@ -155,6 +159,148 @@ class Lessons(unittest.TestCase):
         out = subprocess.run(["osascript", "-l", "JavaScript", "-e", js], capture_output=True, text=True)
         self.assertEqual(out.returncode, 0, out.stderr[-500:])
         self.assertEqual(json.loads(out.stdout), [])
+
+
+# Официальный ключ Reading Task 2 муниципального этапа Москвы 2024/25
+# (ans-engl-10-11-mun-msk-24-25.pdf, всош.цпм.рф): пропуски 1–10, лишнее — H.
+KEY_2425 = "GBKEIDCAJF"
+
+
+def render_step(lesson_id, step, clicks=()):
+    """HTML шага урока, как его рисует js/lesson-ui.js; clicks — data-атрибуты кнопок, нажатых по порядку."""
+    stub = """
+      var window = this, store = {}, handlers = [];
+      var el = function(){ return {textContent: "", appendChild: function(){}, classList: {add: function(){}, remove: function(){}}}; };
+      var document = {createElement: el, head: {appendChild: function(){}}, body: {appendChild: function(){}},
+                      addEventListener: function(t, f){ if (t === "click") handlers.push(f); }, querySelectorAll: function(){ return []; }};
+      var localStorage = {getItem: function(k){ return store[k] || null; }, setItem: function(k, v){ store[k] = v; }};
+      var location = {hash: "#/lesson/LID"};
+      window.addEventListener = function(){}; var setInterval = function(){}; window.scrollTo = function(){};
+      window.App = {esc: function(s){ return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); },
+                    render: function(){}, keepScroll: function(f){ f(); }, routes: {}, words: {}};
+    """.replace("LID", lesson_id)
+    clicks_js = json.dumps(list(clicks))
+    js = stub + (ROOT / "data" / "lessons.js").read_text(encoding="utf-8") + """
+      var o = {}; o["LID"] = STEP; store["olymp-lessons"] = JSON.stringify({step: o});
+    """.replace("LID", lesson_id).replace("STEP", str(step)) + (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8") + """
+      JSON.parse(CLICKS).forEach(function(c){
+        var ds = {}; ds[c[0]] = c[1];
+        var btn = {dataset: ds, closest: function(sel){ return sel === "button" ? btn : null; }};
+        handlers.forEach(function(h){ h({target: btn}); });
+      });
+      window.App.routes.lesson(["lesson", "LID"]);
+    """.replace("CLICKS", json.dumps(clicks_js)).replace("LID", lesson_id)
+    out = subprocess.run(["osascript", "-l", "JavaScript", "-e", js], capture_output=True, text=True)
+    if out.returncode:
+        raise AssertionError(out.stderr[-500:])
+    return out.stdout
+
+
+class ReadingLessonIsClear(unittest.TestCase):
+    """Учитель 22.10 про урок Reading: «ни хера непонятно — даёшь задание максимально кратко,
+    не пишешь, что нужно делать. Сначала покажи, как выглядит настоящее задание: вот такой
+    текст, нужно с ним сделать вот это. Потом коротенькие упражнения. Последовательно, без каши,
+    чтобы было понятно, что от меня требуется в каждом задании»."""
+
+    def l2(self):
+        return run_js("""
+          var l = L.filter(function(x){ return x.id === "l2"; })[0], t = null;
+          V.parts.forEach(function(p){ p.tasks.forEach(function(x){ if (x.id === "m-r2") t = x; }); });
+          return {steps: l.steps, intro: t.intro, opts: t.opts || null};
+        """)
+
+    def test_right_after_the_warm_up_the_real_task_and_what_to_do(self):
+        r = self.l2()
+        meet = r["steps"][1]
+        types = [b["type"] for b in meet["blocks"]]
+        self.assertIn("paper", types, "сразу после разминки — настоящее задание целиком, как на олимпиаде")
+        paper = [b for b in meet["blocks"] if b["type"] == "paper"][0]
+        # Инструкция — слово в слово официальная (та же, что у задания 2025/26 в приложении).
+        self.assertEqual(paper["instruction"], r["intro"])
+        self.assertIn("2024/25", paper["source"])
+        text = " ".join(paper["paras"])
+        self.assertEqual(re.findall(r"\[(\d+)\]", text), [str(n) for n in range(1, 11)])
+        self.assertEqual([o["k"] for o in paper["opts"]], list("ABCDEFGHIJK"))
+        self.assertIn("By Marina's own admission", paper["opts"][10]["t"])
+        # Ниже задания — что с ним делать, простыми пунктами; ключа на экране нет.
+        after = types[types.index("paper") + 1:]
+        self.assertIn("list", after)
+        todo = [b for b in meet["blocks"] if b["type"] == "list"][0]
+        self.assertIn("What you have to do", todo["title"])
+        self.assertGreaterEqual(len(todo["items"]), 4)
+        self.assertNotIn("GBKEIDCAJF", json.dumps(paper))
+
+    def test_one_gap_solved_together_step_by_step_before_any_exercise(self):
+        r = self.l2()
+        together = r["steps"][2]
+        self.assertEqual(together["stage"], "presentation")
+        walk = [b for b in together["blocks"] if b["type"] == "walk"]
+        self.assertEqual(len(walk), 1, "один пропуск того же текста решаем вместе, по шагам")
+        w = walk[0]
+        self.assertIn("[" + str(w["gap"]) + "]", w["context"])
+        self.assertEqual(w["answer"], KEY_2425[w["gap"] - 1], "ответ разбора — по официальному ключу")
+        self.assertGreaterEqual(len(w["steps"]), 3)
+        self.assertTrue(all(s["q"] and s["a"] for s in w["steps"]))
+        # Потом пропуск сам: верный вариант — по официальному ключу.
+        quiz = [b for b in together["blocks"] if b["type"] == "quiz"][0]["items"][0]
+        gap = int(re.search(r"Gap (\d+)", quiz["q"]).group(1))
+        self.assertTrue(quiz["opts"][quiz["a"]].startswith(KEY_2425[gap - 1] + "."))
+        kinds = [b["type"] for s in r["steps"][:3] for b in s["blocks"]]
+        for game in ["hookhunt", "sort", "gapfill"]:
+            self.assertNotIn(game, kinds, "упражнения — после того, как поняли задание")
+
+    def test_every_exercise_says_what_to_do(self):
+        r = self.l2()
+        games = ["walk", "quiz", "hookhunt", "sort", "gapfill", "task"]
+        bad, briefs = [], 0
+        for i, s in enumerate(r["steps"][1:], 1):
+            seen_brief = False
+            for k, b in enumerate(s["blocks"]):
+                if b["type"] == "brief":
+                    briefs += 1
+                    seen_brief = True
+                    if not (b.get("title") and len(b.get("items", [])) >= 2):
+                        bad.append("%d:%d brief" % (i, k))
+                elif b["type"] in games:
+                    # Своё «What to do» перед каждым упражнением: второе упражнение не живёт под чужим.
+                    if not seen_brief:
+                        bad.append("%d:%d %s без What to do" % (i, k, b["type"]))
+                    if b["type"] != "task":
+                        seen_brief = False
+        self.assertEqual(bad, [])
+        self.assertGreaterEqual(briefs, 6)
+
+    def test_the_lesson_does_not_give_away_the_real_task(self):
+        # Задание 2025/26 Варя решает в production — до него в уроке не должно быть его предложений.
+        src = (ROOT / "data" / "lessons.js").read_text(encoding="utf-8")
+        opts = run_js("""
+          var t = null; V.parts.forEach(function(p){ p.tasks.forEach(function(x){ if (x.id === "m-r2") t = x; }); });
+          return (t.opts || []).map(function(o){ return typeof o === "string" ? o : (o.t || o.text || ""); });
+        """)
+        self.assertGreaterEqual(len(opts), 11)
+        self.assertEqual([o for o in opts if o[:40].strip() and re.sub(r"^[A-K]\)\s*", "", o)[:40] in src], [])
+
+    def test_the_real_task_is_drawn_like_the_olympiad_sheet(self):
+        html = render_step("l2", 1)
+        self.assertIn("ls-paper", html)
+        for n in range(1, 11):
+            self.assertIn("(%d) ________" % n, html)
+        self.assertEqual(len(re.findall(r'<b>[A-K]\)</b>', html)), 11)
+        self.assertIn("ls-grid", html)
+
+    def test_solving_together_opens_one_step_at_a_time(self):
+        before = render_step("l2", 2)
+        self.assertIn("data-lswalk", before)
+        r = self.l2()
+        w = [b for b in r["steps"][2]["blocks"] if b["type"] == "walk"][0]
+        first_a = w["steps"][0]["a"].split("**")[0][:25]
+        self.assertNotIn(first_a, before, "ответ первого шага — только по нажатию")
+        key = "l2:2:%d" % [b["type"] for b in r["steps"][2]["blocks"]].index("walk")
+        after = render_step("l2", 2, [["lswalk", key]])
+        self.assertIn(first_a, after)
+        done = render_step("l2", 2, [["lswalk", key]] * len(w["steps"]))
+        self.assertIn("Gap %d = %s" % (w["gap"], w["answer"]), done)
+        self.assertIn("What to do", before)
 
 
 if __name__ == "__main__":
