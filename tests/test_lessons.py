@@ -203,6 +203,68 @@ def render_step(lesson_id, step, clicks=(), typed=(), with_store=False):
     return json.loads(out.stdout) if with_store else out.stdout
 
 
+SHEET = "l2:1:1"  # лист настоящего задания: урок l2, шаг 2, блок 2
+
+
+def sheet_session(actions, paper=None):
+    """Шаг 2 урока l2 с моделью страницы: поля пропусков и таблицы — объекты с value и классами,
+    события ввода, клавиш, фокуса и кликов идут в обработчики js/lesson-ui.js как в браузере.
+    actions: ["input", n, "pin"|"cell", текст] · ["key", n, где, code, key] · ["click", атрибут, значение]."""
+    init = {"step": {"l2": 1}}
+    if paper is not None:
+        init["paper"] = paper
+    js = """
+      var window = this, store = {}, H = {}, els = [], active = null, btns = {}, prevented = [];
+      store["olymp-lessons"] = INIT;
+      function on(t, f){ (H[t] = H[t] || []).push(f); }
+      function fire(t, ev){ (H[t] || []).forEach(function(h){ h(ev); }); }
+      function mk(cls, pin, val){
+        var cl = {}; cls.split(" ").forEach(function(c){ if (c) cl[c] = 1; });
+        var el = {tagName: "INPUT", dataset: {pin: pin}, value: val, cl: cl,
+          classList: {contains: function(c){ return !!cl[c]; }, toggle: function(c, f){ if (f) cl[c] = 1; else delete cl[c]; },
+                      add: function(c){ cl[c] = 1; }, remove: function(c){ delete cl[c]; }},
+          focus: function(){ active = el; fire("focusin", {target: el}); }, select: function(){ el.selected = true; }};
+        return el;
+      }
+      var el0 = function(){ return {textContent: "", appendChild: function(){}, classList: {add: function(){}, remove: function(){}}}; };
+      var document = {createElement: el0, head: {appendChild: function(){}}, body: {appendChild: function(){}}, addEventListener: on,
+        querySelectorAll: function(sel){ var m = /^\\[data-pin\\^="([^"]+)"\\]$/.exec(sel); return m ? els.filter(function(x){ return x.dataset.pin.indexOf(m[1]) === 0; }) : []; },
+        querySelector: function(sel){ var m = /^\\.ls-cell\\[data-pin="([^"]+)"\\]$/.exec(sel);
+          return m ? els.filter(function(x){ return x.cl["ls-cell"] && x.dataset.pin === m[1]; })[0] || null : null; }};
+      var localStorage = {getItem: function(k){ return store[k] || null; }, setItem: function(k, v){ store[k] = v; }};
+      var location = {hash: "#/lesson/l2"};
+      window.addEventListener = function(){}; var setInterval = function(){}; window.scrollTo = function(){};
+      function paint(){
+        var html = window.App.routes.lesson(["lesson", "l2"]);
+        els = []; html.replace(/<input class="([^"]*)" data-pin="([^"]+)"[^>]*value="([^"]*)"/g, function(_, c, p, v){ els.push(mk(c, p, v)); });
+        return html;
+      }
+      window.App = {esc: function(s){ return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); },
+                    render: function(){ paint(); }, keepScroll: function(f){ f(); }, routes: {}, words: {}};
+    """.replace("INIT", json.dumps(json.dumps(init)))
+    js += (ROOT / "data" / "lessons.js").read_text(encoding="utf-8") + (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8")
+    js += """
+      paint();
+      function find(n, kind){ return els.filter(function(x){ return x.dataset.pin === "SHEET:" + n && x.cl[kind === "cell" ? "ls-cell" : "ls-pin"]; })[0]; }
+      JSON.parse(ACTIONS).forEach(function(a){
+        if (a[0] === "input") { var el = find(a[1], a[2]); el.value = a[3]; fire("input", {target: el}); }
+        if (a[0] === "key") { var ev = {target: find(a[1], a[2]), code: a[3], key: a[4], defaultPrevented: false, preventDefault: function(){ ev.defaultPrevented = true; }};
+                              fire("keydown", ev); prevented.push(ev.defaultPrevented); }
+        if (a[0] === "click") { var id = a[1] + "=" + a[2], b = btns[id];
+          if (!b) { b = btns[id] = {dataset: {}, textContent: ""}; b.dataset[a[1]] = a[2]; b.closest = function(sel){ return sel === "button" ? b : null; }; }
+          fire("click", {target: b}); }
+      });
+      var val = {}, dup = [];
+      els.forEach(function(x){ var n = x.dataset.pin.split(":").pop(); (val[n] = val[n] || []).push(x.value); if (x.cl.dup) dup.push(n); });
+      JSON.stringify({val: val, dup: dup.sort(), active: active ? [active.dataset.pin, active.cl["ls-cell"] ? "cell" : "pin"] : null,
+                      store: store, prevented: prevented, btn: Object.keys(btns).map(function(k){ return btns[k].textContent; }).join(" ")});
+    """.replace("SHEET", SHEET).replace("ACTIONS", json.dumps(json.dumps(actions)))
+    out = subprocess.run(["osascript", "-l", "JavaScript", "-e", js], capture_output=True, text=True)
+    if out.returncode:
+        raise AssertionError(out.stderr[-800:])
+    return json.loads(out.stdout)
+
+
 class ReadingLessonIsClear(unittest.TestCase):
     """Учитель 22.10 про урок Reading: «ни хера непонятно — даёшь задание максимально кратко,
     не пишешь, что нужно делать. Сначала покажи, как выглядит настоящее задание: вот такой
@@ -363,26 +425,64 @@ class ReadingLessonIsClear(unittest.TestCase):
     def test_the_real_task_can_be_typed_in(self):
         # Учитель 22.10: «чтобы в этом реальном задании можно было печатать — тыкать в тексте
         # и в табличке внизу», а не смотреть на картинку.
-        r = self.l2()
-        key = "l2:1:%d" % [b["type"] for b in r["steps"][1]["blocks"]].index("paper")
         html = render_step("l2", 1)
         for n in range(1, 11):
             # Поле в пропуске текста и клетка таблицы под тем же номером.
-            self.assertEqual(len(re.findall(r'<input[^>]*data-pin="%s:%d"[^>]*maxlength="1"' % (key, n), html)), 2, n)
+            self.assertEqual(len(re.findall(r'<input[^>]*data-pin="%s:%d"' % (SHEET, n), html)), 2, n)
         self.assertNotIn("Check", html.split("ls-paper", 1)[1].split("ls-nav")[0], "проверки нет: ключ 2024/25 совпадает с 2025/26 в шести пропусках")
-        # Буква видна и в тексте, и в таблице; строчная становится заглавной, кириллица-двойник — латиницей,
-        # не A–K — не печатается.
-        out = render_step("l2", 1, typed=[[key + ":6", "d"], [key + ":8", "z"], [key + ":2", "В"], [key + ":7", "d"]], with_store=True)
-        h = out["html"]
-        self.assertEqual(len(re.findall(r'data-pin="%s:6"[^>]*value="D"' % key, h)), 2)
-        self.assertEqual(len(re.findall(r'data-pin="%s:2"[^>]*value="B"' % key, h)), 2)
-        self.assertEqual(re.findall(r'data-pin="%s:8"[^>]*value="[^"]+"' % key, h), [])
-        # Одна буква в двух пропусках — подсвечена: каждую букву можно взять один раз.
-        self.assertEqual(len(re.findall(r'class="[^"]*\bdup\b[^"]*"[^>]*data-pin="%s:[67]"' % key, h)), 4)
-        # Напечатанное помнится: ушли на шаг 3 и вернулись — буквы на месте.
-        self.assertEqual(json.loads(out["store"]["olymp-lessons"])["paper"][key], {"6": "D", "2": "B", "7": "D"})
-        cleared = render_step("l2", 1, clicks=[["lspclear", key]], typed=[[key + ":6", "D"]])
-        self.assertIn('data-lspclear="%s"' % key, cleared)
+
+    def test_typing_in_the_text_and_in_the_table_is_one_answer(self):
+        r = sheet_session([
+            ["input", 6, "pin", "d"],          # в пропуске текста
+            ["input", 7, "cell", "d"],         # в таблице: дальше курсор сам в клетку 8
+            ["input", 8, "cell", "z"],         # не A–K — не печатается
+            ["input", 2, "pin", "\u0412"],     # русская «В» с экранной клавиатуры — латинская B
+        ])
+        self.assertEqual(r["val"]["6"], ["D", "D"], "буква из текста — и в таблице")
+        self.assertEqual(r["val"]["7"], ["D", "D"])
+        self.assertEqual(r["val"]["8"], ["", ""])
+        self.assertEqual(r["val"]["2"], ["B", "B"])
+        self.assertEqual(r["active"], [SHEET + ":8", "cell"])
+        self.assertEqual(r["dup"], ["6", "6", "7", "7"], "одна буква в двух пропусках — подсвечена")
+        self.assertEqual(json.loads(r["store"]["olymp-lessons"])["paper"][SHEET], {"6": "D", "7": "D", "2": "B"})
+        fixed = sheet_session([["input", 6, "pin", "d"], ["input", 7, "cell", "d"], ["input", 7, "pin", "c"]])
+        self.assertEqual(fixed["dup"], [], "исправила повтор — подсветка ушла")
+        self.assertEqual(fixed["val"]["7"], ["C", "C"])
+
+    def test_one_gap_holds_one_letter(self):
+        # Ревью PR 36: где maxlength не держит (Android, диктовка), в пропуск попадало «DE»;
+        # а с maxlength вторая буква в полном поле терялась. Новая буква заменяет старую.
+        r = sheet_session([["input", 1, "pin", "d"], ["input", 1, "pin", "dk"], ["input", 2, "pin", "kd"], ["input", 3, "pin", "de"]])
+        self.assertEqual(r["val"]["1"], ["K", "K"])
+        self.assertEqual(r["val"]["2"], ["D", "D"])
+        self.assertEqual(r["val"]["3"], ["E", "E"])
+        self.assertNotIn('maxlength="1"', render_step("l2", 1))
+
+    def test_russian_keyboard_layout_types_the_key_she_pressed(self):
+        # Ревью PR 36: в русской раскладке клавиша D печатает «в», а по виду это B — в пропуск
+        # уходила не та буква. На физической клавиатуре берём клавишу (code), а не символ.
+        r = sheet_session([["key", 4, "pin", "KeyD", "\u0432"], ["key", 5, "cell", "KeyF", "\u0430"], ["key", 9, "pin", "KeyZ", "\u044f"]])
+        self.assertEqual(r["val"]["4"], ["D", "D"])
+        self.assertEqual(r["val"]["5"], ["F", "F"])
+        self.assertEqual(r["val"]["9"], ["", ""], "Z — не A–K")
+        self.assertEqual(r["prevented"], [True, True, True], "русская буква в поле не попадает")
+        latin = sheet_session([["key", 4, "pin", "KeyD", "d"]])
+        self.assertEqual(latin["prevented"], [False], "латиницу не трогаем — она придёт обычным вводом")
+
+    def test_clear_asks_twice_and_then_clears(self):
+        r = sheet_session([["input", 3, "pin", "k"], ["click", "lspclear", SHEET]])
+        self.assertEqual(r["val"]["3"], ["K", "K"], "одно касание — ещё не стёрто")
+        self.assertIn("Tap again", r["btn"])
+        r = sheet_session([["input", 3, "pin", "k"], ["click", "lspclear", SHEET], ["click", "lspclear", SHEET]])
+        self.assertEqual(r["val"]["3"], ["", ""])
+        self.assertNotIn(SHEET, json.loads(r["store"]["olymp-lessons"])["paper"])
+
+    def test_broken_saved_answers_do_not_break_the_sheet(self):
+        for bad in [[], "ABC", {SHEET: "ABC"}, {SHEET: {"1": "constructor", "2": "D"}}, {SHEET: []}]:
+            r = sheet_session([["input", 5, "pin", "e"]], paper=bad)
+            self.assertEqual(r["val"]["5"], ["E", "E"], bad)
+            self.assertEqual(r["val"]["1"], ["", ""], bad)
+            self.assertEqual(json.loads(r["store"]["olymp-lessons"])["paper"][SHEET].get("5"), "E", bad)
 
     def test_solving_together_opens_one_step_at_a_time(self):
         before = render_step("l2", 2)

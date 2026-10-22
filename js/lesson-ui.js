@@ -9,7 +9,14 @@
   try { var raw = JSON.parse(localStorage.getItem(KEY) || "{}"); if (raw && typeof raw === "object" && !Array.isArray(raw)) st = Object.assign(st, raw); } catch (e) {}
   if (!st.step || typeof st.step !== "object") st.step = {};
   // Буквы, напечатанные в настоящем задании урока: "l2:1:1" → {"6": "D"}. Помнятся, пока ходим по шагам.
-  if (!st.paper || typeof st.paper !== "object") st.paper = {};
+  if (!st.paper || typeof st.paper !== "object" || Array.isArray(st.paper)) st.paper = {};
+  // Ответы одного листа — только буквы A–K: испорченное хранилище не должно ни ломать лист, ни глотать ввод.
+  function sheetOf(key) {
+    var m = st.paper[key];
+    if (!m || typeof m !== "object" || Array.isArray(m)) m = st.paper[key] = {};
+    Object.keys(m).forEach(function (g) { if (!/^[A-K]$/.test(m[g])) delete m[g]; });
+    return m;
+  }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
   var picked = {}; // ответы викторин в этой сессии: "l2:1:0:3" → индекс выбранного варианта
   var games = {};  // состояние игр в этой сессии (выбор, найденные слова, разложенные карточки)
@@ -110,7 +117,7 @@
     // Настоящее задание — светлым листом, как бланк олимпиады: сразу видно, что это не упражнение, а оно самое.
     ".ls-paper{margin-top:12px;padding:16px;border-radius:6px;background:#FBF8F1;color:#1A1A1A;font-family:Georgia,'Times New Roman',serif;font-size:15px;line-height:1.55;box-shadow:0 8px 24px rgba(0,0,0,.35)}",
     ".ls-paper .src{font-family:inherit;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6B6457;border-bottom:1px solid #D9D2C3;padding-bottom:6px;margin-bottom:10px}",
-    ".ls-paper p{margin:0 0 10px}.ls-paper .ins{font-weight:700}",
+    ".ls-paper p{margin:0 0 10px}.ls-paper .ins{font-weight:700}.ls-paper .ttl{font-weight:700;font-size:17px;text-align:center}",
     ".ls-paper .ls-popts{border-top:1px solid #D9D2C3;padding-top:10px;margin-top:4px}.ls-paper .ls-popts p{margin:0 0 7px}",
     ".ls-pgap{font-weight:700;color:#B3261E;white-space:nowrap}",
     ".ls-grid{display:grid;grid-template-columns:repeat(10,1fr);border:1px solid #8A8478;margin-top:10px;font-size:13px;text-align:center}",
@@ -136,6 +143,14 @@
   var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   function dateParts(d) { var p = d.split("-"); return [String(+p[2]), MONTHS[+p[1] - 1]]; }
   function byId(id) { return LS.filter(function (l) { return l.id === id; })[0]; }
+  // Задание варианта или тренировочного набора по id — для листа «paper» с настоящим текстом.
+  function taskById(id) {
+    var r = null;
+    (window.VARIANTS || []).forEach(function (v) { v.parts.forEach(function (p) { p.tasks.forEach(function (x) { if (x.id === id) r = x; }); }); });
+    Object.keys(window.PRACTICE || {}).forEach(function (v) { Object.keys(window.PRACTICE[v]).forEach(function (pid) {
+      window.PRACTICE[v][pid].forEach(function (x) { if (x.id === id) r = x; }); }); });
+    return r;
+  }
   // «Сегодня» — урок с сегодняшней датой, а если сегодня урока нет — ближайший следующий.
   function current() { var t = today(); return LS.filter(function (l) { return l.date >= t; })[0] || LS[LS.length - 1]; }
   // **жирный** в тексте урока — без HTML в данных.
@@ -206,18 +221,23 @@
     if (b.type === "reveal") return '<details class="ls-box"><summary><b>' + esc(b.label) + '</b></summary><p class="ls-text">' + rich(b.text) + '</p></details>';
     // Настоящее задание: букву можно напечатать прямо в пропуске или в таблице — это одно и то же поле.
     // Проверки нет нарочно: ключ 2024/25 совпадает с заданием 2025/26 в шести пропусках.
+    // Текст берётся из самого задания (b.task) — тот же, что на его странице, без копии в уроке.
     if (b.type === "paper") {
-      var mine = st.paper[key] || {}, cnt = {};
+      var src = b.task ? taskById(b.task) : b;
+      if (!src) return "";
+      var paras = src.paras || src.text.map(function (x) { return x.replace(/\((\d+)\)\s*_+/g, "[$1]"); });
+      var mine = sheetOf(key), cnt = {};
       Object.keys(mine).forEach(function (g) { cnt[mine[g]] = (cnt[mine[g]] || 0) + 1; });
       var pin = function (n, cls) {
         var v = mine[n] || "";
-        return '<input class="' + cls + (v && cnt[v] > 1 ? ' dup' : '') + '" data-pin="' + key + ':' + n + '" maxlength="1" value="' + esc(v) + '" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" aria-label="Gap ' + n + '">';
+        return '<input class="' + cls + (v && cnt[v] > 1 ? ' dup' : '') + '" data-pin="' + key + ':' + n + '" value="' + esc(v) + '" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" aria-label="Gap ' + n + '">';
       };
       var cells = ""; for (var c = 1; c <= 10; c++) cells += '<span>' + c + '</span>';
       for (c = 1; c <= 10; c++) cells += '<span class="e">' + pin(c, "ls-cell") + '</span>';
-      return '<div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p class="ins">' + esc(b.instruction) + '</p>' +
-        b.paras.map(function (x) { return '<p>' + esc(x).replace(/\[(\d+)\]/g, function (_, n) { return '<span class="ls-pgap">(' + n + ') ' + pin(n, "ls-pin") + '</span>'; }) + '</p>'; }).join("") +
-        '<div class="ls-popts">' + b.opts.map(function (o) { return '<p><b>' + esc(o.k) + ')</b> ' + esc(o.t) + '</p>'; }).join("") + '</div>' +
+      return '<div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p class="ins">' + esc(src.instruction || src.intro) + '</p>' +
+        (src.textTitle ? '<p class="ttl">' + esc(src.textTitle) + '</p>' : '') +
+        paras.map(function (x) { return '<p>' + esc(x).replace(/\[(\d+)\]/g, function (_, n) { return '<span class="ls-pgap">(' + n + ') ' + pin(n, "ls-pin") + '</span>'; }) + '</p>'; }).join("") +
+        '<div class="ls-popts">' + src.opts.map(function (o) { return '<p><b>' + esc(o.k) + ')</b> ' + esc(o.t) + '</p>'; }).join("") + '</div>' +
         '<div class="ls-grid" aria-label="Answer table">' + cells + '</div></div>' +
         '<div class="ls-pclear"><button class="ghost" data-lspclear="' + key + '">↺ Clear the answers</button></div>';
     }
@@ -347,19 +367,37 @@
     }
     if (d.lscheck) { game(d.lscheck).checked = true; A.keepScroll(A.render); return; }
     if (d.lswalk) { var wg = game(d.lswalk); wg.n = (wg.n || 0) + 1; A.keepScroll(A.render); return; }
-    if (d.lspclear) { delete st.paper[d.lspclear]; save(); A.keepScroll(A.render); return; }
+    // Стереть все буквы — со второго касания, как «Start over» на экране задания.
+    if (d.lspclear) {
+      if (!d.sure) { d.sure = 1; b.textContent = "Sure? Tap again to clear all letters"; return; }
+      delete st.paper[d.lspclear]; save(); A.keepScroll(A.render); return;
+    }
     if (d.lsreset) { games[d.lsreset] = {}; A.keepScroll(A.render); return; }
     if (d.lsword) { if (A.words && A.words.offer) A.words.offer(d.lsword, "Lesson"); return; }
     if (d.lstimer) { st.timer = { key: d.lstimer, end: Date.now() + (+d.min) * 60000 }; save(); A.keepScroll(A.render); return; }
   });
-  // Буква в настоящем задании: только A–K, заглавная; кириллица-двойник (русская раскладка) — латиницей.
+  // Буква в настоящем задании: только A–K, заглавная; в пропуске всегда одна буква — новая заменяет старую.
   // Страницу не перерисовываем — иначе пропал бы курсор; то же поле в таблице/тексте правим на месте.
+  // Кириллица-двойник (экранная клавиатура в русской раскладке) — латиницей по виду.
   var CYR = { "\u0410": "A", "\u0412": "B", "\u0421": "C", "\u0415": "E", "\u041D": "H", "\u041A": "K" };
   document.addEventListener("input", function (e) {
     var el = e.target; if (!el.dataset || el.dataset.pin == null) return;
-    var p = el.dataset.pin.split(":"), n = p.pop(), pk = p.join(":"), v = el.value.toUpperCase();
-    v = (CYR[v] || v).replace(/[^A-K]/g, "");
-    var mine = st.paper[pk] = st.paper[pk] || {};
+    var p = el.dataset.pin.split(":"), n = p.pop(), pk = p.join(":"), mine = sheetOf(pk);
+    var got = el.value.toUpperCase().split("").map(function (ch) { return CYR[ch] || ch; }).filter(function (ch) { return /[A-K]/.test(ch); });
+    // Без maxlength: в полное поле дописалась вторая буква — убираем старую, остаётся новая.
+    if (got.length > 1 && got.indexOf(mine[n]) >= 0) got.splice(got.indexOf(mine[n]), 1);
+    put(el, pk, n, got.length ? got[got.length - 1] : "");
+  });
+  // Физическая клавиатура в русской раскладке: клавиша D даёт «в», а по виду это B. Берём клавишу, а не символ.
+  document.addEventListener("keydown", function (e) {
+    var el = e.target; if (!el.dataset || el.dataset.pin == null) return;
+    var m = /^Key([A-Z])$/.exec(e.code || "");
+    if (!m || !e.key || e.key.length !== 1 || /[A-Za-z]/.test(e.key) || e.ctrlKey || e.metaKey || e.altKey) return;
+    e.preventDefault();
+    if (m[1] <= "K") { var p = el.dataset.pin.split(":"), n = p.pop(); put(el, p.join(":"), n, m[1]); }
+  });
+  function put(el, pk, n, v) {
+    var mine = sheetOf(pk);
     if (v) mine[n] = v; else delete mine[n];
     save();
     el.value = v;
@@ -370,7 +408,7 @@
     });
     // В таблице — сразу к следующей клетке, как на бланке.
     if (v && el.classList.contains("ls-cell")) { var nx = document.querySelector('.ls-cell[data-pin="' + pk + ':' + (+n + 1) + '"]'); if (nx) nx.focus(); }
-  });
+  }
   document.addEventListener("focusin", function (e) { if (e.target.dataset && e.target.dataset.pin != null) e.target.select(); });
   // Перетаскивание: карточку можно тянуть мышкой или пальцем (pointer events) — или нажать на неё,
   // а потом на корзину / пропуск. Оба пути ведут в place().
