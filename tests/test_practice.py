@@ -34,6 +34,8 @@ KEYS = {
         "m-u3": ["Throughout", "non-academic/unacademic", "sustainable", "unemployed", "combination", "constantly", "achievement",
                  "whatever", "valuable", "expectations"],
         "m-u4": list("DIKLGNFCMA"),
+        # Reading Task 2 (пирог Цветаевой): учитель 22.10 задала его на дом вместо задания 2025/26.
+        "m-r2": list("GBKEIDCAJF"),
     },
 }
 
@@ -57,9 +59,9 @@ class Practice(unittest.TestCase):
           var parent = {}; V.parts.forEach(function(p){ p.tasks.forEach(function(t){ parent[t.id] = t.type; }); });
           return {sets: out, parent: parent};
         """)
-        self.assertEqual(sorted(r["sets"]), ["m-u1", "m-u2", "m-u3", "m-u4"])
+        self.assertEqual(sorted(r["sets"]), ["m-r2", "m-u1", "m-u2", "m-u3", "m-u4"])
         for tid, sets in r["sets"].items():
-            self.assertGreaterEqual(sum(s[2] for s in sets), 15, tid)
+            self.assertGreaterEqual(sum(s[2] for s in sets), 10 if tid == "m-r2" else 15, tid)
             for sid, typ, n, src in sets:
                 self.assertEqual(typ, r["parent"][tid], sid)
                 self.assertRegex(src, r"official")
