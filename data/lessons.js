@@ -87,7 +87,7 @@
             { type: "list", title: "📋 What you have to do", items: [
               "The text has **10 gaps**: (1), (2) … (10). One sentence is missing from each gap.",
               "Under the text there are **11 sentences: A–K**.",
-              "Choose **one sentence for each gap** and write its letter in the table, under the number of the gap.",
+              "Choose **one sentence for each gap**. Tap the gap in the text (or its box in the table) and type the letter.",
               "You can use every letter **only once**. **One sentence is extra** — it does not fit any gap.",
               "**1 point** for each correct gap — **10 points** for the task."
             ] },

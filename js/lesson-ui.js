@@ -8,6 +8,8 @@
   var st = { step: {}, from: null, timer: null };
   try { var raw = JSON.parse(localStorage.getItem(KEY) || "{}"); if (raw && typeof raw === "object" && !Array.isArray(raw)) st = Object.assign(st, raw); } catch (e) {}
   if (!st.step || typeof st.step !== "object") st.step = {};
+  // Буквы, напечатанные в настоящем задании урока: "l2:1:1" → {"6": "D"}. Помнятся, пока ходим по шагам.
+  if (!st.paper || typeof st.paper !== "object") st.paper = {};
   function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
   var picked = {}; // ответы викторин в этой сессии: "l2:1:0:3" → индекс выбранного варианта
   var games = {};  // состояние игр в этой сессии (выбор, найденные слова, разложенные карточки)
@@ -112,7 +114,14 @@
     ".ls-paper .ls-popts{border-top:1px solid #D9D2C3;padding-top:10px;margin-top:4px}.ls-paper .ls-popts p{margin:0 0 7px}",
     ".ls-pgap{font-weight:700;color:#B3261E;white-space:nowrap}",
     ".ls-grid{display:grid;grid-template-columns:repeat(10,1fr);border:1px solid #8A8478;margin-top:10px;font-size:13px;text-align:center}",
-    ".ls-grid span{border-left:1px solid #8A8478;padding:3px 0}.ls-grid span:nth-child(10n+1){border-left:0}.ls-grid .e{border-top:1px solid #8A8478;height:26px}",
+    ".ls-grid span{border-left:1px solid #8A8478;padding:3px 0}.ls-grid span:nth-child(10n+1){border-left:0}.ls-grid .e{border-top:1px solid #8A8478;padding:0}",
+    // Поля для букв: в пропуске текста и в клетке таблицы. 16px — чтобы iPhone не увеличивал страницу.
+    ".ls-pin,.ls-cell{border:0;background:#FFF;color:#1A1A1A;font:700 16px/1 Georgia,'Times New Roman',serif;text-align:center;text-transform:uppercase;padding:0;margin:0}",
+    ".ls-pin{width:30px;height:26px;margin-left:3px;border-bottom:2px solid #B3261E;border-radius:4px 4px 0 0;vertical-align:baseline}",
+    ".ls-cell{display:block;width:100%;height:32px;background:transparent}",
+    ".ls-pin:focus,.ls-cell:focus{outline:2px solid #2EC4D6;outline-offset:0}",
+    ".ls-pin.dup,.ls-cell.dup{background:#F6D5D2;color:#B3261E}",
+    ".ls-pclear{margin-top:8px;display:flex;justify-content:flex-end}",
     // «What to do» перед каждым упражнением: что сделать, по пунктам, и пример.
     ".ls-brief{margin-top:14px;padding:14px;border-radius:14px;background:rgba(255,214,102,.10);border:1px solid rgba(255,214,102,.55)}",
     ".ls-brief h3{font-size:16px;margin-bottom:4px}.ls-brief .lbl{margin:6px 0 0;font-size:13px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:.04em}",
@@ -195,13 +204,22 @@
     if (b.type === "words") return '<div class="ls-words">' + b.items.map(function (x) { return '<button type="button" data-lsword="' + esc(x) + '">' + esc(x) + '</button>'; }).join("") + '</div>';
     if (b.type === "hooks") return '<div class="ls-hooks">' + b.items.map(function (x) { return '<div><b>' + esc(x.h) + '</b>' + rich(x.t) + '</div>'; }).join("") + '</div>';
     if (b.type === "reveal") return '<details class="ls-box"><summary><b>' + esc(b.label) + '</b></summary><p class="ls-text">' + rich(b.text) + '</p></details>';
+    // Настоящее задание: букву можно напечатать прямо в пропуске или в таблице — это одно и то же поле.
+    // Проверки нет нарочно: ключ 2024/25 совпадает с заданием 2025/26 в шести пропусках.
     if (b.type === "paper") {
+      var mine = st.paper[key] || {}, cnt = {};
+      Object.keys(mine).forEach(function (g) { cnt[mine[g]] = (cnt[mine[g]] || 0) + 1; });
+      var pin = function (n, cls) {
+        var v = mine[n] || "";
+        return '<input class="' + cls + (v && cnt[v] > 1 ? ' dup' : '') + '" data-pin="' + key + ':' + n + '" maxlength="1" value="' + esc(v) + '" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" aria-label="Gap ' + n + '">';
+      };
       var cells = ""; for (var c = 1; c <= 10; c++) cells += '<span>' + c + '</span>';
-      for (c = 1; c <= 10; c++) cells += '<span class="e"></span>';
+      for (c = 1; c <= 10; c++) cells += '<span class="e">' + pin(c, "ls-cell") + '</span>';
       return '<div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p class="ins">' + esc(b.instruction) + '</p>' +
-        b.paras.map(function (x) { return '<p>' + gaps(esc(x)) + '</p>'; }).join("") +
+        b.paras.map(function (x) { return '<p>' + esc(x).replace(/\[(\d+)\]/g, function (_, n) { return '<span class="ls-pgap">(' + n + ') ' + pin(n, "ls-pin") + '</span>'; }) + '</p>'; }).join("") +
         '<div class="ls-popts">' + b.opts.map(function (o) { return '<p><b>' + esc(o.k) + ')</b> ' + esc(o.t) + '</p>'; }).join("") + '</div>' +
-        '<div class="ls-grid" aria-label="Answer table">' + cells + '</div></div>';
+        '<div class="ls-grid" aria-label="Answer table">' + cells + '</div></div>' +
+        '<div class="ls-pclear"><button class="ghost" data-lspclear="' + key + '">↺ Clear the answers</button></div>';
     }
     if (b.type === "brief") return '<div class="ls-brief"><h3>📋 ' + esc(b.title) + '</h3><p class="lbl">What to do</p><ol class="ls-ol">' +
       b.items.map(function (x) { return '<li>' + rich(x) + '</li>'; }).join("") + '</ol>' + (b.example ? '<p class="ls-ex"><b>Example:</b> ' + rich(b.example) + '</p>' : '') + '</div>';
@@ -329,10 +347,31 @@
     }
     if (d.lscheck) { game(d.lscheck).checked = true; A.keepScroll(A.render); return; }
     if (d.lswalk) { var wg = game(d.lswalk); wg.n = (wg.n || 0) + 1; A.keepScroll(A.render); return; }
+    if (d.lspclear) { delete st.paper[d.lspclear]; save(); A.keepScroll(A.render); return; }
     if (d.lsreset) { games[d.lsreset] = {}; A.keepScroll(A.render); return; }
     if (d.lsword) { if (A.words && A.words.offer) A.words.offer(d.lsword, "Lesson"); return; }
     if (d.lstimer) { st.timer = { key: d.lstimer, end: Date.now() + (+d.min) * 60000 }; save(); A.keepScroll(A.render); return; }
   });
+  // Буква в настоящем задании: только A–K, заглавная; кириллица-двойник (русская раскладка) — латиницей.
+  // Страницу не перерисовываем — иначе пропал бы курсор; то же поле в таблице/тексте правим на месте.
+  var CYR = { "\u0410": "A", "\u0412": "B", "\u0421": "C", "\u0415": "E", "\u041D": "H", "\u041A": "K" };
+  document.addEventListener("input", function (e) {
+    var el = e.target; if (!el.dataset || el.dataset.pin == null) return;
+    var p = el.dataset.pin.split(":"), n = p.pop(), pk = p.join(":"), v = el.value.toUpperCase();
+    v = (CYR[v] || v).replace(/[^A-K]/g, "");
+    var mine = st.paper[pk] = st.paper[pk] || {};
+    if (v) mine[n] = v; else delete mine[n];
+    save();
+    el.value = v;
+    var cnt = {}; Object.keys(mine).forEach(function (g) { cnt[mine[g]] = (cnt[mine[g]] || 0) + 1; });
+    document.querySelectorAll('[data-pin^="' + pk + ':"]').forEach(function (x) {
+      if (x.dataset.pin === el.dataset.pin && x !== el) x.value = v;
+      x.classList.toggle("dup", !!x.value && cnt[x.value] > 1);
+    });
+    // В таблице — сразу к следующей клетке, как на бланке.
+    if (v && el.classList.contains("ls-cell")) { var nx = document.querySelector('.ls-cell[data-pin="' + pk + ':' + (+n + 1) + '"]'); if (nx) nx.focus(); }
+  });
+  document.addEventListener("focusin", function (e) { if (e.target.dataset && e.target.dataset.pin != null) e.target.select(); });
   // Перетаскивание: карточку можно тянуть мышкой или пальцем (pointer events) — или нажать на неё,
   // а потом на корзину / пропуск. Оба пути ведут в place().
   function place(cardRef, dropRef) {

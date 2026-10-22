@@ -166,13 +166,14 @@ class Lessons(unittest.TestCase):
 KEY_2425 = "GBKEIDCAJF"
 
 
-def render_step(lesson_id, step, clicks=()):
-    """HTML шага урока, как его рисует js/lesson-ui.js; clicks — data-атрибуты кнопок, нажатых по порядку."""
+def render_step(lesson_id, step, clicks=(), typed=(), with_store=False):
+    """HTML шага урока, как его рисует js/lesson-ui.js; clicks — data-атрибуты кнопок, нажатых по порядку,
+    typed — [data-pin поля, что напечатали] по порядку."""
     stub = """
-      var window = this, store = {}, handlers = [];
+      var window = this, store = {}, handlers = [], inputs = [];
       var el = function(){ return {textContent: "", appendChild: function(){}, classList: {add: function(){}, remove: function(){}}}; };
       var document = {createElement: el, head: {appendChild: function(){}}, body: {appendChild: function(){}},
-                      addEventListener: function(t, f){ if (t === "click") handlers.push(f); }, querySelectorAll: function(){ return []; }};
+                      addEventListener: function(t, f){ if (t === "click") handlers.push(f); if (t === "input") inputs.push(f); }, querySelectorAll: function(){ return []; }};
       var localStorage = {getItem: function(k){ return store[k] || null; }, setItem: function(k, v){ store[k] = v; }};
       var location = {hash: "#/lesson/LID"};
       window.addEventListener = function(){}; var setInterval = function(){}; window.scrollTo = function(){};
@@ -188,12 +189,18 @@ def render_step(lesson_id, step, clicks=()):
         var btn = {dataset: ds, closest: function(sel){ return sel === "button" ? btn : null; }};
         handlers.forEach(function(h){ h({target: btn}); });
       });
-      window.App.routes.lesson(["lesson", "LID"]);
-    """.replace("CLICKS", json.dumps(clicks_js)).replace("LID", lesson_id)
+      JSON.parse(TYPED).forEach(function(t){
+        var el = {dataset: {pin: t[0]}, value: t[1], tagName: "INPUT", classList: {contains: function(){ return false; }}};
+        inputs.forEach(function(h){ h({target: el}); });
+      });
+      var html = window.App.routes.lesson(["lesson", "LID"]);
+      WITH ? JSON.stringify({html: html, store: store}) : html;
+    """.replace("CLICKS", json.dumps(clicks_js)).replace("TYPED", json.dumps(json.dumps(list(typed)))) \
+       .replace("WITH", "true" if with_store else "false").replace("LID", lesson_id)
     out = subprocess.run(["osascript", "-l", "JavaScript", "-e", js], capture_output=True, text=True)
     if out.returncode:
         raise AssertionError(out.stderr[-500:])
-    return out.stdout
+    return json.loads(out.stdout) if with_store else out.stdout
 
 
 class ReadingLessonIsClear(unittest.TestCase):
@@ -349,9 +356,33 @@ class ReadingLessonIsClear(unittest.TestCase):
         html = render_step("l2", 1)
         self.assertIn("ls-paper", html)
         for n in range(1, 11):
-            self.assertIn("(%d) ________" % n, html)
+            self.assertIn("(%d) <input" % n, html)
         self.assertEqual(len(re.findall(r'<b>[A-K]\)</b>', html)), 11)
         self.assertIn("ls-grid", html)
+
+    def test_the_real_task_can_be_typed_in(self):
+        # Учитель 22.10: «чтобы в этом реальном задании можно было печатать — тыкать в тексте
+        # и в табличке внизу», а не смотреть на картинку.
+        r = self.l2()
+        key = "l2:1:%d" % [b["type"] for b in r["steps"][1]["blocks"]].index("paper")
+        html = render_step("l2", 1)
+        for n in range(1, 11):
+            # Поле в пропуске текста и клетка таблицы под тем же номером.
+            self.assertEqual(len(re.findall(r'<input[^>]*data-pin="%s:%d"[^>]*maxlength="1"' % (key, n), html)), 2, n)
+        self.assertNotIn("Check", html.split("ls-paper", 1)[1].split("ls-nav")[0], "проверки нет: ключ 2024/25 совпадает с 2025/26 в шести пропусках")
+        # Буква видна и в тексте, и в таблице; строчная становится заглавной, кириллица-двойник — латиницей,
+        # не A–K — не печатается.
+        out = render_step("l2", 1, typed=[[key + ":6", "d"], [key + ":8", "z"], [key + ":2", "В"], [key + ":7", "d"]], with_store=True)
+        h = out["html"]
+        self.assertEqual(len(re.findall(r'data-pin="%s:6"[^>]*value="D"' % key, h)), 2)
+        self.assertEqual(len(re.findall(r'data-pin="%s:2"[^>]*value="B"' % key, h)), 2)
+        self.assertEqual(re.findall(r'data-pin="%s:8"[^>]*value="[^"]+"' % key, h), [])
+        # Одна буква в двух пропусках — подсвечена: каждую букву можно взять один раз.
+        self.assertEqual(len(re.findall(r'class="[^"]*\bdup\b[^"]*"[^>]*data-pin="%s:[67]"' % key, h)), 4)
+        # Напечатанное помнится: ушли на шаг 3 и вернулись — буквы на месте.
+        self.assertEqual(json.loads(out["store"]["olymp-lessons"])["paper"][key], {"6": "D", "2": "B", "7": "D"})
+        cleared = render_step("l2", 1, clicks=[["lspclear", key]], typed=[[key + ":6", "D"]])
+        self.assertIn('data-lspclear="%s"' % key, cleared)
 
     def test_solving_together_opens_one_step_at_a_time(self):
         before = render_step("l2", 2)
