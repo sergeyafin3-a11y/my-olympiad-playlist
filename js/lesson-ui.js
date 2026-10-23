@@ -265,7 +265,8 @@
       return '<div class="ls-tf' + (tg.checked ? (ok ? ' right' : ' wrong') : '') + '"><p class="q"><b>' + (n + 1) + '.</b> ' + esc(it.q) + '</p><p class="w">' + esc(it.word) + '</p>' +
         '<p class="s">' + (it.before ? esc(it.before) + ' ' : '') + '<input data-tfin="' + key + ':' + n + '" value="' + esc(val) + '" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Answer ' + (n + 1) + '"> ' + esc(it.after) + ' <small>(' + it.n + ' words)</small></p>' +
         '<div class="row"><button class="ghost" data-tfcheck="' + key + ':' + n + '">✓ Check</button>' +
-        (tg.checked ? '<span class="why">' + (ok ? '✓ Right!' : '✗ Answer: <b>' + esc(it.accept[0]) + '</b>') + '</span>' : '') + '</div></div>';
+        (tg.checked ? '<span class="why">' + (ok ? '✓ Right!' : '✗ Answer: <b>' + esc(it.accept[0]) + '</b>') + '</span>' : '') + '</div>' +
+        (tg.checked && it.note ? '<p class="why">' + rich(it.note) + '</p>' : '') + '</div>';
     }).join("");
     if (b.type === "brief") return '<div class="ls-brief"><h3>📋 ' + esc(b.title) + '</h3><p class="lbl">What to do</p><ol class="ls-ol">' +
       b.items.map(function (x) { return '<li>' + rich(x) + '</li>'; }).join("") + '</ol>' + (b.example ? '<p class="ls-ex"><b>Example:</b> ' + rich(b.example) + '</p>' : '') + '</div>';
@@ -409,7 +410,8 @@
   var CYR = { "\u0410": "A", "\u0412": "B", "\u0421": "C", "\u0415": "E", "\u041D": "H", "\u041A": "K" };
   // Ответ перефразирования помним, пока урок открыт; страницу не перерисовываем — иначе пропал бы курсор.
   document.addEventListener("input", function (e) {
-    var el = e.target; if (el.dataset && el.dataset.tfin != null) game(el.dataset.tfin).v = el.value;
+    // Исправила ответ — старый ✓/✗ уже не про него: до нового «Check» поле снова не проверено.
+    var el = e.target; if (el.dataset && el.dataset.tfin != null) { var tg = game(el.dataset.tfin); tg.v = el.value; tg.checked = false; }
   });
   document.addEventListener("keydown", function (e) {
     var el = e.target; if (e.key !== "Enter" || !el.dataset || el.dataset.tfin == null) return;

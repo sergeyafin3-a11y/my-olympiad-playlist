@@ -175,7 +175,7 @@ TASK_FILES = ["data/variant-mun-msk-25-26.js", "data/practice-mun.js"]
 IN_CLASS, HOMEWORK = "m-r2", "p-r2-2425"
 
 
-def render_step(lesson_id, step, clicks=(), typed=(), with_store=False):
+def render_step(lesson_id, step, clicks=(), typed=(), with_store=False, events=()):
     """HTML шага урока, как его рисует js/lesson-ui.js; clicks — data-атрибуты кнопок, нажатых по порядку,
     typed — [data-pin поля, что напечатали] по порядку."""
     stub = """
@@ -203,10 +203,16 @@ def render_step(lesson_id, step, clicks=(), typed=(), with_store=False):
         var btn = {dataset: ds, closest: function(sel){ return sel === "button" ? btn : null; }};
         handlers.forEach(function(h){ h({target: btn}); });
       });
+      JSON.parse(EVENTS).forEach(function(ev){
+        var ds = {}; ds[ev[1]] = ev[2];
+        if (ev[0] === "type") { var el = {dataset: ds, value: ev[3], tagName: "INPUT", classList: {contains: function(){ return false; }}};
+                                inputs.forEach(function(h){ h({target: el}); }); }
+        else { var btn = {dataset: ds, closest: function(sel){ return sel === "button" ? btn : null; }}; handlers.forEach(function(h){ h({target: btn}); }); }
+      });
       var html = window.App.routes.lesson(["lesson", "LID"]);
       WITH ? JSON.stringify({html: html, store: store}) : html;
     """.replace("CLICKS", json.dumps(clicks_js)).replace("TYPED", json.dumps(json.dumps(list(typed)))) \
-       .replace("WITH", "true" if with_store else "false").replace("LID", lesson_id)
+       .replace("WITH", "true" if with_store else "false").replace("EVENTS", json.dumps(json.dumps(list(events)))).replace("LID", lesson_id)
     out = subprocess.run(["osascript", "-l", "JavaScript", "-e", js], capture_output=True, text=True)
     if out.returncode:
         raise AssertionError(out.stderr[-500:])
@@ -629,6 +635,33 @@ class GrammarInTheReadingLesson(unittest.TestCase):
         self.assertIn("regret having pressed", wrong, "после проверки — верный ответ")
         before = render_step("l2", self.i)
         self.assertNotIn("regret having pressed", before, "ответ не виден до проверки")
+
+    def test_review_of_pr_38(self):
+        # Ревью PR 38: слово-подсказку тоже считают; turn out / put out — тоже верно; «forget ___ up»
+        # без «прошлого» читалось и как будущее; в таблице не было can't help doing, be made to do,
+        # would rather + somebody + past; фразы — не только из текста, но и из предложений A–K.
+        tf = self.blocks("transform")[0]
+        self.assertIn("including the word given", json.dumps(self.step["blocks"]))
+        self.assertIn("remember to turn out", tf["items"][2]["accept"])
+        self.assertIn("remember to put out", tf["items"][2]["accept"])
+        self.assertTrue(tf["items"][0].get("note") and tf["items"][1].get("note"))
+        forget = [it["q"] for it in self.blocks("quiz")[0]["items"] if "forget" in it["q"]][0]
+        self.assertIn("last summer", forget)
+        table = json.dumps(self.blocks("vtable")[0])
+        for x in ["can't help **doing**", "be made **to** do", "would rather + somebody + past"]:
+            self.assertIn(x, table)
+        self.assertIn("sentences A–K", json.dumps(self.blocks("brief")[0], ensure_ascii=False))
+
+    def test_editing_an_answer_clears_its_old_result(self):
+        # Ревью PR 38: исправила ответ после Check, нажала Check у другого — старый ✓/✗ менялся без проверки.
+        k = [b["type"] for b in self.step["blocks"]].index("transform")
+        key = "l2:%d:%d" % (self.i, k)
+        html = render_step("l2", self.i, events=[["type", "tfin", key + ":5", "could not help pressing"], ["click", "tfcheck", key + ":5"],
+                                                 ["type", "tfin", key + ":5", "could not help press"], ["click", "tfcheck", key + ":0"]])
+        boxes = re.findall(r'class="(ls-tf[^"]*)"', html)
+        self.assertEqual(boxes[5], "ls-tf")
+        self.assertEqual(boxes[0], "ls-tf wrong")
+        self.assertIn(self.blocks("transform")[0]["items"][0]["note"].split("**")[0][:20], html, "после проверки — пояснение")
 
     def test_grammar_homework(self):
         links = [x["href"] for b in self.r["steps"][-1]["blocks"] if b["type"] == "links" for x in b["items"]]
