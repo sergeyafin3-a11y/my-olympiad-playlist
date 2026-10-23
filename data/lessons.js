@@ -186,9 +186,9 @@
               ] },
               { h: "🔹 Verb without to", lines: [
                 "**Modals:** can, could, must, should, might, will",
-                "let, make: **make me laugh**, **let me go**",
-                "had better, would rather: **I'd rather stay**",
-                "help: **help (to) do** — both are correct"
+                "let, make: **make me laugh**, **let me go** — but passive: be made **to** do",
+                "had better, would rather: **I'd rather stay** · **would rather + somebody + past**: I'd rather you **didn't**",
+                "help: **help (to) do** — both are correct; but can't help **doing** = can't stop yourself"
               ] },
               { h: "🔀 Both — same meaning", lines: [
                 "begin, start, continue, like, love, hate, prefer",
@@ -207,8 +207,8 @@
                 "**to have done** — perfect infinitive: claimed **not to have been**, is said **to have had**"
               ], note: "Real answers from Use of English Task 2, Moscow municipal stage 2022/23–2025/26." }
             ] },
-            { type: "brief", title: "Exercise 1 of 3 · Find them in the text", items: [
-              "All the phrases below are from the alarm clock text.",
+            { type: "brief", title: "Exercise 1 of 3 · Find them in the task", items: [
+              "All the phrases below are from the alarm clock text or its sentences A–K.",
               "Drag each phrase into the right box: **-ing** or **infinitive** (to do or do).",
               "On a phone or tablet: tap the phrase, then tap the box."
             ], example: "**I enjoy reading** → ➕ -ing · **I decided to go** → 🎯 infinitive" },
@@ -222,7 +222,7 @@
               ] },
             { type: "brief", title: "Exercise 2 of 3 · -ing or to?", items: [
               "Read the sentence and tap the right form.",
-              "The first four sentences come from the alarm clock text.",
+              "The first four sentences come from the alarm clock text and its sentences A–K.",
               "Read why: the rule is in the table above."
             ] },
             { type: "quiz", items: [
@@ -236,7 +236,7 @@
                 why: "**want** + to do." },
               { q: "Remember ___ your alarm before you go to bed!", opts: ["to set", "setting"], a: 0,
                 why: "**remember to do** = don't forget a task (it is still in the future). **remember doing** = a memory of the past." },
-              { q: "I'll never forget ___ up at dawn on that camping trip.", opts: ["waking", "to wake"], a: 0,
+              { q: "I'll never forget ___ up at dawn on that camping trip last summer.", opts: ["waking", "to wake"], a: 0,
                 why: "**forget doing** = a memory of the past: it happened, and you will always remember it." },
               { q: "She stopped ___ coffee after 4 pm, and now she sleeps better.", opts: ["drinking", "to drink"], a: 0,
                 why: "**stop doing** = quit. **stop to do** = stop in order to do something." },
@@ -245,14 +245,15 @@
             ] },
             { type: "brief", title: "Exercise 3 of 3 · Olympiad format", items: [
               "This is Use of English Task 2: complete the second sentence so that it means the same as the first one.",
-              "Use the word given — don't change it — and exactly the number of words in brackets.",
+              "Use the word given — don't change it — and exactly the number of words in brackets, **including the word given**.",
               "Don't use short forms: write **do not**, not don't.",
               "Type your answer and press **✓ Check**."
             ] },
             { type: "transform", items: [
-              { q: "I'm sorry that I pressed snooze five times.", word: "regret", before: "I", after: "snooze five times.", n: 3, accept: ["regret having pressed"] },
-              { q: "My sister always gets up at six, so early mornings are normal for her.", word: "used", before: "My sister", after: "up early.", n: 4, accept: ["is used to getting"] },
-              { q: "Don't forget to turn off the light before you go to sleep.", word: "remember", before: "", after: "the light before you go to sleep.", n: 4, accept: ["remember to turn off", "remember to switch off"] },
+              { q: "I'm sorry that I pressed snooze five times.", word: "regret", before: "I", after: "snooze five times.", n: 3, accept: ["regret having pressed"],
+                note: "Task 2 checks the -ing form here: regret **having done** — like the real olympiad answer regret **having bought**." },
+              { q: "My sister always gets up at six, so early mornings are normal for her.", word: "used", before: "My sister", after: "up early.", n: 4, accept: ["is used to getting"], note: "get up → **getting** up: be used to + -ing." },
+              { q: "Don't forget to turn off the light before you go to sleep.", word: "remember", before: "", after: "the light before you go to sleep.", n: 4, accept: ["remember to turn off", "remember to switch off", "remember to turn out", "remember to put out"] },
               { q: "He said he hadn't fallen asleep in the lesson.", word: "denied", before: "He", after: "asleep in the lesson.", n: 3, accept: ["denied having fallen"] },
               { q: "There's no point in buying an expensive alarm clock.", word: "worth", before: "It", after: "an expensive alarm clock.", n: 4, accept: ["is not worth buying"] },
               { q: "I couldn't stop myself from pressing snooze again.", word: "help", before: "I", after: "snooze again.", n: 4, accept: ["could not help pressing"] }
