@@ -32,14 +32,15 @@ class Lessons(unittest.TestCase):
         r = run_js("return L.map(function(l){ return [l.id, l.date, l.title, (l.steps || []).length]; });")
         dates = [x[1] for x in r]
         self.assertEqual(dates, sorted(dates))
-        # Урок Reading перенесён учителем с 19.10 на четверг 22.10.
-        self.assertIn("2026-10-22", dates)
+        # Урок Reading перенесён учителем с 19.10 на 22.10, а затем на 23.10 («занятие, оказывается, сегодня»).
+        self.assertIn("2026-10-23", dates)
+        self.assertNotIn("2026-10-22", dates)
         self.assertTrue(all(d < "2026-11-21" for d in dates))
         self.assertTrue(all(x[2] for x in r))
 
     def test_todays_lesson_is_a_full_50_minute_ppp_lesson(self):
         r = run_js("""
-          var l = L.filter(function(x){ return x.date === "2026-10-22"; })[0];
+          var l = L.filter(function(x){ return x.date === "2026-10-23"; })[0];
           return {mins: l.steps.reduce(function(a, s){ return a + s.minutes; }, 0), kinds: l.steps.map(function(s){ return s.stage; }),
                   blocks: l.steps.map(function(s){ return s.blocks.length; })};
         """)
@@ -192,14 +193,15 @@ def render_step(lesson_id, step, clicks=(), typed=(), with_store=False):
     js = stub + "".join((ROOT / f).read_text(encoding="utf-8") for f in TASK_FILES) + (ROOT / "data" / "lessons.js").read_text(encoding="utf-8") + """
       var o = {}; o["LID"] = STEP; store["olymp-lessons"] = JSON.stringify({step: o});
     """.replace("LID", lesson_id).replace("STEP", str(step)) + (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8") + """
+      JSON.parse(TYPED).forEach(function(t){
+        var ds = {}; if (t.length === 3) ds[t[0]] = t[1]; else ds.pin = t[0];
+        var el = {dataset: ds, value: t[t.length - 1], tagName: "INPUT", classList: {contains: function(){ return false; }}};
+        inputs.forEach(function(h){ h({target: el}); });
+      });
       JSON.parse(CLICKS).forEach(function(c){
         var ds = {}; ds[c[0]] = c[1];
         var btn = {dataset: ds, closest: function(sel){ return sel === "button" ? btn : null; }};
         handlers.forEach(function(h){ h({target: btn}); });
-      });
-      JSON.parse(TYPED).forEach(function(t){
-        var el = {dataset: {pin: t[0]}, value: t[1], tagName: "INPUT", classList: {contains: function(){ return false; }}};
-        inputs.forEach(function(h){ h({target: el}); });
       });
       var html = window.App.routes.lesson(["lesson", "LID"]);
       WITH ? JSON.stringify({html: html, store: store}) : html;
@@ -357,7 +359,7 @@ class ReadingLessonIsClear(unittest.TestCase):
         r = self.l2()
         # Разминку учитель одобрила как есть (22.10: «вармап хороший»), её не трогаем; но любая игра
         # после неё — со своим «What to do».
-        games = ["walk", "quiz", "hookhunt", "sort", "gapfill", "task", "binword", "thisorthat", "speak"]
+        games = ["walk", "quiz", "hookhunt", "sort", "gapfill", "task", "binword", "thisorthat", "speak", "transform"]
         bad, briefs = [], 0
         for i, s in enumerate(r["steps"][1:], 1):
             seen_brief = False
@@ -542,6 +544,96 @@ class ReadingLessonIsClear(unittest.TestCase):
         done = render_step("l2", 2, [["lswalk", key]] * len(w["steps"]))
         self.assertIn("Gap %d = %s" % (w["gap"], w["answer"]), done)
         self.assertIn("What to do", before)
+
+
+class GrammarInTheReadingLesson(unittest.TestCase):
+    """Учитель 23.10: «вставим в сегодняшний урок герундий и инфинитив — чтобы не отдельно,
+    а переплеталось с ридингом. Заново не объяснять, только практика. И табличку: после каких
+    глаголов строго герундий, после каких строго инфинитив, после каких и то и то»."""
+
+    def setUp(self):
+        self.r = run_js("""
+          var l = L.filter(function(x){ return x.id === "l2"; })[0], t = null;
+          V.parts.forEach(function(p){ p.tasks.forEach(function(x){ if (x.id === "m-r2") t = x; }); });
+          return {steps: l.steps, text: t.text.concat(t.opts.map(function(o){ return o.t; })).join(" ")};
+        """)
+        self.i = [k for k, st in enumerate(self.r["steps"]) if any(b["type"] == "vtable" for b in st["blocks"])]
+        self.assertEqual(len(self.i), 1, "один шаг грамматики с таблицей")
+        self.i = self.i[0]
+        self.step = self.r["steps"][self.i]
+
+    def blocks(self, kind):
+        return [b for b in self.step["blocks"] if b["type"] == kind]
+
+    def test_right_after_the_hooks_and_before_the_homework(self):
+        stages = [st["stage"] for st in self.r["steps"]]
+        hooks = [k for k, st in enumerate(self.r["steps"]) if any(b["type"] == "hookhunt" for b in st["blocks"])][0]
+        self.assertEqual(self.i, hooks + 1)
+        self.assertLess(self.i, stages.index("production"))
+        self.assertIn("-ing or to", self.step["title"])
+
+    def test_the_reminder_table(self):
+        cols = {c["h"]: " ".join(c["lines"]).lower() for c in self.blocks("vtable")[0]["cols"]}
+        def col(word):
+            hit = [h for h in cols if word in h]
+            self.assertEqual(len(hit), 1, word)
+            return cols[hit[0]]
+        for v in ["enjoy", "avoid", "deny", "admit", "suggest", "give up", "look forward to", "can't help"]:
+            self.assertIn(v, col("-ing only"), v)
+        for v in ["want", "decide", "manage", "refuse", "pretend", "afford", "claim"]:
+            self.assertIn(v, col("to + verb only"), v)
+        for v in ["let", "make", "would rather", "help"]:
+            self.assertIn(v, col("without to"), v)
+        for v in ["begin", "start", "like", "prefer"]:
+            self.assertIn(v, col("same meaning"), v)
+        for v in ["remember", "forget", "stop", "try", "regret", "go on"]:
+            self.assertIn(v, col("meaning changes"), v)
+        # Один глагол не может быть сразу «только -ing» и «только to».
+        def verbs(t):
+            return {w.strip(" .") for w in re.split(r"[,:]", re.sub(r"\*\*[^*]+\*\*", "", t)) if w.strip(" .")}
+        self.assertEqual(verbs(col("-ing only")) & verbs(col("to + verb only")), set())
+
+    def test_the_phrases_to_sort_are_from_the_alarm_clock_text(self):
+        text = self.r["text"].lower().replace("’", "'")
+        cards = self.blocks("sort")[0]["cards"]
+        self.assertEqual([c["t"] for c in cards if c["t"].lower() not in text], [])
+        self.assertEqual(sorted({c["b"] for c in cards}), ["inf", "ing"])
+
+    def test_choose_the_form(self):
+        items = self.blocks("quiz")[0]["items"]
+        self.assertGreaterEqual(len(items), 6)
+        for it in items:
+            self.assertEqual(len(it["opts"]), 2, it["q"])
+            self.assertIn("___", it["q"])
+            self.assertTrue(it["why"])
+
+    def test_olympiad_format_transformations(self):
+        # Формат Use of English Task 2: слово не меняется, число слов — как в скобках, без сокращений.
+        items = self.blocks("transform")[0]["items"]
+        self.assertGreaterEqual(len(items), 5)
+        for it in items:
+            self.assertTrue(it["q"] and it["word"] and "after" in it, it)
+            for a in it["accept"]:
+                self.assertEqual(len(a.split()), it["n"], a)
+                self.assertIn(it["word"].lower(), a.lower().split(), a)
+                self.assertNotIn("'", a, "без сокращений")
+                self.assertNotIn("’", a)
+
+    def test_typed_answer_is_checked(self):
+        k = [b["type"] for b in self.step["blocks"]].index("transform")
+        key = "l2:%d:%d" % (self.i, k)
+        right = render_step("l2", self.i, typed=[["tfin", key + ":0", "  Regret Having pressed. "]], clicks=[["tfcheck", key + ":0"]])
+        self.assertRegex(right, r'class="ls-tf right"')
+        wrong = render_step("l2", self.i, typed=[["tfin", key + ":0", "regret pressing"]], clicks=[["tfcheck", key + ":0"]])
+        self.assertRegex(wrong, r'class="ls-tf wrong"')
+        self.assertIn("regret having pressed", wrong, "после проверки — верный ответ")
+        before = render_step("l2", self.i)
+        self.assertNotIn("regret having pressed", before, "ответ не виден до проверки")
+
+    def test_grammar_homework(self):
+        links = [x["href"] for b in self.r["steps"][-1]["blocks"] if b["type"] == "links" for x in b["items"]]
+        self.assertIn("#/grammar/t/b1-gerund-infinitive", links)
+        self.assertIn("b1-gerund-infinitive", (ROOT / "data" / "grammar" / "grammar-b1.js").read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":

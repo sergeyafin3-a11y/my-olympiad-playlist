@@ -12,6 +12,9 @@
 // Учитель 22.10, позже: «поменяем местами» — на уроке разбираем и печатаем текст 2025/26 про будильник
 // (лист берёт его из самого задания m-r2), а пирог Цветаевой 2024/25 — домашнее задание на 15 минут.
 // Разбор и вопрос — на пропусках 2 и 6: в пироге у них другие буквы (общие у двух ключей — 1, 3, 4, 5, 9, 10).
+// Учитель 23.10: урок перенесён на 23.10, и в него — герундий и инфинитив, не отдельно, а на том же тексте:
+// таблица-напоминание (тему проходили, заново не объясняем), фразы из текста, выбор формы, формат Task 2.
+// Минуты шагов — время на уроке: домашнее задание на уроке только объясняем.
 (function () {
   function img(name) { return "media/memes/" + name + ".jpg"; }
   window.LESSONS = [
@@ -27,12 +30,13 @@
       ]
     },
     {
-      id: "l2", date: "2026-10-22", title: "Reading: missing sentences", emoji: "📖",
+      id: "l2", date: "2026-10-23", title: "Reading: missing sentences", emoji: "📖",
       cover: img("m02-reading"),
       aims: [
         "🗣️ Talk about mornings and sleep.",
         "📄 Work on a real Reading Task 2: what you have to do.",
         "🪝 Solve gaps together and learn to find \"hooks\".",
+        "🧩 Gerund or infinitive: practise them in the text and in Task 2 format.",
         "🏠 Homework: one more real task in 15 minutes."
       ],
       steps: [
@@ -59,7 +63,7 @@
           ]
         },
         {
-          stage: "presentation", title: "Meet Reading Task 2", minutes: 4, image: img("m02-reading"),
+          stage: "presentation", title: "Meet Reading Task 2", minutes: 8, image: img("m02-reading"),
           blocks: [
             { type: "text", text: "📄 **This is a real olympiad task** — Reading Task 2 from the Moscow municipal stage 2025/26, word for word. Your task at the olympiad has the same format. Look at it first: what do you see?" },
             { type: "paper", task: "m-r2", source: "Real task · Moscow municipal stage 2025/26 · Reading · Task 2" },
@@ -167,7 +171,96 @@
           ]
         },
         {
-          stage: "production", title: "Homework: Reading Task 2", minutes: 17, image: img("m10-lock-in"),
+          stage: "practice", title: "Grammar in the text: -ing or to?", minutes: 12, image: img("m04-smort"),
+          blocks: [
+            { type: "text", text: "🧩 The alarm clock text is full of **-ing forms and infinitives** — and Use of English Task 2 tests them every year. You know the rules: let's practise!" },
+            { type: "vtable", title: "📋 Remember: -ing or to?", cols: [
+              { h: "➕ -ing only", lines: [
+                "enjoy, avoid, mind, finish, suggest, consider, imagine, deny, admit, miss, practise, risk, keep",
+                "can't help, can't stand, give up, put off, it's (not) worth, there's no point in",
+                "**After a preposition:** instead of, after, before, without, look forward to, be used to, object to, succeed in, have difficulty (in)"
+              ] },
+              { h: "🎯 to + verb only", lines: [
+                "want, would like, decide, hope, plan, agree, refuse, manage, offer, promise, afford, expect, learn, seem, pretend, fail, tend, arrange, deserve, claim, prove",
+                "**After nouns and adjectives:** a way to…, the first to…, easy to…, too … to…, … enough to…"
+              ] },
+              { h: "🔹 Verb without to", lines: [
+                "**Modals:** can, could, must, should, might, will",
+                "let, make: **make me laugh**, **let me go**",
+                "had better, would rather: **I'd rather stay**",
+                "help: **help (to) do** — both are correct"
+              ] },
+              { h: "🔀 Both — same meaning", lines: [
+                "begin, start, continue, like, love, hate, prefer",
+                "But **would like / love / hate / prefer** + to do: I'd love **to come**."
+              ] },
+              { h: "⚠️ Both — the meaning changes", lines: [
+                "**remember / forget doing** = a memory of the past · **remember / forget to do** = a task: don't forget it",
+                "**stop doing** = quit · **stop to do** = stop in order to do something",
+                "**try doing** = do it as an experiment · **try to do** = make an effort",
+                "**regret doing** = be sorry about the past · **regret to tell / inform** = be sorry about bad news",
+                "**go on doing** = continue · **go on to do** = do something next"
+              ] },
+              { h: "🏆 Olympiad level: passive and perfect forms", lines: [
+                "**being done** — passive: avoid **being recognised**",
+                "**having done** — perfect: regret **having bought**",
+                "**to have done** — perfect infinitive: claimed **not to have been**, is said **to have had**"
+              ], note: "Real answers from Use of English Task 2, Moscow municipal stage 2022/23–2025/26." }
+            ] },
+            { type: "brief", title: "Exercise 1 of 3 · Find them in the text", items: [
+              "All the phrases below are from the alarm clock text.",
+              "Drag each phrase into the right box: **-ing** or **infinitive** (to do or do).",
+              "On a phone or tablet: tap the phrase, then tap the box."
+            ], example: "**I enjoy reading** → ➕ -ing · **I decided to go** → 🎯 infinitive" },
+            { type: "sort",
+              buckets: [{ id: "ing", label: "➕ -ing (gerund)" }, { id: "inf", label: "🎯 infinitive (to do / do)" }],
+              cards: [
+                { t: "instead of doing it", b: "ing" }, { t: "proved to fall", b: "inf" }, { t: "the process of waking up", b: "ing" },
+                { t: "want to wake up", b: "inf" }, { t: "after using", b: "ing" }, { t: "powerful way to regulate", b: "inf" },
+                { t: "instead of slipping back", b: "ing" }, { t: "help boost", b: "inf" }, { t: "If waking up feels like a struggle", b: "ing" },
+                { t: "To wind down at night", b: "inf" }
+              ] },
+            { type: "brief", title: "Exercise 2 of 3 · -ing or to?", items: [
+              "Read the sentence and tap the right form.",
+              "The first four sentences come from the alarm clock text.",
+              "Read why: the rule is in the table above."
+            ] },
+            { type: "quiz", items: [
+              { q: "Sunrise alarm clocks soon proved ___ into this exclusive category.", opts: ["to fall", "falling"], a: 0,
+                why: "**prove** + to do — like seem, manage, decide." },
+              { q: "Instead of ___ it abruptly to a jarring beep in a pitch-dark room, a sunrise alarm clock slowly and gradually lights up my space.", opts: ["doing", "to do"], a: 0,
+                why: "After a preposition (instead of, after, before, without, of) — always **-ing**." },
+              { q: "I stay awake once the alarm goes off instead of ___ back into sleep.", opts: ["slipping", "to slip"], a: 0,
+                why: "**instead of** is a preposition, so **-ing**." },
+              { q: "This is what I really appreciate when I want ___ up long before sunrise.", opts: ["to wake", "waking"], a: 0,
+                why: "**want** + to do." },
+              { q: "Remember ___ your alarm before you go to bed!", opts: ["to set", "setting"], a: 0,
+                why: "**remember to do** = don't forget a task (it is still in the future). **remember doing** = a memory of the past." },
+              { q: "I'll never forget ___ up at dawn on that camping trip.", opts: ["waking", "to wake"], a: 0,
+                why: "**forget doing** = a memory of the past: it happened, and you will always remember it." },
+              { q: "She stopped ___ coffee after 4 pm, and now she sleeps better.", opts: ["drinking", "to drink"], a: 0,
+                why: "**stop doing** = quit. **stop to do** = stop in order to do something." },
+              { q: "I've given up ___ my phone as an alarm.", opts: ["using", "to use"], a: 0,
+                why: "**give up** + -ing — like enjoy, avoid, keep." }
+            ] },
+            { type: "brief", title: "Exercise 3 of 3 · Olympiad format", items: [
+              "This is Use of English Task 2: complete the second sentence so that it means the same as the first one.",
+              "Use the word given — don't change it — and exactly the number of words in brackets.",
+              "Don't use short forms: write **do not**, not don't.",
+              "Type your answer and press **✓ Check**."
+            ] },
+            { type: "transform", items: [
+              { q: "I'm sorry that I pressed snooze five times.", word: "regret", before: "I", after: "snooze five times.", n: 3, accept: ["regret having pressed"] },
+              { q: "My sister always gets up at six, so early mornings are normal for her.", word: "used", before: "My sister", after: "up early.", n: 4, accept: ["is used to getting"] },
+              { q: "Don't forget to turn off the light before you go to sleep.", word: "remember", before: "", after: "the light before you go to sleep.", n: 4, accept: ["remember to turn off", "remember to switch off"] },
+              { q: "He said he hadn't fallen asleep in the lesson.", word: "denied", before: "He", after: "asleep in the lesson.", n: 3, accept: ["denied having fallen"] },
+              { q: "There's no point in buying an expensive alarm clock.", word: "worth", before: "It", after: "an expensive alarm clock.", n: 4, accept: ["is not worth buying"] },
+              { q: "I couldn't stop myself from pressing snooze again.", word: "help", before: "I", after: "snooze again.", n: 4, accept: ["could not help pressing"] }
+            ] }
+          ]
+        },
+        {
+          stage: "production", title: "Homework: Reading Task 2", minutes: 3, image: img("m10-lock-in"),
           blocks: [
             { type: "text", text: "🏠 **Homework:** one more real task — **Reading Task 2** from the Moscow municipal stage **2024/25**, a text about the Tsvetaeva apple pie. The same format as the alarm clock text: 10 gaps, 11 sentences A–K, one is extra." },
             { type: "brief", title: "The homework task · 15 minutes", items: [
@@ -184,7 +277,7 @@
           ]
         },
         {
-          stage: "feedback", title: "Check and discuss", minutes: 5, image: img("m01-queen"),
+          stage: "feedback", title: "Check and discuss", minutes: 3, image: img("m01-queen"),
           blocks: [
             { type: "brief", title: "Check the homework", items: [
               "Open the homework task and press **✓ Check answers** at the bottom.",
@@ -207,11 +300,13 @@
             { type: "list", title: "🌟 Today you learnt", items: [
               "Reading Task 2: a text with 10 gaps and 11 sentences A–K. One sentence is extra.",
               "Read the sentence before AND after the gap.",
-              "Hooks: reference words, linkers, repeated words, grammar."
+              "Hooks: reference words, linkers, repeated words, grammar.",
+              "Gerund or infinitive: after a preposition → -ing; want, decide, prove → to; remember, stop, try, regret — the meaning changes."
             ] },
             { type: "reveal", label: "🎟️ Exit ticket: name the four kinds of hooks", text: "Reference words (this, they…), linkers (however, so…), repeated words or synonyms, grammar (tense, singular / plural)." },
             { type: "links", title: "📝 Homework", items: [
-              { href: "#/t/p-r2-2425", label: "📖 Reading Task 2 · the Tsvetaeva apple pie · 2024/25", note: "15 minutes — step 5 of this lesson" },
+              { href: "#/t/p-r2-2425", label: "📖 Reading Task 2 · the Tsvetaeva apple pie · 2024/25", note: "15 minutes — step 6 of this lesson" },
+              { href: "#/grammar/t/b1-gerund-infinitive", label: "🧩 Grammar · Gerund or infinitive", note: "10 questions" },
               { href: "#/t/m-r1", label: "📖 Reading Task 1 · Municipal 2025/26", note: "20 minutes, like at the olympiad" },
               { href: "#/t/p-u3-2425", label: "🧱 Practice · Use of English Task 3 · 2024/25", note: "word formation" },
               { href: "#/t/p-u4-2425", label: "🏛️ Practice · Use of English Task 4 · 2024/25", note: "culture" },

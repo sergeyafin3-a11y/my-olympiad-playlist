@@ -135,6 +135,17 @@
     ".ls-brief .ls-ex{margin-top:8px;font-size:15px;line-height:1.45}",
     ".ls-walk ol{margin:10px 0 0;padding-left:22px}.ls-walk li{margin:10px 0;line-height:1.45}.ls-walk li .why{margin-top:4px;font-size:15px;color:var(--ink)}",
     ".ls-walk .ls-pgap{color:var(--c)}",
+    // Таблица-напоминание (герундий / инфинитив): колонки на широком экране, одна под другой на телефоне.
+    ".ls-vt{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px;margin-top:8px}",
+    ".ls-vt>div{padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.04);border-left:3px solid var(--c)}",
+    ".ls-vt b.h{display:block;margin-bottom:4px}.ls-vt ul{margin:0;padding-left:18px}.ls-vt li{margin:4px 0;line-height:1.4;font-size:15px}",
+    ".ls-vt .note{margin:6px 0 0;font-size:13px;color:var(--mute)}",
+    // Перефразирование в формате Use of English Task 2: поле ответа и проверка.
+    ".ls-tf{margin-top:10px;padding:14px;border-radius:14px;background:var(--card);border:1px solid var(--line)}",
+    ".ls-tf.right{border-color:var(--acc)}.ls-tf.wrong{border-color:var(--bad)}",
+    ".ls-tf .q{margin:0;line-height:1.45}.ls-tf .w{margin:8px 0 0;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--c)}",
+    ".ls-tf .s{margin:6px 0 0;line-height:2.1}.ls-tf input{width:220px;max-width:100%;font-size:16px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:#101010;color:var(--ink)}",
+    ".ls-tf .row{display:flex;gap:10px;align-items:center;margin-top:8px;flex-wrap:wrap}.ls-tf .why{font-size:15px}",
     ".ls-wopts{margin-top:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);font-size:15px;line-height:1.45}.ls-wopts p{margin:4px 0}"
   ].join("\n");
   document.head.appendChild(css);
@@ -157,6 +168,9 @@
   // Обложка урока в списке — та же картинка, маленьким квадратом (обрезка через CSS).
   function thumb(u) { return u; }
   function rich(s) { return esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>"); }
+  // Ответ перефразирования: без регистра, лишних пробелов и точки в конце; апостроф — любой.
+  function norm(s) { return String(s).toLowerCase().replace(/\u2019/g, "'").replace(/[.,!?;:"]/g, " ").replace(/\s+/g, " ").trim(); }
+  function matches(it, v) { return it.accept.some(function (a) { return norm(a) === norm(v); }); }
   // Пропуск [3] в тексте задания — как на бланке: «(3) ________».
   function gaps(html) { return html.replace(/\[(\d+)\]/g, '<span class="ls-pgap">($1) ________</span>'); }
 
@@ -242,6 +256,17 @@
         '<div class="ls-grid" aria-label="Answer table">' + cells + '</div></div>' +
         '<div class="ls-pclear"><button class="ghost" data-lspclear="' + key + '">↺ Clear the answers</button></div>';
     }
+    if (b.type === "vtable") return '<div class="ls-box"><h3>' + esc(b.title) + '</h3><div class="ls-vt">' + b.cols.map(function (c) {
+      return '<div><b class="h">' + esc(c.h) + '</b><ul>' + c.lines.map(function (x) { return '<li>' + rich(x) + '</li>'; }).join("") + '</ul>' + (c.note ? '<p class="note">' + rich(c.note) + '</p>' : '') + '</div>';
+    }).join("") + '</div></div>';
+    // Ответ виден только после «Check»: верный — зелёным, неверный — красным и с правильным ответом.
+    if (b.type === "transform") return b.items.map(function (it, n) {
+      var tg = game(key + ":" + n), val = tg.v || "", ok = tg.checked && matches(it, val);
+      return '<div class="ls-tf' + (tg.checked ? (ok ? ' right' : ' wrong') : '') + '"><p class="q"><b>' + (n + 1) + '.</b> ' + esc(it.q) + '</p><p class="w">' + esc(it.word) + '</p>' +
+        '<p class="s">' + (it.before ? esc(it.before) + ' ' : '') + '<input data-tfin="' + key + ':' + n + '" value="' + esc(val) + '" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Answer ' + (n + 1) + '"> ' + esc(it.after) + ' <small>(' + it.n + ' words)</small></p>' +
+        '<div class="row"><button class="ghost" data-tfcheck="' + key + ':' + n + '">✓ Check</button>' +
+        (tg.checked ? '<span class="why">' + (ok ? '✓ Right!' : '✗ Answer: <b>' + esc(it.accept[0]) + '</b>') + '</span>' : '') + '</div></div>';
+    }).join("");
     if (b.type === "brief") return '<div class="ls-brief"><h3>📋 ' + esc(b.title) + '</h3><p class="lbl">What to do</p><ol class="ls-ol">' +
       b.items.map(function (x) { return '<li>' + rich(x) + '</li>'; }).join("") + '</ol>' + (b.example ? '<p class="ls-ex"><b>Example:</b> ' + rich(b.example) + '</p>' : '') + '</div>';
     // Разбор пропуска по шагам: вопрос шага виден, ответ открывается по «Show», и только тогда — следующий шаг.
@@ -367,6 +392,7 @@
       A.keepScroll(A.render); return;
     }
     if (d.lscheck) { game(d.lscheck).checked = true; A.keepScroll(A.render); return; }
+    if (d.tfcheck) { game(d.tfcheck).checked = true; A.keepScroll(A.render); return; }
     if (d.lswalk) { var wg = game(d.lswalk); wg.n = (wg.n || 0) + 1; A.keepScroll(A.render); return; }
     // Стереть все буквы — со второго касания, как «Start over» на экране задания.
     if (d.lspclear) {
@@ -381,6 +407,14 @@
   // Страницу не перерисовываем — иначе пропал бы курсор; то же поле в таблице/тексте правим на месте.
   // Кириллица-двойник (экранная клавиатура в русской раскладке) — латиницей по виду.
   var CYR = { "\u0410": "A", "\u0412": "B", "\u0421": "C", "\u0415": "E", "\u041D": "H", "\u041A": "K" };
+  // Ответ перефразирования помним, пока урок открыт; страницу не перерисовываем — иначе пропал бы курсор.
+  document.addEventListener("input", function (e) {
+    var el = e.target; if (el.dataset && el.dataset.tfin != null) game(el.dataset.tfin).v = el.value;
+  });
+  document.addEventListener("keydown", function (e) {
+    var el = e.target; if (e.key !== "Enter" || !el.dataset || el.dataset.tfin == null) return;
+    var c = document.querySelector('[data-tfcheck="' + el.dataset.tfin + '"]'); if (c) c.click();
+  });
   document.addEventListener("input", function (e) {
     var el = e.target; if (!el.dataset || el.dataset.pin == null) return;
     var p = el.dataset.pin.split(":"), n = p.pop(), pk = p.join(":"), mine = sheetOf(pk);
