@@ -117,6 +117,7 @@
     // Настоящее задание — светлым листом, как бланк олимпиады: сразу видно, что это не упражнение, а оно самое.
     ".ls-paper{margin-top:12px;padding:16px;border-radius:6px;background:#FBF8F1;color:#1A1A1A;font-family:Georgia,'Times New Roman',serif;font-size:15px;line-height:1.55;box-shadow:0 8px 24px rgba(0,0,0,.35)}",
     ".ls-paper .src{font-family:inherit;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6B6457;border-bottom:1px solid #D9D2C3;padding-bottom:6px;margin-bottom:10px}",
+    ".ls-ptask{margin-top:16px;font-size:16px}",
     ".ls-paper p{margin:0 0 10px}.ls-paper .ins{font-weight:700}.ls-paper .ttl{font-weight:700;font-size:17px;text-align:center}",
     ".ls-paper .ls-popts{border-top:1px solid #D9D2C3;padding-top:10px;margin-top:4px}.ls-paper .ls-popts p{margin:0 0 7px}",
     ".ls-pgap{font-weight:700;color:#B3261E;white-space:nowrap}",
@@ -208,9 +209,11 @@
     h += '<div class="ls-steps" role="tablist" aria-label="Lesson steps">' + l.steps.map(function (x, j) {
       return '<button class="' + (j === i ? 'on' : j < i ? 'past' : '') + '" data-lsgo="' + l.id + ':' + j + '" role="tab" aria-selected="' + (j === i) + '">' + (j + 1) + ' · ' + esc(x.title) + '</button>';
     }).join("") + '</div>';
-    h += '<div class="ls-head"><h2>' + (STAGE[s.stage] || '') + ' ' + esc(s.title) + '</h2><span>Step ' + (i + 1) + ' of ' + l.steps.length + ' · ' + s.minutes + ' min</span></div>';
+    h += '<div class="ls-head"><h2>' + (STAGE[s.stage] || '') + ' ' + esc(s.title) + '</h2><span>Section ' + (i + 1) + ' of ' + l.steps.length + ' · ' + s.minutes + ' min</span></div>';
     if (s.image) h += '<div class="ls-photo"><img class="ls-hero" src="' + esc(s.image) + '" alt="" loading="lazy">' + (s.sticker ? '<span class="ls-sticker">' + esc(s.sticker) + '</span>' : '') + '</div>';
-    s.blocks.forEach(function (b, k) { h += block(l, i, k, b); });
+    // Задания раздела нумеруются по порядку — Task 1, Task 2…: учитель задаёт на дом «Section 5 → Task 3».
+    var tn = 0;
+    s.blocks.forEach(function (b, k) { h += block(l, i, k, b, b.type === "brief" || b.type === "paper" ? ++tn : 0); });
     h += '<div class="ls-nav">' + (i > 0 ? '<button class="ghost" data-lsgo="' + l.id + ':' + (i - 1) + '">← Back</button>' : '<span></span>') +
       (i < l.steps.length - 1 ? '<button class="bigplay" data-lsgo="' + l.id + ':' + (i + 1) + '">Next: ' + esc(l.steps[i + 1].title) + ' →</button>' : '<a class="ghost" href="#/lesson" style="text-decoration:none">Finish ✓</a>') + '</div>';
     return h + '</div>';
@@ -224,7 +227,7 @@
   // Сдвиг зависит от текста вопроса, а не только от номера: иначе место верного ответа шло бы по кругу.
   function seedOf(s) { var h = 0; for (var c = 0; c < s.length; c++) h = (h * 31 + s.charCodeAt(c)) % 9973; return h; }
 
-  function block(l, i, k, b) {
+  function block(l, i, k, b, num) {
     var key = l.id + ":" + i + ":" + k;
     if (b.type === "text") return '<p class="ls-text">' + rich(b.text) + '</p>';
     if (b.type === "list") return '<div class="ls-box"><h3>' + esc(b.title) + '</h3><ul class="ls-ol">' + b.items.map(function (x) { return '<li>' + rich(x) + '</li>'; }).join("") + '</ul></div>';
@@ -249,7 +252,7 @@
       };
       var cells = ""; for (var c = 1; c <= 10; c++) cells += '<span>' + c + '</span>';
       for (c = 1; c <= 10; c++) cells += '<span class="e">' + pin(c, "ls-cell") + '</span>';
-      return '<div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p class="ins">' + esc(src.instruction || src.intro) + '</p>' +
+      return (num ? '<h3 class="ls-ptask">📋 Task ' + num + ' · ' + esc(b.title || "The olympiad task") + '</h3>' : '') + '<div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p class="ins">' + esc(src.instruction || src.intro) + '</p>' +
         (src.textTitle ? '<p class="ttl">' + esc(src.textTitle) + '</p>' : '') +
         paras.map(function (x) { return '<p>' + esc(x).replace(/\[(\d+)\]/g, function (_, n) { return '<span class="ls-pgap">(' + n + ') ' + pin(n, "ls-pin") + '</span>'; }) + '</p>'; }).join("") +
         '<div class="ls-popts">' + src.opts.map(function (o) { return '<p><b>' + esc(o.k) + ')</b> ' + esc(o.t) + '</p>'; }).join("") + '</div>' +
@@ -268,7 +271,7 @@
         (tg.checked ? '<span class="why">' + (ok ? '✓ Right!' : '✗ Answer: <b>' + esc(it.accept[0]) + '</b>') + '</span>' : '') + '</div>' +
         (tg.checked && it.note ? '<p class="why">' + rich(it.note) + '</p>' : '') + '</div>';
     }).join("");
-    if (b.type === "brief") return '<div class="ls-brief"><h3>📋 ' + esc(b.title) + '</h3><p class="lbl">What to do</p><ol class="ls-ol">' +
+    if (b.type === "brief") return '<div class="ls-brief"><h3>📋 ' + (num ? 'Task ' + num + ' · ' : '') + esc(b.title) + '</h3><p class="lbl">What to do</p><ol class="ls-ol">' +
       b.items.map(function (x) { return '<li>' + rich(x) + '</li>'; }).join("") + '</ol>' + (b.example ? '<p class="ls-ex"><b>Example:</b> ' + rich(b.example) + '</p>' : '') + '</div>';
     // Разбор пропуска по шагам: вопрос шага виден, ответ открывается по «Show», и только тогда — следующий шаг.
     if (b.type === "walk") {

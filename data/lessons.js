@@ -66,7 +66,7 @@
           stage: "presentation", title: "Meet Reading Task 2", minutes: 8, image: img("m02-reading"),
           blocks: [
             { type: "text", text: "📄 **This is a real olympiad task** — Reading Task 2 from the Moscow municipal stage 2025/26, word for word. Your task at the olympiad has the same format. Look at it first: what do you see?" },
-            { type: "paper", task: "m-r2", source: "Real task · Moscow municipal stage 2025/26 · Reading · Task 2" },
+            { type: "paper", task: "m-r2", title: "Read the text and fill in the gaps", source: "Real task · Moscow municipal stage 2025/26 · Reading · Task 2" },
             { type: "list", title: "📋 What you have to do", items: [
               "The text has **10 gaps**: (1), (2) … (10). One sentence is missing from each gap.",
               "Under the text there are **11 sentences: A–K**.",
@@ -127,7 +127,7 @@
         {
           stage: "practice", title: "Practice: hooks", minutes: 8, image: img("m09-focus"),
           blocks: [
-            { type: "brief", title: "Exercise 1 of 3 · Hook hunt", items: [
+            { type: "brief", title: "Hook hunt", items: [
               "Read the short text below.",
               "Find **6 hooks**: words that point back (like **it**, **these**) and linkers (like **however**, **so**).",
               "Tap each hook. Green = right. If a word shakes, it is not a hook — try another one."
@@ -135,7 +135,7 @@
             { type: "hookhunt",
               text: "My grandmother never used an alarm clock. She woke up with the sun. But that was easy in a small village. Such a quiet life is rare today. Cities are noisy. They never really sleep. Therefore, most of us need an alarm.",
               hooks: ["She", "But", "that", "Such", "They", "Therefore"] },
-            { type: "brief", title: "Exercise 2 of 3 · Sort the hooks", items: [
+            { type: "brief", title: "Sort the hooks", items: [
               "Two of the four kinds of hooks: 👉 words that **point back** to something said before, and 🔗 words that **link ideas** (contrast, result, addition).",
               "Drag each word into the right box.",
               "On a phone or tablet: tap the word, then tap the box."
@@ -147,7 +147,7 @@
                 { t: "such", b: "ref" }, { t: "also", b: "link" }, { t: "these", b: "ref" }, { t: "therefore", b: "link" },
                 { t: "it", b: "ref" }, { t: "instead", b: "link" }
               ] },
-            { type: "brief", title: "Exercise 3 of 3 · Mini Task 2", items: [
+            { type: "brief", title: "Mini reading task", items: [
               "This is Reading Task 2, but small: a text with **3 gaps** and **4 sentences** (A–D). One sentence is extra.",
               "Drag one sentence into each gap (or tap the sentence, then tap the gap).",
               "For each gap, read the sentence before AND after it: find the hooks.",
@@ -207,7 +207,7 @@
                 "**to have done** — perfect infinitive: claimed **not to have been**, is said **to have had**"
               ], note: "Real answers from Use of English Task 2, Moscow municipal stage 2022/23–2025/26." }
             ] },
-            { type: "brief", title: "Exercise 1 of 3 · Find them in the task", items: [
+            { type: "brief", title: "Find them in the task", items: [
               "All the phrases below are from the alarm clock text or its sentences A–K.",
               "Drag each phrase into the right box: **-ing** or **infinitive** (to do or do).",
               "On a phone or tablet: tap the phrase, then tap the box."
@@ -220,7 +220,7 @@
                 { t: "instead of slipping back", b: "ing" }, { t: "help boost", b: "inf" }, { t: "If waking up feels like a struggle", b: "ing" },
                 { t: "To wind down at night", b: "inf" }
               ] },
-            { type: "brief", title: "Exercise 2 of 3 · -ing or to?", items: [
+            { type: "brief", title: "-ing or to?", items: [
               "Read the sentence and tap the right form.",
               "The first four sentences come from the alarm clock text and its sentences A–K.",
               "Read why: the rule is in the table above."
@@ -243,7 +243,7 @@
               { q: "I've given up ___ my phone as an alarm.", opts: ["using", "to use"], a: 0,
                 why: "**give up** + -ing — like enjoy, avoid, keep." }
             ] },
-            { type: "brief", title: "Exercise 3 of 3 · Olympiad format", items: [
+            { type: "brief", title: "Olympiad format", items: [
               "This is Use of English Task 2: complete the second sentence so that it means the same as the first one.",
               "Use the word given — don't change it — and exactly the number of words in brackets, **including the word given**.",
               "Don't use short forms: write **do not**, not don't.",

@@ -669,5 +669,30 @@ class GrammarInTheReadingLesson(unittest.TestCase):
         self.assertIn("b1-gerund-infinitive", (ROOT / "data" / "grammar" / "grammar-b1.js").read_text(encoding="utf-8"))
 
 
+class TasksHaveNumbers(unittest.TestCase):
+    """Учитель 24.10: домашнее задание она пишет коротко — «Lesson → урок → Section 5 → Task 3».
+    Поэтому на экране у каждого задания внутри раздела — свой номер, а шаг урока зовётся Section."""
+
+    def titles(self, step):
+        html = render_step("l2", step)
+        return re.findall(r"📋 (Task \d+ · [^<]+)<", html), html
+
+    def test_every_task_in_a_section_has_a_number(self):
+        t, html = self.titles(1)
+        self.assertEqual(t[0].split(" · ")[0], "Task 1", "настоящее задание в разделе 2 — Task 1")
+        self.assertLess(html.index("Task 1 ·"), html.index("ls-paper"))
+        self.assertIn("Section 2 of", html)
+        self.assertEqual([x.split(" · ")[0] for x in self.titles(3)[0]], ["Task 1", "Task 2", "Task 3"])
+        self.assertIn("Task 2 · Sort the hooks", self.titles(3)[0])
+        self.assertEqual([x.split(" · ")[0] for x in self.titles(4)[0]], ["Task 1", "Task 2", "Task 3"])
+        self.assertEqual([x.split(" · ")[0] for x in self.titles(5)[0]], ["Task 1"])
+
+    def test_no_old_exercise_labels(self):
+        src = (ROOT / "data" / "lessons.js").read_text(encoding="utf-8")
+        self.assertNotRegex(src, r"Exercise \d of \d")
+        # «Task 3 · Mini Task 2» путало бы номера: мини-задание названо иначе.
+        self.assertNotIn("Mini Task 2", src)
+
+
 if __name__ == "__main__":
     unittest.main()
