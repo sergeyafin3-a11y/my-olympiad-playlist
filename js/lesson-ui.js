@@ -21,7 +21,9 @@
   function points(n) { return n === 0 ? 4 : n <= 2 ? 3 : n <= 4 ? 2 : n <= 6 ? 1 : 0; }
   // Слова — как их считает жюри: заголовок и числа тоже слова, «didn't» и «well-known» — одно слово.
   function countWords(t) { return (String(t).match(/[A-Za-z0-9][A-Za-z0-9'\u2019-]*/g) || []).length; }
-  function wcLine(t, min, max, whole) { var n = countWords(t); return n + " word" + (n === 1 ? "" : "s") + " · opening: " + min + "–" + max + (whole ? " · whole story: " + whole : ""); }
+  function wcLine(t, min, max, label) { var n = countWords(t); return n + " word" + (n === 1 ? "" : "s") + " · " + (label || "aim") + ": " + min + "–" + max; }
+  // Минуты урока — без домашнего раздела (home): он делается дома и в 50 минут не входит.
+  function classMinutes(l) { return l.steps.reduce(function (a, s) { return a + (s.home ? 0 : s.minutes); }, 0); }
   // Ответы одного листа — только буквы A–K: испорченное хранилище не должно ни ломать лист, ни глотать ввод.
   function sheetOf(key) {
     var m = st.paper[key];
@@ -34,7 +36,7 @@
   var games = {};  // состояние игр в этой сессии (выбор, найденные слова, разложенные карточки)
   function game(k) { return games[k] || (games[k] = {}); }
   function blockOf(key) { var p = key.split(":"), l = byId(p[0]); return l && l.steps[+p[1]].blocks[+p[2]]; }
-  var STAGE = { "warm-up": "☕", "presentation": "💡", "practice": "✏️", "production": "🏆", "feedback": "🔍", "wrap-up": "🏁" };
+  var STAGE = { "warm-up": "☕", "presentation": "💡", "practice": "✏️", "production": "🏆", "feedback": "🔍", "wrap-up": "🏁", "homework": "🏠" };
 
   var css = document.createElement("style");
   css.textContent = [
@@ -215,7 +217,7 @@
       var dp = dateParts(l.date), isCur = l === cur, past = l.date < t && !isCur;
       var badge = isCur ? '<span class="ls-badge now">' + (l.date === t ? 'Today' : 'Next') + '</span>' : past ? '<span class="ls-badge done">✓ done</span>' : '<span class="ls-badge soon">soon</span>';
       h += '<a class="ls-card' + (isCur ? ' today' : '') + '" href="#/lesson/' + l.id + '">' + (l.cover ? '<img class="ls-thumb" src="' + esc(thumb(l.cover)) + '" alt="" loading="lazy">' : '<span class="ls-date"><b>' + dp[0] + '</b><small>' + dp[1] + '</small></span>') +
-        '<span><span class="ls-when">' + dp[0] + ' ' + dp[1] + (l.emoji ? ' · ' + l.emoji : '') + '</span><span class="ls-title">' + esc(l.title) + '</span><span class="ls-sub">' + (l.steps ? l.steps.length + ' steps · ' + l.steps.reduce(function (a, s) { return a + s.minutes; }, 0) + ' min' : (l.summary ? 'Summary and links' : 'Coming soon')) + '</span></span>' + badge + '</a>';
+        '<span><span class="ls-when">' + dp[0] + ' ' + dp[1] + (l.emoji ? ' · ' + l.emoji : '') + '</span><span class="ls-title">' + esc(l.title) + '</span><span class="ls-sub">' + (l.steps ? l.steps.length + ' steps · ' + classMinutes(l) + ' min' : (l.summary ? 'Summary and links' : 'Coming soon')) + '</span></span>' + badge + '</a>';
     });
     return h + '</div>';
   }
@@ -223,7 +225,7 @@
   function lesson(l) {
     var dp = dateParts(l.date);
     var h = '<div style="--c:' + COLOR + '"><a class="back" href="#/lesson">← Lessons</a>' +
-      '<div class="taskhead"><span class="sq" aria-hidden="true">🎓</span><div><span class="eyebrow">Lesson · ' + dp[0] + ' ' + dp[1] + (l.steps ? ' · ' + l.steps.reduce(function (a, s) { return a + s.minutes; }, 0) + ' min' : '') + '</span><h1>' + esc(l.title) + '</h1></div></div>';
+      '<div class="taskhead"><span class="sq" aria-hidden="true">🎓</span><div><span class="eyebrow">Lesson · ' + dp[0] + ' ' + dp[1] + (l.steps ? ' · ' + classMinutes(l) + ' min' : '') + '</span><h1>' + esc(l.title) + '</h1></div></div>';
     if (!l.steps) {
       if (l.cover) h += '<img class="ls-hero" src="' + esc(l.cover) + '" alt="" loading="lazy">';
       if (l.summary) h += '<p class="ls-text">' + rich(l.summary) + '</p>';
@@ -236,7 +238,7 @@
     h += '<div class="ls-steps" role="tablist" aria-label="Lesson steps">' + l.steps.map(function (x, j) {
       return '<button class="' + (j === i ? 'on' : j < i ? 'past' : '') + '" data-lsgo="' + l.id + ':' + j + '" role="tab" aria-selected="' + (j === i) + '">' + (j + 1) + ' · ' + esc(x.title) + '</button>';
     }).join("") + '</div>';
-    h += '<div class="ls-head"><h2>' + (STAGE[s.stage] || '') + ' ' + esc(s.title) + '</h2><span>Section ' + (i + 1) + ' of ' + l.steps.length + ' · ' + s.minutes + ' min</span></div>';
+    h += '<div class="ls-head"><h2>' + (STAGE[s.stage] || '') + ' ' + esc(s.title) + '</h2><span>Section ' + (i + 1) + ' of ' + l.steps.length + ' · ' + (s.home ? 'at home · ' : '') + s.minutes + ' min</span></div>';
     if (s.image) h += '<div class="ls-photo"><img class="ls-hero" src="' + esc(s.image) + '" alt="" loading="lazy">' + (s.sticker ? '<span class="ls-sticker">' + esc(s.sticker) + '</span>' : '') + '</div>';
     // Задания раздела нумеруются по порядку — Task 1, Task 2…: учитель задаёт на дом «Section 5 → Task 3».
     var tn = 0;
@@ -352,7 +354,7 @@
     if (b.type === "writebox") {
       var wm = notesOf(key), wt = wm.text != null ? wm.text : (b.start || "");
       return '<div class="ls-write"><textarea rows="9" data-lsnote="' + key + ':text" spellcheck="false" autocorrect="off" autocapitalize="sentences" placeholder="Start writing here…">' + esc(wt) + '</textarea>' +
-        '<div class="wc" data-wc="' + key + ':text" data-min="' + b.min + '" data-max="' + b.max + '" data-whole="' + esc(b.whole || "") + '">' + wcLine(wt, b.min, b.max, b.whole) + '</div></div>';
+        '<div class="wc" data-wc="' + key + ':text" data-min="' + b.min + '" data-max="' + b.max + '" data-label="' + esc(b.label || "") + '">' + wcLine(wt, b.min, b.max, b.label) + '</div></div>';
     }
     // Счётчик жюри: учитель отмечает ошибки, баллы — по шкале муниципального этапа.
     if (b.type === "counter") {
@@ -519,7 +521,7 @@
     var np = el.dataset.lsnote.split(":"), nf = np.pop();
     notesOf(np.join(":"))[nf] = el.value; save();
     var wc = document.querySelector('[data-wc="' + el.dataset.lsnote + '"]');
-    if (wc) wc.textContent = wcLine(el.value, wc.dataset.min, wc.dataset.max, wc.dataset.whole);
+    if (wc) wc.textContent = wcLine(el.value, wc.dataset.min, wc.dataset.max, wc.dataset.label);
   });
   // Ответ перефразирования помним, пока урок открыт; страницу не перерисовываем — иначе пропал бы курсор.
   document.addEventListener("input", function (e) {
