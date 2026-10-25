@@ -331,6 +331,9 @@
     // примитивно понятно, что на уроке, а что дома». На уроке всё — задание 2025/26 (Jim): разминка-скелет,
     // жюри, свой план, последний абзац. Дома — отдельный раздел (home: true, не в 50 минутах) — задание
     // 2024/25 (Anita): прокачка фраз, план, весь рассказ за 60 минут.
+    // Учитель 26.10: «не пиши комментарии — „реальное задание, 60 минут, 20 поинтов“: это я объясняю как учитель».
+    // Поэтому текстов-пояснений и «Today you learnt» нет; в рамках «What to do» — только что сделать. Всё, что
+    // говорит учитель, — в её шпаргалке.
     // Картинки — учителя (25.10, Pinterest), расставлены по смыслу.
     {
       id: "l3", date: "2026-10-26", title: "Writing: a story", emoji: "✍️", cover: img("m03-studying"),
@@ -357,7 +360,7 @@
               "What would you never **stop doing**, even if you were very busy?"
             ] },
             { type: "brief", title: "A story in the right order", items: [
-              "The six sentences of a short story are mixed up. It is a story for today's task — you will see it in Section 2.",
+              "The six sentences of a short story are mixed up.",
               "Put them in order: look for the hooks, like in Reading Task 2.",
               "Press **✓ Check** and explain each choice. Then tell the story in your own words."
             ] },
@@ -385,7 +388,6 @@
         {
           stage: "presentation", title: "The task and the recipe", minutes: 7, image: img("m14-smile-and-endure"),
           blocks: [
-            { type: "text", text: "📄 **This is the real Writing task** from the Moscow municipal stage 2025/26, word for word. At the olympiad you have **60 minutes** and can get up to **20 points**." },
             { type: "wpaper", task: "m-w1", source: "Real task · Moscow municipal stage 2025/26 · Writing" },
             { type: "vtable", title: "🧭 The recipe: a story in 4 paragraphs", cols: [
               { h: "📝 Title · 2–5 words", lines: ["It must fit the story — and make the reader curious.", "Example: **The Letter on the Table**"] },
@@ -399,7 +401,7 @@
               "**Time:** at first, then, a moment later, by the time, eventually, in the end.",
               "**Surprise:** Suddenly… · To his surprise… · Little did he know that…",
               "**Tenses:** Past Simple for events, Past Continuous for the background, Past Perfect for what happened before.",
-              "**Olympiad wow:** Hardly had he opened the door when… · Never had he seen such a house. · Not until he read the letter did he understand."
+              "**Strong structures:** Hardly had he opened the door when… · Never had he seen such a house. · Not until he read the letter did he understand."
             ] },
             { type: "vtable", title: "⚖️ How the jury scores: 5 criteria × 4 points", cols: [
               { h: "1️⃣ Task completion · 4", lines: [
@@ -429,7 +431,7 @@
           stage: "practice", title: "Mistakes and the jury", minutes: 14, image: img("m15-cards-say"),
           blocks: [
             { type: "brief", title: "Spot the mistake", items: [
-              "Each sentence has one mistake — the kind the jury takes points for.",
+              "Each sentence has one mistake.",
               "Tap the wrong word, then say the whole sentence correctly.",
               "Every sentence is also an idea for the story in Section 2. Which ideas would you use?"
             ] },
@@ -503,7 +505,7 @@
             { type: "brief", title: "Write the last paragraph", items: [
               "Write the last paragraph of your story: **60–80 words**.",
               "It must **end with** the given sentence, word for word: **Jim happened to see the letter and decided to book a ticket for the first train heading home.**",
-              "There is no spell-check here, just like at the olympiad: check your typing yourself."
+              "Check your typing yourself: there is no spell-check here."
             ] },
             { type: "writebox", min: 60, max: 80, label: "paragraph" },
             { type: "brief", title: "Show it to the jury", items: [
@@ -521,22 +523,15 @@
         {
           stage: "wrap-up", title: "Wrap-up", minutes: 2, image: img("m18-all-good"),
           blocks: [
-            { type: "list", title: "🌟 Today you learnt", items: [
-              "The jury counts mistakes: 0 → 4, 1–2 → 3, 3–4 → 2, 5–6 → 1, 7 or more → 0.",
-              "Task completion first: the given sentence, a title that fits, both things from the task.",
-              "A story that ends with a given sentence: plan backwards — everything leads to the last line."
-            ] },
             { type: "brief", title: "My three mistakes", items: [
               "Look at the jury counter.",
               "Name your three typical mistakes from today — and say how to avoid them."
-            ] },
-            { type: "text", text: "🏠 **Homework is in Section 7**: a new task, three steps." }
+            ] }
           ]
         },
         {
           stage: "homework", home: true, title: "Homework", minutes: 60, image: img("m19-too-blessed"),
           blocks: [
-            { type: "text", text: "🏠 **Homework:** a new task — the real Writing task from 2024/25. Do Tasks 1–3 in order." },
             { type: "wpaper", source: "Real task · Moscow municipal stage 2024/25 · Writing",
               intro: "You see the following notice in an English youth magazine and decide to send your story.",
               premise: "Stories Wanted. Write a story for our magazine. The story must begin with the sentence: Anita had just arrived at her house when she realized she didn't have her keys.",
@@ -544,7 +539,7 @@
               points: ["a neighbour", "a dog"],
               outro: "Write 200-250 words (the title is included in the word count)." },
             { type: "brief", title: "Upgrade the sentences", items: [
-              "Make each sentence sound like a strong olympiad story. Use the tool in capitals.",
+              "Make each sentence stronger. Use the tool in capitals.",
               "Type your version. We check them together at the next lesson."
             ] },
             { type: "upgrade", items: [
@@ -572,7 +567,7 @@
             { type: "brief", title: "Write the story", items: [
               "Write the whole story: **200–250 words**, the title on the first line.",
               "Start with the given sentence — it is already in the box. Include **a neighbour** and **a dog**.",
-              "Start the timer: **60 minutes**, like at the olympiad.",
+              "Start the timer: **60 minutes**.",
               "Before you finish, check every sentence for the mistakes from today's lesson."
             ] },
             { type: "timer", minutes: 60, label: "60 minutes for the story" },

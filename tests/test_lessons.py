@@ -758,8 +758,17 @@ class WritingLesson(unittest.TestCase):
         ids = [f["id"] for f in plan["fields"]]
         for f in ["relative", "house", "letter"]:
             self.assertIn(f, ids)
-        # Итог урока говорит, где домашнее.
-        self.assertIn("Section %d" % len(self.steps), json.dumps(self.steps[-2]["blocks"]))
+
+    def test_no_narration_on_screen(self):
+        # Учитель 26.10: «ты пишешь комментарии — „это реальное задание, у тебя 60 минут, 20 поинтов“. Тут не
+        # надо, это я должна объяснять как учитель». На экране — задания и материал, без пояснений: ни текстов-
+        # комментариев, ни «Today you learnt», ни «как на олимпиаде» в рамках «What to do».
+        blocks = [b for st in self.steps for b in st["blocks"]]
+        self.assertEqual([b["text"][:40] for b in blocks if b["type"] == "text"], [])
+        self.assertEqual([b["title"] for b in blocks if b["type"] == "list" and "learnt" in b["title"]], [])
+        talk = json.dumps([b for b in blocks if b["type"] in ("brief", "list")], ensure_ascii=False).lower()
+        for x in ["olympiad", "jury takes points", "just like", "20 points", "you will see it"]:
+            self.assertNotIn(x, talk)
 
     def test_the_teachers_pictures(self):
         # Учитель 25.10 прислала картинки к уроку (Pinterest); по смыслу: энергия — разминка, «улыбайся
