@@ -410,20 +410,20 @@
           blocks: [
             { type: "brief", title: "Spot the mistake", items: [
               "Each sentence has one mistake — the kind the jury takes points for.",
-              "Tap the wrong word.",
-              "Then say the whole sentence correctly."
+              "Tap the wrong word, then say the whole sentence correctly.",
+              "Every sentence is also an idea for the story in Section 2. Which ideas would you use?"
             ] },
             { type: "spot", items: [
-              { text: "She has lived in Moscow since three years.", at: 5, wrong: "since", right: "has lived in Moscow for three years", cat: "Grammar" },
-              { text: "He said me that the train was late.", at: 1, wrong: "said", right: "He told me", cat: "Vocabulary" },
-              { text: "We have arrived at the station two hours ago.", at: 1, wrong: "have", right: "We arrived at the station", cat: "Grammar" },
-              { text: "If I will see him tomorrow, I'll give him the letter.", at: 2, wrong: "will", right: "If I see him tomorrow", cat: "Grammar" },
-              { text: "Hardly had she closed the door than the phone rang.", at: 6, wrong: "than", right: "when the phone rang", cat: "Grammar" },
-              { text: "She suggested to go for a walk in the park.", at: 2, wrong: "to", right: "suggested going", cat: "Grammar" },
-              { text: "It was the most happiest day of my life.", at: 3, wrong: "most", right: "the happiest day", cat: "Grammar" },
-              { text: "She was so exciting about the trip that she couldn't sleep.", at: 3, wrong: "exciting", right: "so excited", cat: "Vocabulary" },
-              { text: "He recieved a strange letter from his uncle.", at: 1, wrong: "recieved", right: "received", cat: "Spelling and punctuation" },
-              { text: "Its the best story I have ever read.", at: 0, wrong: "Its", right: "It's the best story", cat: "Spelling and punctuation" }
+              { text: "Jim has lived in Canada since five years, far away from his family.", at: 5, wrong: "since", right: "has lived in Canada for five years", cat: "Grammar" },
+              { text: "His rich aunt said him that the house would one day be his.", at: 3, wrong: "said", right: "His rich aunt told him", cat: "Vocabulary" },
+              { text: "Aunt Margaret has bought the beautiful house by the sea forty years ago.", at: 2, wrong: "has", right: "Aunt Margaret bought the beautiful house", cat: "Grammar" },
+              { text: "If Jim will not come home, the house will go to strangers.", at: 2, wrong: "will", right: "If Jim does not come home", cat: "Grammar" },
+              { text: "Hardly had Jim opened the envelope than he recognised his grandmother's handwriting.", at: 6, wrong: "than", right: "when he recognised", cat: "Grammar" },
+              { text: "His lawyer suggested to sell the old house, but Jim refused.", at: 3, wrong: "to", right: "suggested selling the old house", cat: "Grammar" },
+              { text: "It was the most loveliest house Jim had ever seen.", at: 3, wrong: "most", right: "the loveliest house", cat: "Grammar" },
+              { text: "Jim was so boring in the big empty house that he started reading old letters.", at: 3, wrong: "boring", right: "so bored in the big empty house", cat: "Vocabulary" },
+              { text: "The letter was written by his rich uncle, who had dissapeared years before.", at: 10, wrong: "dissapeared", right: "disappeared", cat: "Spelling and punctuation" },
+              { text: "Its strange, but the house still smelled of his grandmother's cakes.", at: 0, wrong: "Its", right: "It's strange", cat: "Spelling and punctuation" }
             ] },
             { type: "brief", title: "Be the jury", items: [
               "Read the story below. It was written for the same task (2025/26).",
