@@ -17,6 +17,14 @@
     if (!m || typeof m !== "object" || Array.isArray(m)) m = st.notes[key] = {};
     return m;
   }
+  // Все ответы с этим началом ключа: "l3:2:" — раздел 3 урока l3, "l3:" — весь урок. Раздел, где остановились, остаётся.
+  function clearAnswers(prefix) {
+    [st.games, st.picked, st.notes, st.paper].forEach(function (o) {
+      Object.keys(o).forEach(function (k) { if (k.indexOf(prefix) === 0) delete o[k]; });
+    });
+    if (st.timer && st.timer.key && st.timer.key.indexOf(prefix) === 0) st.timer = null;
+    save();
+  }
   // Шкала жюри муниципального этапа (Writing, критерии 2–5): число ошибок → баллы.
   function points(n) { return n === 0 ? 4 : n <= 2 ? 3 : n <= 4 ? 2 : n <= 6 ? 1 : 0; }
   // Слова — как их считает жюри: заголовок и числа тоже слова, «didn't» и «well-known» — одно слово.
@@ -148,6 +156,7 @@
     ".ls-pin:focus,.ls-cell:focus{outline:2px solid #2EC4D6;outline-offset:0}",
     ".ls-pin.dup,.ls-cell.dup{background:#F6D5D2;color:#B3261E}",
     ".ls-pclear{margin-top:8px;display:flex;justify-content:flex-end}",
+    ".ls-clear{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:24px}.ls-clear button{font-size:13px;padding:6px 12px}",
     // «What to do» перед каждым упражнением: что сделать, по пунктам, и пример.
     ".ls-brief{margin-top:14px;padding:14px;border-radius:14px;background:rgba(255,214,102,.10);border:1px solid rgba(255,214,102,.55)}",
     ".ls-brief h3{font-size:16px;margin-bottom:4px}.ls-brief .lbl{margin:6px 0 0;font-size:13px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:.04em}",
@@ -261,6 +270,9 @@
     // Задания раздела нумеруются по порядку — Task 1, Task 2…: учитель задаёт на дом «Section 5 → Task 3».
     var tn = 0;
     s.blocks.forEach(function (b, k) { h += block(l, i, k, b, b.type === "brief" || b.type === "paper" ? ++tn : 0); });
+    // Учитель 26.10: «сейчас я себя проверяю, а завтра показываю экран ученице — ответы должны стереться».
+    h += '<div class="ls-clear"><button class="ghost" data-lsclear="' + l.id + ':' + i + ':">↺ Clear answers in this section</button>' +
+      '<button class="ghost" data-lsclear="' + l.id + ':">↺ Clear the whole lesson</button></div>';
     h += '<div class="ls-nav">' + (i > 0 ? '<button class="ghost" data-lsgo="' + l.id + ':' + (i - 1) + '">← Back</button>' : '<span></span>') +
       (i < l.steps.length - 1 ? '<button class="bigplay" data-lsgo="' + l.id + ':' + (i + 1) + '">Next: ' + esc(l.steps[i + 1].title) + ' →</button>' : '<a class="ghost" href="#/lesson" style="text-decoration:none">Finish ✓</a>') + '</div>';
     return h + '</div>';
@@ -520,6 +532,11 @@
     }
     if (d.lscount) { var cp = d.lscount.split(":"), cd = +cp.pop(), cc = cp.pop(), cgm = notesOf(cp.join(":")); cgm.n = cgm.n || {}; cgm.n[cc] = Math.max(0, (cgm.n[cc] || 0) + cd); save(); stay(); return; }
     if (d.lswalk) { var wg = game(d.lswalk); wg.n = (wg.n || 0) + 1; stay(); return; }
+    // Стереть ответы раздела ("l3:2:") или всего урока ("l3:") — со второго касания.
+    if (d.lsclear) {
+      if (!d.sure) { d.sure = 1; b.textContent = "Sure? Tap again"; return; }
+      clearAnswers(d.lsclear); stay(); return;
+    }
     // Стереть все буквы — со второго касания, как «Start over» на экране задания.
     if (d.lspclear) {
       if (!d.sure) { d.sure = 1; b.textContent = "Sure? Tap again to clear all letters"; return; }

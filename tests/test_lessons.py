@@ -206,11 +206,16 @@ def render_step(lesson_id, step, clicks=(), typed=(), with_store=False, events=(
         var btn = {dataset: ds, closest: function(sel){ return sel === "button" ? btn : null; }};
         handlers.forEach(function(h){ h({target: btn}); });
       });
+      var btns = {};
       JSON.parse(EVENTS).forEach(function(ev){
         var ds = {}; ds[ev[1]] = ev[2];
         if (ev[0] === "type") { var el = {dataset: ds, value: ev[3], tagName: "INPUT", classList: {contains: function(){ return false; }}};
                                 inputs.forEach(function(h){ h({target: el}); }); }
-        else { var btn = {dataset: ds, closest: function(sel){ return sel === "button" ? btn : null; }}; handlers.forEach(function(h){ h({target: btn}); }); }
+        else {
+          var id = ev[1] + "=" + ev[2], btn = btns[id];
+          if (!btn) { btn = btns[id] = {dataset: ds, textContent: ""}; btn.closest = function(sel){ return sel === "button" ? btn : null; }; }
+          handlers.forEach(function(h){ h({target: btn}); });
+        }
       });
       var html = window.App.routes.lesson(["lesson", "LID"]);
       WITH ? JSON.stringify({html: html, store: store}) : html;
@@ -625,6 +630,43 @@ class AnswersSurviveAReload(unittest.TestCase):
         again = render_step("l2", ti, init=self.saved(out))
         self.assertIn('value="%s"' % ans, again)
         self.assertIn('class="ls-tf right"', again)
+
+
+class ClearAnswers(unittest.TestCase):
+    """Учитель 26.10: «на каждой странице — кнопка „стереть ответы“: сейчас я себя проверяю, а завтра
+    показываю экран ученице — ответы должны стереться». Внизу каждого раздела — «стереть этот раздел»
+    и «стереть весь урок», обе со второго касания."""
+
+    def spot(self):
+        return run_js("""var l = L.filter(function(x){ return x.id === "l3"; })[0], out = null;
+          l.steps.forEach(function(s, i){ s.blocks.forEach(function(b, k){ if (b.type === "spot") out = [i, k, b.items[0].at]; }); }); return out;""")
+
+    def test_every_section_has_both_buttons(self):
+        n = run_js('return L.filter(function(x){ return x.id === "l3"; })[0].steps.length;')
+        for i in range(n):
+            html = render_step("l3", i)
+            self.assertIn('data-lsclear="l3:%d:"' % i, html)
+            self.assertIn('data-lsclear="l3:"', html)
+
+    def test_clear_this_section_asks_twice(self):
+        i, k, at = self.spot()
+        tap = ["click", "lsspot", "l3:%d:%d:0:%d" % (i, k, at)]
+        once = render_step("l3", i, events=[tap, ["click", "lsclear", "l3:%d:" % i]], with_store=True)
+        self.assertIn("correct it aloud", once["html"], "одно касание — ещё не стёрто")
+        twice = render_step("l3", i, events=[tap, ["click", "lsclear", "l3:%d:" % i], ["click", "lsclear", "l3:%d:" % i]], with_store=True)
+        self.assertNotIn("correct it aloud", twice["html"])
+        games = json.loads(twice["store"]["olymp-lessons"]).get("games", {})
+        self.assertEqual([g for g in games if g.startswith("l3:%d:" % i)], [])
+
+    def test_clear_the_whole_lesson_keeps_other_lessons(self):
+        i, k, at = self.spot()
+        ev = [["click", "lsspot", "l3:%d:%d:0:%d" % (i, k, at)], ["type", "lsnote", "l3:3:1:twist", "A fake letter"],
+              ["click", "lsclear", "l3:"], ["click", "lsclear", "l3:"]]
+        out = render_step("l3", i, events=ev, with_store=True, init={"paper": {"l2:1:1": {"3": "K"}}})
+        st = json.loads(out["store"]["olymp-lessons"])
+        left = [k2 for part in ("games", "picked", "notes", "paper") for k2 in st.get(part, {}) if k2.startswith("l3:")]
+        self.assertEqual(left, [])
+        self.assertEqual(st["paper"]["l2:1:1"], {"3": "K"}, "другие уроки не трогаем")
 
 
 class GrammarInTheReadingLesson(unittest.TestCase):
