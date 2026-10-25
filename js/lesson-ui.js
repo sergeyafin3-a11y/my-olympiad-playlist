@@ -10,6 +10,18 @@
   if (!st.step || typeof st.step !== "object") st.step = {};
   // Буквы, напечатанные в настоящем задании урока: "l2:1:1" → {"6": "D"}. Помнятся, пока ходим по шагам.
   if (!st.paper || typeof st.paper !== "object" || Array.isArray(st.paper)) st.paper = {};
+  // Записи ученицы в уроке (карта сюжета, свои версии фраз, абзац): "l3:5:1" → {text: "…"}. Помнятся между шагами.
+  if (!st.notes || typeof st.notes !== "object" || Array.isArray(st.notes)) st.notes = {};
+  function notesOf(key) {
+    var m = st.notes[key];
+    if (!m || typeof m !== "object" || Array.isArray(m)) m = st.notes[key] = {};
+    return m;
+  }
+  // Шкала жюри муниципального этапа (Writing, критерии 2–5): число ошибок → баллы.
+  function points(n) { return n === 0 ? 4 : n <= 2 ? 3 : n <= 4 ? 2 : n <= 6 ? 1 : 0; }
+  // Слова — как их считает жюри: заголовок и числа тоже слова, «didn't» и «well-known» — одно слово.
+  function countWords(t) { return (String(t).match(/[A-Za-z0-9][A-Za-z0-9'\u2019-]*/g) || []).length; }
+  function wcLine(t, min, max) { var n = countWords(t); return n + " word" + (n === 1 ? "" : "s") + " · aim: " + min + "–" + max; }
   // Ответы одного листа — только буквы A–K: испорченное хранилище не должно ни ломать лист, ни глотать ввод.
   function sheetOf(key) {
     var m = st.paper[key];
@@ -136,6 +148,21 @@
     ".ls-brief .ls-ex{margin-top:8px;font-size:15px;line-height:1.45}",
     ".ls-walk ol{margin:10px 0 0;padding-left:22px}.ls-walk li{margin:10px 0;line-height:1.45}.ls-walk li .why{margin-top:4px;font-size:15px;color:var(--ink)}",
     ".ls-walk .ls-pgap{color:var(--c)}",
+    // Writing: объявление «Stories Wanted» на листе, жюри, карта сюжета, окно для письма, счётчик ошибок.
+    ".ls-notice{border:2px solid #1A1A1A;border-radius:4px;padding:10px 12px;margin:8px 0 10px}.ls-notice .nt{display:block;text-align:center;font-size:17px;margin-bottom:4px}",
+    ".ls-paper ul{margin:0 0 10px;padding-left:22px}",
+    ".ls-jury{margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--card)}",
+    ".ls-jury .jr{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:6px 0}.ls-jury .jr b{flex:1 1 160px}",
+    ".ls-jury .jr button{min-width:38px;height:36px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--ink);font-weight:700;font-size:15px}",
+    ".ls-jury .jr button.on{background:var(--c);border-color:var(--c);color:#0B0B0B}.ls-jury .jr em{font-style:normal;font-weight:800;color:var(--acc);margin-left:4px}",
+    ".ls-jury .tot{margin-top:6px;font-weight:700}",
+    ".ls-verdict{margin-top:10px;padding:12px 14px;border-radius:12px;background:var(--card);border-left:3px solid var(--acc)}.ls-verdict ul{margin:4px 0 8px;padding-left:20px}.ls-verdict li{margin:4px 0;line-height:1.45}.ls-verdict s{color:var(--bad)}",
+    ".ls-map label{display:block;margin-top:10px;font-size:15px}",
+    ".ls-map textarea,.ls-tf textarea,.ls-write textarea{display:block;width:100%;box-sizing:border-box;margin-top:6px;font:16px/1.45 inherit;font-family:inherit;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:#101010;color:var(--ink)}",
+    ".ls-write{margin-top:12px}.ls-write .wc{margin-top:6px;font-size:14px;color:var(--mute)}",
+    ".ls-counter{margin-top:12px;padding:6px 14px;border-radius:14px;background:var(--card)}",
+    ".ls-counter .cr{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}.ls-counter .cr:last-child{border-bottom:0}",
+    ".ls-counter .cr b{flex:1 1 150px}.ls-counter .pts{font-weight:700}.ls-counter .btns{display:flex;gap:6px}.ls-counter .btns button{width:42px;height:38px;padding:0;font-size:20px}",
     // Таблица-напоминание (герундий / инфинитив): колонки на широком экране, одна под другой на телефоне.
     ".ls-vt{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px;margin-top:8px}",
     ".ls-vt>div{padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.04);border-left:3px solid var(--c)}",
@@ -271,6 +298,64 @@
         (tg.checked ? '<span class="why">' + (ok ? '✓ Right!' : '✗ Answer: <b>' + esc(it.accept[0]) + '</b>') + '</span>' : '') + '</div>' +
         (tg.checked && it.note ? '<p class="why">' + rich(it.note) + '</p>' : '') + '</div>';
     }).join("");
+    // Задание Writing — тоже светлым листом; объявление в рамке, заданная фраза — жирным.
+    if (b.type === "wpaper") {
+      var w = b.task ? taskById(b.task) : b;
+      if (!w) return "";
+      var dot = w.premise.indexOf(". "), head = dot > 0 ? w.premise.slice(0, dot) : "", rest = dot > 0 ? w.premise.slice(dot + 2) : w.premise;
+      return '<div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p>' + esc(w.intro) + '</p><div class="ls-notice">' +
+        (head ? '<b class="nt">' + esc(head) + '</b>' : '') + esc(rest).replace(/(sentence: )(.+)$/, '$1<b>$2</b>') + '</div>' +
+        '<p class="ins">' + esc(w.pointsLabel) + '</p><ul>' + w.points.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ul><p>' + esc(w.outro) + '</p></div>';
+    }
+    // Жюри: ученица ставит баллы сама; вердикт с ошибками — только по кнопке.
+    if (b.type === "jury") {
+      var jg = game(key), pick = jg.pick || {}, CR = [["task", "Task completion"], ["org", "Organisation"], ["lex", "Vocabulary"], ["gram", "Grammar"], ["spell", "Spelling and punctuation"]];
+      var mineSum = 0, all = true, jurySum = 0;
+      CR.forEach(function (c) { if (pick[c[0]] == null) all = false; else mineSum += pick[c[0]]; jurySum += b.score[c[0]]; });
+      var jh = '<div class="ls-paper"><p class="ttl">' + esc(b.title) + '</p>' + b.story.map(function (x) { return '<p>' + esc(x) + '</p>'; }).join("") + '</div>' +
+        '<div class="ls-jury">' + CR.map(function (c) {
+          return '<div class="jr"><b>' + c[1] + '</b><span>' + [0, 1, 2, 3, 4].map(function (v) {
+            return '<button class="' + (pick[c[0]] === v ? 'on' : '') + '" data-lsjury="' + key + ':' + c[0] + ':' + v + '">' + v + '</button>';
+          }).join(" ") + '</span>' + (jg.verdict ? '<em>Jury: ' + b.score[c[0]] + '</em>' : '') + '</div>';
+        }).join("") + (all ? '<p class="tot">Your score: ' + mineSum + ' / 20' + (jg.verdict ? ' · Jury: ' + jurySum + ' / 20' : '') + '</p>' : '') + '</div>';
+      if (!jg.verdict) return jh + '<div class="listen"><button class="bigplay" data-lsverdict="' + key + '">⚖️ Show the jury\'s verdict</button></div>';
+      return jh + CR.map(function (c) {
+        var ms = b.mistakes[c[0]] || [];
+        return '<div class="ls-verdict"><b>' + c[1] + ': ' + b.score[c[0]] + ' / 4</b>' + (ms.length ? '<ul>' + ms.map(function (m) {
+          return '<li>' + (typeof m === "string" ? esc(m) : '<s>' + esc(m.wrong) + '</s> → <b>' + esc(m.right) + '</b>' + (m.why ? ' — ' + esc(m.why) : '')) + '</li>';
+        }).join("") + '</ul>' : '<p class="why">No mistakes.</p>') + '</div>';
+      }).join("");
+    }
+    if (b.type === "storymap") {
+      var sm = notesOf(key);
+      return '<div class="ls-map">' + b.fields.map(function (f) {
+        return '<label><b>' + esc(f.label) + '</b><textarea rows="2" data-lsnote="' + key + ':' + f.id + '">' + esc(sm[f.id] || "") + '</textarea></label>';
+      }).join("") + '</div>';
+    }
+    // Своя версия — без автопроверки: правильных вариантов много, решает учитель; образец — по кнопке.
+    if (b.type === "upgrade") {
+      var um = notesOf(key);
+      return b.items.map(function (it, n) {
+        return '<div class="ls-tf"><p class="q"><b>' + (n + 1) + '.</b> ' + esc(it.plain) + '</p><p class="w">' + esc(it.tool) + '</p>' +
+          '<textarea rows="2" data-lsnote="' + key + ':' + n + '" spellcheck="false" placeholder="Your version…">' + esc(um[n] || "") + '</textarea>' +
+          '<div class="row">' + (game(key + ":" + n).model ? '<span class="why">💡 ' + esc(it.model) + '</span>' : '<button class="ghost" data-lsmodel="' + key + ':' + n + '">💡 One possible version</button>') + '</div></div>';
+      }).join("");
+    }
+    // Окно для письма — как на олимпиаде в тестирующей системе: без подсказок орфографии.
+    if (b.type === "writebox") {
+      var wm = notesOf(key), wt = wm.text != null ? wm.text : (b.start || "");
+      return '<div class="ls-write"><textarea rows="9" data-lsnote="' + key + ':text" spellcheck="false" autocorrect="off" autocapitalize="sentences" placeholder="Start writing here…">' + esc(wt) + '</textarea>' +
+        '<div class="wc" data-wc="' + key + ':text" data-min="' + b.min + '" data-max="' + b.max + '">' + wcLine(wt, b.min, b.max) + '</div></div>';
+    }
+    // Счётчик жюри: учитель отмечает ошибки, баллы — по шкале муниципального этапа.
+    if (b.type === "counter") {
+      var cn = game(key).n || {}, ctot = 0;
+      return '<div class="ls-counter">' + b.crits.map(function (c) {
+        var n = cn[c.id] || 0, p = points(n); ctot += p;
+        return '<div class="cr"><b>' + esc(c.t) + '</b> <span class="pts">' + n + ' mistake' + (n === 1 ? '' : 's') + ' → ' + p + ' point' + (p === 1 ? '' : 's') + '</span>' +
+          '<span class="btns"><button class="ghost" data-lscount="' + key + ':' + c.id + ':-1" aria-label="One mistake less">−</button><button class="ghost" data-lscount="' + key + ':' + c.id + ':1" aria-label="One more mistake">+</button></span></div>';
+      }).join("") + '<p class="tot"><b>Criteria 2–5: ' + ctot + ' / ' + b.crits.length * 4 + '</b></p></div>';
+    }
     if (b.type === "brief") return '<div class="ls-brief"><h3>📋 ' + (num ? 'Task ' + num + ' · ' : '') + esc(b.title) + '</h3><p class="lbl">What to do</p><ol class="ls-ol">' +
       b.items.map(function (x) { return '<li>' + rich(x) + '</li>'; }).join("") + '</ol>' + (b.example ? '<p class="ls-ex"><b>Example:</b> ' + rich(b.example) + '</p>' : '') + '</div>';
     // Разбор пропуска по шагам: вопрос шага виден, ответ открывается по «Show», и только тогда — следующий шаг.
@@ -397,6 +482,10 @@
     }
     if (d.lscheck) { game(d.lscheck).checked = true; A.keepScroll(A.render); return; }
     if (d.tfcheck) { game(d.tfcheck).checked = true; A.keepScroll(A.render); return; }
+    if (d.lsjury) { var jp = d.lsjury.split(":"), jv = +jp.pop(), jc = jp.pop(), jgm = game(jp.join(":")); jgm.pick = jgm.pick || {}; jgm.pick[jc] = jv; A.keepScroll(A.render); return; }
+    if (d.lsverdict) { game(d.lsverdict).verdict = true; A.keepScroll(A.render); return; }
+    if (d.lsmodel) { game(d.lsmodel).model = true; A.keepScroll(A.render); return; }
+    if (d.lscount) { var cp = d.lscount.split(":"), cd = +cp.pop(), cc = cp.pop(), cgm = game(cp.join(":")); cgm.n = cgm.n || {}; cgm.n[cc] = Math.max(0, (cgm.n[cc] || 0) + cd); A.keepScroll(A.render); return; }
     if (d.lswalk) { var wg = game(d.lswalk); wg.n = (wg.n || 0) + 1; A.keepScroll(A.render); return; }
     // Стереть все буквы — со второго касания, как «Start over» на экране задания.
     if (d.lspclear) {
@@ -411,6 +500,14 @@
   // Страницу не перерисовываем — иначе пропал бы курсор; то же поле в таблице/тексте правим на месте.
   // Кириллица-двойник (экранная клавиатура в русской раскладке) — латиницей по виду.
   var CYR = { "\u0410": "A", "\u0412": "B", "\u0421": "C", "\u0415": "E", "\u041D": "H", "\u041A": "K" };
+  // Записи ученицы сохраняем сразу; у окна для письма — счётчик слов на месте, без перерисовки (курсор не прыгает).
+  document.addEventListener("input", function (e) {
+    var el = e.target; if (!el.dataset || el.dataset.lsnote == null) return;
+    var np = el.dataset.lsnote.split(":"), nf = np.pop();
+    notesOf(np.join(":"))[nf] = el.value; save();
+    var wc = document.querySelector('[data-wc="' + el.dataset.lsnote + '"]');
+    if (wc) wc.textContent = wcLine(el.value, wc.dataset.min, wc.dataset.max);
+  });
   // Ответ перефразирования помним, пока урок открыт; страницу не перерисовываем — иначе пропал бы курсор.
   document.addEventListener("input", function (e) {
     // Исправила ответ — старый ✓/✗ уже не про него: до нового «Check» поле снова не проверено.

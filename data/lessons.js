@@ -317,8 +317,210 @@
         }
       ]
     },
-    { id: "l3", date: "2026-10-26", title: "Writing: a story", emoji: "✍️", cover: img("m03-studying"),
-      aims: ["How a story is checked: the five criteria.", "Plan a story that ends with a given sentence.", "Useful words for telling a story."] },
+    // Учитель 25.10: «урок, где я как учитель незаменима», а не повторяла то, с чем ученица разберётся сама.
+    // Writing на олимпиаде судят по числу ошибок (0 → 4, 1–2 → 3, 3–4 → 2, 5–6 → 1, 7+ → 0), и считать их
+    // может только учитель: поэтому урок — про жюри, план, прокачку фраз и письмо с разбором. Warm-up — на
+    // ридинге (порядок предложений по крючкам) и герундии / инфинитиве прошлого урока. Рассказ для жюри —
+    // наш, учебный: в нём нет одного пункта задания и спрятаны ошибки по критериям (ключ — в score/mistakes).
+    // Картинки шагов — временные, из прошлых уроков: учитель ищет свои.
+    {
+      id: "l3", date: "2026-10-26", title: "Writing: a story", emoji: "✍️", cover: img("m03-studying"),
+      aims: [
+        "🗣️ Warm up: -ing or to? and a story in the right order.",
+        "⚖️ Be the jury: score a story like the real jury.",
+        "✍️ Plan, upgrade and write — and count your mistakes."
+      ],
+      steps: [
+        {
+          stage: "warm-up", title: "Warm-up", minutes: 8, image: img("m05-you-can"),
+          blocks: [
+            { type: "brief", title: "Talk: -ing or to?", items: [
+              "Answer each question in a full sentence.",
+              "Use the verb pattern from the question: **avoid doing**, **decided to**…"
+            ] },
+            { type: "talk", items: [
+              "What do you usually **avoid doing** the night before an exam? Why?",
+              "What have you **decided to** change this school year?",
+              "What do you **regret not doing** last summer?",
+              "What do you **remember doing** on your first day at school?",
+              "What are you **looking forward to** this winter?",
+              "What would you never **stop doing**, even if you were very busy?"
+            ] },
+            { type: "brief", title: "A story in the right order", items: [
+              "The six sentences of a short story are mixed up.",
+              "Put them in order: look for the hooks, like in Reading Task 2.",
+              "Press **✓ Check**. Then tell the story in your own words."
+            ] },
+            { type: "gapfill",
+              text: "[1] [2] [3] [4] [5] [6]",
+              cards: [
+                { k: "A", t: "Feeling his way along the wall, he finally found a torch in the kitchen drawer." },
+                { k: "B", t: "Inside it was a letter in his grandfather's handwriting." },
+                { k: "C", t: "Tom had always hated the dark, and that night the lights went off at exactly midnight." },
+                { k: "D", t: "He never told anyone what the letter said — but from that night on, he was no longer afraid of the dark." },
+                { k: "E", t: "However, when he switched it on, the light fell on something he had never seen before: a small wooden box." },
+                { k: "F", t: "Hardly had he read the first line when the lights came back on." }
+              ],
+              key: { "1": "C", "2": "A", "3": "E", "4": "B", "5": "F", "6": "D" },
+              why: {
+                "1": "C opens the story: who (Tom), when (that night) and the problem (the dark).",
+                "2": "A: \"Feeling his way along the wall\" — because the lights went off.",
+                "3": "E: \"when he switched IT on\" — it = the torch.",
+                "4": "B: \"Inside IT\" — it = the small wooden box.",
+                "5": "F: \"the first line\" — of the letter. Hardly had … when = at that very moment.",
+                "6": "D: the ending goes back to the beginning — \"that night\", \"afraid of the dark\"."
+              } }
+          ]
+        },
+        {
+          stage: "presentation", title: "The real task and the jury", minutes: 5, image: img("m01-queen"),
+          blocks: [
+            { type: "text", text: "📄 **This is the real Writing task** from the Moscow municipal stage 2025/26, word for word. At the olympiad you have **60 minutes** and can get up to **20 points**." },
+            { type: "wpaper", task: "m-w1", source: "Real task · Moscow municipal stage 2025/26 · Writing" },
+            { type: "list", title: "📋 What you have to do", items: [
+              "Write a story for the magazine: **200–250 words**. The title counts too.",
+              "The story must **end with** the given sentence, word for word.",
+              "Give it a **title** that fits the story.",
+              "Include **a rich relative** and **a beautiful house**.",
+              "Then check every sentence: mistakes cost points."
+            ] },
+            { type: "vtable", title: "⚖️ How the jury scores: 5 criteria × 4 points", cols: [
+              { h: "1️⃣ Task completion · 4", lines: [
+                "4 things: the given sentence, a title that fits, a rich relative, a beautiful house.",
+                "Each missing thing = −1 point.",
+                "**0 here = 0 for the whole story.**"
+              ] },
+              { h: "2️⃣ Organisation · 4", lines: ["A logical plot, correct linking words, paragraphs."] },
+              { h: "3️⃣ Vocabulary · 4", lines: ["Wrong words and word combinations."] },
+              { h: "4️⃣ Grammar · 4", lines: ["Grammar mistakes. The same rule broken twice counts once."] },
+              { h: "5️⃣ Spelling and punctuation · 4", lines: ["Typos count too!"] },
+              { h: "📉 Mistakes → points (criteria 2–5)", lines: [
+                "0 mistakes → 4", "1–2 mistakes → 3", "3–4 mistakes → 2", "5–6 mistakes → 1", "7 or more → 0"
+              ], note: "Fewer than 180 words = 0 for the whole story. More than 275 words: only the first 250 words are checked." }
+            ] }
+          ]
+        },
+        {
+          stage: "practice", title: "Be the jury", minutes: 10, image: img("m04-smort"),
+          blocks: [
+            { type: "brief", title: "Be the jury", items: [
+              "Read the story below. It was written for the same task (2025/26).",
+              "Give it points for each criterion: tap 0–4.",
+              "Then press **⚖️ Show the jury's verdict** and compare."
+            ] },
+            { type: "jury", title: "The Uncle Nobody Talked About",
+              story: [
+                "Jim had lived in London for three years, and he hadn't been home once. He worked in a small café, shared a tiny flat with two other students and didn't knew anybody in the city. He was too busy to call his parents, and they were too proud to call him.",
+                "One rainy evening a man in an expensive coat came into the café and ordered a coffee. He said Jim that he was looking for \"a young man called Jim Parker\". Jim was shocked: the man was his uncle Robert, a rich buisnessman who had left the family twenty years before.",
+                "However, Robert told him a story nobody in the family had ever told Jim. Years ago he and Jim's father had had a terrible argument about money. Since then they didn't speak. \"If I would have called him earlier, everything would be different,\" Robert said quietly. It was a wierd feeling to see this proud man so sad.",
+                "Before leaving, Robert gave Jim an envelope. \"Give this to your father,\" he said. \"I wrote it last week, but I am too proud to send it.\" Jim put it on the table and went outside to make a photo of the rainy street for his mother. When he came back, the envelope had fallen on the floor and opened. Jim happened to see the letter and decided to book a ticket for the first train heading home."
+              ],
+              score: { task: 3, org: 3, lex: 3, gram: 2, spell: 3 },
+              mistakes: {
+                task: ["There is no beautiful house: one of the four things from the task is missing."],
+                org: [{ wrong: "However, Robert told him", right: "Then Robert told him", why: "however shows contrast, but there is no contrast here." }],
+                lex: [
+                  { wrong: "He said Jim that", right: "He told Jim that", why: "say something, but tell somebody." },
+                  { wrong: "make a photo", right: "take a photo", why: "we take photos." }
+                ],
+                gram: [
+                  { wrong: "didn't knew", right: "didn't know", why: "after did / didn't — the base form." },
+                  { wrong: "Since then they didn't speak", right: "Since then they hadn't spoken", why: "since + a perfect tense; in a story about the past — Past Perfect." },
+                  { wrong: "If I would have called", right: "If I had called", why: "third conditional: if + Past Perfect." }
+                ],
+                spell: [
+                  { wrong: "buisnessman", right: "businessman" },
+                  { wrong: "wierd", right: "weird" }
+                ]
+              } }
+          ]
+        },
+        {
+          stage: "practice", title: "Plan together", minutes: 7, image: img("m08-brain"),
+          blocks: [
+            { type: "text", text: "🗺️ Now a new story: the real task from 2024/25. Before writing, we plan." },
+            { type: "wpaper", source: "Real task · Moscow municipal stage 2024/25 · Writing",
+              intro: "You see the following notice in an English youth magazine and decide to send your story.",
+              premise: "Stories Wanted. Write a story for our magazine. The story must begin with the sentence: Anita had just arrived at her house when she realized she didn't have her keys.",
+              pointsLabel: "The story must have a title and must include:",
+              points: ["a neighbour", "a dog"],
+              outro: "Write 200-250 words (the title is included in the word count)." },
+            { type: "brief", title: "Plan the story", items: [
+              "Your story must **begin** with the sentence above.",
+              "Fill in the story map: a short note in each box.",
+              "Plan 4–5 paragraphs: the opening → the problem → the twist → the ending.",
+              "Be ready to change your plan if a better idea comes!"
+            ] },
+            { type: "storymap", fields: [
+              { id: "title", label: "📝 Title" },
+              { id: "who", label: "👤 Anita: who is she? (age, job, character)" },
+              { id: "problem", label: "🧩 The problem: why are the keys so important today?" },
+              { id: "neighbour", label: "🏠 The neighbour: who is it? Does he or she help?" },
+              { id: "dog", label: "🐕 The dog: whose dog is it and what does it do?" },
+              { id: "twist", label: "⚡ The twist: what does nobody expect?" },
+              { id: "ending", label: "🏁 The ending: how does it all end?" }
+            ] }
+          ]
+        },
+        {
+          stage: "practice", title: "Upgrade studio", minutes: 8, image: img("m06-succeed"),
+          blocks: [
+            { type: "brief", title: "Upgrade the sentences", items: [
+              "Make each sentence sound like a strong olympiad story. Use the tool in capitals.",
+              "Type your version.",
+              "Then press **💡 One possible version** and compare. Yours can be even better!"
+            ] },
+            { type: "upgrade", items: [
+              { plain: "She was very scared.", tool: "a stronger word", model: "She was terrified." },
+              { plain: "She came home. Then she saw that the door was open.", tool: "Past Perfect + when", model: "She had just come home when she saw that the door was open." },
+              { plain: "As soon as she opened the door, the dog started barking.", tool: "Hardly had … when", model: "Hardly had she opened the door when the dog started barking." },
+              { plain: "She looked out of the window and saw her neighbour.", tool: "a clause with -ing", model: "Looking out of the window, she saw her neighbour." },
+              { plain: "She had left the keys at work. She was very sorry about it.", tool: "regret + having done", model: "She regretted having left the keys at work." },
+              { plain: "The dog was very clever. It found the keys in five minutes.", tool: "so … that", model: "The dog was so clever that it found the keys in five minutes." },
+              { plain: "She didn't want to wake the baby, so she walked very quietly.", tool: "avoid + -ing", model: "She tiptoed past the door to avoid waking the baby." }
+            ] }
+          ]
+        },
+        {
+          stage: "production", title: "Write and get feedback", minutes: 10, image: img("m10-lock-in"),
+          blocks: [
+            { type: "brief", title: "Write the opening", items: [
+              "Start with the given sentence: it is already in the box.",
+              "Write the first paragraph: **60–80 words**. Use your plan and your upgraded sentences.",
+              "There is no spell-check here, just like at the olympiad: check your typing yourself."
+            ] },
+            { type: "writebox", start: "Anita had just arrived at her house when she realized she didn't have her keys.", min: 60, max: 80 },
+            { type: "brief", title: "Read it to the jury", items: [
+              "Read your paragraph aloud.",
+              "The jury counts the mistakes for each criterion — and you see your points."
+            ] },
+            { type: "counter", crits: [
+              { id: "org", t: "Organisation" },
+              { id: "lex", t: "Vocabulary" },
+              { id: "gram", t: "Grammar" },
+              { id: "spell", t: "Spelling and punctuation" }
+            ] }
+          ]
+        },
+        {
+          stage: "wrap-up", title: "Wrap-up and homework", minutes: 2, image: img("m12-proud"),
+          blocks: [
+            { type: "list", title: "🌟 Today you learnt", items: [
+              "The jury counts mistakes: 0 → 4, 1–2 → 3, 3–4 → 2, 5–6 → 1, 7 or more → 0.",
+              "Task completion first: the given sentence, a title that fits, both things from the task.",
+              "Upgrade tools: Past Perfect, Hardly had … when, -ing clauses, regret having done, so … that."
+            ] },
+            { type: "brief", title: "My three mistakes", items: [
+              "Look at the jury counter.",
+              "Name your three typical mistakes from today — and say how to avoid them."
+            ] },
+            { type: "links", title: "📝 Homework", items: [
+              { href: "#/t/m-w1", label: "✍️ Writing · Story · Municipal 2025/26", note: "60 minutes, 200–250 words, no spell-check" }
+            ] }
+          ]
+        }
+      ]
+    },
     { id: "l4", date: "2026-11-02", title: "Writing: an essay on a quotation · Culture", emoji: "📚", cover: img("m04-smort"),
       aims: ["How to comment on a quotation.", "Examples from history and literature.", "Use of English Task 4: culture."] },
     { id: "l5", date: "2026-11-09", title: "Mock exam: review", emoji: "📝", cover: img("m05-you-can"),
