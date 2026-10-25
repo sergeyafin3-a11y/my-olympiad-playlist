@@ -327,7 +327,7 @@
     // не выводятся: ученица ищет и объясняет, учитель ведёт и подтверждает по своей шпаргалке.
     // Ревью PR 41: на дом — не задание 2025/26 (рассказ для жюри написан по нему, и его можно было бы сдать,
     // исправив разобранные ошибки), а своя история про Аниту из раздела 6 — целиком, 200–250 слов.
-    // Картинки — учителя (25.10, Pinterest), расставлены по смыслу; для «Upgrade studio» своей пока нет — временная.
+    // Картинки — учителя (25.10, Pinterest), расставлены по смыслу.
     {
       id: "l3", date: "2026-10-26", title: "Writing: a story", emoji: "✍️", cover: img("m03-studying"),
       aims: [
@@ -485,7 +485,7 @@
           ]
         },
         {
-          stage: "practice", title: "Upgrade studio", minutes: 8, image: img("m06-succeed"),
+          stage: "practice", title: "Upgrade studio", minutes: 8, image: img("m19-too-blessed"),
           blocks: [
             { type: "brief", title: "Upgrade the sentences", items: [
               "Make each sentence sound like a strong olympiad story. Use the tool in capitals.",
