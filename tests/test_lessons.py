@@ -732,7 +732,7 @@ class WritingLesson(unittest.TestCase):
         self.assertEqual(len(set(imgs)), len(imgs))
 
     def test_every_task_says_what_to_do(self):
-        games = ["talk", "gapfill", "jury", "storymap", "upgrade", "writebox", "counter", "task"]
+        games = ["talk", "gapfill", "jury", "storymap", "upgrade", "writebox", "counter", "task", "spot"]
         bad = []
         for i, st in enumerate(self.steps):
             seen = False
@@ -768,6 +768,26 @@ class WritingLesson(unittest.TestCase):
         jury = json.dumps([b for b in self.steps[i]["blocks"] if b["type"] == "vtable"], ensure_ascii=False)
         for x in ["0 mistakes", "7 or more", "180", "275", "0 for the whole story"]:
             self.assertIn(x, jury)
+
+    def test_spot_the_mistake(self):
+        # Учитель 25.10: «добавь задание „найди ошибку“ — это очень важно». Перед рассказом для жюри:
+        # предложения с одной ошибкой того рода, за который жюри снимает баллы. На экране — только
+        # критерий; исправление ученица говорит вслух, ключ у учителя.
+        i, k, b = self.find("spot")[0]
+        self.assertLess(i, self.find("jury")[0][0] + 1)
+        self.assertGreaterEqual(len(b["items"]), 8)
+        for it in b["items"]:
+            w = it["text"].split(" ")
+            self.assertEqual(re.sub(r"[.,!?]", "", w[it["at"]]), it["wrong"], it["text"])
+            self.assertIn(it["cat"], ["Grammar", "Vocabulary", "Spelling and punctuation"])
+            self.assertTrue(it["right"])
+        key = "l3:%d:%d" % (i, k)
+        it = b["items"][0]
+        miss = render_step("l3", i, events=[["click", "lsspot", key + ":0:%d" % ((it["at"] + 1) % len(it["text"].split(" ")))]])
+        self.assertNotIn("mistake — correct it", miss)
+        hit = render_step("l3", i, events=[["click", "lsspot", key + ":0:%d" % it["at"]]])
+        self.assertIn(it["cat"] + " mistake — correct it aloud", hit)
+        self.assertNotIn(it["right"], hit.replace(it["text"], ""), "исправление — у учителя")
 
     def test_the_story_for_the_jury(self):
         i, k, j = self.find("jury")[0]

@@ -323,6 +323,13 @@
       if (!jg.verdict) return jh + '<div class="listen"><button class="bigplay" data-lsverdict="' + key + '">⚖️ Show the jury\'s verdict</button></div>';
       return jh + '<div class="ls-verdict"><b>🔎 Now find every mistake in the story — and correct it.</b></div>';
     }
+    // «Найди ошибку»: нашла — слово зачёркнуто и назван критерий жюри; исправление — вслух, ключ у учителя.
+    if (b.type === "spot") return b.items.map(function (it, n) {
+      var pg = game(key + ":" + n), pw = it.text.split(" ");
+      return '<div class="ls-game"><div class="ls-sent">' + pw.map(function (w, j) {
+        return '<button class="w' + (pg.done && j === it.at ? ' bin' : pg.miss === j ? ' miss' : '') + '" data-lsspot="' + key + ':' + n + ':' + j + '"' + (pg.done ? ' disabled' : '') + '>' + esc(w) + '</button>';
+      }).join("") + '</div>' + (pg.done ? '<p class="why">✏️ ' + esc(it.cat) + ' mistake — correct it aloud.</p>' : '') + '</div>';
+    }).join("");
     if (b.type === "storymap") {
       var sm = notesOf(key);
       return '<div class="ls-map">' + b.fields.map(function (f) {
@@ -482,6 +489,11 @@
     if (d.tfcheck) { game(d.tfcheck).checked = true; A.keepScroll(A.render); return; }
     if (d.lsjury) { var jp = d.lsjury.split(":"), jv = +jp.pop(), jc = jp.pop(), jgm = game(jp.join(":")); jgm.pick = jgm.pick || {}; jgm.pick[jc] = jv; A.keepScroll(A.render); return; }
     if (d.lsverdict) { game(d.lsverdict).verdict = true; A.keepScroll(A.render); return; }
+    if (d.lsspot) {
+      var spp = d.lsspot.split(":"), spj = +spp.pop(), spn = +spp.pop(), spk = spp.join(":"), spg = game(spk + ":" + spn);
+      if (spj === blockOf(spk).items[spn].at) { spg.done = true; spg.miss = null; } else spg.miss = spj;
+      A.keepScroll(A.render); return;
+    }
     if (d.lscount) { var cp = d.lscount.split(":"), cd = +cp.pop(), cc = cp.pop(), cgm = game(cp.join(":")); cgm.n = cgm.n || {}; cgm.n[cc] = Math.max(0, (cgm.n[cc] || 0) + cd); A.keepScroll(A.render); return; }
     if (d.lswalk) { var wg = game(d.lswalk); wg.n = (wg.n || 0) + 1; A.keepScroll(A.render); return; }
     // Стереть все буквы — со второго касания, как «Start over» на экране задания.
