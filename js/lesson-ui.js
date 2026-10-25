@@ -21,7 +21,7 @@
   function points(n) { return n === 0 ? 4 : n <= 2 ? 3 : n <= 4 ? 2 : n <= 6 ? 1 : 0; }
   // Слова — как их считает жюри: заголовок и числа тоже слова, «didn't» и «well-known» — одно слово.
   function countWords(t) { return (String(t).match(/[A-Za-z0-9][A-Za-z0-9'\u2019-]*/g) || []).length; }
-  function wcLine(t, min, max) { var n = countWords(t); return n + " word" + (n === 1 ? "" : "s") + " · aim: " + min + "–" + max; }
+  function wcLine(t, min, max, whole) { var n = countWords(t); return n + " word" + (n === 1 ? "" : "s") + " · opening: " + min + "–" + max + (whole ? " · whole story: " + whole : ""); }
   // Ответы одного листа — только буквы A–K: испорченное хранилище не должно ни ломать лист, ни глотать ввод.
   function sheetOf(key) {
     var m = st.paper[key];
@@ -158,7 +158,7 @@
     ".ls-jury .tot{margin-top:6px;font-weight:700}",
     ".ls-verdict{margin-top:10px;padding:12px 14px;border-radius:12px;background:var(--card);border-left:3px solid var(--acc)}.ls-verdict ul{margin:4px 0 8px;padding-left:20px}.ls-verdict li{margin:4px 0;line-height:1.45}.ls-verdict s{color:var(--bad)}",
     ".ls-map label{display:block;margin-top:10px;font-size:15px}",
-    ".ls-map textarea,.ls-tf textarea,.ls-write textarea{display:block;width:100%;box-sizing:border-box;margin-top:6px;font:16px/1.45 inherit;font-family:inherit;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:#101010;color:var(--ink)}",
+    ".ls-map textarea,.ls-tf textarea,.ls-write textarea{display:block;width:100%;box-sizing:border-box;margin-top:6px;font-size:16px;line-height:1.45;font-family:inherit;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:#101010;color:var(--ink)}",
     ".ls-write{margin-top:12px}.ls-write .wc{margin-top:6px;font-size:14px;color:var(--mute)}",
     ".ls-counter{margin-top:12px;padding:6px 14px;border-radius:14px;background:var(--card)}",
     ".ls-counter .cr{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}.ls-counter .cr:last-child{border-bottom:0}",
@@ -310,10 +310,13 @@
     // Жюри: ученица ставит баллы сама; по кнопке — баллы жюри и сколько ошибок. Какие именно — ищут
     // с учителем: учитель 25.10 — «чтобы без меня никак»; исправления у неё, на экране их нет.
     if (b.type === "jury") {
-      var jg = game(key), pick = jg.pick || {}, CR = [["task", "Task completion"], ["org", "Organisation"], ["lex", "Vocabulary"], ["gram", "Grammar"], ["spell", "Spelling and punctuation"]];
+      // Баллы ученицы и открытый вердикт — в записях урока: переживают перезагрузку страницы на звонке.
+      var jg = notesOf(key), pick = jg.pick || {}, CR = [["task", "Task completion"], ["org", "Organisation"], ["lex", "Vocabulary"], ["gram", "Grammar"], ["spell", "Spelling and punctuation"]];
       var mineSum = 0, all = true, jurySum = 0;
       var found = function (c) { var n = (b.mistakes[c] || []).length; return c === "task" ? n + (n === 1 ? " thing" : " things") + " missing" : n + " mistake" + (n === 1 ? "" : "s"); };
       CR.forEach(function (c) { if (pick[c[0]] == null) all = false; else mineSum += pick[c[0]]; jurySum += b.score[c[0]]; });
+      // «0 за содержание = 0 за всю работу» — как на предыдущем слайде.
+      if (pick.task === 0) mineSum = 0;
       var jh = '<div class="ls-paper"><p class="ttl">' + esc(b.title) + '</p>' + b.story.map(function (x) { return '<p>' + esc(x) + '</p>'; }).join("") + '</div>' +
         '<div class="ls-jury">' + CR.map(function (c) {
           return '<div class="jr"><b>' + c[1] + '</b><span>' + [0, 1, 2, 3, 4].map(function (v) {
@@ -349,16 +352,16 @@
     if (b.type === "writebox") {
       var wm = notesOf(key), wt = wm.text != null ? wm.text : (b.start || "");
       return '<div class="ls-write"><textarea rows="9" data-lsnote="' + key + ':text" spellcheck="false" autocorrect="off" autocapitalize="sentences" placeholder="Start writing here…">' + esc(wt) + '</textarea>' +
-        '<div class="wc" data-wc="' + key + ':text" data-min="' + b.min + '" data-max="' + b.max + '">' + wcLine(wt, b.min, b.max) + '</div></div>';
+        '<div class="wc" data-wc="' + key + ':text" data-min="' + b.min + '" data-max="' + b.max + '" data-whole="' + esc(b.whole || "") + '">' + wcLine(wt, b.min, b.max, b.whole) + '</div></div>';
     }
     // Счётчик жюри: учитель отмечает ошибки, баллы — по шкале муниципального этапа.
     if (b.type === "counter") {
-      var cn = game(key).n || {}, ctot = 0;
+      var cn = notesOf(key).n || {}, ctot = 0;
       return '<div class="ls-counter">' + b.crits.map(function (c) {
         var n = cn[c.id] || 0, p = points(n); ctot += p;
         return '<div class="cr"><b>' + esc(c.t) + '</b> <span class="pts">' + n + ' mistake' + (n === 1 ? '' : 's') + ' → ' + p + ' point' + (p === 1 ? '' : 's') + '</span>' +
           '<span class="btns"><button class="ghost" data-lscount="' + key + ':' + c.id + ':-1" aria-label="One mistake less">−</button><button class="ghost" data-lscount="' + key + ':' + c.id + ':1" aria-label="One more mistake">+</button></span></div>';
-      }).join("") + '<p class="tot"><b>Criteria 2–5: ' + ctot + ' / ' + b.crits.length * 4 + '</b></p></div>';
+      }).join("") + '<p class="tot"><b>Criteria 2–5: ' + ctot + ' / ' + b.crits.length * 4 + '</b> <button class="ghost" data-lscreset="' + key + '">↺ Start again</button></p></div>';
     }
     if (b.type === "brief") return '<div class="ls-brief"><h3>📋 ' + (num ? 'Task ' + num + ' · ' : '') + esc(b.title) + '</h3><p class="lbl">What to do</p><ol class="ls-ol">' +
       b.items.map(function (x) { return '<li>' + rich(x) + '</li>'; }).join("") + '</ol>' + (b.example ? '<p class="ls-ex"><b>Example:</b> ' + rich(b.example) + '</p>' : '') + '</div>';
@@ -487,14 +490,15 @@
     }
     if (d.lscheck) { game(d.lscheck).checked = true; A.keepScroll(A.render); return; }
     if (d.tfcheck) { game(d.tfcheck).checked = true; A.keepScroll(A.render); return; }
-    if (d.lsjury) { var jp = d.lsjury.split(":"), jv = +jp.pop(), jc = jp.pop(), jgm = game(jp.join(":")); jgm.pick = jgm.pick || {}; jgm.pick[jc] = jv; A.keepScroll(A.render); return; }
-    if (d.lsverdict) { game(d.lsverdict).verdict = true; A.keepScroll(A.render); return; }
+    if (d.lsjury) { var jp = d.lsjury.split(":"), jv = +jp.pop(), jc = jp.pop(), jgm = notesOf(jp.join(":")); jgm.pick = jgm.pick || {}; jgm.pick[jc] = jv; save(); A.keepScroll(A.render); return; }
+    if (d.lsverdict) { notesOf(d.lsverdict).verdict = true; save(); A.keepScroll(A.render); return; }
+    if (d.lscreset) { notesOf(d.lscreset).n = {}; save(); A.keepScroll(A.render); return; }
     if (d.lsspot) {
       var spp = d.lsspot.split(":"), spj = +spp.pop(), spn = +spp.pop(), spk = spp.join(":"), spg = game(spk + ":" + spn);
       if (spj === blockOf(spk).items[spn].at) { spg.done = true; spg.miss = null; } else spg.miss = spj;
       A.keepScroll(A.render); return;
     }
-    if (d.lscount) { var cp = d.lscount.split(":"), cd = +cp.pop(), cc = cp.pop(), cgm = game(cp.join(":")); cgm.n = cgm.n || {}; cgm.n[cc] = Math.max(0, (cgm.n[cc] || 0) + cd); A.keepScroll(A.render); return; }
+    if (d.lscount) { var cp = d.lscount.split(":"), cd = +cp.pop(), cc = cp.pop(), cgm = notesOf(cp.join(":")); cgm.n = cgm.n || {}; cgm.n[cc] = Math.max(0, (cgm.n[cc] || 0) + cd); save(); A.keepScroll(A.render); return; }
     if (d.lswalk) { var wg = game(d.lswalk); wg.n = (wg.n || 0) + 1; A.keepScroll(A.render); return; }
     // Стереть все буквы — со второго касания, как «Start over» на экране задания.
     if (d.lspclear) {
@@ -515,7 +519,7 @@
     var np = el.dataset.lsnote.split(":"), nf = np.pop();
     notesOf(np.join(":"))[nf] = el.value; save();
     var wc = document.querySelector('[data-wc="' + el.dataset.lsnote + '"]');
-    if (wc) wc.textContent = wcLine(el.value, wc.dataset.min, wc.dataset.max);
+    if (wc) wc.textContent = wcLine(el.value, wc.dataset.min, wc.dataset.max, wc.dataset.whole);
   });
   // Ответ перефразирования помним, пока урок открыт; страницу не перерисовываем — иначе пропал бы курсор.
   document.addEventListener("input", function (e) {

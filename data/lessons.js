@@ -325,11 +325,13 @@
     // Учитель 25.10, вдогонку: «чтобы я не просто читала то, что на экране, — чтобы без меня никак». Поэтому ключи
     // (порядок истории и почему, ошибки рассказа, образцы фраз) лежат в данных для учителя и тестов, но на экран
     // не выводятся: ученица ищет и объясняет, учитель ведёт и подтверждает по своей шпаргалке.
+    // Ревью PR 41: на дом — не задание 2025/26 (рассказ для жюри написан по нему, и его можно было бы сдать,
+    // исправив разобранные ошибки), а своя история про Аниту из раздела 6 — целиком, 200–250 слов.
     // Картинки шагов — временные, из прошлых уроков: учитель ищет свои.
     {
       id: "l3", date: "2026-10-26", title: "Writing: a story", emoji: "✍️", cover: img("m03-studying"),
       aims: [
-        "🗣️ Warm up: -ing or to? and a story in the right order.",
+        "🗣️ Warm up: -ing or to? And a story in the right order.",
         "⚖️ Be the jury: score a story like the real jury.",
         "✍️ Plan, upgrade and write — and count your mistakes."
       ],
@@ -361,7 +363,7 @@
                 { k: "B", t: "Inside it was a letter in his grandfather's handwriting." },
                 { k: "C", t: "Tom had always hated the dark, and that night the lights went off at exactly midnight." },
                 { k: "D", t: "He never told anyone what the letter said — but from that night on, he was no longer afraid of the dark." },
-                { k: "E", t: "However, when he switched it on, the light fell on something he had never seen before: a small wooden box." },
+                { k: "E", t: "When he switched it on, the light fell on something he had never seen before: a small wooden box." },
                 { k: "F", t: "Hardly had he read the first line when the lights came back on." }
               ],
               key: { "1": "C", "2": "A", "3": "E", "4": "B", "5": "F", "6": "D" },
@@ -430,9 +432,9 @@
             ] },
             { type: "jury", title: "The Uncle Nobody Talked About",
               story: [
-                "Jim had lived in London for three years, and he hadn't been home once. He worked in a small café, shared a tiny flat with two other students and didn't knew anybody in the city. He was too busy to call his parents, and they were too proud to call him.",
-                "One rainy evening a man in an expensive coat came into the café and ordered a coffee. He said Jim that he was looking for \"a young man called Jim Parker\". Jim was shocked: the man was his uncle Robert, a rich buisnessman who had left the family twenty years before.",
-                "However, Robert told him a story nobody in the family had ever told Jim. Years ago he and Jim's father had had a terrible argument about money. Since then they didn't speak. \"If I would have called him earlier, everything would be different,\" Robert said quietly. It was a wierd feeling to see this proud man so sad.",
+                "Jim had lived in London for three years, and he hadn't been home once. He worked in a small café, shared a tiny flat with two students and didn't knew anybody in the city. He was too busy to call his parents, and they were too proud to call him.",
+                "One evening a man in an expensive coat came into the café and ordered a coffee. He said Jim that he was looking for \"a young man called Jim Parker\". \"I'm your uncle Robert,\" he added. Jim was shocked: he had heard about his father's rich brother, a buisnessman who had left the family twenty years before.",
+                "However, Robert told him a story nobody in the family had ever told Jim. Many years earlier, he and Jim's father had had a terrible argument about money. Since then they didn't speak. \"If I would have called him earlier, everything would be different,\" Robert said quietly. It was a wierd feeling to see this proud man so sad.",
                 "Before leaving, Robert gave Jim an envelope. \"Give this to your father,\" he said. \"I wrote it last week, but I am too proud to send it.\" Jim put it on the table and went outside to make a photo of the rainy street for his mother. When he came back, the envelope had fallen on the floor and opened. Jim happened to see the letter and decided to book a ticket for the first train heading home."
               ],
               score: { task: 3, org: 3, lex: 3, gram: 2, spell: 3 },
@@ -446,7 +448,7 @@
                 gram: [
                   { wrong: "didn't knew", right: "didn't know", why: "after did / didn't — the base form." },
                   { wrong: "Since then they didn't speak", right: "Since then they hadn't spoken", why: "since + a perfect tense; in a story about the past — Past Perfect." },
-                  { wrong: "If I would have called", right: "If I had called", why: "third conditional: if + Past Perfect." }
+                  { wrong: "If I would have called", right: "If I had called", why: "an if-clause about the past: if + Past Perfect, never would have." }
                 ],
                 spell: [
                   { wrong: "buisnessman", right: "businessman" },
@@ -509,10 +511,10 @@
               "Write the first paragraph: **60–80 words**. Use your plan and your upgraded sentences.",
               "There is no spell-check here, just like at the olympiad: check your typing yourself."
             ] },
-            { type: "writebox", start: "Anita had just arrived at her house when she realized she didn't have her keys.", min: 60, max: 80 },
-            { type: "brief", title: "Read it to the jury", items: [
-              "Read your paragraph aloud.",
-              "The jury counts the mistakes for each criterion — and you see your points."
+            { type: "writebox", start: "Anita had just arrived at her house when she realized she didn't have her keys.", min: 60, max: 80, whole: "200–250" },
+            { type: "brief", title: "Show it to the jury", items: [
+              "Paste your paragraph into the chat or share your screen.",
+              "The jury reads it and counts the mistakes for each criterion — and you see your points."
             ] },
             { type: "counter", crits: [
               { id: "org", t: "Organisation" },
@@ -534,8 +536,10 @@
               "Look at the jury counter.",
               "Name your three typical mistakes from today — and say how to avoid them."
             ] },
-            { type: "links", title: "📝 Homework", items: [
-              { href: "#/t/m-w1", label: "✍️ Writing · Story · Municipal 2025/26", note: "60 minutes, 200–250 words, no spell-check" }
+            { type: "list", title: "📝 Homework", items: [
+              "Finish your Anita story in **Section 6 → Task 1** (the same box): **200–250 words**.",
+              "Put the title on the first line. Include **a neighbour** and **a dog**.",
+              "Check every sentence for the mistakes from today's jury counter."
             ] }
           ]
         }
