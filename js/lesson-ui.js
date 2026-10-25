@@ -198,6 +198,19 @@
   // Обложка урока в списке — та же картинка, маленьким квадратом (обрезка через CSS).
   function thumb(u) { return u; }
   function rich(s) { return esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>"); }
+  // Перерисовка урока после нажатия — на том же месте. Учитель 26.10: «нажимаю на слово — вся страница едет
+  // вниз». Разметка заменяется целиком, и новая картинка раздела, пока не догрузилась (Safari), — без высоты:
+  // всё ниже неё съезжает. Пусть до загрузки держит высоту старой; прокрутку возвращаем как была.
+  function stay() {
+    var y = window.scrollY, old = document.querySelector(".ls-hero"), h0 = old ? old.offsetHeight : 0;
+    A.render();
+    var img = document.querySelector(".ls-hero");
+    if (img && h0 && !img.complete) {
+      img.style.height = h0 + "px";
+      img.addEventListener("load", function () { img.style.height = ""; });
+    }
+    window.scrollTo(0, y);
+  }
   // Ответ перефразирования: без регистра, лишних пробелов и точки в конце; апостроф — любой.
   function norm(s) { return String(s).toLowerCase().replace(/\u2019/g, "'").replace(/[.,!?;:"]/g, " ").replace(/\s+/g, " ").trim(); }
   function matches(it, v) { return it.accept.some(function (a) { return norm(a) === norm(v); }); }
@@ -239,7 +252,7 @@
       return '<button class="' + (j === i ? 'on' : j < i ? 'past' : '') + '" data-lsgo="' + l.id + ':' + j + '" role="tab" aria-selected="' + (j === i) + '">' + (j + 1) + ' · ' + esc(x.title) + '</button>';
     }).join("") + '</div>';
     h += '<div class="ls-head"><h2>' + (STAGE[s.stage] || '') + ' ' + esc(s.title) + '</h2><span>Section ' + (i + 1) + ' of ' + l.steps.length + ' · ' + (s.home ? 'at home · ' : '') + s.minutes + ' min</span></div>';
-    if (s.image) h += '<div class="ls-photo"><img class="ls-hero" src="' + esc(s.image) + '" alt="" loading="lazy">' + (s.sticker ? '<span class="ls-sticker">' + esc(s.sticker) + '</span>' : '') + '</div>';
+    if (s.image) h += '<div class="ls-photo"><img class="ls-hero" src="' + esc(s.image) + '" alt="">' + (s.sticker ? '<span class="ls-sticker">' + esc(s.sticker) + '</span>' : '') + '</div>';
     // Задания раздела нумеруются по порядку — Task 1, Task 2…: учитель задаёт на дом «Section 5 → Task 3».
     var tn = 0;
     s.blocks.forEach(function (b, k) { h += block(l, i, k, b, b.type === "brief" || b.type === "paper" ? ++tn : 0); });
@@ -475,41 +488,41 @@
     var b = e.target.closest("button"); if (!b) return;
     var d = b.dataset;
     if (d.lsgo) { var p = d.lsgo.split(":"); st.step[p[0]] = +p[1]; save(); A.render(); window.scrollTo(0, 0); return; }
-    if (d.lspick) { var q = d.lspick.split(":"), j = +q.pop(), pk = q.join(":"); if (picked[pk] == null) { picked[pk] = j; A.keepScroll(A.render); } return; }
-    if (d.lstot) { var t3 = d.lstot.split(":"), side = t3.pop(); game(t3.join(":")).side = side; A.keepScroll(A.render); return; }
+    if (d.lspick) { var q = d.lspick.split(":"), j = +q.pop(), pk = q.join(":"); if (picked[pk] == null) { picked[pk] = j; stay(); } return; }
+    if (d.lstot) { var t3 = d.lstot.split(":"), side = t3.pop(); game(t3.join(":")).side = side; stay(); return; }
     if (d.lsbin) {
       var bp = d.lsbin.split(":"), wi = +bp.pop(), ni = +bp.pop(), bk = bp.join(":"), bb = blockOf(bk), it = bb.items[ni], g = game(bk + ":" + ni);
       var clean = wi < 0 ? null : it.text.split(" ")[wi].replace(/[.,!?]/g, "");
       if ((wi < 0 && !it.extra) || (wi >= 0 && clean === it.extra)) { g.done = true; g.miss = null; } else g.miss = wi;
-      A.keepScroll(A.render); return;
+      stay(); return;
     }
     if (d.lshook) {
       var hp = d.lshook.split(":"), wj = +hp.pop(), hk = hp.join(":"), hb = blockOf(hk), hg = game(hk);
       var word = hb.text.split(" ")[wj].replace(/[.,!?]/g, "");
       hg.found = hg.found || {};
       if (hb.hooks.indexOf(word) >= 0) { hg.found[wj] = 1; hg.miss = null; } else hg.miss = wj;
-      A.keepScroll(A.render); return;
+      stay(); return;
     }
-    if (d.lscheck) { game(d.lscheck).checked = true; A.keepScroll(A.render); return; }
-    if (d.tfcheck) { game(d.tfcheck).checked = true; A.keepScroll(A.render); return; }
-    if (d.lsjury) { var jp = d.lsjury.split(":"), jv = +jp.pop(), jc = jp.pop(), jgm = notesOf(jp.join(":")); jgm.pick = jgm.pick || {}; jgm.pick[jc] = jv; save(); A.keepScroll(A.render); return; }
-    if (d.lsverdict) { notesOf(d.lsverdict).verdict = true; save(); A.keepScroll(A.render); return; }
-    if (d.lscreset) { notesOf(d.lscreset).n = {}; save(); A.keepScroll(A.render); return; }
+    if (d.lscheck) { game(d.lscheck).checked = true; stay(); return; }
+    if (d.tfcheck) { game(d.tfcheck).checked = true; stay(); return; }
+    if (d.lsjury) { var jp = d.lsjury.split(":"), jv = +jp.pop(), jc = jp.pop(), jgm = notesOf(jp.join(":")); jgm.pick = jgm.pick || {}; jgm.pick[jc] = jv; save(); stay(); return; }
+    if (d.lsverdict) { notesOf(d.lsverdict).verdict = true; save(); stay(); return; }
+    if (d.lscreset) { notesOf(d.lscreset).n = {}; save(); stay(); return; }
     if (d.lsspot) {
       var spp = d.lsspot.split(":"), spj = +spp.pop(), spn = +spp.pop(), spk = spp.join(":"), spg = game(spk + ":" + spn);
       if (spj === blockOf(spk).items[spn].at) { spg.done = true; spg.miss = null; } else spg.miss = spj;
-      A.keepScroll(A.render); return;
+      stay(); return;
     }
-    if (d.lscount) { var cp = d.lscount.split(":"), cd = +cp.pop(), cc = cp.pop(), cgm = notesOf(cp.join(":")); cgm.n = cgm.n || {}; cgm.n[cc] = Math.max(0, (cgm.n[cc] || 0) + cd); save(); A.keepScroll(A.render); return; }
-    if (d.lswalk) { var wg = game(d.lswalk); wg.n = (wg.n || 0) + 1; A.keepScroll(A.render); return; }
+    if (d.lscount) { var cp = d.lscount.split(":"), cd = +cp.pop(), cc = cp.pop(), cgm = notesOf(cp.join(":")); cgm.n = cgm.n || {}; cgm.n[cc] = Math.max(0, (cgm.n[cc] || 0) + cd); save(); stay(); return; }
+    if (d.lswalk) { var wg = game(d.lswalk); wg.n = (wg.n || 0) + 1; stay(); return; }
     // Стереть все буквы — со второго касания, как «Start over» на экране задания.
     if (d.lspclear) {
       if (!d.sure) { d.sure = 1; b.textContent = "Sure? Tap again to clear all letters"; return; }
-      delete st.paper[d.lspclear]; save(); A.keepScroll(A.render); return;
+      delete st.paper[d.lspclear]; save(); stay(); return;
     }
-    if (d.lsreset) { games[d.lsreset] = {}; A.keepScroll(A.render); return; }
+    if (d.lsreset) { games[d.lsreset] = {}; stay(); return; }
     if (d.lsword) { if (A.words && A.words.offer) A.words.offer(d.lsword, "Lesson"); return; }
-    if (d.lstimer) { st.timer = { key: d.lstimer, end: Date.now() + (+d.min) * 60000 }; save(); A.keepScroll(A.render); return; }
+    if (d.lstimer) { st.timer = { key: d.lstimer, end: Date.now() + (+d.min) * 60000 }; save(); stay(); return; }
   });
   // Буква в настоящем задании: только A–K, заглавная; в пропуске всегда одна буква — новая заменяет старую.
   // Страницу не перерисовываем — иначе пропал бы курсор; то же поле в таблице/тексте правим на месте.
@@ -582,7 +595,7 @@
       g.fill[target] = card;
     }
     g.sel = null;
-    A.keepScroll(A.render);
+    stay();
   }
   var drag = null;
   document.addEventListener("pointerdown", function (e) {
@@ -605,7 +618,7 @@
     if (d.ghost) d.ghost.remove();
     document.querySelectorAll(".over").forEach(function (x) { x.classList.remove("over"); });
     var cp = d.ref.split(":"), card = cp.pop(), key = cp.join(":"), g = game(key);
-    if (!d.moved) { g.miss = null; g.sel = g.sel === (blockOf(key).type === "sort" ? +card : card) ? null : (blockOf(key).type === "sort" ? +card : card); A.keepScroll(A.render); return; }
+    if (!d.moved) { g.miss = null; g.sel = g.sel === (blockOf(key).type === "sort" ? +card : card) ? null : (blockOf(key).type === "sort" ? +card : card); stay(); return; }
     var under = document.elementFromPoint(e.clientX, e.clientY), drop = under && under.closest("[data-lsdrop]");
     if (drop) place(d.ref, drop.dataset.lsdrop);
   });
@@ -618,7 +631,7 @@
     var drop = e.target.closest && e.target.closest("[data-lsdrop]"); if (!drop) return;
     var dp3 = drop.dataset.lsdrop.split(":"), target = dp3.pop(), key = dp3.join(":"), g = game(key), b = blockOf(key);
     if (g.sel != null) { place(key + ":" + g.sel, drop.dataset.lsdrop); return; }
-    if (b.type === "gapfill" && g.fill && g.fill[target]) { delete g.fill[target]; g.checked = false; A.keepScroll(A.render); }
+    if (b.type === "gapfill" && g.fill && g.fill[target]) { delete g.fill[target]; g.checked = false; stay(); }
   });
 
   // Ушли из уроков не через задание урока — обратная ссылка больше не нужна.

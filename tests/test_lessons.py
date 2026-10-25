@@ -555,6 +555,45 @@ class ReadingLessonIsClear(unittest.TestCase):
         self.assertIn("What to do", before)
 
 
+class PageDoesNotJump(unittest.TestCase):
+    """Учитель 26.10: «нажимаю на слово — вся страница едет вниз, приходится возвращаться к заданию».
+    Урок после нажатия перерисовывается целиком; картинка раздела в новой разметке на миг без высоты
+    (в Safari — пока не догрузилась), и всё ниже неё съезжает. Новая картинка держит высоту старой."""
+
+    def test_the_section_picture_keeps_its_height_after_a_tap(self):
+        ui = (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8")
+        self.assertNotIn("A.keepScroll(A.render)", ui, "все перерисовки урока — через stay()")
+        self.assertNotRegex(ui, r'class="ls-hero" src="\' \+ esc\(s\.image\) \+ \'" alt="" loading="lazy"')
+        js = """
+          var window = this, store = {}, handlers = [], renders = 0, scrolled = [];
+          var heroA = {offsetHeight: 300, complete: true, style: {}};
+          var heroB = {offsetHeight: 0, complete: false, style: {}, on: null, addEventListener: function(t, f){ heroB.on = f; }};
+          var el = function(){ return {textContent: "", appendChild: function(){}, classList: {add: function(){}, remove: function(){}}}; };
+          var document = {createElement: el, head: {appendChild: function(){}}, body: {appendChild: function(){}},
+            addEventListener: function(t, f){ if (t === "click") handlers.push(f); }, querySelectorAll: function(){ return []; },
+            querySelector: function(sel){ return sel === ".ls-hero" ? (renders ? heroB : heroA) : null; }};
+          var localStorage = {getItem: function(k){ return store[k] || null; }, setItem: function(k, v){ store[k] = v; }};
+          var location = {hash: "#/lesson/l3"};
+          window.addEventListener = function(){}; var setInterval = function(){}; window.scrollY = 700;
+          window.scrollTo = function(x, y){ scrolled.push(y); };
+          window.App = {esc: function(s){ return String(s); }, render: function(){ renders++; }, keepScroll: function(f){ f(); }, routes: {}, words: {}};
+        """ + (ROOT / "data" / "lessons.js").read_text(encoding="utf-8") + (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8") + """
+          renders = 0;  // модуль урока сам рисует страницу при загрузке — считаем с нажатия
+          var btn = {dataset: {lswalk: "l2:2:1"}, closest: function(sel){ return sel === "button" ? btn : null; }};
+          handlers.forEach(function(h){ h({target: btn}); });
+          var held = heroB.style.height;
+          if (heroB.on) heroB.on();
+          JSON.stringify({renders: renders, held: held, after: heroB.style.height, scrolled: scrolled});
+        """
+        out = subprocess.run(["osascript", "-l", "JavaScript", "-e", js], capture_output=True, text=True)
+        self.assertEqual(out.returncode, 0, out.stderr[-400:])
+        r = json.loads(out.stdout)
+        self.assertEqual(r["renders"], 1)
+        self.assertEqual(r["held"], "300px", "пока картинка грузится, она держит прежнюю высоту")
+        self.assertEqual(r["after"], "", "догрузилась — своя высота")
+        self.assertEqual(r["scrolled"], [700], "и прокрутка — на том же месте")
+
+
 class GrammarInTheReadingLesson(unittest.TestCase):
     """Учитель 23.10: «вставим в сегодняшний урок герундий и инфинитив — чтобы не отдельно,
     а переплеталось с ридингом. Заново не объяснять, только практика. И табличку: после каких
