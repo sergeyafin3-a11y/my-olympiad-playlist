@@ -738,7 +738,7 @@ class WritingLesson(unittest.TestCase):
         # и терпи» — правила жюри, кот с картой — жюри, доска с нитками — план, тетрадка — пишем, котёнок — итог.
         imgs = [st["image"].split("/")[-1] for st in self.steps]
         want = {0: "m13-positive-energy.jpg", 1: "m14-smile-and-endure.jpg", 2: "m15-cards-say.jpg",
-                3: "m16-plot-board.jpg", 5: "m17-writing-tears.jpg", 6: "m18-all-good.jpg"}
+                3: "m16-plot-board.jpg", 4: "m19-too-blessed.jpg", 5: "m17-writing-tears.jpg", 6: "m18-all-good.jpg"}
         self.assertEqual({i: imgs[i] for i in want}, want)
 
     def test_every_task_says_what_to_do(self):
