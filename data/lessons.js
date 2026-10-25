@@ -322,6 +322,9 @@
     // может только учитель: поэтому урок — про жюри, план, прокачку фраз и письмо с разбором. Warm-up — на
     // ридинге (порядок предложений по крючкам) и герундии / инфинитиве прошлого урока. Рассказ для жюри —
     // наш, учебный: в нём нет одного пункта задания и спрятаны ошибки по критериям (ключ — в score/mistakes).
+    // Учитель 25.10, вдогонку: «чтобы я не просто читала то, что на экране, — чтобы без меня никак». Поэтому ключи
+    // (порядок истории и почему, ошибки рассказа, образцы фраз) лежат в данных для учителя и тестов, но на экран
+    // не выводятся: ученица ищет и объясняет, учитель ведёт и подтверждает по своей шпаргалке.
     // Картинки шагов — временные, из прошлых уроков: учитель ищет свои.
     {
       id: "l3", date: "2026-10-26", title: "Writing: a story", emoji: "✍️", cover: img("m03-studying"),
@@ -332,7 +335,7 @@
       ],
       steps: [
         {
-          stage: "warm-up", title: "Warm-up", minutes: 8, image: img("m05-you-can"),
+          stage: "warm-up", title: "Warm-up", minutes: 7, image: img("m05-you-can"),
           blocks: [
             { type: "brief", title: "Talk: -ing or to?", items: [
               "Answer each question in a full sentence.",
@@ -349,9 +352,9 @@
             { type: "brief", title: "A story in the right order", items: [
               "The six sentences of a short story are mixed up.",
               "Put them in order: look for the hooks, like in Reading Task 2.",
-              "Press **✓ Check**. Then tell the story in your own words."
+              "Press **✓ Check** and explain each choice. Then tell the story in your own words."
             ] },
-            { type: "gapfill",
+            { type: "gapfill", askWhy: true,
               text: "[1] [2] [3] [4] [5] [6]",
               cards: [
                 { k: "A", t: "Feeling his way along the wall, he finally found a torch in the kitchen drawer." },
@@ -373,7 +376,7 @@
           ]
         },
         {
-          stage: "presentation", title: "The real task and the jury", minutes: 5, image: img("m01-queen"),
+          stage: "presentation", title: "The real task and the jury", minutes: 4, image: img("m01-queen"),
           blocks: [
             { type: "text", text: "📄 **This is the real Writing task** from the Moscow municipal stage 2025/26, word for word. At the olympiad you have **60 minutes** and can get up to **20 points**." },
             { type: "wpaper", task: "m-w1", source: "Real task · Moscow municipal stage 2025/26 · Writing" },
@@ -401,12 +404,29 @@
           ]
         },
         {
-          stage: "practice", title: "Be the jury", minutes: 10, image: img("m04-smort"),
+          stage: "practice", title: "Mistakes and the jury", minutes: 13, image: img("m04-smort"),
           blocks: [
+            { type: "brief", title: "Spot the mistake", items: [
+              "Each sentence has one mistake — the kind the jury takes points for.",
+              "Tap the wrong word.",
+              "Then say the whole sentence correctly."
+            ] },
+            { type: "spot", items: [
+              { text: "She has lived in Moscow since three years.", at: 5, wrong: "since", right: "has lived in Moscow for three years", cat: "Grammar" },
+              { text: "He said me that the train was late.", at: 1, wrong: "said", right: "He told me", cat: "Vocabulary" },
+              { text: "We have arrived at the station two hours ago.", at: 1, wrong: "have", right: "We arrived at the station", cat: "Grammar" },
+              { text: "If I will see him tomorrow, I'll give him the letter.", at: 2, wrong: "will", right: "If I see him tomorrow", cat: "Grammar" },
+              { text: "Hardly had she closed the door than the phone rang.", at: 6, wrong: "than", right: "when the phone rang", cat: "Grammar" },
+              { text: "She suggested to go for a walk in the park.", at: 2, wrong: "to", right: "suggested going", cat: "Grammar" },
+              { text: "It was the most happiest day of my life.", at: 3, wrong: "most", right: "the happiest day", cat: "Grammar" },
+              { text: "She was so exciting about the trip that she couldn't sleep.", at: 3, wrong: "exciting", right: "so excited", cat: "Vocabulary" },
+              { text: "He recieved a strange letter from his uncle.", at: 1, wrong: "recieved", right: "received", cat: "Spelling and punctuation" },
+              { text: "Its the best story I have ever read.", at: 0, wrong: "Its", right: "It's the best story", cat: "Spelling and punctuation" }
+            ] },
             { type: "brief", title: "Be the jury", items: [
               "Read the story below. It was written for the same task (2025/26).",
               "Give it points for each criterion: tap 0–4.",
-              "Then press **⚖️ Show the jury's verdict** and compare."
+              "Then press **⚖️ Show the jury's verdict**: compare the points and find every mistake."
             ] },
             { type: "jury", title: "The Uncle Nobody Talked About",
               story: [
@@ -436,7 +456,7 @@
           ]
         },
         {
-          stage: "practice", title: "Plan together", minutes: 7, image: img("m08-brain"),
+          stage: "practice", title: "Plan together", minutes: 6, image: img("m08-brain"),
           blocks: [
             { type: "text", text: "🗺️ Now a new story: the real task from 2024/25. Before writing, we plan." },
             { type: "wpaper", source: "Real task · Moscow municipal stage 2024/25 · Writing",
@@ -467,8 +487,8 @@
           blocks: [
             { type: "brief", title: "Upgrade the sentences", items: [
               "Make each sentence sound like a strong olympiad story. Use the tool in capitals.",
-              "Type your version.",
-              "Then press **💡 One possible version** and compare. Yours can be even better!"
+              "Type your version and read it aloud.",
+              "There are many good versions — discuss yours and make it even better."
             ] },
             { type: "upgrade", items: [
               { plain: "She was very scared.", tool: "a stronger word", model: "She was terrified." },

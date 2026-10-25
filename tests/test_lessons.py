@@ -732,7 +732,7 @@ class WritingLesson(unittest.TestCase):
         self.assertEqual(len(set(imgs)), len(imgs))
 
     def test_every_task_says_what_to_do(self):
-        games = ["talk", "gapfill", "jury", "storymap", "upgrade", "writebox", "counter", "task"]
+        games = ["talk", "gapfill", "jury", "storymap", "upgrade", "writebox", "counter", "task", "spot"]
         bad = []
         for i, st in enumerate(self.steps):
             seen = False
@@ -752,6 +752,12 @@ class WritingLesson(unittest.TestCase):
         patterns = ["avoid doing", "decided to", "regret not doing", "remember doing", "looking forward to", "stop doing"]
         self.assertGreaterEqual(sum(1 for p in patterns if any(p in q for q in talk)), 5)
         story = [b for b in warm if b["type"] == "gapfill"][0]
+        # После проверки на экране — вопрос «почему?», а не готовые объяснения: объясняет ученица, ведёт учитель.
+        self.assertTrue(story.get("askWhy"))
+        gi = [k for k, b in enumerate(warm) if b["type"] == "gapfill"][0]
+        checked = render_step("l3", 0, events=[["click", "lscheck", "l3:0:%d" % gi]])
+        self.assertIn("Why?", checked)
+        self.assertNotIn(story["why"]["1"][:30], checked)
         self.assertEqual(sorted(story["key"]), [str(n) for n in range(1, 7)])
         self.assertEqual(len(set(story["key"].values())), 6)
         self.assertTrue(all(story["why"].get(g) for g in story["key"]))
@@ -762,6 +768,26 @@ class WritingLesson(unittest.TestCase):
         jury = json.dumps([b for b in self.steps[i]["blocks"] if b["type"] == "vtable"], ensure_ascii=False)
         for x in ["0 mistakes", "7 or more", "180", "275", "0 for the whole story"]:
             self.assertIn(x, jury)
+
+    def test_spot_the_mistake(self):
+        # Учитель 25.10: «добавь задание „найди ошибку“ — это очень важно». Перед рассказом для жюри:
+        # предложения с одной ошибкой того рода, за который жюри снимает баллы. На экране — только
+        # критерий; исправление ученица говорит вслух, ключ у учителя.
+        i, k, b = self.find("spot")[0]
+        self.assertLess(i, self.find("jury")[0][0] + 1)
+        self.assertGreaterEqual(len(b["items"]), 8)
+        for it in b["items"]:
+            w = it["text"].split(" ")
+            self.assertEqual(re.sub(r"[.,!?]", "", w[it["at"]]), it["wrong"], it["text"])
+            self.assertIn(it["cat"], ["Grammar", "Vocabulary", "Spelling and punctuation"])
+            self.assertTrue(it["right"])
+        key = "l3:%d:%d" % (i, k)
+        it = b["items"][0]
+        miss = render_step("l3", i, events=[["click", "lsspot", key + ":0:%d" % ((it["at"] + 1) % len(it["text"].split(" ")))]])
+        self.assertNotIn("mistake — correct it", miss)
+        hit = render_step("l3", i, events=[["click", "lsspot", key + ":0:%d" % it["at"]]])
+        self.assertIn(it["cat"] + " mistake — correct it aloud", hit)
+        self.assertNotIn(it["right"], hit.replace(it["text"], ""), "исправление — у учителя")
 
     def test_the_story_for_the_jury(self):
         i, k, j = self.find("jury")[0]
@@ -781,14 +807,20 @@ class WritingLesson(unittest.TestCase):
                 self.assertIn(m["wrong"], story, m)
 
     def test_the_jury_verdict_opens_on_request(self):
+        # Учитель 25.10: «важно, чтобы я не просто читала то, что на экране, — чтобы без меня никак».
+        # Вердикт на экране — только баллы жюри и сколько ошибок; какие именно — ищут с учителем.
         i, k, j = self.find("jury")[0]
         key = "l3:%d:%d" % (i, k)
         before = render_step("l3", i)
         self.assertIn("data-lsjury", before)
-        self.assertNotIn(j["mistakes"]["spell"][0]["right"], before)
+        self.assertNotIn("Jury: 2", before)
         after = render_step("l3", i, events=[["click", "lsjury", key + ":gram:3"], ["click", "lsverdict", key]])
-        self.assertIn(j["mistakes"]["spell"][0]["right"], after)
         self.assertRegex(after, r'class="on"[^>]*data-lsjury="%s:gram:3"' % key)
+        self.assertIn("Jury: 2", after)
+        self.assertIn("3 mistakes", after)
+        for c in ["org", "lex", "gram", "spell"]:
+            for m in j["mistakes"][c]:
+                self.assertNotIn(m["right"], after, "исправления — у учителя, не на экране")
 
     def test_plan_on_the_official_2024_25_task(self):
         i, k, sheet = [x for x in self.find("wpaper") if not x[2].get("task")][0]
@@ -803,14 +835,13 @@ class WritingLesson(unittest.TestCase):
         self.assertIn("The dog finds the keys", out["html"])
         self.assertIn("The dog finds the keys", out["store"]["olymp-lessons"], "план помнится")
 
-    def test_upgrade_versions_open_on_request(self):
+    def test_upgrade_versions_are_for_the_teacher(self):
+        # Свою версию оценивает учитель; образцы — у неё, на экране их нет совсем.
         i, k, u = self.find("upgrade")[0]
         self.assertGreaterEqual(len(u["items"]), 6)
-        key = "l3:%d:%d" % (i, k)
-        before = render_step("l3", i)
-        self.assertNotIn(u["items"][0]["model"], before)
-        after = render_step("l3", i, events=[["click", "lsmodel", key + ":0"]])
-        self.assertIn(u["items"][0]["model"], after)
+        html = render_step("l3", i)
+        self.assertEqual([it["model"] for it in u["items"] if it["model"] in html], [])
+        self.assertNotIn("data-lsmodel", html)
 
     def test_writing_box_like_at_the_olympiad(self):
         i, k, w = self.find("writebox")[0]

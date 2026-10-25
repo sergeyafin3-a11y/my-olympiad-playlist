@@ -307,38 +307,42 @@
         (head ? '<b class="nt">' + esc(head) + '</b>' : '') + esc(rest).replace(/(sentence: )(.+)$/, '$1<b>$2</b>') + '</div>' +
         '<p class="ins">' + esc(w.pointsLabel) + '</p><ul>' + w.points.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ul><p>' + esc(w.outro) + '</p></div>';
     }
-    // Жюри: ученица ставит баллы сама; вердикт с ошибками — только по кнопке.
+    // Жюри: ученица ставит баллы сама; по кнопке — баллы жюри и сколько ошибок. Какие именно — ищут
+    // с учителем: учитель 25.10 — «чтобы без меня никак»; исправления у неё, на экране их нет.
     if (b.type === "jury") {
       var jg = game(key), pick = jg.pick || {}, CR = [["task", "Task completion"], ["org", "Organisation"], ["lex", "Vocabulary"], ["gram", "Grammar"], ["spell", "Spelling and punctuation"]];
       var mineSum = 0, all = true, jurySum = 0;
+      var found = function (c) { var n = (b.mistakes[c] || []).length; return c === "task" ? n + (n === 1 ? " thing" : " things") + " missing" : n + " mistake" + (n === 1 ? "" : "s"); };
       CR.forEach(function (c) { if (pick[c[0]] == null) all = false; else mineSum += pick[c[0]]; jurySum += b.score[c[0]]; });
       var jh = '<div class="ls-paper"><p class="ttl">' + esc(b.title) + '</p>' + b.story.map(function (x) { return '<p>' + esc(x) + '</p>'; }).join("") + '</div>' +
         '<div class="ls-jury">' + CR.map(function (c) {
           return '<div class="jr"><b>' + c[1] + '</b><span>' + [0, 1, 2, 3, 4].map(function (v) {
             return '<button class="' + (pick[c[0]] === v ? 'on' : '') + '" data-lsjury="' + key + ':' + c[0] + ':' + v + '">' + v + '</button>';
-          }).join(" ") + '</span>' + (jg.verdict ? '<em>Jury: ' + b.score[c[0]] + '</em>' : '') + '</div>';
+          }).join(" ") + '</span>' + (jg.verdict ? '<em>Jury: ' + b.score[c[0]] + ' · ' + found(c[0]) + '</em>' : '') + '</div>';
         }).join("") + (all ? '<p class="tot">Your score: ' + mineSum + ' / 20' + (jg.verdict ? ' · Jury: ' + jurySum + ' / 20' : '') + '</p>' : '') + '</div>';
       if (!jg.verdict) return jh + '<div class="listen"><button class="bigplay" data-lsverdict="' + key + '">⚖️ Show the jury\'s verdict</button></div>';
-      return jh + CR.map(function (c) {
-        var ms = b.mistakes[c[0]] || [];
-        return '<div class="ls-verdict"><b>' + c[1] + ': ' + b.score[c[0]] + ' / 4</b>' + (ms.length ? '<ul>' + ms.map(function (m) {
-          return '<li>' + (typeof m === "string" ? esc(m) : '<s>' + esc(m.wrong) + '</s> → <b>' + esc(m.right) + '</b>' + (m.why ? ' — ' + esc(m.why) : '')) + '</li>';
-        }).join("") + '</ul>' : '<p class="why">No mistakes.</p>') + '</div>';
-      }).join("");
+      return jh + '<div class="ls-verdict"><b>🔎 Now find every mistake in the story — and correct it.</b></div>';
     }
+    // «Найди ошибку»: нашла — слово зачёркнуто и назван критерий жюри; исправление — вслух, ключ у учителя.
+    if (b.type === "spot") return b.items.map(function (it, n) {
+      var pg = game(key + ":" + n), pw = it.text.split(" ");
+      return '<div class="ls-game"><div class="ls-sent">' + pw.map(function (w, j) {
+        return '<button class="w' + (pg.done && j === it.at ? ' bin' : pg.miss === j ? ' miss' : '') + '" data-lsspot="' + key + ':' + n + ':' + j + '"' + (pg.done ? ' disabled' : '') + '>' + esc(w) + '</button>';
+      }).join("") + '</div>' + (pg.done ? '<p class="why">✏️ ' + esc(it.cat) + ' mistake — correct it aloud.</p>' : '') + '</div>';
+    }).join("");
     if (b.type === "storymap") {
       var sm = notesOf(key);
       return '<div class="ls-map">' + b.fields.map(function (f) {
         return '<label><b>' + esc(f.label) + '</b><textarea rows="2" data-lsnote="' + key + ':' + f.id + '">' + esc(sm[f.id] || "") + '</textarea></label>';
       }).join("") + '</div>';
     }
-    // Своя версия — без автопроверки: правильных вариантов много, решает учитель; образец — по кнопке.
+    // Своя версия — без автопроверки и без образца на экране: правильных вариантов много, решает учитель.
     if (b.type === "upgrade") {
       var um = notesOf(key);
       return b.items.map(function (it, n) {
         return '<div class="ls-tf"><p class="q"><b>' + (n + 1) + '.</b> ' + esc(it.plain) + '</p><p class="w">' + esc(it.tool) + '</p>' +
           '<textarea rows="2" data-lsnote="' + key + ':' + n + '" spellcheck="false" placeholder="Your version…">' + esc(um[n] || "") + '</textarea>' +
-          '<div class="row">' + (game(key + ":" + n).model ? '<span class="why">💡 ' + esc(it.model) + '</span>' : '<button class="ghost" data-lsmodel="' + key + ':' + n + '">💡 One possible version</button>') + '</div></div>';
+          '</div>';
       }).join("");
     }
     // Окно для письма — как на олимпиаде в тестирующей системе: без подсказок орфографии.
@@ -421,7 +425,8 @@
       return '<div class="ls-game"><div class="ls-gaptext">' + txt + '</div><div class="ls-pool">' + b.cards.map(function (c) {
         return used[c.k] ? '' : '<span class="ls-chip card' + (gg.sel === c.k ? ' sel' : '') + '" data-lsdrag="' + key + ':' + c.k + '" role="button" tabindex="0"><b>' + esc(c.k) + '.</b> ' + esc(c.t) + '</span>';
       }).join("") + '</div><div class="listen">' + (gg.checked ? '<button class="ghost" data-lsreset="' + key + '">↺ Try again</button>' : '<button class="bigplay" data-lscheck="' + key + '">✓ Check</button>') + '</div>' +
-        (gg.checked ? '<ul class="ls-ol">' + Object.keys(b.why).map(function (g) { return '<li>' + rich(b.why[g]) + '</li>'; }).join("") + '</ul>' : '') + '</div>';
+        // askWhy: объяснения не на экране — ученица объясняет сама, учитель ведёт (ключ у учителя).
+        (gg.checked ? (b.askWhy ? '<p class="why">🤔 Why? Explain each choice: which hook helped?</p>' : '<ul class="ls-ol">' + Object.keys(b.why).map(function (g) { return '<li>' + rich(b.why[g]) + '</li>'; }).join("") + '</ul>') : '') + '</div>';
     }
     if (b.type === "example") {
       var pk = key + ":0", sel = picked[pk];
@@ -484,7 +489,11 @@
     if (d.tfcheck) { game(d.tfcheck).checked = true; A.keepScroll(A.render); return; }
     if (d.lsjury) { var jp = d.lsjury.split(":"), jv = +jp.pop(), jc = jp.pop(), jgm = game(jp.join(":")); jgm.pick = jgm.pick || {}; jgm.pick[jc] = jv; A.keepScroll(A.render); return; }
     if (d.lsverdict) { game(d.lsverdict).verdict = true; A.keepScroll(A.render); return; }
-    if (d.lsmodel) { game(d.lsmodel).model = true; A.keepScroll(A.render); return; }
+    if (d.lsspot) {
+      var spp = d.lsspot.split(":"), spj = +spp.pop(), spn = +spp.pop(), spk = spp.join(":"), spg = game(spk + ":" + spn);
+      if (spj === blockOf(spk).items[spn].at) { spg.done = true; spg.miss = null; } else spg.miss = spj;
+      A.keepScroll(A.render); return;
+    }
     if (d.lscount) { var cp = d.lscount.split(":"), cd = +cp.pop(), cc = cp.pop(), cgm = game(cp.join(":")); cgm.n = cgm.n || {}; cgm.n[cc] = Math.max(0, (cgm.n[cc] || 0) + cd); A.keepScroll(A.render); return; }
     if (d.lswalk) { var wg = game(d.lswalk); wg.n = (wg.n || 0) + 1; A.keepScroll(A.render); return; }
     // Стереть все буквы — со второго касания, как «Start over» на экране задания.
