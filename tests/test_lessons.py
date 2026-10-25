@@ -114,7 +114,9 @@ class Lessons(unittest.TestCase):
         """)
         self.assertEqual(r["bad"], [])
         self.assertEqual([p for p in r["pics"] if not (ROOT / p).is_file()], [])
-        self.assertEqual(len(set(r["pics"])), 12, "12 картинок учителя — каждая на своём месте")
+        # Картинки — только те, что прислала учитель (media/memes), и каждая где-то стоит.
+        files = sorted("media/memes/" + f.name for f in (ROOT / "media" / "memes").glob("*.jpg"))
+        self.assertEqual(sorted(set(r["pics"])), files, "каждая картинка учителя — на своём месте")
         # Обложка урока видна только в списке уроков, поэтому может стать и картинкой шага;
         # но внутри урока шаги друг друга не повторяют.
         steps = run_js("return L.map(function(l){ return (l.steps || []).map(function(s){ return s.image; }); });")
@@ -730,6 +732,14 @@ class WritingLesson(unittest.TestCase):
             self.assertIn(stage, [st["stage"] for st in self.steps])
         imgs = [st["image"] for st in self.steps]
         self.assertEqual(len(set(imgs)), len(imgs))
+
+    def test_the_teachers_pictures(self):
+        # Учитель 25.10 прислала картинки к уроку (Pinterest); по смыслу: энергия — разминка, «улыбайся
+        # и терпи» — правила жюри, кот с картой — жюри, доска с нитками — план, тетрадка — пишем, котёнок — итог.
+        imgs = [st["image"].split("/")[-1] for st in self.steps]
+        want = {0: "m13-positive-energy.jpg", 1: "m14-smile-and-endure.jpg", 2: "m15-cards-say.jpg",
+                3: "m16-plot-board.jpg", 5: "m17-writing-tears.jpg", 6: "m18-all-good.jpg"}
+        self.assertEqual({i: imgs[i] for i in want}, want)
 
     def test_every_task_says_what_to_do(self):
         games = ["talk", "gapfill", "jury", "storymap", "upgrade", "writebox", "counter", "task", "spot"]

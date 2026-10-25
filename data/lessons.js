@@ -327,7 +327,7 @@
     // не выводятся: ученица ищет и объясняет, учитель ведёт и подтверждает по своей шпаргалке.
     // Ревью PR 41: на дом — не задание 2025/26 (рассказ для жюри написан по нему, и его можно было бы сдать,
     // исправив разобранные ошибки), а своя история про Аниту из раздела 6 — целиком, 200–250 слов.
-    // Картинки шагов — временные, из прошлых уроков: учитель ищет свои.
+    // Картинки — учителя (25.10, Pinterest), расставлены по смыслу; для «Upgrade studio» своей пока нет — временная.
     {
       id: "l3", date: "2026-10-26", title: "Writing: a story", emoji: "✍️", cover: img("m03-studying"),
       aims: [
@@ -337,7 +337,7 @@
       ],
       steps: [
         {
-          stage: "warm-up", title: "Warm-up", minutes: 7, image: img("m05-you-can"),
+          stage: "warm-up", title: "Warm-up", minutes: 7, image: img("m13-positive-energy"),
           blocks: [
             { type: "brief", title: "Talk: -ing or to?", items: [
               "Answer each question in a full sentence.",
@@ -378,7 +378,7 @@
           ]
         },
         {
-          stage: "presentation", title: "The real task and the jury", minutes: 4, image: img("m01-queen"),
+          stage: "presentation", title: "The real task and the jury", minutes: 4, image: img("m14-smile-and-endure"),
           blocks: [
             { type: "text", text: "📄 **This is the real Writing task** from the Moscow municipal stage 2025/26, word for word. At the olympiad you have **60 minutes** and can get up to **20 points**." },
             { type: "wpaper", task: "m-w1", source: "Real task · Moscow municipal stage 2025/26 · Writing" },
@@ -406,7 +406,7 @@
           ]
         },
         {
-          stage: "practice", title: "Mistakes and the jury", minutes: 13, image: img("m04-smort"),
+          stage: "practice", title: "Mistakes and the jury", minutes: 13, image: img("m15-cards-say"),
           blocks: [
             { type: "brief", title: "Spot the mistake", items: [
               "Each sentence has one mistake — the kind the jury takes points for.",
@@ -458,7 +458,7 @@
           ]
         },
         {
-          stage: "practice", title: "Plan together", minutes: 6, image: img("m08-brain"),
+          stage: "practice", title: "Plan together", minutes: 6, image: img("m16-plot-board"),
           blocks: [
             { type: "text", text: "🗺️ Now a new story: the real task from 2024/25. Before writing, we plan." },
             { type: "wpaper", source: "Real task · Moscow municipal stage 2024/25 · Writing",
@@ -504,7 +504,7 @@
           ]
         },
         {
-          stage: "production", title: "Write and get feedback", minutes: 10, image: img("m10-lock-in"),
+          stage: "production", title: "Write and get feedback", minutes: 10, image: img("m17-writing-tears"),
           blocks: [
             { type: "brief", title: "Write the opening", items: [
               "Start with the given sentence: it is already in the box.",
@@ -525,7 +525,7 @@
           ]
         },
         {
-          stage: "wrap-up", title: "Wrap-up and homework", minutes: 2, image: img("m12-proud"),
+          stage: "wrap-up", title: "Wrap-up and homework", minutes: 2, image: img("m18-all-good"),
           blocks: [
             { type: "list", title: "🌟 Today you learnt", items: [
               "The jury counts mistakes: 0 → 4, 1–2 → 3, 3–4 → 2, 5–6 → 1, 7 or more → 0.",
