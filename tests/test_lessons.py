@@ -177,7 +177,7 @@ TASK_FILES = ["data/variant-mun-msk-25-26.js", "data/practice-mun.js"]
 IN_CLASS, HOMEWORK = "m-r2", "p-r2-2425"
 
 
-def render_step(lesson_id, step, clicks=(), typed=(), with_store=False, events=()):
+def render_step(lesson_id, step, clicks=(), typed=(), with_store=False, events=(), init=None):
     """HTML шага урока, как его рисует js/lesson-ui.js; clicks — data-атрибуты кнопок, нажатых по порядку,
     typed — [data-pin поля, что напечатали] по порядку."""
     stub = """
@@ -194,8 +194,8 @@ def render_step(lesson_id, step, clicks=(), typed=(), with_store=False, events=(
     """.replace("LID", lesson_id)
     clicks_js = json.dumps(list(clicks))
     js = stub + "".join((ROOT / f).read_text(encoding="utf-8") for f in TASK_FILES) + (ROOT / "data" / "lessons.js").read_text(encoding="utf-8") + """
-      var o = {}; o["LID"] = STEP; store["olymp-lessons"] = JSON.stringify({step: o});
-    """.replace("LID", lesson_id).replace("STEP", str(step)) + (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8") + """
+      var o = {}; o["LID"] = STEP; var st0 = INIT; st0.step = o; store["olymp-lessons"] = JSON.stringify(st0);
+    """.replace("LID", lesson_id).replace("STEP", str(step)).replace("INIT", json.dumps(init or {})) + (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8") + """
       JSON.parse(TYPED).forEach(function(t){
         var ds = {}; if (t.length === 3) ds[t[0]] = t[1]; else ds.pin = t[0];
         var el = {dataset: ds, value: t[t.length - 1], tagName: "INPUT", classList: {contains: function(){ return false; }}};
@@ -592,6 +592,39 @@ class PageDoesNotJump(unittest.TestCase):
         self.assertEqual(r["held"], "300px", "пока картинка грузится, она держит прежнюю высоту")
         self.assertEqual(r["after"], "", "догрузилась — своя высота")
         self.assertEqual(r["scrolled"], [700], "и прокрутка — на том же месте")
+
+
+class AnswersSurviveAReload(unittest.TestCase):
+    """Учитель 26.10: «почему ты обновляешь страницу? У меня все ответы сбрасываются. И у неё так же —
+    она проходит уроки, а ничего не сохраняется?» Выбор в вопросах, найденные слова, разложенные
+    карточки и перефразирования жили только до перезагрузки. Теперь — в памяти браузера, как план и тексты."""
+
+    def saved(self, out):
+        st = json.loads(out["store"]["olymp-lessons"])
+        return {k: st[k] for k in ("games", "picked") if k in st}
+
+    def test_found_mistake_is_still_found_after_a_reload(self):
+        r = run_js("""var l = L.filter(function(x){ return x.id === "l3"; })[0], out = null;
+          l.steps.forEach(function(s, i){ s.blocks.forEach(function(b, k){ if (b.type === "spot") out = [i, k, b.items[0].at, b.items[0].cat]; }); }); return out;""")
+        i, k, at, cat = r
+        key = "l3:%d:%d" % (i, k)
+        out = render_step("l3", i, events=[["click", "lsspot", key + ":0:%d" % at]], with_store=True)
+        again = render_step("l3", i, init=self.saved(out))
+        self.assertIn(cat + " mistake — correct it aloud", again)
+
+    def test_quiz_answer_and_typed_rewrite_are_kept(self):
+        r = run_js("""var l = L.filter(function(x){ return x.id === "l2"; })[0], q = null, t = null;
+          l.steps.forEach(function(s, i){ s.blocks.forEach(function(b, k){ if (b.type === "quiz" && !q) q = [i, k]; if (b.type === "transform") t = [i, k, b.items[0].accept[0]]; }); });
+          return {q: q, t: t};""")
+        qi, qk = r["q"]
+        out = render_step("l2", qi, events=[["click", "lspick", "l2:%d:%d:0:0" % (qi, qk)]], with_store=True)
+        self.assertIn('class="why"', render_step("l2", qi, init=self.saved(out)))
+        ti, tk, ans = r["t"]
+        key = "l2:%d:%d:0" % (ti, tk)
+        out = render_step("l2", ti, events=[["type", "tfin", key, ans], ["click", "tfcheck", key]], with_store=True)
+        again = render_step("l2", ti, init=self.saved(out))
+        self.assertIn('value="%s"' % ans, again)
+        self.assertIn('class="ls-tf right"', again)
 
 
 class GrammarInTheReadingLesson(unittest.TestCase):

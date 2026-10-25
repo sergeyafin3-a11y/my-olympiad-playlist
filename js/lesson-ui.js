@@ -32,8 +32,12 @@
     return m;
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
-  var picked = {}; // ответы викторин в этой сессии: "l2:1:0:3" → индекс выбранного варианта
-  var games = {};  // состояние игр в этой сессии (выбор, найденные слова, разложенные карточки)
+  // Ответы в заданиях урока — в памяти браузера, как план и тексты: учитель 26.10 — «перезагрузила страницу,
+  // и все ответы сбросились; у ученицы так же?» Раньше выбор в вопросах и игры жили только до перезагрузки.
+  if (!st.picked || typeof st.picked !== "object" || Array.isArray(st.picked)) st.picked = {};
+  if (!st.games || typeof st.games !== "object" || Array.isArray(st.games)) st.games = {};
+  var picked = st.picked; // ответы викторин: "l2:1:0:3" → индекс выбранного варианта
+  var games = st.games;   // состояние игр (выбор, найденные слова, разложенные карточки, перефразирования)
   function game(k) { return games[k] || (games[k] = {}); }
   function blockOf(key) { var p = key.split(":"), l = byId(p[0]); return l && l.steps[+p[1]].blocks[+p[2]]; }
   var STAGE = { "warm-up": "☕", "presentation": "💡", "practice": "✏️", "production": "🏆", "feedback": "🔍", "wrap-up": "🏁", "homework": "🏠" };
@@ -202,6 +206,7 @@
   // вниз». Разметка заменяется целиком, и новая картинка раздела, пока не догрузилась (Safari), — без высоты:
   // всё ниже неё съезжает. Пусть до загрузки держит высоту старой; прокрутку возвращаем как была.
   function stay() {
+    save();
     var y = window.scrollY, old = document.querySelector(".ls-hero"), h0 = old ? old.offsetHeight : 0;
     A.render();
     var img = document.querySelector(".ls-hero");
@@ -539,7 +544,7 @@
   // Ответ перефразирования помним, пока урок открыт; страницу не перерисовываем — иначе пропал бы курсор.
   document.addEventListener("input", function (e) {
     // Исправила ответ — старый ✓/✗ уже не про него: до нового «Check» поле снова не проверено.
-    var el = e.target; if (el.dataset && el.dataset.tfin != null) { var tg = game(el.dataset.tfin); tg.v = el.value; tg.checked = false; }
+    var el = e.target; if (el.dataset && el.dataset.tfin != null) { var tg = game(el.dataset.tfin); tg.v = el.value; tg.checked = false; save(); }
   });
   document.addEventListener("keydown", function (e) {
     var el = e.target; if (e.key !== "Enter" || !el.dataset || el.dataset.tfin == null) return;
