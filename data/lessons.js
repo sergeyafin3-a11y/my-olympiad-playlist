@@ -322,6 +322,9 @@
     // может только учитель: поэтому урок — про жюри, план, прокачку фраз и письмо с разбором. Warm-up — на
     // ридинге (порядок предложений по крючкам) и герундии / инфинитиве прошлого урока. Рассказ для жюри —
     // наш, учебный: в нём нет одного пункта задания и спрятаны ошибки по критериям (ключ — в score/mistakes).
+    // Учитель 25.10, вдогонку: «чтобы я не просто читала то, что на экране, — чтобы без меня никак». Поэтому ключи
+    // (порядок истории и почему, ошибки рассказа, образцы фраз) лежат в данных для учителя и тестов, но на экран
+    // не выводятся: ученица ищет и объясняет, учитель ведёт и подтверждает по своей шпаргалке.
     // Картинки шагов — временные, из прошлых уроков: учитель ищет свои.
     {
       id: "l3", date: "2026-10-26", title: "Writing: a story", emoji: "✍️", cover: img("m03-studying"),
@@ -349,9 +352,9 @@
             { type: "brief", title: "A story in the right order", items: [
               "The six sentences of a short story are mixed up.",
               "Put them in order: look for the hooks, like in Reading Task 2.",
-              "Press **✓ Check**. Then tell the story in your own words."
+              "Press **✓ Check** and explain each choice. Then tell the story in your own words."
             ] },
-            { type: "gapfill",
+            { type: "gapfill", askWhy: true,
               text: "[1] [2] [3] [4] [5] [6]",
               cards: [
                 { k: "A", t: "Feeling his way along the wall, he finally found a torch in the kitchen drawer." },
@@ -406,7 +409,7 @@
             { type: "brief", title: "Be the jury", items: [
               "Read the story below. It was written for the same task (2025/26).",
               "Give it points for each criterion: tap 0–4.",
-              "Then press **⚖️ Show the jury's verdict** and compare."
+              "Then press **⚖️ Show the jury's verdict**: compare the points and find every mistake."
             ] },
             { type: "jury", title: "The Uncle Nobody Talked About",
               story: [
@@ -467,8 +470,8 @@
           blocks: [
             { type: "brief", title: "Upgrade the sentences", items: [
               "Make each sentence sound like a strong olympiad story. Use the tool in capitals.",
-              "Type your version.",
-              "Then press **💡 One possible version** and compare. Yours can be even better!"
+              "Type your version and read it aloud.",
+              "There are many good versions — discuss yours and make it even better."
             ] },
             { type: "upgrade", items: [
               { plain: "She was very scared.", tool: "a stronger word", model: "She was terrified." },
