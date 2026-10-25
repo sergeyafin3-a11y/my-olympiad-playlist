@@ -793,6 +793,11 @@ class WritingLesson(unittest.TestCase):
             self.assertEqual(re.sub(r"[.,!?]", "", w[it["at"]]), it["wrong"], it["text"])
             self.assertIn(it["cat"], ["Grammar", "Vocabulary", "Spelling and punctuation"])
             self.assertTrue(it["right"])
+        # Учитель 25.10: предложения — ещё и идеи для рассказа из раздела 2 (задание 2025/26: Jim, богатый
+        # родственник, красивый дом, письмо): ищет ошибку и заодно собирает сюжет.
+        story = ["Jim", "house", "letter", "rich", "aunt", "uncle", "grandmother"]
+        self.assertEqual([it["text"] for it in b["items"] if not any(w in it["text"] for w in story)], [])
+        self.assertIn("idea", json.dumps(self.steps[i]["blocks"][k - 1]))
         key = "l3:%d:%d" % (i, k)
         it = b["items"][0]
         miss = render_step("l3", i, events=[["click", "lsspot", key + ":0:%d" % ((it["at"] + 1) % len(it["text"].split(" ")))]])
