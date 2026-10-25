@@ -182,7 +182,8 @@ def render_step(lesson_id, step, clicks=(), typed=(), with_store=False, events=(
       var window = this, store = {}, handlers = [], inputs = [];
       var el = function(){ return {textContent: "", appendChild: function(){}, classList: {add: function(){}, remove: function(){}}}; };
       var document = {createElement: el, head: {appendChild: function(){}}, body: {appendChild: function(){}},
-                      addEventListener: function(t, f){ if (t === "click") handlers.push(f); if (t === "input") inputs.push(f); }, querySelectorAll: function(){ return []; }};
+                      addEventListener: function(t, f){ if (t === "click") handlers.push(f); if (t === "input") inputs.push(f); }, querySelectorAll: function(){ return []; },
+                      querySelector: function(){ return null; }};
       var localStorage = {getItem: function(k){ return store[k] || null; }, setItem: function(k, v){ store[k] = v; }};
       var location = {hash: "#/lesson/LID"};
       window.addEventListener = function(){}; var setInterval = function(){}; window.scrollTo = function(){};
@@ -692,6 +693,146 @@ class TasksHaveNumbers(unittest.TestCase):
         self.assertNotRegex(src, r"Exercise \d of \d")
         # «Task 3 · Mini Task 2» путало бы номера: мини-задание названо иначе.
         self.assertNotIn("Mini Task 2", src)
+
+
+
+def scale(n):
+    """Шкала жюри муниципального этапа (Writing, критерии 2–5): ошибки → баллы."""
+    return 4 if n == 0 else 3 if n <= 2 else 2 if n <= 4 else 1 if n <= 6 else 0
+
+
+def words(t):
+    return re.findall(r"[A-Za-z0-9][A-Za-z0-9'’-]*", t)
+
+
+class WritingLesson(unittest.TestCase):
+    """Урок 26.10 «Writing: a story». Учитель 25.10: «урок, где я как учитель незаменима» — а не
+    повторяла как попугай то, с чем ученица разберётся сама. Writing на олимпиаде судят по числу
+    ошибок, и считать их может только учитель: поэтому урок — про жюри, план, прокачку фраз
+    и письмо с разбором; warm-up — на ридинге и герундии / инфинитиве прошлого урока."""
+
+    def setUp(self):
+        self.r = run_js("""
+          var l = L.filter(function(x){ return x.id === "l3"; })[0], t = null;
+          V.parts.forEach(function(p){ p.tasks.forEach(function(x){ if (x.id === "m-w1") t = x; }); });
+          return {l: l, w: t};
+        """)
+        self.steps = self.r["l"].get("steps") or []
+        self.assertTrue(self.steps, "урок 26.10 собран по шагам")
+
+    def find(self, kind):
+        return [(i, k, b) for i, st in enumerate(self.steps) for k, b in enumerate(st["blocks"]) if b["type"] == kind]
+
+    def test_a_50_minute_lesson_on_26_october(self):
+        self.assertEqual(self.r["l"]["date"], "2026-10-26")
+        self.assertEqual(sum(st["minutes"] for st in self.steps), 50)
+        for stage in ["warm-up", "presentation", "practice", "production", "wrap-up"]:
+            self.assertIn(stage, [st["stage"] for st in self.steps])
+        imgs = [st["image"] for st in self.steps]
+        self.assertEqual(len(set(imgs)), len(imgs))
+
+    def test_every_task_says_what_to_do(self):
+        games = ["talk", "gapfill", "jury", "storymap", "upgrade", "writebox", "counter", "task"]
+        bad = []
+        for i, st in enumerate(self.steps):
+            seen = False
+            for k, b in enumerate(st["blocks"]):
+                if b["type"] == "brief":
+                    seen = True
+                elif b["type"] in games:
+                    if not seen:
+                        bad.append("%d:%d %s" % (i, k, b["type"]))
+                    if b["type"] != "task":
+                        seen = False
+        self.assertEqual(bad, [])
+
+    def test_warm_up_practises_last_lesson(self):
+        warm = self.steps[0]["blocks"]
+        talk = [b for b in warm if b["type"] == "talk"][0]["items"]
+        patterns = ["avoid doing", "decided to", "regret not doing", "remember doing", "looking forward to", "stop doing"]
+        self.assertGreaterEqual(sum(1 for p in patterns if any(p in q for q in talk)), 5)
+        story = [b for b in warm if b["type"] == "gapfill"][0]
+        self.assertEqual(sorted(story["key"]), [str(n) for n in range(1, 7)])
+        self.assertEqual(len(set(story["key"].values())), 6)
+        self.assertTrue(all(story["why"].get(g) for g in story["key"]))
+
+    def test_the_real_task_and_how_the_jury_scores(self):
+        i, k, sheet = self.find("wpaper")[0]
+        self.assertEqual(sheet.get("task"), "m-w1")
+        jury = json.dumps([b for b in self.steps[i]["blocks"] if b["type"] == "vtable"], ensure_ascii=False)
+        for x in ["0 mistakes", "7 or more", "180", "275", "0 for the whole story"]:
+            self.assertIn(x, jury)
+
+    def test_the_story_for_the_jury(self):
+        i, k, j = self.find("jury")[0]
+        story = " ".join(j["story"])
+        end = self.r["w"]["premise"].split("must end with the sentence: ")[1]
+        self.assertTrue(j["story"][-1].endswith(end), "заканчивается заданной фразой")
+        n = len(words(j["title"])) + len(words(story))
+        self.assertTrue(200 <= n <= 250, n)
+        # Не хватает одного пункта — красивого дома; остальное в рассказе есть.
+        self.assertNotIn("beautiful", story.lower())
+        self.assertNotIn("house", story.lower())
+        self.assertIn("rich", story.lower())
+        self.assertEqual(j["score"]["task"], 4 - len(j["mistakes"]["task"]))
+        for c in ["org", "lex", "gram", "spell"]:
+            self.assertEqual(j["score"][c], scale(len(j["mistakes"][c])), c)
+            for m in j["mistakes"][c]:
+                self.assertIn(m["wrong"], story, m)
+
+    def test_the_jury_verdict_opens_on_request(self):
+        i, k, j = self.find("jury")[0]
+        key = "l3:%d:%d" % (i, k)
+        before = render_step("l3", i)
+        self.assertIn("data-lsjury", before)
+        self.assertNotIn(j["mistakes"]["spell"][0]["right"], before)
+        after = render_step("l3", i, events=[["click", "lsjury", key + ":gram:3"], ["click", "lsverdict", key]])
+        self.assertIn(j["mistakes"]["spell"][0]["right"], after)
+        self.assertRegex(after, r'class="on"[^>]*data-lsjury="%s:gram:3"' % key)
+
+    def test_plan_on_the_official_2024_25_task(self):
+        i, k, sheet = [x for x in self.find("wpaper") if not x[2].get("task")][0]
+        ours = " ".join([sheet["intro"], sheet["premise"], sheet["pointsLabel"]] + sheet["points"] + [sheet["outro"]])
+        official = (ROOT / "tests" / "fixtures" / "writing-mun-2425.txt").read_text(encoding="utf-8")
+        w = lambda t: re.findall(r"[a-z0-9]+", t.lower().replace("’", "'"))
+        self.assertEqual(w(ours), w(official))
+        self.assertTrue(self.find("storymap"))
+        m = self.find("storymap")[0]
+        key = "l3:%d:%d" % (m[0], m[1])
+        out = render_step("l3", m[0], events=[["type", "lsnote", key + ":twist", "The dog finds the keys"]], with_store=True)
+        self.assertIn("The dog finds the keys", out["html"])
+        self.assertIn("The dog finds the keys", out["store"]["olymp-lessons"], "план помнится")
+
+    def test_upgrade_versions_open_on_request(self):
+        i, k, u = self.find("upgrade")[0]
+        self.assertGreaterEqual(len(u["items"]), 6)
+        key = "l3:%d:%d" % (i, k)
+        before = render_step("l3", i)
+        self.assertNotIn(u["items"][0]["model"], before)
+        after = render_step("l3", i, events=[["click", "lsmodel", key + ":0"]])
+        self.assertIn(u["items"][0]["model"], after)
+
+    def test_writing_box_like_at_the_olympiad(self):
+        i, k, w = self.find("writebox")[0]
+        html = render_step("l3", i)
+        box = re.search(r"<textarea[^>]*data-lsnote=\"l3:%d:%d:text\"[^>]*>" % (i, k), html).group(0)
+        self.assertIn('spellcheck="false"', box)
+        self.assertIn("Anita had just arrived at her house when she realized she didn't have her keys.", html.replace("&#39;", "'"))
+        self.assertIn("words", html)
+
+    def test_the_jury_counter_turns_mistakes_into_points(self):
+        i, k, c = self.find("counter")[0]
+        key = "l3:%d:%d" % (i, k)
+        html = render_step("l3", i, events=[["click", "lscount", key + ":gram:1"]] * 3 + [["click", "lscount", key + ":spell:1"]])
+        self.assertRegex(html, r"Grammar[^<]*</b>\s*<span[^>]*>3 mistakes → 2 points")
+        self.assertRegex(html, r"Spelling[^<]*</b>\s*<span[^>]*>1 mistake → 3 points")
+
+    def test_homework_and_exam_box_without_spellcheck(self):
+        links = [x["href"] for b in self.steps[-1]["blocks"] if b["type"] == "links" for x in b["items"]]
+        self.assertIn("#/t/m-w1", links)
+        # Олимпиада — на компьютере в тестирующей системе: подсказок орфографии там нет.
+        self.assertRegex(HTML, r'id="wText"[^>]*spellcheck="false"')
+        self.assertRegex(HTML, r'id="wTitle"[^>]*spellcheck="false"')
 
 
 if __name__ == "__main__":
