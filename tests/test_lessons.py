@@ -761,6 +761,8 @@ class WritingLesson(unittest.TestCase):
         self.assertEqual(sorted(story["key"]), [str(n) for n in range(1, 7)])
         self.assertEqual(len(set(story["key"].values())), 6)
         self.assertTrue(all(story["why"].get(g) for g in story["key"]))
+        # Ревью PR 41: «However» без противопоставления жюри через 15 минут считает ошибкой — в разминке его нет.
+        self.assertEqual([c["t"] for c in story["cards"] if c["t"].startswith("However")], [])
 
     def test_the_real_task_and_how_the_jury_scores(self):
         i, k, sheet = self.find("wpaper")[0]
@@ -800,6 +802,9 @@ class WritingLesson(unittest.TestCase):
         self.assertNotIn("beautiful", story.lower())
         self.assertNotIn("house", story.lower())
         self.assertIn("rich", story.lower())
+        # Ревью PR 41: «Years ago … had had» — в рассказе о прошлом нужно «earlier / before»: эта ошибка
+        # не была в ключе, и жюри поставило бы не 14. В рассказе — только ошибки из ключа.
+        self.assertNotIn(" ago", story)
         self.assertEqual(j["score"]["task"], 4 - len(j["mistakes"]["task"]))
         for c in ["org", "lex", "gram", "spell"]:
             self.assertEqual(j["score"][c], scale(len(j["mistakes"][c])), c)
@@ -851,6 +856,29 @@ class WritingLesson(unittest.TestCase):
         self.assertIn("Anita had just arrived at her house when she realized she didn't have her keys.", html.replace("&#39;", "'"))
         self.assertIn("words", html)
 
+    def test_the_paragraph_reaches_the_jury_in_writing(self):
+        # Ревью PR 41: орфографию на слух не проверить — абзац показывают или присылают, а не только читают.
+        i, k, w = self.find("writebox")[0]
+        brief = json.dumps(self.steps[i]["blocks"], ensure_ascii=False)
+        self.assertIn("chat", brief)
+        self.assertIn("share your screen", brief)
+
+    def test_jury_total_is_zero_without_task_completion(self):
+        i, k, j = self.find("jury")[0]
+        key = "l3:%d:%d" % (i, k)
+        ev = [["click", "lsjury", key + ":task:0"]] + [["click", "lsjury", key + ":%s:4" % c] for c in ["org", "lex", "gram", "spell"]]
+        self.assertIn("Your score: 0 / 20", render_step("l3", i, events=ev))
+
+    def test_counter_and_jury_picks_survive_a_reload(self):
+        i, k, c = self.find("counter")[0]
+        key = "l3:%d:%d" % (i, k)
+        out = render_step("l3", i, events=[["click", "lscount", key + ":gram:1"]] * 3, with_store=True)
+        self.assertEqual(json.loads(out["store"]["olymp-lessons"])["notes"][key]["n"]["gram"], 3)
+        j = self.find("jury")[0]
+        jk = "l3:%d:%d" % (j[0], j[1])
+        out = render_step("l3", j[0], events=[["click", "lsjury", jk + ":gram:2"]], with_store=True)
+        self.assertEqual(json.loads(out["store"]["olymp-lessons"])["notes"][jk]["pick"]["gram"], 2)
+
     def test_the_jury_counter_turns_mistakes_into_points(self):
         i, k, c = self.find("counter")[0]
         key = "l3:%d:%d" % (i, k)
@@ -859,8 +887,15 @@ class WritingLesson(unittest.TestCase):
         self.assertRegex(html, r"Spelling[^<]*</b>\s*<span[^>]*>1 mistake → 3 points")
 
     def test_homework_and_exam_box_without_spellcheck(self):
+        # Ревью PR 41: на дом было то же задание, что рассказ для жюри, — его можно было сдать, исправив
+        # ошибки из разбора. Теперь на дом — дописать свою историю про Аниту, начатую в разделе 6.
         links = [x["href"] for b in self.steps[-1]["blocks"] if b["type"] == "links" for x in b["items"]]
-        self.assertIn("#/t/m-w1", links)
+        self.assertNotIn("#/t/m-w1", links)
+        hw = json.dumps(self.steps[-1]["blocks"], ensure_ascii=False)
+        self.assertIn("Section 6", hw)
+        self.assertIn("200–250", hw)
+        i, k, w = self.find("writebox")[0]
+        self.assertIn("whole story: 200–250", render_step("l3", i))
         # Олимпиада — на компьютере в тестирующей системе: подсказок орфографии там нет.
         self.assertRegex(HTML, r'id="wText"[^>]*spellcheck="false"')
         self.assertRegex(HTML, r'id="wTitle"[^>]*spellcheck="false"')
