@@ -334,14 +334,16 @@
     // Учитель 26.10: «не пиши комментарии — „реальное задание, 60 минут, 20 поинтов“: это я объясняю как учитель».
     // Поэтому текстов-пояснений и «Today you learnt» нет; в рамках «What to do» — только что сделать. Всё, что
     // говорит учитель, — в её шпаргалке.
+    // Учитель 27.10 (после урока): на дом — раздел 4 (свой план) и 5 (весь рассказ: задание, поле на 200–250 слов
+    // без автоисправления, чек-лист, критерии, «Send to my teacher»); раздел «итог» убран; шестой — домашнее эссе
+    // по цитате (второй тип Writing, официальное задание 2023/24) с рецептом, фразами и критериями жюри для эссе.
     // Картинки — учителя (25.10, Pinterest), расставлены по смыслу.
     {
       id: "l3", date: "2026-10-26", title: "Writing: a story", emoji: "✍️", cover: img("m03-studying"),
       aims: [
         "🗣️ Warm up: -ing or to? And a story in the right order.",
         "⚖️ One real task: spot the mistakes and be the jury.",
-        "✍️ Plan your story and write its ending — and count your mistakes.",
-        "🏠 Homework: a new task, step by step (Section 7)."
+        "🏠 Homework: plan and write your story (Sections 4–5) and an essay on a quotation (Section 6)."
       ],
       steps: [
         {
@@ -480,7 +482,7 @@
           ]
         },
         {
-          stage: "practice", title: "Plan your story", minutes: 7, image: img("m16-plot-board"),
+          stage: "homework", home: true, title: "Plan your story", minutes: 15, image: img("m16-plot-board"),
           blocks: [
             { type: "brief", title: "Plan your story", items: [
               "Plan **your own** story for the task in Section 2 — not the jury's story!",
@@ -500,78 +502,104 @@
           ]
         },
         {
-          stage: "production", title: "Write the ending", minutes: 13, image: img("m17-writing-tears"),
+          stage: "homework", home: true, title: "Write your story", minutes: 60, image: img("m17-writing-tears"),
           blocks: [
-            { type: "brief", title: "Write the last paragraph", items: [
-              "Write the last paragraph of your story: **60–80 words**.",
-              "It must **end with** the given sentence, word for word: **Jim happened to see the letter and decided to book a ticket for the first train heading home.**",
-              "Check your typing yourself: there is no spell-check here."
-            ] },
-            { type: "writebox", min: 60, max: 80, label: "paragraph" },
-            { type: "brief", title: "Show it to the jury", items: [
-              "Paste your paragraph into the chat or share your screen.",
-              "The jury reads it and counts the mistakes for each criterion — and you see your points."
-            ] },
-            { type: "counter", crits: [
-              { id: "org", t: "Organisation" },
-              { id: "lex", t: "Vocabulary" },
-              { id: "gram", t: "Grammar" },
-              { id: "spell", t: "Spelling and punctuation" }
-            ] }
-          ]
-        },
-        {
-          stage: "wrap-up", title: "Wrap-up", minutes: 2, image: img("m18-all-good"),
-          blocks: [
-            { type: "brief", title: "My three mistakes", items: [
-              "Look at the jury counter.",
-              "Name your three typical mistakes from today — and say how to avoid them."
-            ] }
-          ]
-        },
-        {
-          stage: "homework", home: true, title: "Homework", minutes: 60, image: img("m19-too-blessed"),
-          blocks: [
-            { type: "wpaper", source: "Real task · Moscow municipal stage 2024/25 · Writing",
-              intro: "You see the following notice in an English youth magazine and decide to send your story.",
-              premise: "Stories Wanted. Write a story for our magazine. The story must begin with the sentence: Anita had just arrived at her house when she realized she didn't have her keys.",
-              pointsLabel: "The story must have a title and must include:",
-              points: ["a neighbour", "a dog"],
-              outro: "Write 200-250 words (the title is included in the word count)." },
-            { type: "brief", title: "Upgrade the sentences", items: [
-              "Make each sentence stronger. Use the tool in capitals.",
-              "Type your version. We check them together at the next lesson."
-            ] },
-            { type: "upgrade", items: [
-              { plain: "She was very scared.", tool: "a stronger word", model: "She was terrified." },
-              { plain: "She came home. Then she saw that the door was open.", tool: "Past Perfect + when", model: "She had just come home when she saw that the door was open." },
-              { plain: "As soon as she opened the door, the dog started barking.", tool: "Hardly had … when", model: "Hardly had she opened the door when the dog started barking." },
-              { plain: "She looked out of the window and saw her neighbour.", tool: "a clause with -ing", model: "Looking out of the window, she saw her neighbour." },
-              { plain: "She had left the keys at work. She was very sorry about it.", tool: "regret + having done", model: "She regretted having left the keys at work." },
-              { plain: "The dog was very clever. It found the keys in five minutes.", tool: "so … that", model: "The dog was so clever that it found the keys in five minutes." },
-              { plain: "She didn't want to wake the baby, so she walked very quietly.", tool: "avoid + -ing", model: "She tiptoed past the door to avoid waking the baby." }
-            ] },
-            { type: "brief", title: "Plan the story", items: [
-              "Fill in the story map for the Anita task: a short note in each box.",
-              "Plan 4–5 paragraphs: the opening → the problem → the twist → the ending."
-            ] },
-            { type: "storymap", fields: [
-              { id: "title", label: "📝 Title" },
-              { id: "who", label: "👤 Anita: who is she? (age, job, character)" },
-              { id: "problem", label: "🧩 The problem: why are the keys so important today?" },
-              { id: "neighbour", label: "🏠 The neighbour: who is it? Does he or she help?" },
-              { id: "dog", label: "🐕 The dog: whose dog is it and what does it do?" },
-              { id: "twist", label: "⚡ The twist: what does nobody expect?" },
-              { id: "ending", label: "🏁 The ending: how does it all end?" }
-            ] },
-            { type: "brief", title: "Write the story", items: [
-              "Write the whole story: **200–250 words**, the title on the first line.",
-              "Start with the given sentence — it is already in the box. Include **a neighbour** and **a dog**.",
-              "Start the timer: **60 minutes**.",
-              "Before you finish, check every sentence for the mistakes from today's lesson."
+            { type: "wpaper", task: "m-w1", source: "Real task · Moscow municipal stage 2025/26 · Writing" },
+            { type: "brief", title: "Write the whole story", items: [
+              "Use your plan from Section 4.",
+              "Write the whole story: **200–250 words**. Put the title on the first line.",
+              "The story must **end with** the given sentence, word for word.",
+              "Start the timer: **60 minutes**. Check your typing yourself: there is no spell-check or autocorrect here.",
+              "Then go through the checklist below and press **📤 Send to my teacher**."
             ] },
             { type: "timer", minutes: 60, label: "60 minutes for the story" },
-            { type: "writebox", start: "Anita had just arrived at her house when she realized she didn't have her keys.", min: 200, max: 250, label: "story" }
+            { type: "writebox", min: 200, max: 250, label: "story", send: "Writing homework · Story (2025/26)" },
+            { type: "list", title: "✅ Checklist: the last 3 minutes", items: [
+              "The given sentence is the last line — **word for word**.",
+              "A **title** that fits the story.",
+              "The **rich relative** ✓ and the **beautiful house** ✓",
+              "**200–250 words** (the title counts too).",
+              "4 paragraphs.",
+              "Read it twice: once for tenses, once for spelling."
+            ] },
+            { type: "vtable", title: "⚖️ How the jury scores: 5 criteria × 4 points", cols: [
+              { h: "1️⃣ Task completion · 4", lines: [
+                "4 things: the given sentence, a title that fits, a rich relative, a beautiful house.",
+                "Each missing thing = −1 point.",
+                "**0 here = 0 for the whole story.**"
+              ] },
+              { h: "2️⃣ Organisation · 4", lines: ["A logical plot, correct linking words, paragraphs."] },
+              { h: "3️⃣ Vocabulary · 4", lines: ["Wrong words and word combinations."] },
+              { h: "4️⃣ Grammar · 4", lines: ["Grammar mistakes. The same rule broken twice counts once."] },
+              { h: "5️⃣ Spelling and punctuation · 4", lines: ["Typos count too!"] },
+              { h: "📉 Mistakes → points (criteria 2–5)", lines: [
+                "0 mistakes → 4", "1–2 mistakes → 3", "3–4 mistakes → 2", "5–6 mistakes → 1", "7 or more → 0"
+              ], note: "Fewer than 180 words = 0 for the whole story. More than 275 words: only the first 250 words are checked." }
+            ] }
+          ]
+        },
+        {
+          stage: "homework", home: true, title: "Homework: an essay", minutes: 60, image: img("m19-too-blessed"),
+          blocks: [
+            { type: "wpaper", source: "Real task · Moscow municipal stage 2023/24 · Writing",
+              intro: "Comment on the following quotation.",
+              quote: "A leader is best when people barely know he exists, when his work is done, his aim fulfilled, they will say: we did it ourselves.",
+              author: "Lao Tzu",
+              outro: "Write 200–250 words.",
+              pointsLabel: "Use the following plan:",
+              points: [
+                "make an introduction, explaining how you understand the author’s point of view;",
+                "express your personal opinion and give reasons to support it;",
+                "give examples from literature or history to illustrate your reasons;",
+                "make a conclusion restating your position."
+              ] },
+            { type: "list", title: "📋 What you have to do", items: [
+              "This is the second type of the Writing task: an **essay on a quotation**.",
+              "Write **200–250 words** and follow the plan in the task — **all four points**.",
+              "Give at least one example from **literature or history**: a real book, writer, person or event.",
+              "Write in a **neutral style**: no slang. Short forms (don't) and rhetorical questions are allowed."
+            ] },
+            { type: "vtable", title: "🧭 The recipe: an essay in 4 paragraphs", cols: [
+              { h: "1️⃣ Introduction · ≈50 words", lines: ["Say what the quotation means in your own words — don't just copy it.", "Say if you agree."] },
+              { h: "2️⃣ Your opinion · ≈70 words", lines: ["Your position and two reasons: Firstly… Secondly…"] },
+              { h: "3️⃣ Examples · ≈70 words", lines: ["One or two real examples from literature or history.", "Name them — the book, the writer, the person, the event — and show how they prove your point."] },
+              { h: "4️⃣ Conclusion · ≈40 words", lines: ["Say your position again in new words.", "No new ideas here."] }
+            ], note: "Each point of the plan is checked: a missing point = −1 for Task completion." },
+            { type: "list", title: "🪝 Useful phrases", items: [
+              "**Introduction:** The author means that… · In other words… · I fully / partly agree with this idea.",
+              "**Reasons:** Firstly… · Secondly… · What is more… · This is because…",
+              "**Examples:** A good example of this is… · This is clearly shown in … by … · History shows that…",
+              "**Conclusion:** To sum up… · All things considered… · That is why I believe that…"
+            ] },
+            { type: "vtable", title: "⚖️ How the jury scores an essay: 5 criteria × 4 points", cols: [
+              { h: "1️⃣ Task completion · 4", lines: [
+                "4 things: an introduction that explains the author's idea; your opinion with reasons; examples from literature or history; a conclusion that supports your opinion.",
+                "Each missing thing = −1 point.",
+                "**0 here = 0 for the whole essay.**"
+              ] },
+              { h: "2️⃣ Organisation · 4", lines: ["An introduction and a conclusion, correct linking words, paragraphs."] },
+              { h: "3️⃣ Vocabulary and style · 4", lines: ["Wrong words are mistakes — and so are informal words and slang."] },
+              { h: "4️⃣ Grammar · 4", lines: ["Grammar mistakes."] },
+              { h: "5️⃣ Spelling and punctuation · 4", lines: ["Typos count too!"] },
+              { h: "📉 Mistakes → points (criteria 2–5)", lines: [
+                "0 mistakes → 4", "1–2 mistakes → 3", "3–4 mistakes → 2", "5–6 mistakes → 1", "7 or more → 0"
+              ], note: "Fewer than 180 words = 0 for the whole essay. More than 275 words: only the first 250 words are checked." }
+            ] },
+            { type: "list", title: "✅ Checklist: the last 3 minutes", items: [
+              "The introduction explains the quotation in **your own words**.",
+              "Your **opinion** and reasons for it.",
+              "At least one real **example** from literature or history.",
+              "A **conclusion** that says your opinion again.",
+              "**200–250 words**, 4 paragraphs, a neutral style.",
+              "Read it twice: once for grammar, once for spelling."
+            ] },
+            { type: "brief", title: "Write the essay", items: [
+              "Start the timer: **60 minutes**.",
+              "Write your essay in the box: **200–250 words**.",
+              "Go through the checklist above and press **📤 Send to my teacher**."
+            ] },
+            { type: "timer", minutes: 60, label: "60 minutes for the essay" },
+            { type: "writebox", min: 200, max: 250, label: "essay", send: "Writing homework · Essay (2023/24)" }
           ]
         }
       ]

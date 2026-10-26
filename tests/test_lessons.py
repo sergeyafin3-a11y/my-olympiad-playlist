@@ -115,8 +115,10 @@ class Lessons(unittest.TestCase):
         self.assertEqual(r["bad"], [])
         self.assertEqual([p for p in r["pics"] if not (ROOT / p).is_file()], [])
         # Картинки — только те, что прислала учитель (media/memes), и каждая где-то стоит.
+        # m18 — в запасе: раздел «итог», где она стояла, учитель 27.10 убрала; пойдёт в следующий урок.
+        SPARE = {"media/memes/m18-all-good.jpg"}
         files = sorted("media/memes/" + f.name for f in (ROOT / "media" / "memes").glob("*.jpg"))
-        self.assertEqual(sorted(set(r["pics"])), files, "каждая картинка учителя — на своём месте")
+        self.assertEqual(sorted(set(r["pics"]) | SPARE), files, "каждая картинка учителя — на своём месте")
         # Обложка урока видна только в списке уроков, поэтому может стать и картинкой шага;
         # но внутри урока шаги друг друга не повторяют.
         steps = run_js("return L.map(function(l){ return (l.steps || []).map(function(s){ return s.image; }); });")
@@ -177,7 +179,7 @@ TASK_FILES = ["data/variant-mun-msk-25-26.js", "data/practice-mun.js", "data/exp
 IN_CLASS, HOMEWORK = "m-r2", "p-r2-2425"
 
 
-def render_step(lesson_id, step, clicks=(), typed=(), with_store=False, events=(), init=None):
+def render_step(lesson_id, step, clicks=(), typed=(), with_store=False, events=(), init=None, pre="", expose=None):
     """HTML шага урока, как его рисует js/lesson-ui.js; clicks — data-атрибуты кнопок, нажатых по порядку,
     typed — [data-pin поля, что напечатали] по порядку."""
     stub = """
@@ -193,7 +195,7 @@ def render_step(lesson_id, step, clicks=(), typed=(), with_store=False, events=(
                     render: function(){}, keepScroll: function(f){ f(); }, routes: {}, words: {}};
     """.replace("LID", lesson_id)
     clicks_js = json.dumps(list(clicks))
-    js = stub + "".join((ROOT / f).read_text(encoding="utf-8") for f in TASK_FILES) + (ROOT / "data" / "lessons.js").read_text(encoding="utf-8") + """
+    js = stub + pre + "".join((ROOT / f).read_text(encoding="utf-8") for f in TASK_FILES) + (ROOT / "data" / "lessons.js").read_text(encoding="utf-8") + """
       var o = {}; o["LID"] = STEP; var st0 = INIT; st0.step = o; store["olymp-lessons"] = JSON.stringify(st0);
     """.replace("LID", lesson_id).replace("STEP", str(step)).replace("INIT", json.dumps(init or {})) + (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8") + """
       JSON.parse(TYPED).forEach(function(t){
@@ -218,13 +220,13 @@ def render_step(lesson_id, step, clicks=(), typed=(), with_store=False, events=(
         }
       });
       var html = window.App.routes.lesson(["lesson", "LID"]);
-      WITH ? JSON.stringify({html: html, store: store}) : html;
+      WITH ? JSON.stringify({html: html, store: store, exposed: EXPOSE}) : html;
     """.replace("CLICKS", json.dumps(clicks_js)).replace("TYPED", json.dumps(json.dumps(list(typed)))) \
-       .replace("WITH", "true" if with_store else "false").replace("EVENTS", json.dumps(json.dumps(list(events)))).replace("LID", lesson_id)
+       .replace("WITH", "true" if with_store or expose else "false").replace("EXPOSE", expose or "null").replace("EVENTS", json.dumps(json.dumps(list(events)))).replace("LID", lesson_id)
     out = subprocess.run(["osascript", "-l", "JavaScript", "-e", js], capture_output=True, text=True)
     if out.returncode:
         raise AssertionError(out.stderr[-500:])
-    return json.loads(out.stdout) if with_store else out.stdout
+    return json.loads(out.stdout) if with_store or expose else out.stdout
 
 
 SHEET = "l2:1:1"  # лист настоящего задания: урок l2, шаг 2, блок 2
@@ -717,12 +719,7 @@ class CheckAnswers(unittest.TestCase):
         i, n = r
         html = render_step("l2", i, events=[["click", "lscheckall", "l2:%d" % i]])
         self.assertEqual(len(re.findall(r'class="ls-tf (right|wrong)"', html)), n)
-        # Домашняя прокачка фраз (l3): по проверке — один из возможных вариантов к каждой фразе.
-        h = run_js("""var l = L.filter(function(x){ return x.id === "l3"; })[0], out = null;
-          l.steps.forEach(function(s, i){ s.blocks.forEach(function(b){ if (b.type === "upgrade") out = [i, b.items[0].model]; }); }); return out;""")
-        hi, model = h
-        self.assertNotIn(model, render_step("l3", hi))
-        self.assertIn(model, render_step("l3", hi, events=[["click", "lscheckall", "l3:%d" % hi]]))
+
 
 
 class GrammarInTheReadingLesson(unittest.TestCase):
@@ -897,11 +894,12 @@ class WritingLesson(unittest.TestCase):
 
     def test_a_50_minute_lesson_on_26_october(self):
         self.assertEqual(self.r["l"]["date"], "2026-10-26")
-        # Домашнее — отдельный раздел «at home»: в 50 минут урока не входит.
-        self.assertEqual(sum(st["minutes"] for st in self.steps if not st.get("home")), 50)
+        # Домашние разделы «at home» в минуты урока не входят.
+        self.assertLessEqual(sum(st["minutes"] for st in self.steps if not st.get("home")), 50)
         self.assertTrue(self.steps[-1].get("home"))
         self.assertEqual(self.steps[-1]["stage"], "homework")
-        for stage in ["warm-up", "presentation", "practice", "production", "wrap-up"]:
+        # Учитель 27.10: письмо — домашнее (разделы 4–6), «итог» убран.
+        for stage in ["warm-up", "presentation", "practice", "homework"]:
             self.assertIn(stage, [st["stage"] for st in self.steps])
         imgs = [st["image"] for st in self.steps]
         self.assertEqual(len(set(imgs)), len(imgs))
@@ -915,16 +913,8 @@ class WritingLesson(unittest.TestCase):
             self.assertNotIn(w, cls)
         self.assertEqual([b.get("task") for st in self.steps if not st.get("home") for b in st["blocks"] if b["type"] == "wpaper"], ["m-w1"])
         self.assertNotIn('"upgrade"', cls)
-        home = self.steps[-1]["blocks"]
-        kinds = [b["type"] for b in home]
-        for kind in ["wpaper", "upgrade", "storymap", "writebox", "timer"]:
-            self.assertIn(kind, kinds)
-        box = [b for b in home if b["type"] == "writebox"][0]
-        self.assertEqual((box["min"], box["max"]), (200, 250))
-        self.assertTrue(box["start"].startswith("Anita had just arrived"))
-        self.assertEqual([b["minutes"] for b in home if b["type"] == "timer"], [60])
         # Класс: своя карта сюжета — для задания про Jim (богатый родственник, красивый дом, письмо).
-        plan = [b for st in self.steps if not st.get("home") for b in st["blocks"] if b["type"] == "storymap"][0]
+        plan = [b for st in self.steps for b in st["blocks"] if b["type"] == "storymap"][0]
         ids = [f["id"] for f in plan["fields"]]
         for f in ["relative", "house", "letter"]:
             self.assertIn(f, ids)
@@ -940,12 +930,86 @@ class WritingLesson(unittest.TestCase):
         for x in ["olympiad", "jury takes points", "just like", "20 points", "you will see it"]:
             self.assertNotIn(x, talk)
 
+    def test_plan_and_story_at_home_then_an_essay(self):
+        # Учитель 27.10: «на дом — раздел 4: спланировать свою историю, потом написать; в разделе 5 — не конец,
+        # а всю историю: само задание из раздела 2, поле на 200–250 слов, чек-лист и критерии, без Т9, и кнопка
+        # „отправить ответ“. Раздел „итог“ убрать; шестым — homework: второй тип задания (эссе), расписанный так
+        # же подробно, с официальным примером и полем для текста».
+        titles = [st["title"] for st in self.steps]
+        self.assertEqual(len(self.steps), 6)
+        self.assertNotIn("Wrap-up", titles)
+        self.assertEqual([st.get("home", False) for st in self.steps], [False, False, False, True, True, True])
+        story = self.steps[4]["blocks"]
+        kinds = [b["type"] for b in story]
+        self.assertEqual([b.get("task") for b in story if b["type"] == "wpaper"], ["m-w1"])
+        for k in ["writebox", "list", "vtable"]:
+            self.assertIn(k, kinds)
+        box = [b for b in story if b["type"] == "writebox"][0]
+        self.assertEqual((box["min"], box["max"]), (200, 250))
+        self.assertFalse(box.get("start"), "рассказ кончается заданной фразой — начало пустое")
+        self.assertTrue(box.get("send"))
+        self.assertLess(kinds.index("writebox"), kinds.index("list"), "чек-лист и критерии — под полем")
+        self.assertIn("Checklist", json.dumps([b for b in story if b["type"] == "list"]))
+        self.assertIn("jury", json.dumps([b for b in story if b["type"] == "vtable"]))
+
+    def test_the_essay_homework(self):
+        essay = self.steps[5]["blocks"]
+        sheet = [b for b in essay if b["type"] == "wpaper"][0]
+        ours = " ".join([sheet["intro"], sheet["quote"], sheet["author"], sheet["outro"], sheet["pointsLabel"]] + sheet["points"])
+        official = (ROOT / "tests" / "fixtures" / "essay-mun-2324.txt").read_text(encoding="utf-8")
+        w = lambda t: re.findall(r"[a-z0-9]+", t.lower().replace("’", "'"))
+        self.assertEqual(w(ours), w(official), "задание — официальное 2023/24, слово в слово")
+        self.assertIn("2023/24", sheet["source"])
+        recipe = [b for b in essay if b["type"] == "vtable" and "recipe" in b["title"].lower()][0]
+        budget = [int(x) for c in recipe["cols"] for x in re.findall(r"≈(\d+) words", c["h"])]
+        self.assertEqual(len(budget), 4)
+        self.assertTrue(200 <= sum(budget) <= 250, budget)
+        jury = json.dumps([b for b in essay if b["type"] == "vtable" and "jury" in b["title"].lower()], ensure_ascii=False)
+        for x in ["literature or history", "0 for the whole essay", "slang", "7 or more", "180", "275"]:
+            self.assertIn(x, jury)
+        check = json.dumps([b for b in essay if b["type"] == "list" and "checklist" in b["title"].lower()], ensure_ascii=False)
+        for x in ["own words", "example", "conclusion", "200–250"]:
+            self.assertIn(x, check)
+        box = [b for b in essay if b["type"] == "writebox"][0]
+        self.assertEqual((box["min"], box["max"]), (200, 250))
+        self.assertTrue(box.get("send"))
+
+    def test_no_autocorrect_in_the_writing_boxes(self):
+        # «Отключи Т9»: ни подсказок орфографии, ни автоисправления, ни заглавных сами собой — как в тестирующей системе.
+        for i, k, b in self.find("writebox"):
+            html = render_step("l3", i)
+            box = re.search(r"<textarea[^>]*data-lsnote=\"l3:%d:%d:text\"[^>]*>" % (i, k), html).group(0)
+            for attr in ['spellcheck="false"', 'autocorrect="off"', 'autocapitalize="off"', 'autocomplete="off"']:
+                self.assertIn(attr, box, (i, attr))
+
+    def test_send_to_the_teacher(self):
+        i, k, b = self.find("writebox")[0]
+        key = "l3:%d:%d" % (i, k)
+        html = render_step("l3", i)
+        self.assertIn('data-lssend="%s"' % key, html)
+        text = "The Letter on the Table\nJim had never liked letters."
+        # Телефон: меню «Поделиться» (Telegram, WhatsApp…) — уходит заголовок задания, текст и число слов.
+        js = """
+          var shared = null;
+          var navigator = {share: function(o){ shared = o; return {then: function(ok){ ok(); return this; }}; }};
+        """
+        out = render_step("l3", i, events=[["type", "lsnote", key + ":text", text], ["click", "lssend", key]], with_store=True, pre=js, expose="shared")
+        self.assertIn(text, out["exposed"]["text"])
+        self.assertIn(b["send"], out["exposed"]["text"])
+        self.assertIn("10 words", out["exposed"]["text"])
+        self.assertIn("Sent", out["html"])
+        # Нет меню «Поделиться» и буфера — подсказка скопировать самой; пустое поле — не отправлять.
+        manual = render_step("l3", i, events=[["type", "lsnote", key + ":text", text], ["click", "lssend", key]])
+        self.assertIn("copy it", manual)
+        empty = render_step("l3", i, events=[["click", "lssend", key]])
+        self.assertIn("The box is empty", empty)
+
     def test_the_teachers_pictures(self):
         # Учитель 25.10 прислала картинки к уроку (Pinterest); по смыслу: энергия — разминка, «улыбайся
         # и терпи» — правила жюри, кот с картой — жюри, доска с нитками — план, тетрадка — пишем, котёнок — итог.
         imgs = [st["image"].split("/")[-1] for st in self.steps]
         want = {0: "m13-positive-energy.jpg", 1: "m14-smile-and-endure.jpg", 2: "m15-cards-say.jpg",
-                3: "m16-plot-board.jpg", 4: "m17-writing-tears.jpg", 5: "m18-all-good.jpg", 6: "m19-too-blessed.jpg"}
+                3: "m16-plot-board.jpg", 4: "m17-writing-tears.jpg", 5: "m19-too-blessed.jpg"}
         self.assertEqual({i: imgs[i] for i in want}, want)
 
     def test_every_task_says_what_to_do(self):
@@ -1072,69 +1136,22 @@ class WritingLesson(unittest.TestCase):
             for m in j["mistakes"][c]:
                 self.assertNotIn(m["right"], after, "исправления — у учителя, не на экране")
 
-    def test_homework_task_is_the_official_2024_25_one(self):
-        i, k, sheet = [x for x in self.find("wpaper") if not x[2].get("task")][0]
-        self.assertTrue(self.steps[i].get("home"))
-        ours = " ".join([sheet["intro"], sheet["premise"], sheet["pointsLabel"]] + sheet["points"] + [sheet["outro"]])
-        official = (ROOT / "tests" / "fixtures" / "writing-mun-2425.txt").read_text(encoding="utf-8")
-        w = lambda t: re.findall(r"[a-z0-9]+", t.lower().replace("’", "'"))
-        self.assertEqual(w(ours), w(official))
-        m = self.find("storymap")[0]
-        key = "l3:%d:%d" % (m[0], m[1])
-        out = render_step("l3", m[0], events=[["type", "lsnote", key + ":twist", "The letter is a fake"]], with_store=True)
-        self.assertIn("The letter is a fake", out["html"])
-        self.assertIn("The letter is a fake", out["store"]["olymp-lessons"], "план помнится")
-
-    def test_upgrade_versions_are_for_the_teacher(self):
-        # Свою версию оценивает учитель; образцы — у неё, на экране их нет совсем.
-        i, k, u = self.find("upgrade")[0]
-        self.assertGreaterEqual(len(u["items"]), 6)
-        html = render_step("l3", i)
-        self.assertEqual([it["model"] for it in u["items"] if it["model"] in html], [])
-        self.assertNotIn("data-lsmodel", html)
-
-    def test_writing_box_like_at_the_olympiad(self):
-        # На уроке — последний абзац своего рассказа, он кончается заданной фразой; дома — весь рассказ про Anita.
-        (i, k, w), (hi, hk, hw) = self.find("writebox")
-        html = render_step("l3", i)
-        box = re.search(r"<textarea[^>]*data-lsnote=\"l3:%d:%d:text\"[^>]*>" % (i, k), html).group(0)
-        self.assertIn('spellcheck="false"', box)
-        end = self.r["w"]["premise"].split("must end with the sentence: ")[1]
-        self.assertIn(end, json.dumps(self.steps[i]["blocks"], ensure_ascii=False))
-        self.assertIn("paragraph: 60–80", html)
-        home = render_step("l3", hi)
-        self.assertIn("Anita had just arrived at her house when she realized she didn't have her keys.", home)
-        self.assertIn("story: 200–250", home)
-
-    def test_the_paragraph_reaches_the_jury_in_writing(self):
-        # Ревью PR 41: орфографию на слух не проверить — абзац показывают или присылают, а не только читают.
-        i, k, w = self.find("writebox")[0]
-        brief = json.dumps(self.steps[i]["blocks"], ensure_ascii=False)
-        self.assertIn("chat", brief)
-        self.assertIn("share your screen", brief)
-
     def test_jury_total_is_zero_without_task_completion(self):
         i, k, j = self.find("jury")[0]
         key = "l3:%d:%d" % (i, k)
         ev = [["click", "lsjury", key + ":task:0"]] + [["click", "lsjury", key + ":%s:4" % c] for c in ["org", "lex", "gram", "spell"]]
         self.assertIn("Your score: 0 / 20", render_step("l3", i, events=ev))
 
-    def test_counter_and_jury_picks_survive_a_reload(self):
-        i, k, c = self.find("counter")[0]
-        key = "l3:%d:%d" % (i, k)
-        out = render_step("l3", i, events=[["click", "lscount", key + ":gram:1"]] * 3, with_store=True)
-        self.assertEqual(json.loads(out["store"]["olymp-lessons"])["notes"][key]["n"]["gram"], 3)
+    def test_jury_picks_and_the_plan_survive_a_reload(self):
+        m = self.find("storymap")[0]
+        mk = "l3:%d:%d" % (m[0], m[1])
+        out = render_step("l3", m[0], events=[["type", "lsnote", mk + ":twist", "The letter is a fake"]], with_store=True)
+        self.assertIn("The letter is a fake", out["html"])
+        self.assertIn("The letter is a fake", out["store"]["olymp-lessons"], "план помнится")
         j = self.find("jury")[0]
         jk = "l3:%d:%d" % (j[0], j[1])
         out = render_step("l3", j[0], events=[["click", "lsjury", jk + ":gram:2"]], with_store=True)
         self.assertEqual(json.loads(out["store"]["olymp-lessons"])["notes"][jk]["pick"]["gram"], 2)
-
-    def test_the_jury_counter_turns_mistakes_into_points(self):
-        i, k, c = self.find("counter")[0]
-        key = "l3:%d:%d" % (i, k)
-        html = render_step("l3", i, events=[["click", "lscount", key + ":gram:1"]] * 3 + [["click", "lscount", key + ":spell:1"]])
-        self.assertRegex(html, r"Grammar[^<]*</b>\s*<span[^>]*>3 mistakes → 2 points")
-        self.assertRegex(html, r"Spelling[^<]*</b>\s*<span[^>]*>1 mistake → 3 points")
 
     def test_homework_and_exam_box_without_spellcheck(self):
         # Ревью PR 41: на дом не задание 2025/26 — по нему написан рассказ для жюри.
