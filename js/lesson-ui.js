@@ -168,6 +168,7 @@
     ".ls-walk ol{margin:10px 0 0;padding-left:22px}.ls-walk li{margin:10px 0;line-height:1.45}.ls-walk li .why{margin-top:4px;font-size:15px;color:var(--ink)}",
     ".ls-walk .ls-pgap{color:var(--c)}",
     // Writing: объявление «Stories Wanted» на листе, жюри, карта сюжета, окно для письма, счётчик ошибок.
+    ".ls-notice .au{display:block;text-align:right;margin-top:6px}",
     ".ls-notice{border:2px solid #1A1A1A;border-radius:4px;padding:10px 12px;margin:8px 0 10px}.ls-notice .nt{display:block;text-align:center;font-size:17px;margin-bottom:4px}",
     ".ls-paper ul{margin:0 0 10px;padding-left:22px}",
     ".ls-jury{margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--card)}",
@@ -354,6 +355,10 @@
     if (b.type === "wpaper") {
       var w = b.task ? taskById(b.task) : b;
       if (!w) return "";
+      // Эссе по цитате: цитата и автор — в рамке, как на бланке; дальше объём и план.
+      if (w.quote) return '<div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p class="ins">' + esc(w.intro) + '</p>' +
+        '<div class="ls-notice"><i>' + esc(w.quote) + '</i><b class="au">' + esc(w.author) + '</b></div><p>' + esc(w.outro) + '</p>' +
+        '<p class="ins">' + esc(w.pointsLabel) + '</p><ul>' + w.points.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ul></div>';
       var dot = w.premise.indexOf(". "), head = dot > 0 ? w.premise.slice(0, dot) : "", rest = dot > 0 ? w.premise.slice(dot + 2) : w.premise;
       return '<div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p>' + esc(w.intro) + '</p><div class="ls-notice">' +
         (head ? '<b class="nt">' + esc(head) + '</b>' : '') + esc(rest).replace(/(sentence: )(.+)$/, '$1<b>$2</b>') + '</div>' +
@@ -403,8 +408,12 @@
     // Окно для письма — как на олимпиаде в тестирующей системе: без подсказок орфографии.
     if (b.type === "writebox") {
       var wm = notesOf(key), wt = wm.text != null ? wm.text : (b.start || "");
-      return '<div class="ls-write"><textarea rows="9" data-lsnote="' + key + ':text" spellcheck="false" autocorrect="off" autocapitalize="sentences" placeholder="Start writing here…">' + esc(wt) + '</textarea>' +
-        '<div class="wc" data-wc="' + key + ':text" data-min="' + b.min + '" data-max="' + b.max + '" data-label="' + esc(b.label || "") + '">' + wcLine(wt, b.min, b.max, b.label) + '</div></div>';
+      // Без «Т9» (учитель 27.10): ни подсказок орфографии, ни автоисправления, ни заглавных сами собой.
+      var sent = game(key).sent, SENT = { shared: "✓ Sent.", copied: "✓ Copied — paste it into your chat with your teacher.",
+        manual: "Select all the text in the box, copy it and send it to your teacher.", empty: "The box is empty — write your text first." };
+      return '<div class="ls-write"><textarea rows="' + (b.max > 100 ? 16 : 9) + '" data-lsnote="' + key + ':text" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off" data-gramm="false" placeholder="Start writing here…">' + esc(wt) + '</textarea>' +
+        '<div class="wc" data-wc="' + key + ':text" data-min="' + b.min + '" data-max="' + b.max + '" data-label="' + esc(b.label || "") + '">' + wcLine(wt, b.min, b.max, b.label) + '</div>' +
+        (b.send ? '<div class="listen"><button class="bigplay" data-lssend="' + key + '">📤 Send to my teacher</button></div>' + (sent ? '<p class="why">' + SENT[sent] + '</p>' : '') : '') + '</div>';
     }
     // Счётчик жюри: учитель отмечает ошибки, баллы — по шкале муниципального этапа.
     if (b.type === "counter") {
@@ -563,6 +572,21 @@
       delete st.paper[d.lspclear]; delete st.pcheck[d.lspclear]; save(); stay(); return;
     }
     if (d.lspcheck) { st.pcheck[d.lspcheck] = true; stay(); return; }
+    // «Отправить ответ»: сервера нет — меню «Поделиться» телефона (Telegram, WhatsApp…); без него — копируем.
+    if (d.lssend) {
+      var sk = d.lssend, sb = blockOf(sk), stx = notesOf(sk).text || "", sgm = game(sk);
+      if (!countWords(stx)) { sgm.sent = "empty"; stay(); return; }
+      var msg = sb.send + "\n\n" + stx.trim() + "\n\n(" + countWords(stx) + " words)";
+      // Без меню «Поделиться» и буфера — выделяем весь текст в поле: остаётся нажать «Копировать».
+      var done = function (how) {
+        sgm.sent = how; stay();
+        var ta = how === "manual" && document.querySelector('[data-lsnote="' + sk + ':text"]');
+        if (ta && ta.select) ta.select();
+      };
+      if (typeof navigator !== "undefined" && navigator.share) { navigator.share({ title: sb.send, text: msg }).then(function () { done("shared"); }, function () {}); return; }
+      if (typeof navigator !== "undefined" && navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(msg).then(function () { done("copied"); }, function () { done("manual"); }); return; }
+      done("manual"); return;
+    }
     // «Check answers» внизу раздела — все задания раздела, где есть что проверять.
     if (d.lscheckall) {
       var ca = d.lscheckall.split(":"), cl = byId(ca[0]), ci = +ca[1];
