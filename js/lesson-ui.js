@@ -19,7 +19,7 @@
   }
   // Все ответы с этим началом ключа: "l3:2:" — раздел 3 урока l3, "l3:" — весь урок. Раздел, где остановились, остаётся.
   function clearAnswers(prefix) {
-    [st.games, st.picked, st.notes, st.paper].forEach(function (o) {
+    [st.games, st.picked, st.notes, st.paper, st.pcheck].forEach(function (o) {
       Object.keys(o).forEach(function (k) { if (k.indexOf(prefix) === 0) delete o[k]; });
     });
     if (st.timer && st.timer.key && st.timer.key.indexOf(prefix) === 0) st.timer = null;
@@ -44,6 +44,8 @@
   // и все ответы сбросились; у ученицы так же?» Раньше выбор в вопросах и игры жили только до перезагрузки.
   if (!st.picked || typeof st.picked !== "object" || Array.isArray(st.picked)) st.picked = {};
   if (!st.games || typeof st.games !== "object" || Array.isArray(st.games)) st.games = {};
+  // Проверенные листы настоящего задания: "l2:1:1" → true (учитель 26.10: ученица проверяет домашку сама).
+  if (!st.pcheck || typeof st.pcheck !== "object" || Array.isArray(st.pcheck)) st.pcheck = {};
   var picked = st.picked; // ответы викторин: "l2:1:0:3" → индекс выбранного варианта
   var games = st.games;   // состояние игр (выбор, найденные слова, разложенные карточки, перефразирования)
   function game(k) { return games[k] || (games[k] = {}); }
@@ -155,7 +157,9 @@
     ".ls-cell{display:block;width:100%;height:32px;background:transparent}",
     ".ls-pin:focus,.ls-cell:focus{outline:2px solid #2EC4D6;outline-offset:0}",
     ".ls-pin.dup,.ls-cell.dup{background:#F6D5D2;color:#B3261E}",
-    ".ls-pclear{margin-top:8px;display:flex;justify-content:flex-end}",
+    ".ls-pclear{margin-top:8px;display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}",
+    ".ls-pin.right,.ls-cell.right{background:#D7F2E2;color:#1F7A3F}.ls-pin.wrong,.ls-cell.wrong{background:#F6D5D2;color:#B3261E}",
+    ".ls-pfb{margin-top:10px;padding:12px 14px;border-radius:12px;background:var(--card)}.ls-pfb .tot{margin:0 0 4px;font-size:17px}.ls-pfb .gp{margin-top:10px;line-height:1.45}",
     ".ls-clear{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:24px}.ls-clear button{font-size:13px;padding:6px 12px}",
     // «What to do» перед каждым упражнением: что сделать, по пунктам, и пример.
     ".ls-brief{margin-top:14px;padding:14px;border-radius:14px;background:rgba(255,214,102,.10);border:1px solid rgba(255,214,102,.55)}",
@@ -228,6 +232,16 @@
   // Ответ перефразирования: без регистра, лишних пробелов и точки в конце; апостроф — любой.
   function norm(s) { return String(s).toLowerCase().replace(/\u2019/g, "'").replace(/[.,!?;:"]/g, " ").replace(/\s+/g, " ").trim(); }
   function matches(it, v) { return it.accept.some(function (a) { return norm(a) === norm(v); }); }
+  // Разбор проверки листа: счёт; под каждым неверным или пустым пропуском — где искать и «как решать»
+  // (официальный разбор с ответом — свёрнут: сначала попробовать самой).
+  function sheetFeedback(key, akey, mine, ex) {
+    var ns = Object.keys(akey).sort(function (a, b) { return a - b; }), ok = ns.filter(function (n) { return mine[n] === akey[n]; }).length;
+    return '<div class="ls-pfb" data-pfb="' + key + '"><p class="tot"><b>' + ok + ' / ' + ns.length + '</b>' + (ok === ns.length ? ' 🎉 All correct!' : '') + '</p>' +
+      ns.filter(function (n) { return mine[n] !== akey[n]; }).map(function (n) {
+        return '<div class="gp"><b>Gap ' + n + '</b> ✗ ' + (mine[n] ? '— ' + esc(mine[n]) + ' does not fit.' : '— no answer.') + ' Read the sentences before and after the gap again: look for the hooks.' +
+          (ex && ex[n] ? '<details class="ex"><summary>💡 Show how to solve</summary><pre>' + esc(ex[n]) + '</pre></details>' : '') + '</div>';
+      }).join("") + '</div>';
+  }
   // Пропуск [3] в тексте задания — как на бланке: «(3) ________».
   function gaps(html) { return html.replace(/\[(\d+)\]/g, '<span class="ls-pgap">($1) ________</span>'); }
 
@@ -271,7 +285,9 @@
     var tn = 0;
     s.blocks.forEach(function (b, k) { h += block(l, i, k, b, b.type === "brief" || b.type === "paper" ? ++tn : 0); });
     // Учитель 26.10: «сейчас я себя проверяю, а завтра показываю экран ученице — ответы должны стереться».
-    h += '<div class="ls-clear"><button class="ghost" data-lsclear="' + l.id + ':' + i + ':">↺ Clear answers in this section</button>' +
+    var canCheck = s.blocks.some(function (b) { return ["gapfill", "transform", "upgrade"].indexOf(b.type) >= 0 || (b.type === "paper" && b.task); });
+    h += '<div class="ls-clear">' + (canCheck ? '<button class="bigplay" data-lscheckall="' + l.id + ':' + i + '">✓ Check answers</button>' : '') +
+      '<button class="ghost" data-lsclear="' + l.id + ':' + i + ':">↺ Clear answers in this section</button>' +
       '<button class="ghost" data-lsclear="' + l.id + ':">↺ Clear the whole lesson</button></div>';
     h += '<div class="ls-nav">' + (i > 0 ? '<button class="ghost" data-lsgo="' + l.id + ':' + (i - 1) + '">← Back</button>' : '<span></span>') +
       (i < l.steps.length - 1 ? '<button class="bigplay" data-lsgo="' + l.id + ':' + (i + 1) + '">Next: ' + esc(l.steps[i + 1].title) + ' →</button>' : '<a class="ghost" href="#/lesson" style="text-decoration:none">Finish ✓</a>') + '</div>';
@@ -304,10 +320,13 @@
       if (!src) return "";
       var paras = src.paras || src.text.map(function (x) { return x.replace(/\((\d+)\)\s*_+/g, "[$1]"); });
       var mine = sheetOf(key), cnt = {};
+      // Ключ — из самого задания; проверка — по кнопке, уже напечатанные буквы не трогаются.
+      var akey = null; if (src.items) { akey = {}; src.items.forEach(function (it) { akey[it.n] = it.a[0]; }); }
+      var checked = akey && st.pcheck[key], ex = akey && window.EXPLAIN && window.EXPLAIN[b.task];
       Object.keys(mine).forEach(function (g) { cnt[mine[g]] = (cnt[mine[g]] || 0) + 1; });
       var pin = function (n, cls) {
         var v = mine[n] || "";
-        return '<input class="' + cls + (v && cnt[v] > 1 ? ' dup' : '') + '" data-pin="' + key + ':' + n + '" value="' + esc(v) + '" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" aria-label="Gap ' + n + '">';
+        return '<input class="' + cls + (checked ? (v === akey[n] ? ' right' : ' wrong') : '') + (v && cnt[v] > 1 ? ' dup' : '') + '" data-pin="' + key + ':' + n + '" value="' + esc(v) + '" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" aria-label="Gap ' + n + '">';
       };
       var cells = ""; for (var c = 1; c <= 10; c++) cells += '<span>' + c + '</span>';
       for (c = 1; c <= 10; c++) cells += '<span class="e">' + pin(c, "ls-cell") + '</span>';
@@ -316,7 +335,8 @@
         paras.map(function (x) { return '<p>' + esc(x).replace(/\[(\d+)\]/g, function (_, n) { return '<span class="ls-pgap">(' + n + ') ' + pin(n, "ls-pin") + '</span>'; }) + '</p>'; }).join("") +
         '<div class="ls-popts">' + src.opts.map(function (o) { return '<p><b>' + esc(o.k) + ')</b> ' + esc(o.t) + '</p>'; }).join("") + '</div>' +
         '<div class="ls-grid" aria-label="Answer table">' + cells + '</div></div>' +
-        '<div class="ls-pclear"><button class="ghost" data-lspclear="' + key + '">↺ Clear the answers</button></div>';
+        '<div class="ls-pclear">' + (akey ? '<button class="bigplay" data-lspcheck="' + key + '">✓ Check answers</button>' : '') +
+        '<button class="ghost" data-lspclear="' + key + '">↺ Clear the answers</button></div>' + (checked ? sheetFeedback(key, akey, mine, ex) : '');
     }
     if (b.type === "vtable") return '<div class="ls-box"><h3>' + esc(b.title) + '</h3><div class="ls-vt">' + b.cols.map(function (c) {
       return '<div><b class="h">' + esc(c.h) + '</b><ul>' + c.lines.map(function (x) { return '<li>' + rich(x) + '</li>'; }).join("") + '</ul>' + (c.note ? '<p class="note">' + rich(c.note) + '</p>' : '') + '</div>';
@@ -377,7 +397,7 @@
       return b.items.map(function (it, n) {
         return '<div class="ls-tf"><p class="q"><b>' + (n + 1) + '.</b> ' + esc(it.plain) + '</p><p class="w">' + esc(it.tool) + '</p>' +
           '<textarea rows="2" data-lsnote="' + key + ':' + n + '" spellcheck="false" placeholder="Your version…">' + esc(um[n] || "") + '</textarea>' +
-          '</div>';
+          (game(key + ":" + n).model ? '<p class="why">💡 One possible version: ' + esc(it.model) + '</p>' : '') + '</div>';
       }).join("");
     }
     // Окно для письма — как на олимпиаде в тестирующей системе: без подсказок орфографии.
@@ -540,7 +560,20 @@
     // Стереть все буквы — со второго касания, как «Start over» на экране задания.
     if (d.lspclear) {
       if (!d.sure) { d.sure = 1; b.textContent = "Sure? Tap again to clear all letters"; return; }
-      delete st.paper[d.lspclear]; save(); stay(); return;
+      delete st.paper[d.lspclear]; delete st.pcheck[d.lspclear]; save(); stay(); return;
+    }
+    if (d.lspcheck) { st.pcheck[d.lspcheck] = true; stay(); return; }
+    // «Check answers» внизу раздела — все задания раздела, где есть что проверять.
+    if (d.lscheckall) {
+      var ca = d.lscheckall.split(":"), cl = byId(ca[0]), ci = +ca[1];
+      cl.steps[ci].blocks.forEach(function (bb, k) {
+        var bk = cl.id + ":" + ci + ":" + k;
+        if (bb.type === "paper" && bb.task) st.pcheck[bk] = true;
+        if (bb.type === "gapfill") game(bk).checked = true;
+        if (bb.type === "transform") bb.items.forEach(function (it, n) { game(bk + ":" + n).checked = true; });
+        if (bb.type === "upgrade") bb.items.forEach(function (it, n) { game(bk + ":" + n).model = true; });
+      });
+      stay(); return;
     }
     if (d.lsreset) { games[d.lsreset] = {}; stay(); return; }
     if (d.lsword) { if (A.words && A.words.offer) A.words.offer(d.lsword, "Lesson"); return; }
@@ -589,6 +622,11 @@
   });
   function put(el, pk, n, v) {
     var mine = sheetOf(pk);
+    if (st.pcheck[pk]) {
+      delete st.pcheck[pk];
+      var fb = document.querySelector('[data-pfb="' + pk + '"]'); if (fb && fb.parentNode) fb.parentNode.removeChild(fb);
+      document.querySelectorAll('[data-pin^="' + pk + ':"]').forEach(function (x) { x.classList.remove("right"); x.classList.remove("wrong"); });
+    }
     if (v) mine[n] = v; else delete mine[n];
     save();
     el.value = v;
