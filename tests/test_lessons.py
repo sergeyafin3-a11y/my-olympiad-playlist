@@ -171,7 +171,7 @@ class Lessons(unittest.TestCase):
 # Официальный ключ Reading Task 2 муниципального этапа Москвы 2024/25
 # (ans-engl-10-11-mun-msk-24-25.pdf, всош.цпм.рф): пропуски 1–10, лишнее — H.
 KEY_2425 = "GBKEIDCAJF"
-TASK_FILES = ["data/variant-mun-msk-25-26.js", "data/practice-mun.js"]
+TASK_FILES = ["data/variant-mun-msk-25-26.js", "data/practice-mun.js", "data/explain-mun.js"]
 # Учитель 22.10: «поменяем местами» — на уроке разбираем текст 2025/26 про будильник (m-r2),
 # а пирог Цветаевой 2024/25 — домашнее задание на 15 минут (отработка p-r2-2425).
 IN_CLASS, HOMEWORK = "m-r2", "p-r2-2425"
@@ -471,7 +471,7 @@ class ReadingLessonIsClear(unittest.TestCase):
         for n in range(1, 11):
             # Поле в пропуске текста и клетка таблицы под тем же номером.
             self.assertEqual(len(re.findall(r'<input[^>]*data-pin="%s:%d"' % (SHEET, n), html)), 2, n)
-        self.assertNotIn("Check", html.split("ls-paper", 1)[1].split("ls-nav")[0], "проверки нет: ключ 2024/25 совпадает с 2025/26 в шести пропусках")
+        # Учитель 26.10 попросила проверку на листе (домашнее: ученица проверяет себя сама) — см. CheckAnswers.
 
     def test_typing_in_the_text_and_in_the_table_is_one_answer(self):
         r = sheet_session([
@@ -667,6 +667,62 @@ class ClearAnswers(unittest.TestCase):
         left = [k2 for part in ("games", "picked", "notes", "paper") for k2 in st.get(part, {}) if k2.startswith("l3:")]
         self.assertEqual(left, [])
         self.assertEqual(st["paper"]["l2:1:1"], {"3": "K"}, "другие уроки не трогаем")
+
+
+class CheckAnswers(unittest.TestCase):
+    """Учитель 26.10: «почему нет кнопки check answers? Домашка отправлена — она должна сама знать, правильно
+    или нет, а если нет — почему, куда посмотреть и как исправить. Её ответы пусть сохранятся, а кнопка
+    сразу даст фидбэк. И так везде, и в уроках: две кнопки — check answers и стереть»."""
+
+    def key(self):
+        return run_js("""var t = null; V.parts.forEach(function(p){ p.tasks.forEach(function(x){ if (x.id === "m-r2") t = x; }); });
+          var k = {}; t.items.forEach(function(it){ k[it.n] = it.a[0]; }); return {key: k, ex: E["m-r2"]};""")
+
+    def test_the_reading_sheet_checks_what_she_already_typed(self):
+        r = self.key()
+        typed = {str(n): r["key"][str(n)] for n in range(1, 11)}
+        typed["2"] = "G" if r["key"]["2"] != "G" else "B"   # одна ошибка
+        del typed["5"]                                        # один пропуск пуст
+        before = render_step("l2", 1, init={"paper": {SHEET: typed}})
+        self.assertIn('data-lspcheck="%s"' % SHEET, before)
+        self.assertNotIn("Show how to solve", before, "до проверки — без подсказок")
+        html = render_step("l2", 1, init={"paper": {SHEET: typed}}, events=[["click", "lspcheck", SHEET]])
+        self.assertIn("8 / 10", html)
+        self.assertRegex(html, r'class="ls-cell wrong[^"]*" data-pin="%s:2"' % SHEET)
+        self.assertRegex(html, r'class="ls-cell right[^"]*" data-pin="%s:1"' % SHEET)
+        # Под неверным и пустым пропуском — как решать (официальный разбор), под верным — нет.
+        self.assertEqual(html.count("Show how to solve"), 2)
+        self.assertIn(r["ex"]["2"].split("\n")[0][:30].replace('"', "&quot;"), html)
+
+    def test_checking_keeps_the_answers(self):
+        r = self.key()
+        typed = {"1": r["key"]["1"], "3": "D"}
+        out = render_step("l2", 1, init={"paper": {SHEET: typed}}, events=[["click", "lspcheck", SHEET]], with_store=True)
+        self.assertEqual(json.loads(out["store"]["olymp-lessons"])["paper"][SHEET], typed)
+
+    def test_check_answers_at_the_bottom_where_there_is_something_to_check(self):
+        steps = run_js("""return L.filter(function(x){ return x.id === "l2" || x.id === "l3"; }).map(function(l){
+          return l.steps.map(function(s){ return s.blocks.some(function(b){
+            return ["gapfill", "transform", "upgrade"].indexOf(b.type) >= 0 || (b.type === "paper" && b.task); }); }); });""")
+        for lid, flags in zip(["l2", "l3"], steps):
+            for i, can in enumerate(flags):
+                html = render_step(lid, i)
+                self.assertEqual('data-lscheckall="%s:%d"' % (lid, i) in html, can, (lid, i))
+        self.assertIn(True, steps[0])
+        self.assertIn(True, steps[1])
+
+    def test_check_all_checks_every_task_in_the_section(self):
+        r = run_js("""var l = L.filter(function(x){ return x.id === "l2"; })[0], out = null;
+          l.steps.forEach(function(s, i){ s.blocks.forEach(function(b){ if (b.type === "transform") out = [i, b.items.length]; }); }); return out;""")
+        i, n = r
+        html = render_step("l2", i, events=[["click", "lscheckall", "l2:%d" % i]])
+        self.assertEqual(len(re.findall(r'class="ls-tf (right|wrong)"', html)), n)
+        # Домашняя прокачка фраз (l3): по проверке — один из возможных вариантов к каждой фразе.
+        h = run_js("""var l = L.filter(function(x){ return x.id === "l3"; })[0], out = null;
+          l.steps.forEach(function(s, i){ s.blocks.forEach(function(b){ if (b.type === "upgrade") out = [i, b.items[0].model]; }); }); return out;""")
+        hi, model = h
+        self.assertNotIn(model, render_step("l3", hi))
+        self.assertIn(model, render_step("l3", hi, events=[["click", "lscheckall", "l3:%d" % hi]]))
 
 
 class GrammarInTheReadingLesson(unittest.TestCase):
