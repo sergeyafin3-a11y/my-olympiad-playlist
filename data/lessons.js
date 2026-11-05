@@ -644,17 +644,17 @@
               "Press **✓ Check**. You see the right sentence and the rule."
             ] },
             { type: "listenfix", items: [
-              { say: "Tchaikovsky has been famous since more than a hundred years.", accept: ["Tchaikovsky has been famous for more than a hundred years."],
-                why: "**for** + a period of time; **since** + a moment: since 1893." },
-              { say: "My teacher said me that Pushkin wrote Eugene Onegin.", accept: ["My teacher told me that Pushkin wrote Eugene Onegin."],
+              { say: "Tchaikovsky has been famous since more than a hundred years.", accept: ["Tchaikovsky has been famous for more than a hundred years.", "Tchaikovsky has been famous for over a hundred years."],
+                why: "**for** + a period of time: for ten years. **since** + a moment: since 2020." },
+              { say: "My teacher said me that Pushkin wrote Eugene Onegin.", accept: ["My teacher told me that Pushkin wrote Eugene Onegin.", "My teacher told me Pushkin wrote Eugene Onegin.", "My teacher told me that Pushkin had written Eugene Onegin.", "My teacher said that Pushkin wrote Eugene Onegin.", "My teacher said to me that Pushkin wrote Eugene Onegin."],
                 why: "**tell** somebody, **say** something." },
-              { say: "Yuri Gagarin has flown into space in 1961.", accept: ["Yuri Gagarin flew into space in 1961."],
+              { say: "Yuri Gagarin has flown into space in 1961.", accept: ["Yuri Gagarin flew into space in 1961.", "Yuri Gagarin went into space in 1961."],
                 why: "A finished time (in 1961) needs the Past Simple." },
-              { say: "If you will visit St Petersburg, you will see the Hermitage.", accept: ["If you visit St Petersburg, you will see the Hermitage."],
+              { say: "If you will visit St Petersburg, you will see the Hermitage.", accept: ["If you visit St Petersburg, you will see the Hermitage.", "If you visit Saint Petersburg, you will see the Hermitage.", "If you visit St Petersburg, you'll see the Hermitage.", "If you visit Saint Petersburg, you'll see the Hermitage."],
                 why: "After **if** we use the present, not will." },
-              { say: "Hardly had Lomonosov arrived in Moscow than he started to study.", accept: ["Hardly had Lomonosov arrived in Moscow when he started to study.", "Hardly had Lomonosov arrived in Moscow when he started studying."],
+              { say: "Hardly had Lomonosov arrived in Moscow than he started to study.", accept: ["Hardly had Lomonosov arrived in Moscow when he started to study.", "Hardly had Lomonosov arrived in Moscow when he started studying.", "Hardly had Lomonosov arrived in Moscow before he started to study.", "No sooner had Lomonosov arrived in Moscow than he started to study.", "No sooner had Lomonosov arrived in Moscow than he started studying."],
                 why: "**hardly … when**, but **no sooner … than**." },
-              { say: "My friend suggested to visit the Tretyakov Gallery.", accept: ["My friend suggested visiting the Tretyakov Gallery.", "My friend suggested that we visit the Tretyakov Gallery.", "My friend suggested that we should visit the Tretyakov Gallery."],
+              { say: "My friend suggested to visit the Tretyakov Gallery.", accept: ["My friend suggested visiting the Tretyakov Gallery.", "My friend suggested that we visit the Tretyakov Gallery.", "My friend suggested that we should visit the Tretyakov Gallery.", "My friend suggested we visit the Tretyakov Gallery.", "My friend suggested we should visit the Tretyakov Gallery.", "My friend suggested that I visit the Tretyakov Gallery."],
                 why: "**suggest** + -ing, or suggest that somebody (should) do." }
             ] },
             { type: "brief", title: "Talent or hard work?", items: [
@@ -717,7 +717,7 @@
                 { t: "Secondly, hard work teaches patience.", b: "op" },
                 { t: "That is why I believe that King is right.", b: "con" },
                 { t: "Goncharov's Oblomov shows the opposite: a clever man who wastes his life doing nothing.", b: "ex" },
-                { t: "I fully agree with this idea for two reasons.", b: "op" }
+                { t: "There are two main reasons for my opinion.", b: "op" }
               ] },
             { type: "brief", title: "Too informal!", items: [
               "In an essay, informal words are mistakes.",
@@ -727,8 +727,8 @@
             { type: "spot", then: "write a better word in the chat.", items: [
               { text: "Talent is super important, but it is not enough.", at: 2, wrong: "super", right: "very / extremely", cat: "Style" },
               { text: "A lot of guys believe that talent is a gift.", at: 3, wrong: "guys", right: "people", cat: "Style" },
-              { text: "King's idea is kinda true.", at: 3, wrong: "kinda", right: "partly / rather", cat: "Style" },
-              { text: "Lomonosov was a really cool scientist.", at: 4, wrong: "cool", right: "brilliant / great", cat: "Style" },
+              { text: "King's idea is kinda true.", at: 3, wrong: "kinda", right: "partly / largely", cat: "Style" },
+              { text: "Lomonosov was a cool scientist.", at: 3, wrong: "cool", right: "brilliant / great", cat: "Style" },
               { text: "You gotta work hard to succeed.", at: 1, wrong: "gotta", right: "have to / must", cat: "Style" }
             ] },
             { type: "brief", title: "Choose the example", items: [
@@ -782,7 +782,7 @@
             { type: "listenmatch",
               options: ["Constitution Day", "Cosmonautics Day", "Day of Slavic Writing and Culture", "Defender of the Fatherland Day", "Family, Love and Fidelity Day", "Knowledge Day", "Maslenitsa", "National Unity Day", "Old New Year", "Russia Day", "Victory Day"],
               rows: [
-                { say: "A holiday on 4 November. It remembers 1612, when a volunteer army led by Minin and Pozharsky freed Moscow.", a: "National Unity Day" },
+                { say: "A holiday on 4 November. It commemorates the events of 1612, when a volunteer army led by Minin and Pozharsky freed Moscow.", a: "National Unity Day" },
                 { say: "A week of pancakes at the end of winter. At the end of it, people burn a straw figure.", a: "Maslenitsa" },
                 { say: "A day on 24 May. It honours Cyril and Methodius, who created the first Slavic alphabet.", a: "Day of Slavic Writing and Culture" },
                 { say: "A holiday on 12 June. On this day in 1990, the Declaration of State Sovereignty was adopted.", a: "Russia Day" },
@@ -803,7 +803,7 @@
               rows: [
                 { say: "A route of old towns north-east of Moscow, such as Suzdal and Vladimir.", a: "The Golden Ring" },
                 { say: "A scientist and poet, a fisherman's son. Moscow State University is named after him.", a: "Mikhail Lomonosov" },
-                { say: "A huge art museum in St Petersburg. Its main building is the Winter Palace, and it grew from the collection of Catherine the Great.", a: "The Hermitage" },
+                { say: "A huge art museum in St Petersburg. Its main building is the Winter Palace, and the museum grew from the collection of Catherine the Great.", a: "The Hermitage" },
                 { say: "The first woman in space.", a: "Valentina Tereshkova" },
                 { say: "The longest railway line in the world. It goes from Moscow to Vladivostok.", a: "The Trans-Siberian Railway" },
                 { say: "A gallery of Russian art in Moscow, named after the merchant who collected the paintings.", a: "The Tretyakov Gallery" },
