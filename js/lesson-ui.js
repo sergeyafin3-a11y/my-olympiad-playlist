@@ -178,7 +178,6 @@
     ".ls-jury .tot{margin-top:6px;font-weight:700}",
     ".ls-verdict{margin-top:10px;padding:12px 14px;border-radius:12px;background:var(--card);border-left:3px solid var(--acc)}.ls-verdict ul{margin:4px 0 8px;padding-left:20px}.ls-verdict li{margin:4px 0;line-height:1.45}.ls-verdict s{color:var(--bad)}",
     ".ls-map label{display:block;margin-top:10px;font-size:15px}",
-    ".ls-tf.ls-lf input{width:100%;box-sizing:border-box;margin-top:6px}",
     ".ls-buckets.one{grid-template-columns:1fr}.ls-buckets.one .ls-bucket{min-height:64px}",
     ".ls-lm{margin-top:12px}.ls-lmr{padding:10px 12px;margin-top:8px;border-radius:12px;background:var(--card);border:1px solid var(--line)}.ls-lmr.right{border-color:var(--acc)}.ls-lmr.wrong{border-color:var(--bad)}",
     ".ls-lmr select{max-width:100%;font-size:16px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:#101010;color:var(--ink)}.ls-lmr .why{margin:6px 0 0;font-size:15px;line-height:1.4}",
@@ -290,7 +289,7 @@
     var tn = 0;
     s.blocks.forEach(function (b, k) { h += block(l, i, k, b, b.type === "brief" || b.type === "paper" ? ++tn : 0); });
     // Учитель 26.10: «сейчас я себя проверяю, а завтра показываю экран ученице — ответы должны стереться».
-    var canCheck = s.blocks.some(function (b) { return ["gapfill", "transform", "upgrade", "listenfix", "listenmatch"].indexOf(b.type) >= 0 || (b.type === "paper" && b.task); });
+    var canCheck = s.blocks.some(function (b) { return ["gapfill", "transform", "upgrade", "matchsheet"].indexOf(b.type) >= 0 || (b.type === "paper" && b.task); });
     h += '<div class="ls-clear">' + (canCheck ? '<button class="bigplay" data-lscheckall="' + l.id + ':' + i + '">✓ Check answers</button>' : '') +
       '<button class="ghost" data-lsclear="' + l.id + ':' + i + ':">↺ Clear answers in this section</button>' +
       '<button class="ghost" data-lsclear="' + l.id + ':">↺ Clear the whole lesson</button></div>';
@@ -394,24 +393,17 @@
         return '<button class="w' + (pg.done && j === it.at ? ' bin' : pg.miss === j ? ' miss' : '') + '" data-lsspot="' + key + ':' + n + ':' + j + '"' + (pg.done ? ' disabled' : '') + '>' + esc(w) + '</button>';
       }).join("") + '</div>' + (pg.done ? '<p class="why">✏️ ' + esc(it.cat) + ' mistake — ' + esc(b.then || "correct it aloud.") + '</p>' : '') + '</div>';
     }).join("");
-    // «Послушай и исправь»: предложение с ошибкой читает учитель, на экране его нет; после проверки — верное и правило.
-    if (b.type === "listenfix") return b.items.map(function (it, n) {
-      var lg = game(key + ":" + n), lv = lg.v || "", lok = lg.checked && matches(it, lv);
-      return '<div class="ls-tf ls-lf' + (lg.checked ? (lok ? ' right' : ' wrong') : '') + '"><p class="q"><b>' + (n + 1) + '.</b> 🎧</p>' +
-        '<input data-tfin="' + key + ':' + n + '" value="' + esc(lv) + '" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Type the correct sentence…" aria-label="Sentence ' + (n + 1) + '">' +
-        '<div class="row"><button class="ghost" data-tfcheck="' + key + ':' + n + '">✓ Check</button>' +
-        (lg.checked ? '<span class="why">' + (lok ? '✓ Right!' : '✗ Answer: <b>' + esc(it.accept[0]) + '</b>') + '</span>' : '') + '</div>' +
-        (lg.checked ? '<p class="why">' + rich(it.why) + '</p>' : '') + '</div>';
-    }).join("");
-    // «Послушай и выбери»: описание читает учитель; в строке — выбор названия, после проверки — ответ и описание.
-    if (b.type === "listenmatch") {
+    // Сопоставление в формате Use of English Task 4: явления A–N листом, как на бланке; у каждого пункта — выбор буквы.
+    if (b.type === "matchsheet") {
       var mg = game(key), mp = mg.pick || {};
-      return '<div class="ls-lm">' + b.rows.map(function (r, n) {
-        var ok = mp[n] === r.a;
-        return '<div class="ls-lmr' + (mg.checked ? (ok ? ' right' : ' wrong') : '') + '"><label><b>' + (n + 1) + '.</b> 🎧 <select data-lmsel="' + key + ':' + n + '"><option value="">Choose…</option>' +
-          b.options.map(function (o) { return '<option value="' + esc(o) + '"' + (mp[n] === o ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join("") + '</select></label>' +
-          (mg.checked ? '<p class="why">' + (ok ? '✓ ' : '✗ <b>' + esc(r.a) + '</b>: ') + esc(r.say) + '</p>' : '') + '</div>';
-      }).join("") + '<div class="listen"><button class="ghost" data-lscheck="' + key + '">✓ Check</button></div></div>';
+      return '<div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p class="ins">' + esc(b.instruction) + '</p><div class="ls-popts">' +
+        b.opts.map(function (o) { return '<p><b>' + esc(o.k) + ')</b> ' + esc(o.t) + '</p>'; }).join("") + '</div></div>' +
+        '<div class="ls-lm">' + b.items.map(function (it, n) {
+          var ok = mp[n] === it.a;
+          return '<div class="ls-lmr' + (mg.checked ? (ok ? ' right' : ' wrong') : '') + '"><label><b>' + (n + 1) + '.</b> ' + esc(it.t) + ' <select data-lmsel="' + key + ':' + n + '"><option value="">–</option>' +
+            b.opts.map(function (o) { return '<option value="' + esc(o.k) + '"' + (mp[n] === o.k ? ' selected' : '') + '>' + esc(o.k) + '</option>'; }).join("") + '</select></label>' +
+            (mg.checked ? '<p class="why">' + (ok ? '✓' : '✗ <b>' + esc(it.a) + '</b>') + '</p>' : '') + '</div>';
+        }).join("") + '<div class="listen"><button class="ghost" data-lscheck="' + key + '">✓ Check</button></div></div>';
     }
     if (b.type === "storymap") {
       var sm = notesOf(key);
@@ -616,8 +608,8 @@
       cl.steps[ci].blocks.forEach(function (bb, k) {
         var bk = cl.id + ":" + ci + ":" + k;
         if (bb.type === "paper" && bb.task) st.pcheck[bk] = true;
-        if (bb.type === "gapfill" || bb.type === "listenmatch") game(bk).checked = true;
-        if (bb.type === "transform" || bb.type === "listenfix") bb.items.forEach(function (it, n) { game(bk + ":" + n).checked = true; });
+        if (bb.type === "gapfill" || bb.type === "matchsheet") game(bk).checked = true;
+        if (bb.type === "transform") bb.items.forEach(function (it, n) { game(bk + ":" + n).checked = true; });
         if (bb.type === "upgrade") bb.items.forEach(function (it, n) { game(bk + ":" + n).model = true; });
       });
       stay(); return;
@@ -630,7 +622,7 @@
   // Страницу не перерисовываем — иначе пропал бы курсор; то же поле в таблице/тексте правим на месте.
   // Кириллица-двойник (экранная клавиатура в русской раскладке) — латиницей по виду.
   var CYR = { "\u0410": "A", "\u0412": "B", "\u0421": "C", "\u0415": "E", "\u041D": "H", "\u041A": "K" };
-  // Выбор в «послушай и выбери»: сохраняем сразу; после проверки смена ответа снимает старый результат.
+  // Выбор буквы в сопоставлении: сохраняем сразу; после проверки смена ответа снимает старый результат.
   function pickRow(e) {
     var el = e.target; if (!el.dataset || el.dataset.lmsel == null) return;
     var mp = el.dataset.lmsel.split(":"), mn = mp.pop(), mg = game(mp.join(":")), was = mg.checked;

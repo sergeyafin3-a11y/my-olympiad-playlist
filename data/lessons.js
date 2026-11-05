@@ -52,6 +52,33 @@
               "**200–250 words**, 4 paragraphs, a neutral style.",
               "Read it twice: once for grammar, once for spelling."
             ] };
+  // Как решать Listening (домашнее урока l4): формат — как в официальных заданиях муниципального этапа.
+  var LISTENING_HOWTO = { type: "vtable", title: "🎧 How to do Listening", cols: [
+    { h: "1️⃣ Before you press play", lines: [
+      "Read all the statements and questions first.",
+      "Underline the key words: names, numbers, dates, only, always, never.",
+      "Look for NOT in a question: DID NOT means you need the one thing that did not happen.",
+      "Guess the topic: what will the speaker talk about?"
+    ] },
+    { h: "2️⃣ While you listen", lines: [
+      "The questions usually go in the same order as the recording. Lost one? Go on to the next.",
+      "Do not wait for the same words: the recording uses synonyms.",
+      "The same words in the recording and in an answer are often a trap: listen to the whole idea."
+    ] },
+    { h: "🪝 Hooks: what changes the answer", lines: [
+      "**but, however, actually, at first, in fact**: the speaker is going to change direction.",
+      "**only, every, always, never, all**: one small exception makes the statement FALSE.",
+      "**Numbers and time:** for a decade, three thousand hours, since childhood. Check them exactly."
+    ] },
+    { h: "1️⃣ Task 1 · True or False · you hear it twice", lines: [
+      "First time: mark the answers you are sure about.",
+      "Second time: check the others."
+    ] },
+    { h: "2️⃣ Task 2 · A, B or C · you hear it once", lines: [
+      "Answer at once and go on: there is no second time.",
+      "Not sure? Choose one anyway: a wrong answer takes no points away."
+    ] }
+  ] };
   var ESSAY_KING = { type: "wpaper", source: "Real task · Moscow municipal stage 2021/22 · Writing",
     intro: "Comment on the following quotation.",
     quote: "Talent is cheaper than table salt. What separates the talented individual from the successful one is a lot of hard work.",
@@ -621,66 +648,38 @@
         }
       ]
     },
-    // Урок 6.11 (учитель 05.11): вместо 2 ноября. Ученица больше слушает и делает: учитель читает вслух, она нажимает,
-    // раскладывает, печатает, пишет в чат; что делать — подробно в рамках «What to do», ключи и что читать —
-    // в шпаргалке учителя. Больше про Россию: примеры в эссе и «Russia in English» (наш набор, факты проверены;
-    // официальное задание по культуре на муниципальном этапе — про Британию и США, оно в домашнем разделе).
-    // На уроке всё — эссе 2021/22 (Стивен Кинг); дома — весь текст этого эссе и задание по культуре 2021/22.
+    // Урок 6.11 (учитель 05.11): вместо 2 ноября, весь про эссе по цитате 2021/22 (Стивен Кинг). На экране — только
+    // задания: коротко, без пометок, кто что делает. Культура про Россию — наш набор в формате Use of English Task 4
+    // (официальный Task 4 муниципального этапа за 5 лет — про Британию и США, российских реалий в нём нет).
+    // Дома — Listening: официальные записи и как их решать.
     // Картинки — пока временные, из прошлых уроков: учитель ищет свои.
     {
       id: "l4", date: "2026-11-06", title: "Writing: an essay on a quotation · Culture", emoji: "📚", cover: img("m04-smort"),
       aims: [
-        "✍️ One real quotation: how to build an essay on it.",
-        "🇷🇺 Russia in English: holidays, places and people.",
-        "🏠 Homework: your essay and a culture task (Section 6)."
+        "✍️ One real quotation: build an essay and write it.",
+        "🇷🇺 Culture: Russia in the format of Task 4.",
+        "🏠 Homework: Listening (Section 6)."
       ],
       steps: [
         {
-          stage: "warm-up", title: "Warm-up", minutes: 7, image: img("m05-you-can"),
+          stage: "warm-up", title: "Warm-up", minutes: 3, image: img("m05-you-can"),
           blocks: [
-            { type: "brief", title: "Listen and fix", items: [
-              "Your teacher reads a sentence. There is one mistake in it. Your teacher can read it twice.",
-              "Type the correct sentence in the box with the same number.",
-              "Press **✓ Check**. You see the right sentence and the rule."
-            ] },
-            { type: "listenfix", items: [
-              { say: "Tchaikovsky has been famous since more than a hundred years.", accept: ["Tchaikovsky has been famous for more than a hundred years.", "Tchaikovsky has been famous for over a hundred years."],
-                why: "**for** + a period of time: for ten years. **since** + a moment: since 2020." },
-              { say: "My teacher said me that Pushkin wrote Eugene Onegin.", accept: ["My teacher told me that Pushkin wrote Eugene Onegin.", "My teacher told me Pushkin wrote Eugene Onegin.", "My teacher told me that Pushkin had written Eugene Onegin.", "My teacher said that Pushkin wrote Eugene Onegin.", "My teacher said to me that Pushkin wrote Eugene Onegin."],
-                why: "**tell** somebody, **say** something." },
-              { say: "Yuri Gagarin has flown into space in 1961.", accept: ["Yuri Gagarin flew into space in 1961.", "Yuri Gagarin went into space in 1961."],
-                why: "A finished time (in 1961) needs the Past Simple." },
-              { say: "If you will visit St Petersburg, you will see the Hermitage.", accept: ["If you visit St Petersburg, you will see the Hermitage.", "If you visit Saint Petersburg, you will see the Hermitage.", "If you visit St Petersburg, you'll see the Hermitage.", "If you visit Saint Petersburg, you'll see the Hermitage."],
-                why: "After **if** we use the present, not will." },
-              { say: "Hardly had Lomonosov arrived in Moscow than he started to study.", accept: ["Hardly had Lomonosov arrived in Moscow when he started to study.", "Hardly had Lomonosov arrived in Moscow when he started studying.", "Hardly had Lomonosov arrived in Moscow before he started to study.", "No sooner had Lomonosov arrived in Moscow than he started to study.", "No sooner had Lomonosov arrived in Moscow than he started studying."],
-                why: "**hardly … when**, but **no sooner … than**." },
-              { say: "My friend suggested to visit the Tretyakov Gallery.", accept: ["My friend suggested visiting the Tretyakov Gallery.", "My friend suggested that we visit the Tretyakov Gallery.", "My friend suggested that we should visit the Tretyakov Gallery.", "My friend suggested we visit the Tretyakov Gallery.", "My friend suggested we should visit the Tretyakov Gallery.", "My friend suggested that I visit the Tretyakov Gallery."],
-                why: "**suggest** + -ing, or suggest that somebody (should) do." }
-            ] },
             { type: "brief", title: "Talent or hard work?", items: [
               "Tap one side in each row.",
-              "Write your answer in the chat. Your teacher reads it and answers."
+              "Give one reason."
             ] },
             { type: "thisorthat", items: [
-              { a: "⭐ Talent", b: "💪 Hard work", ask: "Which one matters more? Write one reason in the chat." },
-              { a: "🍀 Luck", b: "🧠 Practice", ask: "Write one example from your life in the chat." }
+              { a: "⭐ Talent", b: "💪 Hard work", ask: "Which one matters more? Give one reason." },
+              { a: "🍀 Luck", b: "🧠 Practice", ask: "Give one example from your life." }
             ] }
           ]
         },
         {
-          stage: "presentation", title: "The task: an essay", minutes: 7, image: img("m08-brain"),
+          stage: "presentation", title: "The task: an essay", minutes: 6, image: img("m08-brain"),
           blocks: [
             ESSAY_KING,
-            { type: "list", title: "📋 What you have to do", items: [
-              "Read the quotation. Write an **essay** about it: **200–250 words**.",
-              "Follow the plan in the task: **all four points**, in this order.",
-              "Give at least one example from **literature or history**: a real book, writer, person or event.",
-              "Write in a **neutral style**: no slang. Short forms (don't) and rhetorical questions are allowed."
-            ] },
             { type: "brief", title: "Decode the quotation", items: [
-              "Your teacher reads the quotation and each question.",
-              "Tap the answer you think is right.",
-              "Read why. Your teacher adds more."
+              "Choose the right answer according to the quotation."
             ] },
             { type: "quiz", items: [
               { q: "\"Talent is cheaper than table salt.\" What does King mean?",
@@ -697,7 +696,7 @@
           ]
         },
         {
-          stage: "practice", title: "Build the essay", minutes: 12, image: img("m09-focus"),
+          stage: "practice", title: "Build the essay", minutes: 13, image: img("m09-focus"),
           blocks: [
             ESSAY_RECIPE,
             ESSAY_PHRASES,
@@ -721,10 +720,9 @@
               ] },
             { type: "brief", title: "Too informal!", items: [
               "In an essay, informal words are mistakes.",
-              "Each sentence has one word that is too informal. Tap it.",
-              "Then write a better word in the chat. Your teacher checks it."
+              "Each sentence has one word that is too informal. Tap it and find a better word."
             ] },
-            { type: "spot", then: "write a better word in the chat.", items: [
+            { type: "spot", then: "find a better word.", items: [
               { text: "Talent is super important, but it is not enough.", at: 2, wrong: "super", right: "very / extremely", cat: "Style" },
               { text: "A lot of guys believe that talent is a gift.", at: 3, wrong: "guys", right: "people", cat: "Style" },
               { text: "King's idea is kinda true.", at: 3, wrong: "kinda", right: "partly / largely", cat: "Style" },
@@ -733,8 +731,7 @@
             ] },
             { type: "brief", title: "Choose the example", items: [
               "An example must be real and must prove your point.",
-              "Read the sentence from an essay. Tap the example that proves it.",
-              "Read why."
+              "Read the sentence from an essay. Tap the example that proves it."
             ] },
             { type: "quiz", items: [
               { q: "You write: \"Success comes from hard work.\" Which example from history proves it?",
@@ -747,107 +744,67 @@
           ]
         },
         {
-          stage: "production", title: "Write two paragraphs", minutes: 14, image: img("m10-lock-in"),
+          stage: "production", title: "Write the essay", minutes: 20, image: img("m10-lock-in"),
           blocks: [
-            { type: "brief", title: "Write the introduction and the examples", items: [
-              "Write two paragraphs of your essay: the **introduction** and the **examples**.",
-              "Write **80–120 words**. Use the recipe and the phrases from Section 3.",
-              "Use real examples: a real book, writer, person or event.",
-              "Check your typing yourself: there is no spell-check here.",
-              "Then press **📤 Send to my teacher**."
+            ESSAY_KING,
+            { type: "brief", title: "Write the whole essay", items: [
+              "Write the whole essay: **200–250 words**, 4 paragraphs.",
+              "When you finish, press **📤 Send to my teacher**."
             ] },
-            { type: "writebox", min: 80, max: 120, label: "two paragraphs", send: "Essay · two paragraphs (2021/22)" },
-            { type: "brief", title: "The jury counts", items: [
-              "Your teacher reads your paragraphs and marks each mistake on the counter.",
-              "Look at your points.",
-              "Correct your mistakes in the box."
-            ] },
-            { type: "counter", crits: [
-              { id: "org", t: "Organisation" },
-              { id: "lex", t: "Vocabulary and style" },
-              { id: "gram", t: "Grammar" },
-              { id: "spell", t: "Spelling and punctuation" }
-            ] }
+            { type: "writebox", min: 200, max: 250, label: "essay", send: "Essay (2021/22)" }
           ]
         },
         {
-          stage: "practice", title: "Russia in English", minutes: 10, image: img("m01-queen"),
+          stage: "practice", title: "Culture: Russia", minutes: 8, image: img("m01-queen"),
           blocks: [
-            { type: "brief", title: "Holidays", items: [
-              "Your teacher reads a description of a holiday. Listen. Your teacher can read it twice.",
-              "In the row with the same number, choose the holiday.",
-              "One or two names in the list are extra.",
-              "Press **✓ Check**. You see the right answers and the full descriptions."
+            { type: "brief", title: "Match", items: [
+              "Read the phenomena A–N.",
+              "Choose a letter for each item 1–10. Four phenomena are extra.",
+              "Press **✓ Check**."
             ] },
-            { type: "listenmatch",
-              options: ["Constitution Day", "Cosmonautics Day", "Day of Slavic Writing and Culture", "Defender of the Fatherland Day", "Family, Love and Fidelity Day", "Knowledge Day", "Maslenitsa", "National Unity Day", "Old New Year", "Russia Day", "Victory Day"],
-              rows: [
-                { say: "A holiday on 4 November. It commemorates the events of 1612, when a volunteer army led by Minin and Pozharsky freed Moscow.", a: "National Unity Day" },
-                { say: "A week of pancakes at the end of winter. At the end of it, people burn a straw figure.", a: "Maslenitsa" },
-                { say: "A day on 24 May. It honours Cyril and Methodius, who created the first Slavic alphabet.", a: "Day of Slavic Writing and Culture" },
-                { say: "A holiday on 12 June. On this day in 1990, the Declaration of State Sovereignty was adopted.", a: "Russia Day" },
-                { say: "A celebration on the night of 13 January. It comes from the old Julian calendar.", a: "Old New Year" },
-                { say: "A holiday on 9 May. It marks the end of the Great Patriotic War in 1945.", a: "Victory Day" },
-                { say: "A day on 12 April. It marks the first human flight into space in 1961.", a: "Cosmonautics Day" },
-                { say: "A day on 1 September, when the school year begins.", a: "Knowledge Day" },
-                { say: "A holiday on 23 February. It honours the people who serve or have served in the armed forces.", a: "Defender of the Fatherland Day" }
-              ] },
-            { type: "brief", title: "Places and people", items: [
-              "Your teacher reads a description of a place or a person. Listen.",
-              "In the row with the same number, choose the name.",
-              "One or two names in the list are extra.",
-              "Press **✓ Check**. You see the right answers and the full descriptions."
-            ] },
-            { type: "listenmatch",
-              options: ["Dmitri Mendeleev", "Lake Baikal", "Leo Tolstoy", "Mikhail Lomonosov", "Red Square", "St Basil's Cathedral", "The Golden Ring", "The Hermitage", "The Trans-Siberian Railway", "The Tretyakov Gallery", "Valentina Tereshkova", "Yuri Gagarin"],
-              rows: [
-                { say: "A route of old towns north-east of Moscow, such as Suzdal and Vladimir.", a: "The Golden Ring" },
-                { say: "A scientist and poet, a fisherman's son. Moscow State University is named after him.", a: "Mikhail Lomonosov" },
-                { say: "A huge art museum in St Petersburg. Its main building is the Winter Palace, and the museum grew from the collection of Catherine the Great.", a: "The Hermitage" },
-                { say: "The first woman in space.", a: "Valentina Tereshkova" },
-                { say: "The longest railway line in the world. It goes from Moscow to Vladivostok.", a: "The Trans-Siberian Railway" },
-                { say: "A gallery of Russian art in Moscow, named after the merchant who collected the paintings.", a: "The Tretyakov Gallery" },
-                { say: "The chemist who created the periodic table.", a: "Dmitri Mendeleev" },
-                { say: "The deepest lake in the world. It is in Siberia.", a: "Lake Baikal" },
-                { say: "A cathedral with colourful onion domes in the centre of Moscow.", a: "St Basil's Cathedral" },
-                { say: "The first person in space.", a: "Yuri Gagarin" }
+            { type: "matchsheet", source: "Use of English · Task 4 format · Russia",
+              instruction: "Match the items to the phenomena. There are some extra phenomena which do not match.",
+              opts: [
+                { k: "A", t: "a day on 24 May that honours Cyril and Methodius, who created the first Slavic alphabet" },
+                { k: "B", t: "the chemist who created the periodic table" },
+                { k: "C", t: "a holiday on 4 November that commemorates the events of 1612, when a volunteer army led by Minin and Pozharsky freed Moscow" },
+                { k: "D", t: "a route of old towns north-east of Moscow, such as Suzdal and Vladimir" },
+                { k: "E", t: "a holiday on 9 May that marks the end of the Great Patriotic War in 1945" },
+                { k: "F", t: "a week of pancakes at the end of winter, when people burn a straw figure" },
+                { k: "G", t: "the first woman in space" },
+                { k: "H", t: "a holiday on 12 June: on this day in 1990, the Declaration of State Sovereignty was adopted" },
+                { k: "I", t: "the longest railway line in the world, from Moscow to Vladivostok" },
+                { k: "J", t: "a day on 12 April that marks the first human flight into space in 1961" },
+                { k: "K", t: "a huge art museum in St Petersburg; its main building is the Winter Palace" },
+                { k: "L", t: "the deepest lake in the world, in Siberia" },
+                { k: "M", t: "a holiday on 23 February that honours the people who serve or have served in the armed forces" },
+                { k: "N", t: "a scientist and poet, a fisherman's son; Moscow State University is named after him" }
+              ],
+              items: [
+                { t: "National Unity Day", a: "C" },
+                { t: "Maslenitsa", a: "F" },
+                { t: "The Golden Ring", a: "D" },
+                { t: "Cosmonautics Day", a: "J" },
+                { t: "Mikhail Lomonosov", a: "N" },
+                { t: "Russia Day", a: "H" },
+                { t: "The Hermitage", a: "K" },
+                { t: "Defender of the Fatherland Day", a: "M" },
+                { t: "Day of Slavic Writing and Culture", a: "A" },
+                { t: "Valentina Tereshkova", a: "G" }
               ] }
           ]
         },
         {
-          stage: "homework", home: true, title: "Homework", minutes: 80, image: img("m18-all-good"),
+          stage: "homework", home: true, title: "Homework: Listening", minutes: 45, image: img("m18-all-good"),
           blocks: [
-            ESSAY_KING,
-            { type: "brief", title: "Plan your essay", items: [
-              "Read the quotation again.",
-              "Fill in the plan: a short note in each box.",
-              "Use real examples: a real book, writer, person or event."
+            LISTENING_HOWTO,
+            { type: "brief", title: "Listening", items: [
+              "Read the tips above.",
+              "Open each task. Read the statements, then press ▶ and listen.",
+              "Press **✓ Check answers**, then listen to the wrong ones again."
             ] },
-            { type: "storymap", fields: [
-              { id: "meaning", label: "💬 What does the quotation mean? (your own words)" },
-              { id: "opinion", label: "🙋 Do you agree? Your position" },
-              { id: "reason1", label: "1️⃣ Reason 1" },
-              { id: "reason2", label: "2️⃣ Reason 2" },
-              { id: "literature", label: "📚 An example from literature: the book, the writer, how it proves your point" },
-              { id: "history", label: "🏛️ An example from history: the person or event, how it proves your point" },
-              { id: "conclusion", label: "🏁 Your conclusion" }
-            ] },
-            { type: "brief", title: "Write the whole essay", items: [
-              "Write the whole essay: **200–250 words**, 4 paragraphs.",
-              "Use your plan and your two paragraphs from Section 4.",
-              "Start the timer: **60 minutes**. Check your typing yourself: there is no spell-check here.",
-              "Go through the checklist below and press **📤 Send to my teacher**."
-            ] },
-            { type: "timer", minutes: 60, label: "60 minutes for the essay" },
-            { type: "writebox", min: 200, max: 250, label: "essay", send: "Writing homework · Essay (2021/22)" },
-            ESSAY_CHECK,
-            ESSAY_JURY,
-            { type: "brief", title: "The culture task", items: [
-              "Open the task. Match the items to the phenomena. Some phenomena are extra.",
-              "Press **✓ Check answers**.",
-              "Read **💡 Show how to solve** under every wrong answer."
-            ] },
-            { type: "task", task: "p-u4-2122", label: "Open the culture task" }
+            { type: "task", task: "m-l1", label: "Task 1 · Municipal 2025/26" },
+            { type: "task", task: "m-l2", label: "Task 2 · Municipal 2025/26" }
           ]
         }
       ]
