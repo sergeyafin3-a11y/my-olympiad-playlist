@@ -37,6 +37,8 @@ KEYS = {
         # Reading Task 2 (пирог Цветаевой): учитель 22.10 задала его на дом вместо задания 2025/26.
         "m-r2": list("GBKEIDCAJF"),
     },
+    # Задание по культуре 2021/22: в бумаге без букв, буквы A–N — по порядку строк (как у соседних лет).
+    "2122": {"m-u4": list("JEKAHMLFGB")},
 }
 
 
@@ -70,7 +72,7 @@ class Practice(unittest.TestCase):
         r = run_js("""
           var out = {};
           Object.keys(P).forEach(function(k){ P[k].forEach(function(t){
-            var y = /2023\\/24/.test(t.source) ? "2324" : /2024\\/25/.test(t.source) ? "2425" : "?";
+            var y = /2021\\/22/.test(t.source) ? "2122" : /2023\\/24/.test(t.source) ? "2324" : /2024\\/25/.test(t.source) ? "2425" : "?";
             out[y + ":" + k] = t.items.slice().sort(function(a, b){ return a.n - b.n; }).map(function(it){ return t.type === "choice" ? it.a : it.accept; });
           }); });
           return out;

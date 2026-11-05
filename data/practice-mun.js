@@ -23,6 +23,7 @@
 
   var SRC_2324 = "Moscow municipal stage 2023/24 (official)";
   var SRC_2425 = "Moscow municipal stage 2024/25 (official)";
+  var SRC_2122 = "Moscow municipal stage 2021/22 (official)";
 
   // Образец Task 2 одинаков в оба года.
   var T2_EXAMPLE = "0. The pool isn’t deep enough to swim in. — too — The pool ____ ______ _____ ______ swim in. (4 words) — is too shallow to";
@@ -262,6 +263,42 @@
           ch(8, "Underground Railroad", ["C"]),
           ch(9, "Sir Thomas More", ["M"]),
           ch(10, "The Great Western Railroad", ["A"])
+        ]
+      },
+      {
+        // Домашнее урока 6.11. Текст — с. 13 заданий 2021/22, ключ — с. 3 ответов. В бумаге строки без букв:
+        // A–N поставлены по порядку строк, как у соседних лет. Лишние — C, D, I, N. Слова оригинала не тронуты.
+        id: "p-u4-2122", section: "uoe", type: "choice", longOpts: true,
+        title: "Practice · Task 4 · Moscow municipal 2021/22",
+        source: SRC_2122,
+        opts: [
+          { k: "A", t: "a summer event in Wales at which there are competitions in singing, poetry, and music" },
+          { k: "B", t: "someone whose job is to help children cross a road safely on their way to school" },
+          { k: "C", t: "an annual summer event that takes place in Edinburgh when there are many performances of plays and music, and other forms of entertainment" },
+          { k: "D", t: "a word associated with determination, refusal to surrender and courage" },
+          { k: "E", t: "the three basic things that children must learn in school" },
+          { k: "F", t: "a system of electing a politician, a government etc. in which the person or party who gets the most votes wins" },
+          { k: "G", t: "when people do not want a particular activity or building near their home, it’s infrequently referred to as the British phenomenon" },
+          { k: "H", t: "a person, team that is weaker than the others, is always expected to be unsuccessful, and that is often treated badly" },
+          { k: "I", t: "someone who indulges in a compulsive, fact-collecting hobby" },
+          { k: "J", t: "a nickname for the Bank of England" },
+          { k: "K", t: "a series of concerts of classical music which take place every summer at the Albert Hall in London, over a period of several weeks" },
+          { k: "L", t: "it is supposed to be the perfect example of the British concept of fair play" },
+          { k: "M", t: "the most famous law court in the UK, officially called the Central Criminal Court" },
+          { k: "N", t: "The three newer civic universities" }
+        ],
+        intro: "Match the items to the phenomena. There are some extra phenomena which do not match.",
+        items: [
+          ch(1, "The Old Lady of Threadneedle Street", ["J"]),
+          ch(2, "The three Rs", ["E"]),
+          ch(3, "The Proms", ["K"]),
+          ch(4, "Royal National Eisteddfod", ["A"]),
+          ch(5, "underdog", ["H"]),
+          ch(6, "The Old Bailey", ["M"]),
+          ch(7, "cricket", ["L"]),
+          ch(8, "first-past-the-post", ["F"]),
+          ch(9, "nimbyism", ["G"]),
+          ch(10, "The lollipop lady", ["B"])
         ]
       }
     ],
