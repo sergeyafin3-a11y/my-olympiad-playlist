@@ -100,4 +100,63 @@
     9: "NIMBY means \"Not In My Back Yard\": people do not want a new building or activity near their home.\nAnswer: G.",
     10: "A lollipop lady holds a round stop sign that looks like a lollipop and helps children cross the road.\nAnswer: B.\nThe extra phenomena are C, D, I and N."
   };
+  // Listening прошлых лет: разбор каждого вопроса — цитата из официального скрипта и почему. В двойных кавычках — только
+  // скрипт, дословно (тест сверяет). Ответы — по официальному ключу.
+  E["p-l1-2324"] = {
+    1: "\"has charmed quite a few people. They admired it and complained about its complexity and challenges but nevertheless persisted\"\nPeople liked the language and went on although it was hard. The statement gives the wrong reason.\nAnswer: B (False).",
+    2: "\"learned the Russian language on his own. Upon his arrival in St. Petersburg, he continued his studies\"\nHook: continued. He started before he arrived.\nAnswer: A (True).",
+    3: "\"dealing with the Russian parts of speech was harder than battling the French army\"\nHarder than is not as difficult as: one small change makes it false.\nAnswer: B (False).",
+    4: "\"he complimented the envoy on the speed with which he had learnt Russian\"\nThe emperor praised his speed, not his silence.\nAnswer: B (False).",
+    5: "\"fluent in Greek, Latin, English, Italian, German and Spanish\"\nHe was fluent in Latin. Lacked fluency means the opposite.\nAnswer: B (False).",
+    6: "\"Varvara taught him Russian, with their studies being so successful that Mérimée soon started to translate\"\nShe taught him the language. Translating was his own next step.\nAnswer: B (False).",
+    7: "\"as though specially meant for expressing the minutest shades of meaning\"\nThe minutest shades are the subtle shades of the statement. And: \"it genuinely stunned him\".\nAnswer: A (True).",
+    8: "\"The well-known mathematician and writer set out to Russia in the company of his friend, theologian Henry Liddon.\"\nThe theologian, a person who studies religion, was his friend. Carroll was a mathematician and a writer.\nAnswer: B (False).",
+    9: "\"He was repeatedly daunted by remarks that Russian was too difficult\" … \"However, he started mastering the language\"\nHook: however. He heard the comments and went on learning.\nAnswer: A (True).",
+    10: "\"he could even haggle at local markets\"\nHaggle means bargain, and he could do it.\nAnswer: B (False)."
+  };
+  E["p-l2-2324"] = {
+    11: "\"This week's been dragging on forever.\" \"Tell me about it!\"\nTell me about it means I feel the same. Dragging on means very slow and boring.\nAnswer: B.",
+    12: "\"Thank goodness it’s Friday!\" \"This evening, I'm just going out for dinner\"\nThe dinner is on Friday, not on Saturday. The other two are true: \"this little French place near where I live\".\nThe question has NOT, so choose the false one.\nAnswer: B.",
+    13: "\"tomorrow I’ve got to get up really early\" \"do some cooking, because I've got some people coming over\"\nHe is certain about the cooking. About the film he says: \"I'm not sure\". And he gets up early, so there is no lie-in.\nAnswer: A.",
+    14: "\"I don't really feel like it any more.\" \"So, you're just going to stay in, then?\" \"Yes, because tomorrow night I'm going to my friends Pete and Rachel's party.\"\nStay in means stay at home. The party is tomorrow, not on Friday evening.\nAnswer: C.",
+    15: "\"No, I'm only joking, it's actually a great place for a party.\"\nFinally in the question means: listen to his last words. Cosy is Kelly's word, not his.\nAnswer: A."
+  };
+  E["p-l1-2425"] = {
+    1: "\"First of all, I'll give you some information about her early life and education, before going on to look at her career, achievements and finally, her publications and awards.\"\nOutlined means he gave the plan of his talk.\nAnswer: A (True).",
+    2: "\"moved to Chicago in 1914 when her father was fired\"\nFired means the same as given the sack.\nAnswer: A (True).",
+    3: "\"she attended Columbia University but gave up after a year\"\nHook: but. She gave up, so she did not graduate.\nAnswer: B (False).",
+    4: "\"She took flying lessons and bought her first plane\"\nShe bought it herself, not her parents.\nAnswer: B (False).",
+    5: "\"a women’s world record. In 1925 she moved to Boston and got a job as a social worker.\"\nFirst the record, then the job.\nAnswer: A (True).",
+    6: "\"She was the first woman to fly solo non-stop across the Atlantic.\"\nFirst is not only.\nAnswer: B (False).",
+    7: "\"During that time, she also wrote local newspaper columns on flying.\" \"On May 20 1932, she took off\"\nColumns are articles, and they came before the flight across the Atlantic.\nAnswer: A (True).",
+    8: "\"poor weather conditions and mechanical problems forced her to land\"\nThere were two reasons. Only is the trap word in the statement.\nAnswer: B (False).",
+    9: "\"she was never found\" \"she went missing before her third book was published\"\nShe did not come back from the flight of 1937, so she published nothing after it.\nAnswer: B (False).",
+    10: "\"She was awarded the Distinguished Flying Cross by Congress and the Cross of Knight of the Legion of Honour by the French government.\"\nCongress stands for the American government here.\nAnswer: A (True)."
+  };
+  E["p-l2-2425"] = {
+    2: "\"I've talked to a lot of the trainees and served a few customers.\" \"There were just a couple of customers who were a bit difficult, but they were OK in the end.\"\nA few customers, not plenty. A lot of trainees, not hardly any.\nAnswer: B.",
+    3: "\"the best sales staff are not just fashion specialists\"\nNot just means more than just. Specialists means experts.\nAnswer: A.",
+    4: "\"We have no rules about uniforms.\" \"you and your colleagues are models for our fashions\"\nNo uniform, and no rule about designer labels: staff can wear them.\nAnswer: C.",
+    5: "\"Never oversell or put too much pressure on a customer.\"\nThe question has NOT. The other two are in the recording: \"find out about the rest of the store\", \"Give them a lot of attention\".\nAnswer: B.",
+    6: "\"Thanks very much. That’s very helpful.\"\nShe is grateful, so this one is not true. The other two are true: \"you’ve got the right personality\", \"I don’t have a lot of sales experience\".\nAnswer: C."
+  };
+  E["p-l1-2122"] = {
+    1: "\"he dominated American and world entertainment, both on and off screen, for four decades.\"\nThe speaker uses the past: it is over. Has been dominating means he is still doing it.\nAnswer: B (False).",
+    2: "\"on his mother’s side Polish and Italian on his father’s.\"\nItalian is his father's side.\nAnswer: B (False).",
+    3: "\"he was sometimes forced to take factory jobs to make ends meet.\"\nThis is about his father. Sometimes means occasionally.\nAnswer: A (True).",
+    4: "\"Liberace's mother, who thought it was a waste of time.\"\nA waste of time means a useless pastime.\nAnswer: A (True).",
+    5: "\"He began playing the piano at the age of four and at age eight met his idol\"\nFour is when he started. Eight is the trap: he met his idol at that age.\nAnswer: B (False).",
+    6: "\"It was during the war that his performances began to change\"\nDuring the war, not after it.\nAnswer: B (False).",
+    7: "\"Never overly modest\"\nThe same idea in other words.\nAnswer: A (True).",
+    8: "\"He had always avoided radio\" \"in 1952, made his appearance on television.\"\n1952 is about television, not radio.\nAnswer: B (False).",
+    9: "\"chatty small-town charm and warmth that instantly connected him with audiences\"\nWarmth means a warm atmosphere.\nAnswer: A (True).",
+    10: "\"Many mocked his kitsch, over-the-top style\"\nMocked means laughed at.\nAnswer: A (True)."
+  };
+  E["p-l2-2122"] = {
+    11: "\"I didn’t win it or anything. I lost in the semi-finals.\"\nThe question has DID NOT. The other two happened: \"Did you just sign that guy’s book?\", \"away from selling books\".\nAnswer: B.",
+    12: "\"It’s more about balance.\"\nSize doesn't matter, she says. Being big is the trap.\nAnswer: C.",
+    13: "\"my dad suggested I did a martial art to defend myself\"\nThe big kids bullied her, not the other way round.\nAnswer: A.",
+    14: "\"I usually practise all the techniques for at least an hour a day\"\nThe trap: \"two or three times a week I go to a special judo school\". That is the school, not the techniques at home.\nAnswer: A.",
+    15: "\"I had quite a bad back injury last year\"\nLast year means a year ago. A couple of months is how long she did nothing.\nAnswer: C."
+  };
 })();

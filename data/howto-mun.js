@@ -34,6 +34,29 @@
     tip: "Question 3 asks what is NOT TRUE: two options are true, choose the one that is false. When two options mean almost the same, listen for the exact word or feeling the speaker uses."
   };
 
+  // Отработка Listening прошлых лет: карточка своя, карточка m-l1/m-l2 говорит про пилота и Сан-Франциско.
+  function listeningTask1(what) {
+    return { what: what, steps: [
+      "The recording gives you 20 seconds to read sentences 1–10. Read them and underline key words: names, numbers, only, as soon as.",
+      "Listen the first time and mark your answers.",
+      "Listen the second time and check the answers you are not sure about.",
+      "A (True) = the speaker says the same thing in other words. B (False) = the speaker says something different, or the sentence changes one detail."
+    ], tip: "Many false sentences change only one small thing: who, when or why. Listen for that one detail." };
+  }
+  function listeningTask2(what) {
+    return { what: what, steps: [
+      "The recording gives you 25 seconds to read the questions and the options. Read them all.",
+      "You hear it ONLY ONCE: answer while you listen, do not wait for the end.",
+      "If a question has NOT in it, two options are true: choose the one that is false."
+    ], tip: "A word from the recording in an option is often a trap. Listen to the whole idea." };
+  }
+  H.tasks["p-l1-2324"] = listeningTask1("Listening: a talk about famous people who tried to learn Russian. Is each sentence true or false?");
+  H.tasks["p-l2-2324"] = listeningTask2("Listening: Steve and Kelly talk about their weekend. Choose A, B or C.");
+  H.tasks["p-l1-2425"] = listeningTask1("Listening: a talk about Amelia Earhart, a woman pilot. Is each sentence true or false?");
+  H.tasks["p-l2-2425"] = listeningTask2("Listening: a manager gives tips to Chloe, a new salesperson. Choose A, B or C. The questions are numbered 2–6, as in the official paper.");
+  H.tasks["p-l1-2122"] = listeningTask1("Listening: a radio show about Liberace, an American entertainer. Is each sentence true or false?");
+  H.tasks["p-l2-2122"] = listeningTask2("Listening: Ian and Rika talk about judo. Choose A, B or C.");
+
   H.tasks["m-r1"] = {
     what: "Reading: a long article. Choose the best answer A, B, C or D for questions 1–10.",
     steps: [

@@ -63,7 +63,7 @@ class Player(unittest.TestCase):
         # Task 2 официально звучит ОДИН раз — без остановки плеер сразу играл Task 3.
         r = run_js("return [C.stopAfter(V, 0), C.stopAfter(V, 622), C.stopAfter(V, 864), C.stopAfter(V, 973)];")
         self.assertEqual(r, [622, 864, None, None])
-        self.assertIn("C.stopAfter(V, sec)", HTML.replace("window.Check", "C"))
+        self.assertIn("C.stopAfter(V, sec, clip)", HTML.replace("window.Check", "C"))
 
     def test_stop_is_recomputed_from_any_position(self):
         # Ревью PR 25: после паузы ▶ играл Task 2 и без остановки Task 3; перемотка за границу

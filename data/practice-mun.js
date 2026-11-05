@@ -19,7 +19,9 @@
 //   найдётся ни поиском, ни словарём.
 (function () {
   function tx(n, q, accept) { return { n: n, q: q, accept: accept }; }
-  function ch(n, q, a) { return { n: n, q: q, a: a }; }
+  function ch(n, q, a, opts) { var it = { n: n, q: q, a: a }; if (opts) it.opts = opts; return it; }
+  function abc(list) { return list.map(function (t, j) { return { k: "ABC"[j], t: t }; }); }
+  var TF = [{ k: "A", t: "True" }, { k: "B", t: "False" }];
 
   var SRC_2324 = "Moscow municipal stage 2023/24 (official)";
   var SRC_2425 = "Moscow municipal stage 2024/25 (official)";
@@ -299,6 +301,107 @@
           ch(8, "first-past-the-post", ["F"]),
           ch(9, "nimbyism", ["G"]),
           ch(10, "The lollipop lady", ["B"])
+        ]
+      }
+    ],
+    // Listening: официальные записи, задания и ключи (учитель 05.11: на дом, несколько вариантов).
+    // from/stop — по паузам записи: Task 2 начинается с его инструкции, 25 секунд на чтение вопросов — как на олимпиаде.
+    // Номера пунктов — как в бумаге (2024/25: 2–6); номера МЭШ в скобках и «Задание N» убраны. Обратные кавычки бумаги —
+    // обычные апострофы. В 2021/22 у вариантов нет букв: A, B, C — по порядку строк.
+    "m-l1": [
+      {
+        id: "p-l1-2324", section: "listening", type: "choice", opts: TF,
+        title: "Practice · Task 1 · Moscow municipal 2023/24", source: SRC_2324,
+        audio: { src: "media/listening-mun-msk-23-24.mp3", from: 0, stop: 500, label: "Task 1 · talk (twice)", title: "Municipal 2023/24" },
+        intro: "For items 1–10 listen to a talk about famous people who tried to learn Russian and decide whether the statements (1–10) are TRUE (A), or FALSE (B) according to the text you hear. You will hear the text twice.",
+        items: [
+          ch(1, "A lot of people have been determined to learn Russian because of its challenging nature.", ["B"]),
+          ch(2, "Otto von Bismarck had studied Russian before he was sent to Russia as an official representative of Prussia.", ["A"]),
+          ch(3, "Otto von Bismarck considered studying Russian grammar as difficult as fighting the French Army.", ["B"]),
+          ch(4, "The Russian emperor complimented Otto von Bismarck on the unwillingness to show his true knowledge of Russian.", ["B"]),
+          ch(5, "Prosper Mérimée lacked fluency in Latin.", ["B"]),
+          ch(6, "Varvara taught Prosper Mérimée to translate from Russian into French.", ["B"]),
+          ch(7, "Prosper Mérimée was stunned by the ability of the Russian language to convey subtle shades of meaning.", ["A"]),
+          ch(8, "Lewis Carroll was professionally interested in religious beliefs of the Russians.", ["B"]),
+          ch(9, "Comments about difficult Russian words didn’t discourage Lewis Carroll from studying the language.", ["A"]),
+          ch(10, "Lewis Carroll wasn’t good enough at Russian to be able to bargain with the Russian merchants.", ["B"])
+        ]
+      },
+      {
+        id: "p-l1-2425", section: "listening", type: "choice", opts: TF,
+        title: "Practice · Task 1 · Moscow municipal 2024/25", source: SRC_2425,
+        audio: { src: "media/listening-mun-msk-24-25.mp3", from: 0, stop: 378, label: "Task 1 · talk (twice)", title: "Municipal 2024/25" },
+        intro: "For items 1–10 listen to a talk about a woman pilot and decide whether the statements (1–10) are TRUE, or FALSE according to the text you hear. You will hear the text twice.",
+        items: [
+          ch(1, "The speaker outlined his talk.", ["A"]),
+          ch(2, "Amelia Earhart moved to Chicago as soon as her father was given the sack.", ["A"]),
+          ch(3, "Amelia Earhart graduated from Columbia University in 1920.", ["B"]),
+          ch(4, "Amelia’s parents in California bought her first plane.", ["B"]),
+          ch(5, "After setting a world record Amelia Earhart was employed as a social worker.", ["A"]),
+          ch(6, "Amelia Earhart is famous for being the only woman to fly solo non-stop across the Atlantic.", ["B"]),
+          ch(7, "Before flying across the Atlantic Amelia Earhart used to write articles.", ["A"]),
+          ch(8, "The only reason that prevented Amelia Earhart from flying to Paris was unfavourable weather conditions.", ["B"]),
+          ch(9, "After circumnavigating the world in 1937, Amelia Earhart published two books.", ["B"]),
+          ch(10, "Amelia Earhart was awarded by American and French governments.", ["A"])
+        ]
+      },
+      {
+        id: "p-l1-2122", section: "listening", type: "choice", opts: TF,
+        title: "Practice · Task 1 · Moscow municipal 2021/22", source: SRC_2122,
+        audio: { src: "media/listening-mun-msk-21-22.mp3", from: 0, stop: 499, label: "Task 1 · talk (twice)", title: "Municipal 2021/22" },
+        intro: "For items 1–10 listen to the introduction to a radio show about the American entertainer, Liberace, and decide whether the statements (1–10) are TRUE, or FALSE according to the text you hear. You will hear the text twice.",
+        items: [
+          ch(1, "Liberace has been dominating world entertainment for four decades.", ["B"]),
+          ch(2, "Liberace’s mother was born in Italy.", ["B"]),
+          ch(3, "Liberace’s father occasionally made a living working at a factory.", ["A"]),
+          ch(4, "Liberace’s mother considered playing music a useless pastime.", ["A"]),
+          ch(5, "Liberace started playing piano at the age of eight.", ["B"]),
+          ch(6, "Liberace started playing pop music after World War II.", ["B"]),
+          ch(7, "Liberace wasn’t a modest person.", ["A"]),
+          ch(8, "Liberace first appeared on the radio in 1952.", ["B"]),
+          ch(9, "Liberace’s concerts were famous for a warm atmosphere.", ["A"]),
+          ch(10, "Some people didn’t accept Liberace’s style and laughed at it.", ["A"])
+        ]
+      }
+    ],
+    "m-l2": [
+      {
+        id: "p-l2-2324", section: "listening", type: "choice",
+        title: "Practice · Task 2 · Moscow municipal 2023/24", source: SRC_2324,
+        audio: { src: "media/listening-mun-msk-23-24.mp3", from: 500, label: "Task 2 · dialogue (once)", title: "Municipal 2023/24" },
+        intro: "For items 11–15 listen to the dialogue. Choose the correct answer (A, B or C) to answer questions 11–15. You will hear the text only once.",
+        items: [
+          ch(11, "Kelly’s week was", ["B"], abc(["quite usual.", "very slow and boring.", "really nice."])),
+          ch(12, "What is NOT TRUE about Steve’s dinner?", ["B"], abc(["He will enjoy French cuisine.", "He will go to the restaurant on Saturday.", "It won’t take him long to get to the restaurant."])),
+          ch(13, "Steve feels certain that at the weekend he will", ["A"], abc(["prepare food for his friends.", "go to the cinema.", "have a lie-in."])),
+          ch(14, "On Friday evening Kelly is going to", ["C"], abc(["meet up her former colleagues.", "attend her friends’ party.", "spend a night at home."])),
+          ch(15, "Steve finally says that a boat is", ["A"], abc(["an awesome place for a party.", "a cosy place for a party.", "a tiny place for a party."]))
+        ]
+      },
+      {
+        id: "p-l2-2425", section: "listening", type: "choice",
+        title: "Practice · Task 2 · Moscow municipal 2024/25", source: SRC_2425,
+        audio: { src: "media/listening-mun-msk-24-25.mp3", from: 378, label: "Task 2 · conversation (once)", title: "Municipal 2024/25" },
+        intro: "For items 2–6 listen to a conversation between the manager of the fashion department and Chloe, a new salesperson. Choose the correct answer to answer the questions 2–6. You will hear the text only once.",
+        items: [
+          ch(2, "During her first week at the store Chloe managed to", ["B"], abc(["deal with plenty of customers.", "deal with a few difficult customers.", "deal with hardly any other trainees."])),
+          ch(3, "The manager thinks the best sales people", ["A"], abc(["are more than just fashion experts.", "should answer questions about their section only.", "are able to sell cosmetics and jewelry."])),
+          ch(4, "The sales staff at the department", ["C"], abc(["have to wear uniform.", "are obliged to wear designer labels.", "can be models for the store fashions."])),
+          ch(5, "Which advice is NOT given to Chloe?", ["B"], abc(["Find out about other departments in the store.", "Pressurise customers to buy something.", "Give customers a lot of attention."])),
+          ch(6, "What is NOT TRUE about Chloe?", ["C"], abc(["She is the right person for sales.", "She has little sales experience.", "She isn’t grateful to the manager for the advice."]))
+        ]
+      },
+      {
+        id: "p-l2-2122", section: "listening", type: "choice",
+        title: "Practice · Task 2 · Moscow municipal 2021/22", source: SRC_2122,
+        audio: { src: "media/listening-mun-msk-21-22.mp3", from: 499, label: "Task 2 · dialogue (once)", title: "Municipal 2021/22" },
+        intro: "For items 11–15 listen to the dialogue. Choose the correct answer to answer questions 11–15. You will hear the text only once.",
+        items: [
+          ch(11, "Rika DID NOT", ["B"], abc(["give someone her autograph.", "win the judo competition.", "sell books."])),
+          ch(12, "Rika says that to do judo you need to", ["C"], abc(["be big.", "be strong.", "maintain balance."])),
+          ch(13, "Rika started doing judo", ["A"], abc(["to defend herself.", "to bully big kids.", "to fight with her brother."])),
+          ch(14, "Rika practises the techniques", ["A"], abc(["every day.", "two times a week.", "every week."])),
+          ch(15, "Rika had a bad injury", ["C"], abc(["a few weeks ago.", "a couple of months ago.", "a year ago."]))
         ]
       }
     ],

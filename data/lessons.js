@@ -658,7 +658,7 @@
       aims: [
         "✍️ One real quotation: build an essay and write it.",
         "🇷🇺 Culture: Russia in the format of Task 4.",
-        "🏠 Homework: Listening (Section 6)."
+        "🏠 Homework: Listening (Section 6) and grammar (Section 7)."
       ],
       steps: [
         {
@@ -798,13 +798,67 @@
           stage: "homework", home: true, title: "Homework: Listening", minutes: 45, image: img("m18-all-good"),
           blocks: [
             LISTENING_HOWTO,
-            { type: "brief", title: "Listening", items: [
+            { type: "brief", title: "Listening: three variants", items: [
               "Read the tips above.",
-              "Open each task. Read the statements, then press ▶ and listen.",
-              "Press **✓ Check answers**, then listen to the wrong ones again."
+              "Do one variant at a time. Open the first part and press ▶. Do not stop the recording: it has its own pauses.",
+              "Press **✓ Check answers**, then read **💡 Show how to solve** under the wrong ones."
             ] },
-            { type: "task", task: "m-l1", label: "Task 1 · Municipal 2025/26" },
-            { type: "task", task: "m-l2", label: "Task 2 · Municipal 2025/26" }
+            { type: "task", task: "p-l1-2324", label: "Variant 1 · 2023/24 · True or False: famous people who tried to learn Russian" },
+            { type: "task", task: "p-l2-2324", label: "Variant 1 · 2023/24 · A, B or C: Steve and Kelly" },
+            { type: "task", task: "p-l1-2425", label: "Variant 2 · 2024/25 · True or False: Amelia Earhart" },
+            { type: "task", task: "p-l2-2425", label: "Variant 2 · 2024/25 · A, B or C: Chloe and the manager" },
+            { type: "task", task: "p-l1-2122", label: "Variant 3 · 2021/22 · True or False: Liberace" },
+            { type: "task", task: "p-l2-2122", label: "Variant 3 · 2021/22 · A, B or C: Ian and Rika" }
+          ]
+        },
+        // Учитель 06.11: «каверзную тему, которая часто используется… в домашку, просто с правилом, чтобы напомнить».
+        // Тема посчитана по официальному Task 2 за 5 лет: 9 пунктов из 50, каждый год; больше любой другой темы.
+        // Пункты — дословно из официальных заданий 2021/22, 2023/24, 2024/25, 2025/26 (2022/23 оставлен для пробника).
+        {
+          stage: "homework", home: true, title: "Homework: Grammar", minutes: 10, image: img("m03-studying"),
+          blocks: [
+            { type: "vtable", title: "🧩 Wish, would rather, it is time, if", cols: [
+              { h: "wish", lines: [
+                "**wish + Past Simple**: now. I wish I knew her name.",
+                "**wish + had + V3**: the past, I am sorry about it. I wish I had read the book.",
+                "**wish + would**: I am annoyed and I want a change. I wish the music would end."
+              ] },
+              { h: "would rather", lines: [
+                "**would rather (not) + verb**, no **to**. I would rather walk.",
+                "**would rather have + V3**: the past. I would rather have stayed at home.",
+                "**would rather + another person + Past Simple**: now. I would rather you came early."
+              ] },
+              { h: "It is time", lines: [
+                "**It is time / about time / high time + somebody + Past Simple**: now. It is high time you started."
+              ] },
+              { h: "if", lines: [
+                "**If + Past Simple, would + verb**: not true now. If I had a car, I would drive.",
+                "**If + had + V3, would have + V3**: it did not happen. If I had known, I would have come.",
+                "**But for + noun** = if there had not been. But for the rain, we would have won."
+              ] }
+            ] },
+            { type: "brief", title: "Complete the second sentence", items: [
+              "Use the word given. Do not change it.",
+              "Use exactly the number of words in brackets, **including the word given**. Do not use short forms.",
+              "Type your answer and press **✓ Check**."
+            ] },
+            { type: "transform", items: [
+              { q: "I’m afraid it will never stop snowing, it’s infuriating.", word: "wish", before: "I", after: "snowing.", n: 4, accept: ["wish it would stop"],
+                note: "**wish + would**: I am annoyed and I want a change." },
+              { q: "Moira says she prefers to do her homework on her own.", word: "rather", before: "Moira says that", after: "do her homework with someone else.", n: 4, accept: ["she would rather not"],
+                note: "**would rather not + verb**, no **to**." },
+              { q: "I wish Jack had bought tickets for Venice but we went to Paris instead.", word: "rather", before: "Jack bought us tickets to Paris but I", after: "to Venice.", n: 4, accept: ["would rather have gone"],
+                note: "**would rather have + V3**: it is about the past, and it did not happen." },
+              { q: "I do not think she wants us to eat in her car.", word: "rather", before: "I think she", after: "eat in her car.", n: 5, accept: ["would rather we did not", "would rather not let us"],
+                note: "**would rather + another person + Past Simple**: the form is past, but the time is now." },
+              { q: "Albert’s wife says he has to start being interested in his children’s lives.", word: "about", before: "Albert’s wife says it is", after: "an interest in his children’s lives.", n: 5,
+                accept: ["about time that he took", "about time that he had", "about time that he showed", "about time that he expressed", "about time he started taking", "about time he started having", "about time her husband took"],
+                note: "**It is about time + somebody + Past Simple**: the form is past, but the time is now." },
+              { q: "We didn’t stay long at the party because it was very noisy.", word: "so", before: "If there", after: "noise, we might have stayed longer at the party.", n: 5, accept: ["had not been so much"],
+                note: "**If + had + V3**: it is about the past, and it did not happen. **Noise** cannot be counted: so **much** noise." },
+              { q: "There was a strong wind which caused the fire to spread quickly.", word: "so", before: "The fire", after: "quickly but for a strong wind.", n: 5, accept: ["would not have spread so"],
+                note: "**But for** a strong wind = if there had not been a strong wind. The result in the past: **would not have + V3**." }
+            ] }
           ]
         }
       ]
