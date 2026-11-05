@@ -1178,7 +1178,7 @@ class EssayAndCultureLesson(unittest.TestCase):
     def test_date_minutes_and_homework_section(self):
         self.assertEqual(self.l["date"], "2026-11-06")
         self.assertEqual(sum(st["minutes"] for st in self.steps if not st.get("home")), 50)
-        self.assertEqual([st.get("home", False) for st in self.steps], [False] * (len(self.steps) - 1) + [True])
+        self.assertEqual([st.get("home", False) for st in self.steps], [False] * (len(self.steps) - 2) + [True, True])
         imgs = [st["image"] for st in self.steps]
         self.assertEqual(len(set(imgs)), len(imgs))
 
@@ -1289,17 +1289,63 @@ class EssayAndCultureLesson(unittest.TestCase):
         self.assertEqual([c["t"] for c in cards if "fully agree" in c["t"] and c["b"] != "intro"], [])
 
     def test_homework_is_listening_with_tips_and_official_audio(self):
-        home = self.steps[-1]
+        home = self.steps[-2]
         self.assertTrue(home.get("home"))
         tips = json.dumps(home["blocks"][0], ensure_ascii=False)
         self.assertIn("How to do Listening", tips)
         for x in ["twice", "once", "synonyms", "NOT"]:
             self.assertIn(x, tips)
-        tasks = [b["task"] for b in home["blocks"] if b["type"] == "task"]
-        self.assertGreaterEqual(len(tasks), 2)
-        ids = run_js("""var ids = {}; V.parts.forEach(function(p){ p.tasks.forEach(function(t){ if (t.section === "listening" && t.audio) ids[t.id] = 1; }); });
-          Object.keys(P).forEach(function(k){ P[k].forEach(function(t){ if (t.section === "listening" && t.audio) ids[t.id] = 1; }); }); return ids;""")
-        self.assertEqual([t for t in tasks if t not in ids], [], "только задания с настоящей записью")
+        links = [b for b in home["blocks"] if b["type"] == "task"]
+        self.assertEqual(len(links), 6, "три варианта по два задания")
+        got = run_js("""var o = {}; Object.keys(P).forEach(function(k){ P[k].forEach(function(t){ o[t.id] = {section: t.section, src: t.audio && t.audio.src, source: t.source}; }); }); return o;""")
+        for b in links:
+            t = got[b["task"]]
+            self.assertEqual(t["section"], "listening", b["task"])
+            self.assertIn("official", t["source"])
+            self.assertTrue((ROOT / t["src"]).is_file(), t["src"])
+        self.assertEqual(len({got[b["task"]]["src"] for b in links}), 3)
+        # Первым — официальный текст о тех, кто учил русский: Россия прямо в задании олимпиады.
+        self.assertIn("2023/24", links[0]["label"])
+        self.assertIn("Russian", links[0]["label"])
+        for b in links:
+            self.assertRegex(b["label"], r"^Variant [123] · ")
+            self.assertNotRegex(b["label"], r"Task \d", "номера Task — только у рамок раздела")
+
+    def test_homework_grammar_is_a_rule_and_only_official_items(self):
+        # Учитель 06.11: «каверзную тему, которая часто используется… в домашку, просто с правилом, чтобы напомнить»,
+        # «не рандомные задания». Тема посчитана по Task 2 за 5 лет: wish / would rather / it is time / if — 9 пунктов из 50,
+        # каждый год; это больше любой другой темы. Все пункты дословно из официальных заданий (2022/23 не берём: пробник).
+        step = self.steps[-1]
+        self.assertTrue(step.get("home"))
+        self.assertEqual([b["type"] for b in step["blocks"]], ["vtable", "brief", "transform"])
+        rule = json.dumps(step["blocks"][0], ensure_ascii=False)
+        for x in ["wish", "would rather", "It is time", "If", "But for"]:
+            self.assertIn(x, rule)
+        official = run_js("""var o = [];
+          V.parts.forEach(function(p){ p.tasks.forEach(function(t){ if (t.id === "m-u2") o = o.concat(t.items); }); });
+          P["m-u2"].forEach(function(t){ o = o.concat(t.items); }); return o;""")
+        official.append({"q": "Moira says she prefers to do her homework on her own. — rather — Moira says that ___ ____ _____ _____ do her homework with someone else. (4 words)",
+                         "accept": ["she would rather not"]})  # 2021/22, Task 2, п. 7; в приложении этого года нет
+        items = step["blocks"][2]["items"]
+        self.assertEqual(len(items), 7)
+        for it in items:
+            hit = [o for o in official if o["q"].startswith(it["q"] + " — ")]
+            self.assertEqual(len(hit), 1, it["q"])
+            first, word, second = hit[0]["q"].split(" — ")
+            self.assertEqual(word, it["word"])
+            before, after = re.split(r"(?:\s*_+\s*)+", second)
+            self.assertEqual(before, it["before"])
+            self.assertEqual(after.split(" (")[0], it["after"])
+            self.assertIn("(%d words)" % it["n"], after)
+            self.assertEqual(it["accept"], hit[0]["accept"])
+            self.assertTrue(it.get("note"), "почему — после проверки, дома учителя рядом нет")
+        # В примерах правила нет ответов на задание.
+        for it in items:
+            self.assertNotIn(it["accept"][0], rule, it["accept"][0])
+        i = len(self.steps) - 1
+        html = render_step("l4", i, events=[["click", "lscheckall", "l4:%d" % i]])
+        self.assertEqual(len(re.findall(r'class="ls-tf wrong"', html)), 7)
+        self.assertIn("Task 1 · ", html)
 
     def test_official_culture_task_2021_22(self):
         t = run_js("""var t = null; Object.keys(P).forEach(function(k){ P[k].forEach(function(x){ if (x.id === "p-u4-2122") t = x; }); });

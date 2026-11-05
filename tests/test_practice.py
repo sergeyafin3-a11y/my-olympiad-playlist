@@ -11,6 +11,7 @@ import json
 import pathlib
 import re
 import subprocess
+import unicodedata
 import unittest
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -38,8 +39,13 @@ KEYS = {
         "m-r2": list("GBKEIDCAJF"),
     },
     # Задание по культуре 2021/22: в бумаге без букв, буквы A–N — по порядку строк (как у соседних лет).
-    "2122": {"m-u4": list("JEKAHMLFGB")},
+    "2122": {"m-u4": list("JEKAHMLFGB"),
+             # Listening 2021/22: ключ в бумаге — словами и True/False; буквы A, B, C — по порядку строк бланка.
+             "m-l1": list("BBAABBABAA"), "m-l2": list("BCAAC")},
 }
+# Listening с отрисованных страниц ответов: у 2023/24 и 2024/25 верный вариант выделен жирным.
+KEYS["2324"].update({"m-l1": list("BABBBBABAB"), "m-l2": list("BBACA")})
+KEYS["2425"].update({"m-l1": list("AABBABABBA"), "m-l2": list("BACBC")})
 
 
 def run_js(body):
@@ -61,7 +67,7 @@ class Practice(unittest.TestCase):
           var parent = {}; V.parts.forEach(function(p){ p.tasks.forEach(function(t){ parent[t.id] = t.type; }); });
           return {sets: out, parent: parent};
         """)
-        self.assertEqual(sorted(r["sets"]), ["m-r2", "m-u1", "m-u2", "m-u3", "m-u4"])
+        self.assertEqual(sorted(r["sets"]), ["m-l1", "m-l2", "m-r2", "m-u1", "m-u2", "m-u3", "m-u4"])
         for tid, sets in r["sets"].items():
             self.assertGreaterEqual(sum(s[2] for s in sets), 10 if tid == "m-r2" else 15, tid)
             for sid, typ, n, src in sets:
@@ -119,6 +125,77 @@ class Practice(unittest.TestCase):
         self.assertIn('FULLMODE = parts[0] === "full" && !PARENT[parts[1]]', HTML)
         self.assertIn("if (PRACTICE[t.id] && !FULLMODE)", HTML)
         self.assertIn("PARENT[last.id] ? last.title", HTML)
+
+
+class ListeningPractice(unittest.TestCase):
+    """Учитель 05.11: на дом — Listening, несколько вариантов, «аудиозаписи официальные» и как это делать.
+    Записи, задания и ключи — официальные за 2021/22, 2023/24 и 2024/25 (2022/23 — для пробника)."""
+    YEARS = {"2122": "2021/22", "2324": "2023/24", "2425": "2024/25"}
+
+    def sets(self):
+        files = ["data/variant-mun-msk-25-26.js", "data/practice-mun.js", "data/explain-mun.js", "data/howto-mun.js"]
+        src = "\n".join(["var window = this;"] + [(ROOT / f).read_text(encoding="utf-8") for f in files] +
+                        ["JSON.stringify({l1: window.PRACTICE['mun-msk-25-26']['m-l1'], l2: window.PRACTICE['mun-msk-25-26']['m-l2'], ex: window.EXPLAIN, how: window.HOWTO.tasks});"])
+        return json.loads(subprocess.run(["osascript", "-l", "JavaScript", "-e", src], capture_output=True, text=True, check=True).stdout)
+
+    def by_year(self):
+        r = self.sets()
+        out = {}
+        for kind in ("l1", "l2"):
+            for t in r[kind]:
+                y = [k for k, v in self.YEARS.items() if v in t["source"]][0]
+                out[(y, kind)] = t
+        self.assertEqual(sorted(out), sorted((y, k) for y in self.YEARS for k in ("l1", "l2")))
+        return out, r
+
+    def test_words_are_the_official_ones(self):
+        w = lambda s: re.findall(r"[a-z0-9]+", unicodedata.normalize("NFC", s).lower().replace("’", "'").replace("`", "'"))
+        sets, _ = self.by_year()
+        for (y, kind), t in sets.items():
+            ours = [t["intro"]]
+            for it in t["items"]:
+                ours += [str(it["n"]), it["q"]] + [o["t"] for o in it.get("opts", [])]
+            official = (ROOT / "tests" / "fixtures" / ("listening-mun-%s-task%s.txt" % (y, kind[1]))).read_text(encoding="utf-8")
+            self.assertEqual(w(" ".join(ours)), w(official), (y, kind))
+
+    def test_each_task_plays_its_own_official_recording(self):
+        sets, _ = self.by_year()
+        for y, year in self.YEARS.items():
+            one, two = sets[(y, "l1")]["audio"], sets[(y, "l2")]["audio"]
+            self.assertEqual(one["src"], two["src"])
+            self.assertTrue((ROOT / one["src"]).is_file(), one["src"])
+            self.assertIn(year[2:].replace("/", "-"), one["src"])
+            self.assertIn(year, one["title"])
+            self.assertEqual(one["from"], 0)
+            self.assertEqual(one["stop"], two["from"], "Task 1 кончается там, где начинается Task 2")
+            self.assertNotIn("stop", two, "Task 2 — до конца записи")
+            self.assertIn("twice", one["label"])
+            self.assertIn("once", two["label"])
+
+    def test_every_question_has_a_breakdown_quoting_the_recording(self):
+        def text(s):
+            s = unicodedata.normalize("NFC", s).replace("’", "'").replace("`", "'").replace("“", "").replace("”", "")
+            return re.sub(r"\s+", " ", re.sub(r"-\s*\n\s*", "-", s))
+        sets, r = self.by_year()
+        for (y, kind), t in sets.items():
+            script = text((ROOT / "tests" / "fixtures" / ("listening-mun-%s-script.txt" % y)).read_text(encoding="utf-8"))
+            for it in t["items"]:
+                e = r["ex"][t["id"]][str(it["n"])]
+                self.assertIn("Answer: " + it["a"][0], e, (t["id"], it["n"]))
+                self.assertNotRegex(e, "[а-яё]")
+                quotes = re.findall(r'"([^"]+)"', e)
+                self.assertTrue(quotes, (t["id"], it["n"]))
+                for q in quotes:
+                    self.assertIn(text(q), script, (t["id"], it["n"]))
+
+    def test_how_to_card_describes_this_recording(self):
+        # Карточка задания 2025/26 говорит про пилота и Сан-Франциско: на чужой записи она бы обманывала.
+        sets, r = self.by_year()
+        for t in sets.values():
+            how = r["how"][t["id"]]
+            self.assertNotIn("pilot talks", how["what"])
+            self.assertNotIn("San Francisco", how["what"])
+            self.assertTrue(how["steps"])
 
 
 if __name__ == "__main__":

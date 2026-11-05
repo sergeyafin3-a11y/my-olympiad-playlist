@@ -80,7 +80,9 @@
   // Где остановить плеер: там, где начинается аудио следующего задания после текущей точки.
   // Иначе после Task 2, который звучит один раз, сразу играл Task 3. Считается от любой
   // позиции — после паузы, перемотки и пропуска внутри задания.
-  function stopAfter(variant, at) {
+  function stopAfter(variant, at, clip) {
+    // У отработки прошлых лет своя запись (clip): её граница — своя, задания варианта к ней не относятся.
+    if (clip) return clip.stop > at ? clip.stop : null;
     var next = null;
     variant.parts.forEach(function (p) { p.tasks.forEach(function (t) {
       if (t.audio && t.audio.from > at && (next === null || t.audio.from < next)) next = t.audio.from;
