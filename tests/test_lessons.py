@@ -705,7 +705,7 @@ class CheckAnswers(unittest.TestCase):
     def test_check_answers_at_the_bottom_where_there_is_something_to_check(self):
         steps = run_js("""return L.filter(function(x){ return x.id === "l2" || x.id === "l3"; }).map(function(l){
           return l.steps.map(function(s){ return s.blocks.some(function(b){
-            return ["gapfill", "transform", "upgrade"].indexOf(b.type) >= 0 || (b.type === "paper" && b.task); }); }); });""")
+            return ["gapfill", "transform", "upgrade", "listenfix", "listenmatch"].indexOf(b.type) >= 0 || (b.type === "paper" && b.task); }); }); });""")
         for lid, flags in zip(["l2", "l3"], steps):
             for i, can in enumerate(flags):
                 html = render_step(lid, i)
@@ -1160,6 +1160,171 @@ class WritingLesson(unittest.TestCase):
         # Олимпиада — на компьютере в тестирующей системе: подсказок орфографии там нет.
         self.assertRegex(HTML, r'id="wText"[^>]*spellcheck="false"')
         self.assertRegex(HTML, r'id="wTitle"[^>]*spellcheck="false"')
+
+
+class EssayAndCultureLesson(unittest.TestCase):
+    """Урок 6.11 «Writing: an essay on a quotation · Culture». Учитель 05.11: занятие 6 ноября вместо 2-го;
+    задания такие, чтобы ученица больше слушала и делала — нажимала, раскладывала, печатала, а учитель читала
+    вслух и помогала; что делать в задании — расписано подробно. И больше про Россию: названия праздников,
+    места, люди на английском. Остальные правила прежние: на уроке одно задание, дома — отдельный раздел;
+    на экране без комментариев; проверка и стирание; ответы — у учителя."""
+
+    def setUp(self):
+        self.l = run_js('return L.filter(function(x){ return x.id === "l4"; })[0];')
+        self.steps = self.l.get("steps") or []
+        self.assertTrue(self.steps, "урок собран по разделам")
+
+    def find(self, kind):
+        return [(i, k, b) for i, st in enumerate(self.steps) for k, b in enumerate(st["blocks"]) if b["type"] == kind]
+
+    def test_date_minutes_and_homework_section(self):
+        self.assertEqual(self.l["date"], "2026-11-06")
+        self.assertEqual(sum(st["minutes"] for st in self.steps if not st.get("home")), 50)
+        self.assertEqual([st.get("home", False) for st in self.steps], [False] * (len(self.steps) - 1) + [True])
+        imgs = [st["image"] for st in self.steps]
+        self.assertEqual(len(set(imgs)), len(imgs))
+
+    def test_she_listens_and_does(self):
+        # Ни разговора, ни монолога, ни «скажи / объясни вслух»: нажать, разложить, напечатать.
+        kinds = {b["type"] for st in self.steps for b in st["blocks"]}
+        self.assertEqual(kinds & {"speak", "talk"}, set())
+        said = json.dumps([b for st in self.steps for b in st["blocks"] if b["type"] in ("brief", "list", "thisorthat", "spot")], ensure_ascii=False).lower()
+        for w in ["say", "tell", "talk", "speak", "retell", "discuss", "explain each", "read it aloud", "correct it aloud"]:
+            self.assertNotRegex(said, r"\b%s\b" % w, w)
+        for lesson_kind in ["listenfix", "listenmatch", "sort", "spot", "quiz", "writebox"]:
+            self.assertIn(lesson_kind, kinds)
+
+    def test_every_task_says_in_detail_what_to_do(self):
+        games = ["listenfix", "listenmatch", "thisorthat", "sort", "spot", "quiz", "writebox", "counter", "storymap", "task"]
+        bad = []
+        for i, st in enumerate(self.steps):
+            seen = False
+            for k, b in enumerate(st["blocks"]):
+                if b["type"] == "brief":
+                    seen = True
+                    if len(b["items"]) < 2:
+                        bad.append("%d:%d короткая рамка" % (i, k))
+                elif b["type"] in games:
+                    if not seen:
+                        bad.append("%d:%d %s" % (i, k, b["type"]))
+                    if b["type"] != "task":
+                        seen = False
+        self.assertEqual(bad, [])
+
+    def test_no_narration_on_screen(self):
+        blocks = [b for st in self.steps for b in st["blocks"]]
+        self.assertEqual([b["text"][:40] for b in blocks if b["type"] == "text"], [])
+        talk = json.dumps([b for b in blocks if b["type"] in ("brief", "list")], ensure_ascii=False).lower()
+        for x in ["olympiad", "20 points", "just like"]:
+            self.assertNotIn(x, talk)
+
+    def test_the_essay_is_the_official_2021_22_task(self):
+        sheets = [b for i, k, b in self.find("wpaper")]
+        self.assertGreaterEqual(len(sheets), 2, "и на уроке, и в домашнем разделе")
+        official = (ROOT / "tests" / "fixtures" / "essay-mun-2122.txt").read_text(encoding="utf-8")
+        w = lambda t: re.findall(r"[a-z0-9]+", t.lower().replace("’", "'"))
+        for s in sheets:
+            self.assertIn("2021/22", s["source"])
+            ours = " ".join([s["intro"], s["quote"], s["author"], s["outro"], s["pointsLabel"]] + s["points"])
+            self.assertEqual(w(ours), w(official))
+
+    def test_listen_and_fix_keeps_the_sentence_with_the_teacher(self):
+        i, k, b = self.find("listenfix")[0]
+        self.assertEqual(i, 0)
+        self.assertGreaterEqual(len(b["items"]), 5)
+        html = render_step("l4", i)
+        for it in b["items"]:
+            self.assertNotIn(it["say"], html, "ошибочное предложение читает учитель, на экране его нет")
+            self.assertNotIn(it["accept"][0], html, "ответ — после проверки")
+            self.assertNotIn(it["say"].lower(), [a.lower() for a in it["accept"]])
+            self.assertTrue(it["why"])
+        key = "l4:%d:%d:0" % (i, k)
+        it = b["items"][0]
+        right = render_step("l4", i, events=[["type", "tfin", key, it["accept"][0].lower()], ["click", "tfcheck", key]])
+        self.assertRegex(right, r'class="ls-tf ls-lf right"')
+        self.assertIn(it["why"].split("**")[0][:15], right)
+        wrong = render_step("l4", i, events=[["type", "tfin", key, it["say"]], ["click", "tfcheck", key]])
+        self.assertRegex(wrong, r'class="ls-tf ls-lf wrong"')
+        self.assertIn(it["accept"][0], wrong)
+
+    def test_listen_and_match_russia(self):
+        # Набор про Россию — наш, не официальный: праздники, места и люди по-английски.
+        boxes = self.find("listenmatch")
+        self.assertEqual(len(boxes), 2)
+        text = json.dumps([b for i, k, b in boxes], ensure_ascii=False)
+        for name in ["National Unity Day", "Victory Day", "Russia Day", "Maslenitsa", "Cosmonautics Day", "The Hermitage", "Lake Baikal", "Yuri Gagarin"]:
+            self.assertIn(name, text)
+        for i, k, b in boxes:
+            self.assertGreaterEqual(len(b["rows"]), 8)
+            self.assertGreater(len(b["options"]), len(b["rows"]), "есть лишний вариант, как на олимпиаде")
+            answers = [r["a"] for r in b["rows"]]
+            self.assertEqual(len(set(answers)), len(answers))
+            self.assertEqual([a for a in answers if a not in b["options"]], [])
+        i, k, b = boxes[0]
+        key = "l4:%d:%d" % (i, k)
+        html = render_step("l4", i)
+        for r in b["rows"]:
+            self.assertNotIn(r["say"], html, "описание читает учитель; на экране — после проверки")
+        self.assertIn('data-lmsel="%s:0"' % key, html)
+        out = render_step("l4", i, events=[["type", "lmsel", key + ":0", b["rows"][0]["a"]], ["click", "lscheck", key]], with_store=True)
+        self.assertEqual(len(re.findall(r'class="ls-lmr right"', out["html"])), 1)
+        self.assertEqual(len(re.findall(r'class="ls-lmr wrong"', out["html"])), len(b["rows"]) - 1)
+        for r in b["rows"]:
+            self.assertIn(r["say"], out["html"], "после проверки — полное описание")
+        again = render_step("l4", i, init={"games": json.loads(out["store"]["olymp-lessons"])["games"]})
+        self.assertRegex(again, r'<option value="%s" selected>' % re.escape(b["rows"][0]["a"]))
+
+    def test_informal_words_are_found_and_fixed_in_writing(self):
+        i, k, b = self.find("spot")[0]
+        for it in b["items"]:
+            self.assertEqual(re.sub(r"[.,!?]", "", it["text"].split(" ")[it["at"]]), it["wrong"], it["text"])
+            self.assertEqual(it["cat"], "Style")
+        key = "l4:%d:%d" % (i, k)
+        html = render_step("l4", i, events=[["click", "lsspot", key + ":0:%d" % b["items"][0]["at"]]])
+        self.assertIn("Style mistake — write a better word in the chat.", html)
+        self.assertNotIn(b["items"][0]["right"], html)
+
+    def test_examples_in_the_essay_tasks_are_real_and_from_russia(self):
+        text = json.dumps(self.steps, ensure_ascii=False)
+        for name in ["Lomonosov", "Mendeleev", "Oblomov"]:
+            self.assertIn(name, text)
+
+    def test_check_and_clear_where_there_is_something_to_check(self):
+        for i, st in enumerate(self.steps):
+            html = render_step("l4", i)
+            self.assertIn('data-lsclear="l4:%d:"' % i, html)
+            can = any(b["type"] in ("listenfix", "listenmatch", "gapfill", "transform", "upgrade") for b in st["blocks"])
+            self.assertEqual('data-lscheckall="l4:%d"' % i in html, can, i)
+        i, k, b = self.find("listenfix")[0]
+        html = render_step("l4", i, events=[["click", "lscheckall", "l4:%d" % i]])
+        self.assertEqual(len(re.findall(r'class="ls-tf ls-lf (?:right|wrong)"', html)), len(b["items"]))
+        j, m, c = self.find("listenmatch")[0]
+        html = render_step("l4", j, events=[["click", "lscheckall", "l4:%d" % j]])
+        self.assertIn(c["rows"][0]["say"], html)
+
+    def test_homework_in_one_section(self):
+        home = self.steps[-1]["blocks"]
+        kinds = [b["type"] for b in home]
+        for kind in ["wpaper", "storymap", "timer", "writebox", "vtable", "list", "task"]:
+            self.assertIn(kind, kinds)
+        box = [b for b in home if b["type"] == "writebox"][0]
+        self.assertEqual((box["min"], box["max"]), (200, 250))
+        self.assertTrue(box.get("send"))
+        self.assertEqual([b["task"] for b in home if b["type"] == "task"], ["p-u4-2122"])
+        check = json.dumps([b for b in home if b["type"] == "list" and "checklist" in b["title"].lower()], ensure_ascii=False)
+        self.assertIn("own words", check)
+
+    def test_official_culture_task_2021_22(self):
+        t = run_js("""var t = null; Object.keys(P).forEach(function(k){ P[k].forEach(function(x){ if (x.id === "p-u4-2122") t = x; }); });
+                      return {opts: t.opts, items: t.items, intro: t.intro, ex: E["p-u4-2122"]};""")
+        official = (ROOT / "tests" / "fixtures" / "task4-mun-2122.txt").read_text(encoding="utf-8")
+        w = lambda s: sorted(re.findall(r"[a-z0-9]+", s.lower().replace("’", "'")))
+        ours = " ".join([t["intro"]] + [o["t"] for o in t["opts"]] + [it["q"] for it in t["items"]])
+        self.assertEqual(w(ours), w(official), "слова — как в официальном файле")
+        self.assertEqual([it["a"][0] for it in t["items"]], list("JEKAHMLFGB"))
+        self.assertEqual([o["k"] for o in t["opts"]], list("ABCDEFGHIJKLMN"))
+        for it in t["items"]:
+            self.assertIn("Answer: " + it["a"][0], t["ex"][str(it["n"])])
 
 
 if __name__ == "__main__":

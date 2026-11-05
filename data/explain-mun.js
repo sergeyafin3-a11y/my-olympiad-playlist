@@ -87,4 +87,17 @@
     9: "Before the gap: \"The best apple varieties… are ANTONOVKA OR BOGATYR\" — two kinds of apples.\nJ: \"THESE HAVE a slightly sour taste, which goes so well with the… sour cream based filling.\" — \"these\" (plural) = the two kinds of apples.\nAnswer: J.",
     10: "Before the gap: \"The pie is equally delicious when served WARM OR COOLED.\"\nF: \"Some say that CHILLING IT in the fridge for 3-5 hours makes it even tenderer…\" — chilling = making it cool; \"it\" = the pie.\nAnswer: F.\nThe extra sentence is H: the text already says this after gap 9 (\"sour cream base also goes perfectly with lots of other fruits and especially berries\"), so H would only repeat it."
   };
+  // Домашнее урока 6.11 — задание по культуре 2021/22, ключ официальный.
+  E["p-u4-2122"] = {
+    1: "The Bank of England stands on Threadneedle Street in the City of London, and people call it \"the Old Lady\".\nAnswer: J.",
+    2: "The three Rs are Reading, wRiting and aRithmetic: the basic things children learn at school.\nAnswer: E.",
+    3: "The BBC Proms are classical concerts held every summer at the Royal Albert Hall in London.\nAnswer: K.",
+    4: "An Eisteddfod is a Welsh festival of singing, poetry and music.\nAnswer: A.",
+    5: "The underdog is the person or team that everybody expects to lose.\nAnswer: H.",
+    6: "The Old Bailey is the popular name of the Central Criminal Court in London.\nAnswer: M.",
+    7: "\"It's not cricket\" means \"it's not fair\": the game stands for fair play.\nAnswer: L.",
+    8: "First-past-the-post: the candidate with the most votes wins. British general elections work this way.\nAnswer: F.",
+    9: "NIMBY means \"Not In My Back Yard\": people do not want a new building or activity near their home.\nAnswer: G.",
+    10: "A lollipop lady holds a round stop sign that looks like a lollipop and helps children cross the road.\nAnswer: B.\nThe extra phenomena are C, D, I and N."
+  };
 })();
