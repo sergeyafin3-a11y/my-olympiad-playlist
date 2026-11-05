@@ -1302,6 +1302,24 @@ class EssayAndCultureLesson(unittest.TestCase):
         html = render_step("l4", j, events=[["click", "lscheckall", "l4:%d" % j]])
         self.assertIn(c["rows"][0]["say"], html)
 
+    def test_right_answers_are_not_marked_wrong(self):
+        # Проверка урока 05.11: задания не должны браковать верное и спорить с рецептом на том же экране.
+        fix = self.find("listenfix")[0][2]["items"]
+        accepted = json.dumps([x for it in fix for x in it["accept"]])
+        for ok in ["If you visit Saint Petersburg, you will see the Hermitage.", "If you visit St Petersburg, you'll see the Hermitage.",
+                   "My teacher said that Pushkin wrote Eugene Onegin.", "No sooner had Lomonosov arrived in Moscow than he started to study.",
+                   "My friend suggested we visit the Tretyakov Gallery.", "Tchaikovsky has been famous for over a hundred years."]:
+            self.assertIn(ok, accepted)
+        # «I fully agree» в рецепте — во вступлении; значит, в сортировке его нет в другом абзаце.
+        cards = self.find("sort")[0][2]["cards"]
+        self.assertEqual([c["t"] for c in cards if "fully agree" in c["t"] and c["b"] != "intro"], [])
+        # В каждом предложении «Too informal!» ровно одно разговорное слово.
+        informal = {"super", "guys", "kinda", "really", "cool", "gotta"}
+        for it in self.find("spot")[0][2]["items"]:
+            self.assertEqual(len([w for w in re.findall(r"[a-z]+", it["text"].lower()) if w in informal]), 1, it["text"])
+        said = json.dumps([r["say"] for i, k, b in self.find("listenmatch") for r in b["rows"]])
+        self.assertNotIn("It remembers", said)
+
     def test_homework_in_one_section(self):
         home = self.steps[-1]["blocks"]
         kinds = [b["type"] for b in home]
