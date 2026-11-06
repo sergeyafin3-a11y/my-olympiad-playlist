@@ -650,14 +650,14 @@
     },
     // Урок 6.11: одна цель — эссе по цитате 2021/22 (Стивен Кинг), которое не теряет баллы за содержание. Учитель 06.11: «цель у конкретного урока»,
     // «за час уложились», «на все вопросы ответила». На уроке 52 минуты заданий и 8 минут на вопросы. На экране — только задания.
-    // Дома только нужное: грамматика, подводки к Use of English, один Listening и пробник. Остальные варианты — к следующим домашкам.
+    // Дома только нужное: грамматика, подводки к Use of English и один Listening. Пробник — на 16 ноября, по работе 2025/26.
     // Картинки — пока временные, из прошлых уроков: учитель ищет свои.
     {
       id: "l4", date: "2026-11-06", title: "Writing: an essay on a quotation", emoji: "📚", cover: img("m04-smort"),
       aims: [
         "🎯 Goal: an essay on a quotation that keeps all the points for Task completion.",
         "✍️ One real quotation: build the essay, write it, check it.",
-        "🏠 Homework: Sections 6–9."
+        "🏠 Homework: Sections 6–8."
       ],
       steps: [
         {
@@ -824,11 +824,11 @@
               "Tap it and read why."
             ] },
             { type: "spot", items: [
-              { text: "The joke in the cartoon intentionally mixed all up a safe, childlike, rural world (the characters from Milne’s books and the footbridge) and the supposedly dangerous world of urban youth (their hoods and the suggestion to hang about).", at: 7, wrong: "all", right: "", cat: "Extra word", why: "**mix up** is a phrasal verb: nothing goes between its two parts here." },
+              { text: "The joke in the cartoon intentionally mixed all up a safe, childlike, rural world (the characters from Milne’s books and the footbridge) and the supposedly dangerous world of urban youth (their hoods and the suggestion to hang about).", at: 7, wrong: "all", right: "", cat: "Extra word", why: "**mix up** is a phrasal verb. Its long object comes after **up**, and **all** has no job here." },
               { text: "A yob is a far rude, noisy and sometimes aggressive and violent boy or young man.", at: 4, wrong: "far", right: "", cat: "Extra word", why: "**far** goes with a comparative: far ruder. Here we need only: a rude boy." },
               { text: "Apparently, the public was being intimidated by them.", at: 4, wrong: "being", right: "", cat: "Extra word", why: "This is how people felt at that time: **was intimidated**. The continuous form is not needed." },
               { text: "With the help of this neologism underwolves (that is, a word which the writer has invented and you cannot find in a dictionary) the author intends to depict an image of poor and untrustworthy people and also dangerous such like wolves.", at: 38, wrong: "such", right: "", cat: "Extra word", why: "**dangerous like wolves** is enough. **such like** is wrong here." },
-              { text: "Even the Prime Minister indicated so mild approval for the Bluewater ban.", at: 5, wrong: "so", right: "", cat: "Extra word", why: "**so** cannot stand before an adjective + noun. Here we need only: mild approval." },
+              { text: "Even the Prime Minister indicated so mild approval for the Bluewater ban.", at: 5, wrong: "so", right: "", cat: "Extra word", why: "**so** does not go before an adjective + uncountable noun. **so much noise** is different: **much** is a quantity word. Here we need only: mild approval." },
               { text: "It was at this time that the term ASBO (Anti-Social Behaviour Order, which legally bans a person out from certain areas) became part of the everyday British lexicon.", at: 17, wrong: "out", right: "", cat: "Extra word", why: "The pattern is **ban somebody from a place**." },
               { text: "The government was accused of making up scapegoats of the boys in the hoods.", at: 6, wrong: "up", right: "", cat: "Extra word", why: "The pattern is **make scapegoats of somebody**. **Make up** means invent." },
               { text: "Naturally, the author intended to make pun on the meaning of hoodie.", at: 5, wrong: "make", right: "", cat: "Extra word", why: "Here **pun** is a verb: **to pun on** a word." }
@@ -855,7 +855,7 @@
               { q: "Kevin has decided to eat less mayonnaise this month.", word: "down", before: "Kevin has decided to", after: "of mayonnaise he eats this month.", n: 5, accept: ["cut down on the amount", "cut down on the quantity"],
                 note: "**cut down on** = use less of something." },
               { q: "I did not know that the cars were so expensive in this country.", word: "idea", before: "I", after: "so much in this country.", n: 5, accept: ["had no idea cars cost"],
-                note: "**have no idea** = not know. After it, the past form: cost." },
+                note: "**have no idea** = not know. **had** puts it in the past, so the next verb is past too: cars **cost** (cost – cost – cost)." },
               { q: "Most of the problems arose because there was no leadership on the committee.", word: "caused", before: "It was the", after: "most of the problems on the committee.", n: 5, accept: ["lack of leadership that caused", "absence of leadership that caused"],
                 note: "**It was the … that caused …** puts the main idea first. No leadership = a **lack of leadership**." },
               { q: "A short meeting of the cast will take place after today’s rehearsal.", word: "by", before: "Today’s rehearsal", after: "a short meeting of the cast.", n: 4, accept: ["will be followed by"],
@@ -885,7 +885,7 @@
                 { t: "Because of this popular ___, the country’s solicitors felt…", b: "noun" }
               ] },
             { type: "vtable", title: "🧩 Typical word endings", cols: [
-              { h: "📦 Noun", lines: ["-tion, -ment, -ness, -ity, -ance, -ence", "A person: -er, -or, -ist, -ant, -ee"] },
+              { h: "📦 Noun", lines: ["-tion, -ment, -ness, -ity, -ance, -ence", "A person: -er, -or, -ist, -ant, -ee", "Also -ing, -al: a building, arrival"] },
               { h: "🎨 Adjective", lines: ["-ous, -ive, -ful, -less, -able, -ible, -al, -ed, -ing"] },
               { h: "⚡ Adverb", lines: ["-ly"] },
               { h: "🚫 Negative meaning", lines: ["un-, in-, im-, dis-, mis-, under-"] }
@@ -899,7 +899,7 @@
               { word: "ADD", before: "In", after: ", British lawyers do not often advertise their services directly.", n: 1, accept: ["addition"],
                 note: "After a preposition we need a noun. **In addition** = also." },
               { word: "PRECEDENT", before: "But there was a reason for this", after: "public relations campaign.", n: 1, accept: ["unprecedented", "unprecedential"],
-                note: "An adjective before the noun **campaign**. **un-** = never seen before." },
+                note: "An adjective before the noun **campaign**. **unprecedented** = never seen before." },
               { word: "TYPICAL", before: "", after: ", the former are the ones who deal with the public; anybody who needs a lawyer goes to see a solicitor.", n: 1, accept: ["typically"],
                 note: "At the start, before a comma: an adverb." },
               { word: "DRAW", before: "They handle most legal matters for their clients, including the", after: "up of documents (such as wills, divorce papers and contracts), communicating with other parties and presenting their client’s case in a magistrates’ court.", n: 1, accept: ["drawing"],
@@ -912,7 +912,7 @@
                 note: "After **became** we need an adjective: allowed." },
               { word: "COMPETE", before: "As a result, the two kinds of lawyer came into", after: "with each other for the first time.", n: 1, accept: ["competition"],
                 note: "**come into competition with** somebody." },
-              { word: "EMPLOY", before: "Unlike solicitors, they are mostly", after: "and have a prestige similar to that of doctors.", n: 1, accept: ["self-employed"],
+              { q: "Now, in the popular image, barristers are in some sense ‘senior’ to solicitors.", word: "EMPLOY", before: "Unlike solicitors, they are mostly", after: "and have a prestige similar to that of doctors.", n: 1, accept: ["self-employed"],
                 note: "**self-employed** = working for yourself, not for a company." },
               { word: "PERCEIVE", before: "Because of this popular", after: ", the country’s solicitors felt they needed to defend their territory by boosting their image.", n: 1, accept: ["perception"],
                 note: "After the adjective **popular** we need a noun: what people think." }
@@ -937,26 +937,56 @@
             { type: "task", task: "p-l1-2324", label: "2023/24 · True or False: famous people who tried to learn Russian" },
             { type: "task", task: "p-l2-2324", label: "2023/24 · A, B or C: Steve and Kelly" }
           ]
+        }
+      ]
+    },
+    // Урок 9.11 (учитель 06.11): не решаем работу, а идём по ней подряд: по одному пункту из каждого задания самой свежей работы 10–11 классов,
+    // чтобы понимать порядок и что внутри. Текст берётся из самих заданий (блок sample), ключи и «почему» — в шпаргалке учителя. Writing: только задание,
+    // разбираем устно; в 2025/26 это рассказ. Картинки — пока временные, из прошлых уроков: учитель ищет свои.
+    {
+      id: "l5", date: "2026-11-09", title: "Mock exam: review", emoji: "📝", cover: img("m05-you-can"),
+      aims: [
+        "🎯 Goal: see the whole exam in order and know what is inside every task.",
+        "One item from every task: we look at it together."
+      ],
+      steps: [
+        {
+          stage: "presentation", title: "Listening", minutes: 8, image: img("m12-proud"),
+          blocks: [
+            { type: "sample", title: "True or False", task: "m-l1", item: 5, source: "Real task · Moscow municipal stage 2025/26 · Listening" },
+            { type: "sample", title: "A, B or C", task: "m-l2", item: 4, source: "Real task · Moscow municipal stage 2025/26 · Listening" }
+          ]
         },
         {
-          stage: "homework", home: true, title: "Homework: Mock exam", minutes: 180, image: img("m06-succeed"),
+          stage: "presentation", title: "Reading", minutes: 10, image: img("m02-reading"),
           blocks: [
-            { type: "brief", title: "Mock exam", items: [
-              "Do it all on one device.",
-              "Press the button below and do all 4 parts. It takes 3 hours.",
-              "At the very end, press **✓ Check answers** on every task. Do not press **Try again**.",
-              "Send a screenshot of **Results** and your essay to your teacher."
+            { type: "sample", title: "Choose the best answer", task: "m-r1", item: 1, para: 0, source: "Real task · Moscow municipal stage 2025/26 · Reading" },
+            { type: "sample", title: "Missing sentences", task: "m-r2", item: 1, para: 0, source: "Real task · Moscow municipal stage 2025/26 · Reading" }
+          ]
+        },
+        {
+          stage: "presentation", title: "Use of English", minutes: 20, image: img("m13-positive-energy"),
+          blocks: [
+            { type: "sample", title: "Extra word", task: "m-u1", item: 4, source: "Real task · Moscow municipal stage 2025/26 · Use of English" },
+            { type: "sample", title: "Key word transformations", task: "m-u2", item: 4, source: "Real task · Moscow municipal stage 2025/26 · Use of English" },
+            { type: "sample", title: "Word formation", task: "m-u3", item: 4, source: "Real task · Moscow municipal stage 2025/26 · Use of English" },
+            { type: "sample", title: "Culture: match", task: "m-u4", item: 1, source: "Real task · Moscow municipal stage 2025/26 · Use of English" }
+          ]
+        },
+        {
+          stage: "presentation", title: "Writing", minutes: 12, image: img("m14-smile-and-endure"),
+          blocks: [
+            { type: "brief", title: "The task", items: [
+              "Read the task.",
+              "Think: what will you write in each part?"
             ] },
-            { type: "links", title: "📝 Mock exam · Municipal 2022/23", items: [
-              { href: "#/full/mock-l1", label: "▶ Start the mock exam", note: "Listening · Reading · Use of English · Writing" }
-            ] }
+            { type: "wpaper", task: "m-w1", source: "Real task · Moscow municipal stage 2025/26 · Writing" }
           ]
         }
       ]
     },
-    { id: "l5", date: "2026-11-09", title: "Mock exam: review", emoji: "📝", cover: img("m05-you-can"),
-      aims: ["📝 Before this lesson: do the whole mock exam (**Exam** → **Mock exam · Municipal 2022/23**).", "We check the mock exam together.", "Your weakest part: extra practice."] },
-    { id: "l6", date: "2026-11-16", title: "Final practice before the olympiad", emoji: "🏔️", cover: img("m06-succeed"),
-      aims: ["Quick practice of every task.", "Time and strategy on the day."] }
+    { id: "l6", date: "2026-11-16", title: "Mock exam", emoji: "🏔️", cover: img("m06-succeed"),
+      aims: ["The whole exam in order, with the timer: Municipal 2025/26."],
+      links: [{ href: "#/full/m-l1", label: "▶ Start the mock exam", note: "Municipal 2025/26" }] }
   ];
 })();
