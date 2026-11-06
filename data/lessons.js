@@ -659,26 +659,34 @@
         "🏠 Homework: Sections 7–9."
       ],
       steps: [
-        // Учитель 06.11: разбор домашки до warm-up. Рассказ ученицы дословно, с её ошибками. Красное жюри бы засчитало, жёлтое лучше сказать иначе.
+        // Учитель 06.11: разбор домашки до warm-up. Рассказ ученицы дословно, с её ошибками. Цвет — тип ошибки, в таблице цветов все типы, даже те, которых в тексте нет.
         // Объяснений и исправлений на экране нет: их даёт учитель, они в её шпаргалке. Баллы — по официальной шкале Writing.
         {
           stage: "feedback", title: "Homework check: your story", minutes: 8, image: img("m17-writing-tears"),
           blocks: [
             { type: "brief", title: "Your story", items: [
               "Read your story.",
-              "**Red:** a mistake. **Yellow:** better to say it in another way."
+              "The colours show the type of mistake."
             ] },
             { type: "marked", source: "Your homework · Story · Municipal 2025/26", title: "A ticket to a new life",
               paras: [
                 ["Jim was an ordinary student living in a rented flat in New York. During the holidays, he visited his rich uncle Arthur, who lived in a magnificent country mansion. This beautiful house, with its huge garden and expensive furniture, always made Jim feel like an outsider. Arthur was ",
-                  { t: "a harmful man", c: "red" }, " and never missed an opportunity to make rude remarks about his nephew at dinner."],
+                  { t: "a harmful man", c: "lex" }, " and never missed an opportunity to make rude remarks about his nephew at dinner."],
                 ["After a serious argument, Jim decided to leave early. While waiting for a taxi in the hall, ",
-                  { t: "he accidentally dropped his bag, and a letter fell out of his uncle's coat", c: "red" }, ". Picking it up, Jim caught a glimpse of a familiar name."],
-                ["It was a letter from a lawyer. It stated that due to financial issues, ", { t: "uncle Arthur", c: "red" },
-                  " was completely bankrupt. The mansion and ", { t: "all his savings", c: "red" }, " were being auctioned off to pay his debts. Moreover, ",
-                  { t: "the letter mentioned that his uncle was planning to borrow money from Jim", c: "yellow" }, " to hide the truth from ", { t: "his mates", c: "yellow" }, "."],
-                ["Jim froze. ", { t: "The twist was that", c: "yellow" }, " nobody could have expected this: the rich man was actually a beggar. Jim realized he no longer had to put up with the humiliation, and he felt very relieved. He didn't want to stay in this house ",
-                  { t: "a minute .", c: "red" }, " Jim happened to see the letter and decided to book a ticket for the first train heading home."]
+                  { t: "he accidentally dropped his bag, and a letter fell out of his uncle's coat", c: "org" }, ". Picking it up, Jim caught a glimpse of a familiar name."],
+                ["It was a letter from a lawyer. It stated that due to financial issues, ", { t: "uncle Arthur", c: "spell" },
+                  " was completely bankrupt. The mansion and ", { t: "all his savings", c: "lex" }, " were being auctioned off to pay his debts. Moreover, ",
+                  { t: "the letter mentioned that his uncle was planning to borrow money from Jim", c: "org" }, " to hide the truth from ", { t: "his mates", c: "style" }, "."],
+                ["Jim froze. ", { t: "The twist was that", c: "style" }, " nobody could have expected this: the rich man was actually a beggar. Jim realized he no longer had to put up with the humiliation, and he felt very relieved. He didn't want to stay in this house ",
+                  { t: "a minute .", c: "lex" }, " Jim happened to see the letter and decided to book a ticket for the first train heading home."]
+              ],
+              key: [
+                { c: "task", t: "Task completion" },
+                { c: "org", t: "Organisation and logic" },
+                { c: "lex", t: "Vocabulary" },
+                { c: "gram", t: "Grammar" },
+                { c: "spell", t: "Spelling and punctuation" },
+                { c: "style", t: "Style: better to say it another way" }
               ],
               score: [
                 { t: "Task completion", p: 4, max: 4 },

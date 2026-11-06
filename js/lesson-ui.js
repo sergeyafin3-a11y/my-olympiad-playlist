@@ -171,7 +171,11 @@
     ".ls-notice .au{display:block;text-align:right;margin-top:6px}",
     ".ls-notice{border:2px solid #1A1A1A;border-radius:4px;padding:10px 12px;margin:8px 0 10px}.ls-notice .nt{display:block;text-align:center;font-size:17px;margin-bottom:4px}",
     ".ls-paper ul{margin:0 0 10px;padding-left:22px}",
-    ".ls-paper mark{color:inherit;padding:1px 2px;border-radius:3px}.ls-paper mark.ls-red{background:#F7C1BB;box-shadow:inset 0 -2px 0 #C62828}.ls-paper mark.ls-yellow{background:#FBE58A;box-shadow:inset 0 -2px 0 #B58900}.ls-paper mark sup{font:700 10px/1 Arial,sans-serif;margin-left:2px}",
+    ".ls-paper mark{color:inherit;padding:1px 2px;border-radius:3px}.ls-paper mark sup{font:700 10px/1 Arial,sans-serif;margin-left:2px}",
+    ".ls-c-task{background:#A8E6CF}.ls-c-org{background:#FFCF99}.ls-c-lex{background:#F7B7B0}.ls-c-gram{background:#D6BCF5}.ls-c-spell{background:#B5D8F7}.ls-c-style{background:#FBE58A}",
+    ".ls-marked{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}.ls-marked>.ls-paper{margin-top:12px}.ls-mside{display:grid;gap:12px;align-content:start}.ls-mside .ls-box{margin:0}",
+    "@media (min-width:760px){.ls-marked{grid-template-columns:minmax(0,1fr) 250px}.ls-mside{margin-top:12px}}",
+    ".ls-mkey p{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:8px;align-items:center;margin:0;padding:6px 0;border-top:1px solid rgba(255,255,255,.1);font-size:14px}.ls-mkey .sw{width:18px;height:18px;border-radius:4px}",
     ".ls-score p{display:flex;justify-content:space-between;gap:12px;margin:0;padding:6px 0;border-top:1px solid rgba(255,255,255,.1)}.ls-score p.tot{font-weight:700;font-size:17px}",
     ".ls-jury{margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--card)}",
     ".ls-jury .jr{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:6px 0}.ls-jury .jr b{flex:1 1 160px}",
@@ -425,16 +429,24 @@
             (mg.checked ? '<p class="why">' + (ok ? '✓' : '✗ <b>' + esc(right) + '</b>') + '</p>' : '') + '</div>';
         }).join("") + '<div class="listen"><button class="ghost" data-lscheck="' + key + '">✓ Check</button></div></div>';
     }
-    // Работа ученицы с выделениями: красное и жёлтое, у каждого номер, чтобы учитель могла сказать «посмотри на третье». Нажимать не на что,
-    // объяснений нет: объясняет учитель. Ниже — баллы по критериям жюри.
+    // Работа ученицы с выделениями: цвет — тип ошибки, у каждой номер, чтобы учитель могла сказать «посмотри на третье». Справа — какие цвета что значат
+    // и какие номера к какому типу; там все типы, даже те, которых в тексте нет. Нажимать не на что, объяснений нет: объясняет учитель. Ниже — баллы.
     if (b.type === "marked") {
-      var mk = 0, mgot = 0, mmax = 0;
+      var mk = 0, mgot = 0, mmax = 0, mnums = {};
       b.score.forEach(function (r) { mgot += r.p; mmax += r.max; });
-      return '<div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p class="ttl">' + esc(b.title) + '</p>' + b.paras.map(function (pa) {
-        return '<p>' + pa.map(function (x) { if (typeof x === "string") return esc(x); mk++; return '<mark class="ls-' + esc(x.c) + '">' + esc(x.t) + '<sup>' + mk + '</sup></mark>'; }).join("") + '</p>';
-      }).join("") + '</div><div class="ls-box ls-score"><h3>⚖️ Your points</h3>' + b.score.map(function (r) {
-        return '<p><span>' + esc(r.t) + '</span><b>' + r.p + ' / ' + r.max + '</b></p>';
-      }).join("") + '<p class="tot"><span>Total</span><b>' + mgot + ' / ' + mmax + '</b></p></div>';
+      var mtext = b.paras.map(function (pa) {
+        return '<p>' + pa.map(function (x) {
+          if (typeof x === "string") return esc(x);
+          mk++; (mnums[x.c] = mnums[x.c] || []).push(mk);
+          return '<mark class="ls-c-' + esc(x.c) + '">' + esc(x.t) + '<sup>' + mk + '</sup></mark>';
+        }).join("") + '</p>';
+      }).join("");
+      return '<div class="ls-marked"><div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p class="ttl">' + esc(b.title) + '</p>' + mtext + '</div>' +
+        '<div class="ls-mside"><div class="ls-box ls-mkey"><h3>🎨 Colours</h3>' + b.key.map(function (k) {
+          return '<p><span class="sw ls-c-' + esc(k.c) + '"></span><span>' + esc(k.t) + '</span><b>' + (mnums[k.c] ? mnums[k.c].join(", ") : "—") + '</b></p>';
+        }).join("") + '</div><div class="ls-box ls-score"><h3>⚖️ Your points</h3>' + b.score.map(function (r) {
+          return '<p><span>' + esc(r.t) + '</span><b>' + r.p + ' / ' + r.max + '</b></p>';
+        }).join("") + '<p class="tot"><span>Total</span><b>' + mgot + ' / ' + mmax + '</b></p></div></div></div>';
     }
     if (b.type === "storymap") {
       var sm = notesOf(key);
