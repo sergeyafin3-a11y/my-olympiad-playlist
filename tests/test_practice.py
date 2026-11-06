@@ -46,6 +46,27 @@ KEYS = {
 # Listening с отрисованных страниц ответов: у 2023/24 и 2024/25 верный вариант выделен жирным.
 KEYS["2324"].update({"m-l1": list("BABBBBABAB"), "m-l2": list("BBACA")})
 KEYS["2425"].update({"m-l1": list("AABBABABBA"), "m-l2": list("BACBC")})
+# Свежие работы (учитель 06.11): ключи выписаны из файлов ответов vos.olimpiada.ru.
+KEYS["2526-9"] = {
+    "m-u1": ["so", "a", "mostly", "having", "if", "v", "unlike", "it", "being", "likely", "a", "v", "will", "up", "not"],
+    "m-u2": ["was pulling my leg", "went on to write", "regret to tell/regret to inform", "is said to be having", "had better leave",
+             "wish you would be", "having her appendix taken", "to stand in for", "would like to have stayed", "would rather we did not"],
+    "m-u3": ["basement", "psychopath/psycho", "suspense", "coverage", "uninhabited/uninhabitable/uninhabitated", "abandoned",
+             "awake/awaken/awakened", "themselves", "solution", "resourceful"],
+    "m-u4": list("FHLKMEDAJC"),
+}
+KEYS["2425-9"] = {
+    "m-u1": ["been", "who", "being", "the", "does", "v", "to", "spotted", "are", "utterly", "v", "a", "hardly", "shall", "v"],
+    "m-u2": ["he would rather not", "have all the cooking done", "to have found", "denied having seen", "spent five minutes searching for",
+             "will be followed by", "pleasure to take you on/pleasure to take you for", "in spite of never having/in spite of having never",
+             "As far as I am", "for a great deal of/for a good deal of"],
+    "m-u3": ["underinvestment", "engagement", "fifth", "academic", "further", "prosperity", "priorities", "increasingly", "trainee", "throughout"],
+    "m-u4": list("FHLKMEDAGC"),
+}
+KEYS["2627-1"] = {"m-u3": ["scientific/scientifical", "consumption", "uneven", "costly", "extension", "recreated", "servants/subservient/servile", "adorableness/adorability/adoration"]}
+KEYS["2627-2"] = {"m-u3": ["default", "window", "digital", "timer", "platforms", "cheat"]}
+KEYS["2627-3"] = {"m-u3": ["standpoint", "data", "track", "shot", "dependency"]}
+KEYS["2627-4"] = {"m-u3": ["chickens", "fish", "tiger", "elephant", "pigeon", "goat"]}
 
 
 def run_js(body):
@@ -78,7 +99,8 @@ class Practice(unittest.TestCase):
         r = run_js("""
           var out = {};
           Object.keys(P).forEach(function(k){ P[k].forEach(function(t){
-            var y = /2021\\/22/.test(t.source) ? "2122" : /2023\\/24/.test(t.source) ? "2324" : /2024\\/25/.test(t.source) ? "2425" : "?";
+            var y = /school/.test(t.source) ? "2627-" + t.id.slice(-1) : /grade 9/.test(t.source) ? (/2025\\/26/.test(t.source) ? "2526-9" : "2425-9")
+                  : /2021\\/22/.test(t.source) ? "2122" : /2023\\/24/.test(t.source) ? "2324" : /2024\\/25/.test(t.source) ? "2425" : "?";
             out[y + ":" + k] = t.items.slice().sort(function(a, b){ return a.n - b.n; }).map(function(it){ return t.type === "choice" ? it.a : it.accept; });
           }); });
           return out;
@@ -217,6 +239,83 @@ class ListeningPractice(unittest.TestCase):
             self.assertNotIn("pilot talks", how["what"])
             self.assertNotIn("San Francisco", how["what"])
             self.assertTrue(how["steps"])
+
+
+class FreshUseOfEnglish(unittest.TestCase):
+    """Учитель 06.11: «больше заданий из Use of English… максимально свежие». Только опубликованные официальные работы."""
+    PAPERS = {"uoe-9-2526": ["p-u1-2526-9", "p-u2-2526-9", "p-u3-2526-9", "p-u4-2526-9"],
+              "uoe-9-2425": ["p-u1-2425-9", "p-u2-2425-9", "p-u3-2425-9", "p-u4-2425-9"],
+              "uoe-sch-2627": ["p-sch-2627-1", "p-sch-2627-2", "p-sch-2627-3", "p-sch-2627-4"]}
+
+    @classmethod
+    def setUpClass(cls):
+        files = ["data/variant-mun-msk-25-26.js", "data/practice-mun.js", "data/explain-mun.js", "data/howto-mun.js", "js/check.js"]
+        src = "\n".join(["var window = this;"] + [(ROOT / f).read_text(encoding="utf-8") for f in files] + ["""JSON.stringify((function(){
+          var o = {}, P = window.PRACTICE["mun-msk-25-26"];
+          Object.keys(P).forEach(function(k){ P[k].forEach(function(t){ o[t.id] = t; }); });
+          return {tasks: o, ex: window.EXPLAIN, how: window.HOWTO.tasks}; })());"""])
+        cls.r = json.loads(subprocess.run(["osascript", "-l", "JavaScript", "-e", src], capture_output=True, text=True, check=True).stdout)
+
+    def test_every_word_is_from_the_official_paper(self):
+        w = lambda s: sorted(x for x in re.findall(r"[a-z]{2,}|[0-9]{3,}", unicodedata.normalize("NFC", s).lower().replace("’", "'").replace("`", "'"))
+                             if x not in ("task", "points", "time", "minutes", "items", "questions", "of", "use", "english", "misspelled", "word",
+                                          "part", "chunky", "digital", "cat", "example", "to", "the", "in", "for"))
+        for paper, ids in self.PAPERS.items():
+            ours = []
+            for tid in ids:
+                t = self.r["tasks"][tid]
+                ours.append(t["intro"])
+                ours += t.get("text", []) + [t.get("textTitle", ""), t.get("textSubtitle", "")]
+                ours += [o["t"] for o in t.get("opts", [])]
+                for e in t.get("examples", []):
+                    ours += [e["show"], e.get("answer", "")]
+                ours.append(t.get("example", "").replace(" — ", " ").replace("…………………….", ""))
+                for it in t["items"]:
+                    if not it["q"].startswith("Misspelled"):
+                        ours.append(it["q"].replace(" — ", " "))
+            official = (ROOT / "tests" / "fixtures" / (paper + ".txt")).read_text(encoding="utf-8")
+            a, b = w(" ".join(ours)), w(official)
+            # В школьной работе слова-задания стоят и в тексте, и у пунктов; в ответах образца 2024/25 слова нет в бумаге.
+            diff = sorted({x for x in a + b if a.count(x) != b.count(x)})
+            allowed = {"uoe-sch-2627": {"science", "consume", "even", "cost", "extend", "create", "serve", "adore", "approximate", "faulted", "ownwid", "tailigd",
+                                        "merit", "saltpromf", "teach", "polarup", "popular", "approximately", "trustworthy", "text", "further", "and", "up", "along"},
+                        "uoe-9-2425": {"creativity"}, "uoe-9-2526": {"far"}}[paper]  # «far» — ответ образца 00, в бумаге напечатан дважды
+            self.assertEqual([x for x in diff if x not in allowed], [], (paper, [(x, a.count(x), b.count(x)) for x in diff if x not in allowed]))
+
+    def test_extra_word_is_really_in_its_line(self):
+        for tid in ("p-u1-2526-9", "p-u1-2425-9"):
+            for it in self.r["tasks"][tid]["items"]:
+                a = it["accept"][0]
+                if a != "v":
+                    self.assertRegex(it["q"], r"\b" + a + r"\b", (tid, it["n"]))
+
+    def test_transformations_have_the_right_number_of_words(self):
+        for tid in ("p-u2-2526-9", "p-u2-2425-9"):
+            for it in self.r["tasks"][tid]["items"]:
+                n = int(re.search(r"\((\d) words\)", it["q"]).group(1))
+                word = it["q"].split(" — ")[1]
+                for a in it["accept"]:
+                    self.assertEqual(len(a.split()), n, (tid, it["n"], a))
+                    self.assertIn(word.lower(), a.lower().split(), (tid, it["n"], a))
+
+    def test_every_written_answer_has_a_breakdown_with_the_key(self):
+        for ids in self.PAPERS.values():
+            for tid in ids:
+                t = self.r["tasks"][tid]
+                if t["type"] == "choice":
+                    continue
+                for it in t["items"]:
+                    e = self.r["ex"][tid][str(it["n"])]
+                    self.assertIn("Answer: ", e, (tid, it["n"]))
+                    self.assertIn(it["accept"][0].lower(), e.lower(), (tid, it["n"]))
+                    self.assertNotRegex(e, "[а-яё]", (tid, it["n"]))
+
+    def test_school_tasks_say_they_are_another_format_and_have_their_own_cards(self):
+        self.assertIn("t.otherFormat", HTML)
+        for n in "1234":
+            tid = "p-sch-2627-" + n
+            self.assertTrue(self.r["tasks"][tid]["otherFormat"])
+            self.assertGreaterEqual(len(self.r["how"][tid]["steps"]), 2)
 
 
 if __name__ == "__main__":
