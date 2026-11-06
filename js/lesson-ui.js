@@ -441,7 +441,7 @@
           return '<mark class="ls-c-' + esc(x.c) + '">' + esc(x.t) + '<sup>' + mk + '</sup></mark>';
         }).join("") + '</p>';
       }).join("");
-      return '<div class="ls-marked"><div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p class="ttl">' + esc(b.title) + '</p>' + mtext + '</div>' +
+      return '<div class="ls-marked"><div class="ls-paper"><div class="src">' + esc(b.source) + '</div>' + (b.title ? '<p class="ttl">' + esc(b.title) + '</p>' : '') + mtext + '</div>' +
         '<div class="ls-mside"><div class="ls-box ls-mkey"><h3>🎨 Colours</h3>' + b.key.map(function (k) {
           return '<p><span class="sw ls-c-' + esc(k.c) + '"></span><span>' + esc(k.t) + '</span><b>' + (mnums[k.c] ? mnums[k.c].join(", ") : "—") + '</b></p>';
         }).join("") + '</div><div class="ls-box ls-score"><h3>⚖️ Your points</h3>' + b.score.map(function (r) {

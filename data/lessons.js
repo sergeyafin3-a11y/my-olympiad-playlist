@@ -52,6 +52,15 @@
               "**200–250 words**, 4 paragraphs, a neutral style.",
               "Read it twice: once for grammar, once for spelling."
             ] };
+  // Цвета в разборе работ ученицы: у каждого типа ошибки свой цвет, в таблице все типы, даже те, которых в тексте нет.
+  var MARK_KEY = [
+    { c: "task", t: "Task completion" },
+    { c: "org", t: "Organisation and logic" },
+    { c: "lex", t: "Vocabulary" },
+    { c: "gram", t: "Grammar" },
+    { c: "spell", t: "Spelling and punctuation" },
+    { c: "style", t: "Style: better to say it another way" }
+  ];
   // Как решать Listening (домашнее урока l4): формат — как в официальных заданиях муниципального этапа.
   var LISTENING_HOWTO = { type: "vtable", title: "🎧 How to do Listening", cols: [
     { h: "1️⃣ Before you press play", lines: [
@@ -649,7 +658,7 @@
       ]
     },
     // Урок 6.11: одна цель — эссе по цитате 2021/22 (Стивен Кинг), которое не теряет баллы за содержание. Учитель 06.11: «цель у конкретного урока»,
-    // «за час уложились», «на все вопросы ответила». На уроке 58 минут заданий и 2 минуты запаса: 8 минут заняла проверка рассказа. На экране — только задания.
+    // «за час уложились», «на все вопросы ответила». На уроке ровно час: 12 минут занимает разбор рассказа и эссе, вопросы снимаются по ходу него. На экране — только задания.
     // Дома только нужное: грамматика, подводки к Use of English и один Listening. Пробник — домашка урока 9 ноября, по работе 2023/24.
     {
       id: "l4", date: "2026-11-06", title: "Writing: an essay on a quotation", emoji: "📚", cover: img("m24-me-when-english"),
@@ -662,7 +671,7 @@
         // Учитель 06.11: разбор домашки до warm-up. Рассказ ученицы дословно, с её ошибками. Цвет — тип ошибки, в таблице цветов все типы, даже те, которых в тексте нет.
         // Объяснений и исправлений на экране нет: их даёт учитель, они в её шпаргалке. Баллы — по официальной шкале Writing.
         {
-          stage: "feedback", title: "Homework check: your story", minutes: 8, image: img("m17-writing-tears"),
+          stage: "feedback", title: "Homework check", minutes: 12, image: img("m17-writing-tears"),
           blocks: [
             { type: "brief", title: "Your story", items: [
               "Read your story.",
@@ -680,20 +689,36 @@
                 ["Jim froze. ", { t: "The twist was that", c: "style" }, " nobody could have expected this: the rich man was actually a beggar. Jim realized he no longer had to put up with the humiliation, and he felt very relieved. He didn't want to stay in this house ",
                   { t: "a minute .", c: "lex" }, " Jim happened to see the letter and decided to book a ticket for the first train heading home."]
               ],
-              key: [
-                { c: "task", t: "Task completion" },
-                { c: "org", t: "Organisation and logic" },
-                { c: "lex", t: "Vocabulary" },
-                { c: "gram", t: "Grammar" },
-                { c: "spell", t: "Spelling and punctuation" },
-                { c: "style", t: "Style: better to say it another way" }
-              ],
+              key: MARK_KEY,
               score: [
                 { t: "Task completion", p: 4, max: 4 },
                 { t: "Organisation", p: 3, max: 4 },
                 { t: "Vocabulary", p: 2, max: 4 },
                 { t: "Grammar", p: 4, max: 4 },
                 { t: "Spelling and punctuation", p: 3, max: 4 }
+              ] },
+            { type: "brief", title: "Your essay", items: [
+              "Read your essay.",
+              "The colours show the type of mistake."
+            ] },
+            { type: "marked", source: "Your homework · Essay · Municipal 2023/24",
+              paras: [
+                ["The author means that the best leader does not try to be a hero. Such a person helps others to do the work and doesn't ask for praise. I fully agree with this idea because a real leader should support people, not just give orders."],
+                ["My opinion is that this approach is very wise. Firstly, it makes people feel important and responsible. When a leader trusts his team, people work harder. Secondly, it helps the team to become stronger. This is because people learn to solve problems by themselves. A good leader is like a coach who stays in the background."],
+                ["A good example of this is the story \"The Captain's Daughter\" by Alexander Pushkin. The main character, Pyotr Grinyov, shows this kind of leadership. When he arrives at the Belogorsk fortress, he doesn't act like ",
+                  { t: "a boss", c: "style" }, ". ", { t: "He treats the Cossacks and ordinary soldiers with respect. He listens to their advice and helps them.", c: "task" },
+                  " Because of this, when the fortress is in danger during Pugachev's rebellion, ", { t: "the people trust him. They feel that they are protecting their home together.", c: "task" },
+                  " Grinyov doesn't take all the credit; ", { t: "he lets the people feel that their courage saved the day", c: "task" }, "."],
+                ["To sum up, I believe that the greatest leaders don't need to be in the spotlight. ", { t: "All things considered,", c: "style" },
+                  " the true art of leadership is to guide people so well that they feel they achieved success themselves. That is why I think ", { t: "this quote", c: "style" }, " is completely right."]
+              ],
+              key: MARK_KEY,
+              score: [
+                { t: "Task completion", p: 3, max: 4 },
+                { t: "Organisation", p: 4, max: 4 },
+                { t: "Vocabulary", p: 4, max: 4 },
+                { t: "Grammar", p: 4, max: 4 },
+                { t: "Spelling and punctuation", p: 4, max: 4 }
               ] }
           ]
         },
@@ -732,7 +757,7 @@
           ]
         },
         {
-          stage: "practice", title: "Build the essay", minutes: 12, image: img("m32-sometimes-i-think"),
+          stage: "practice", title: "Build the essay", minutes: 10, image: img("m32-sometimes-i-think"),
           blocks: [
             ESSAY_RECIPE,
             ESSAY_PHRASES,
