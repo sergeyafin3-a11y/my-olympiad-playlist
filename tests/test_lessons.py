@@ -1180,10 +1180,10 @@ class EssayAndCultureLesson(unittest.TestCase):
         self.assertEqual(self.l["date"], "2026-11-06")
         self.assertEqual(self.l["title"], "Writing: an essay on a quotation")
         self.assertEqual([st["title"] for st in self.steps], [
-            "Homework check: your story", "Warm-up", "The task: an essay", "Build the essay", "Write the essay", "Check the essay",
+            "Homework check", "Warm-up", "The task: an essay", "Build the essay", "Write the essay", "Check the essay",
             "Homework: Grammar", "Homework: Use of English", "Homework: Listening"])
         self.assertEqual([st.get("home", False) for st in self.steps], [False] * 6 + [True] * 3)
-        self.assertEqual(sum(st["minutes"] for st in self.steps if not st.get("home")), 58, "из часа остаётся запас на вопросы")
+        self.assertEqual(sum(st["minutes"] for st in self.steps if not st.get("home")), 60, "ровно час: вопросы снимаются по ходу разбора")
         imgs = [st["image"] for st in self.steps]
         self.assertEqual(len(set(imgs)), len(imgs))
         self.assertIn("Goal", self.l["aims"][0])
@@ -1213,7 +1213,7 @@ class EssayAndCultureLesson(unittest.TestCase):
         # Учитель 06.11: разбор домашки до warm-up. Рассказ ученицы дословно, красным и жёлтым выделено, но объясняет учитель сама:
         # ни подсказок по нажатию, ни объяснений на экране. В конце оценка по критериям жюри. Объяснения — в шпаргалке учителя.
         step = self.steps[0]
-        self.assertEqual([b["type"] for b in step["blocks"]], ["brief", "marked"])
+        self.assertEqual([b["type"] for b in step["blocks"]], ["brief", "marked", "brief", "marked"])
         b = step["blocks"][1]
         official = (ROOT / "tests" / "fixtures" / "homework-story-2526.txt").read_text(encoding="utf-8").strip().split("\n\n")
         self.assertEqual(b["title"], official[0], "заголовок дословно")
@@ -1231,13 +1231,27 @@ class EssayAndCultureLesson(unittest.TestCase):
         self.assertEqual(len(re.findall(r'<mark class="ls-c-lex">', html)), 3)
         self.assertEqual(len(re.findall(r'<mark class="ls-c-org">', html)), 2)
         self.assertEqual(len(re.findall(r'<mark class="ls-c-spell">', html)), 1)
-        self.assertEqual(len(re.findall(r'<mark class="ls-c-style">', html)), 2)
-        for c, nums in (("task", "—"), ("org", "2, 5"), ("lex", "1, 4, 8"), ("gram", "—"), ("spell", "3"), ("style", "6, 7")):
+        self.assertEqual(len(re.findall(r'<mark class="ls-c-style">', html)), 2 + 3)
+        self.assertEqual(len(re.findall(r'<mark class="ls-c-task">', html)), 3)
+        for c, nums in (("task", "—"), ("org", "2, 5"), ("lex", "1, 4, 8"), ("gram", "—"), ("spell", "3"), ("style", "6, 7"),
+                        ("task", "2, 3, 4"), ("org", "—"), ("lex", "—"), ("spell", "—"), ("style", "1, 5, 6")):
             self.assertRegex(html, r'<span class="sw ls-c-%s"></span><span>[^<]+</span><b>%s</b>' % (c, nums))
         ui = (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8")
         for c in ("task", "org", "lex", "gram", "spell", "style"):
             self.assertIn(".ls-c-%s{" % c, ui, "у каждого типа свой цвет")
         self.assertIn("16 / 20", html)
+        # Учитель 06.11: второе домашнее задание, эссе 2023/24, следом за рассказом, тем же способом.
+        e = step["blocks"][3]
+        essay = (ROOT / "tests" / "fixtures" / "homework-essay-2324.txt").read_text(encoding="utf-8").strip().split("\n\n")
+        self.assertEqual(["".join(x if isinstance(x, str) else x["t"] for x in p) for p in e["paras"]], essay, "текст дословно")
+        self.assertEqual([x["c"] for p in e["paras"] for x in p if not isinstance(x, str)], ["style", "task", "task", "task", "style", "style"])
+        self.assertEqual([x["t"] for p in e["paras"] for x in p if not isinstance(x, str) and sorted(x) != ["c", "t"]], [])
+        self.assertEqual([(r["t"], r["p"], r["max"]) for r in e["score"]], [("Task completion", 3, 4), ("Organisation", 4, 4), ("Vocabulary", 4, 4), ("Grammar", 4, 4), ("Spelling and punctuation", 4, 4)])
+        self.assertIn("19 / 20", html)
+        self.assertLess(html.index("16 / 20"), html.index("19 / 20"), "эссе идёт следом за рассказом")
+        self.assertIn("📋 Task 2 · Your essay", html)
+        for fix in ("Kutuzov", "War and Peace", "quotation is"):
+            self.assertNotIn(fix, html, "исправления — у учителя")
         self.assertNotRegex(html, r"data-ls(check|spot|note)", "тыкать не во что")
         for fix in ("cruel", "friends", "a minute longer", "property"):
             self.assertNotIn(fix, html, "как исправить — говорит учитель")
