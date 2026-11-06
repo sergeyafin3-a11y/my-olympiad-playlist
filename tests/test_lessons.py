@@ -1178,7 +1178,7 @@ class EssayAndCultureLesson(unittest.TestCase):
     def test_date_minutes_and_homework_section(self):
         self.assertEqual(self.l["date"], "2026-11-06")
         self.assertEqual(sum(st["minutes"] for st in self.steps if not st.get("home")), 50)
-        self.assertEqual([st.get("home", False) for st in self.steps], [False] * (len(self.steps) - 2) + [True, True])
+        self.assertEqual([st.get("home", False) for st in self.steps], [False] * (len(self.steps) - 3) + [True, True, True])
         imgs = [st["image"] for st in self.steps]
         self.assertEqual(len(set(imgs)), len(imgs))
 
@@ -1302,7 +1302,7 @@ class EssayAndCultureLesson(unittest.TestCase):
         self.assertEqual([c["t"] for c in cards if "fully agree" in c["t"] and c["b"] != "intro"], [])
 
     def test_homework_is_listening_with_tips_and_official_audio(self):
-        home = self.steps[-2]
+        home = self.steps[-3]
         self.assertTrue(home.get("home"))
         tips = json.dumps(home["blocks"][0], ensure_ascii=False)
         self.assertIn("How to do Listening", tips)
@@ -1328,7 +1328,7 @@ class EssayAndCultureLesson(unittest.TestCase):
         # Учитель 06.11: «каверзную тему, которая часто используется… в домашку, просто с правилом, чтобы напомнить»,
         # «не рандомные задания». Тема посчитана по Task 2 за 5 лет: wish / would rather / it is time / if — 9 пунктов из 50,
         # каждый год; это больше любой другой темы. Все пункты дословно из официальных заданий (2022/23 не берём: пробник).
-        step = self.steps[-1]
+        step = self.steps[-2]
         self.assertTrue(step.get("home"))
         self.assertEqual([b["type"] for b in step["blocks"]], ["vtable", "brief", "transform"])
         rule = json.dumps(step["blocks"][0], ensure_ascii=False)
@@ -1361,10 +1361,28 @@ class EssayAndCultureLesson(unittest.TestCase):
         # В примерах правила нет ответов на задание.
         for it in items:
             self.assertNotIn(it["accept"][0], rule, it["accept"][0])
-        i = len(self.steps) - 1
+        i = len(self.steps) - 2
         html = render_step("l4", i, events=[["click", "lscheckall", "l4:%d" % i]])
         self.assertEqual(len(re.findall(r'class="ls-tf wrong"', html)), 7)
         self.assertIn("Task 1 · ", html)
+
+    def test_homework_use_of_english_is_only_the_municipal_stage_for_grades_10_11(self):
+        # Учитель 06.11: «она в 10 классе… убери школьный этап, ни в коем случае не добавляй… муниципальный этап для 10 классов».
+        step = self.steps[-1]
+        self.assertTrue(step.get("home"))
+        self.assertEqual(step["title"], "Homework: Use of English")
+        self.assertEqual(step["blocks"][0]["type"], "brief")
+        links = [b for b in step["blocks"] if b["type"] == "task"]
+        self.assertEqual([b["task"] for b in links], [
+            "m-u1", "m-u2", "m-u3", "m-u4",
+            "p-u1-2425", "p-u2-2425", "p-u3-2425", "p-u4-2425",
+            "p-u1-2324", "p-u2-2324", "p-u3-2324", "p-u4-2324"])
+        for b in links:
+            self.assertRegex(b["label"], r"^Variant [123] · Municipal 20\\d\\d/\\d\\d · ")
+        src = (ROOT / "data" / "lessons.js").read_text(encoding="utf-8") + (ROOT / "data" / "practice-mun.js").read_text(encoding="utf-8")
+        for banned in ("p-sch-", "School 2026/27", "grade 9", "2526-9", "2425-9"):
+            self.assertNotIn(banned, src)
+        self.assertIn("Section 8", " ".join(self.l["aims"]))
 
     def test_official_culture_task_2021_22(self):
         t = run_js("""var t = null; Object.keys(P).forEach(function(k){ P[k].forEach(function(x){ if (x.id === "p-u4-2122") t = x; }); });
