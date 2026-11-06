@@ -183,4 +183,21 @@
     "Follow the plan: introduction, your opinion with reasons, examples from literature or history, conclusion.",
     "Count your words: fewer than 180 words = 0 points. After 275 words only the first 250 are checked."
   ] };
+  // Школьный этап 2026/27: другой формат, поэтому карточка каждого задания своя.
+  H.tasks["p-sch-2627-1"] = { what: "Word formation: change the word in capitals so it fits the gap.", steps: [
+    "Read the sentence and decide which part of speech you need: a noun, a verb, an adjective or an adverb.",
+    "Type the new word next to its number and check the spelling letter by letter."
+  ] };
+  H.tasks["p-sch-2627-2"] = { what: "Mixed-up words: put the letters in the right order to get a word that fits the gap.", steps: [
+    "Read the whole sentence first: what word does it need?",
+    "Use every letter once. The new word has exactly the same letters."
+  ] };
+  H.tasks["p-sch-2627-3"] = { what: "Find 5 words with a spelling mistake and write them correctly.", steps: [
+    "Read slowly. A misspelled word can look like another real word, so check that every word makes sense.",
+    "Type the correct words in the order you find them in the text."
+  ] };
+  H.tasks["p-sch-2627-4"] = { what: "One word for three sentences: find one word that fits all three gaps.", steps: [
+    "Start with the sentence you know best. Many of them are fixed phrases.",
+    "Check your word in the other two sentences: it must fit all three."
+  ] };
 })();

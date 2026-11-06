@@ -159,4 +159,120 @@
     14: "\"I usually practise all the techniques for at least an hour a day\"\nThe trap: \"two or three times a week I go to a special judo school\". That is the school, not the techniques at home.\nAnswer: A.",
     15: "\"I had quite a bad back injury last year\"\nLast year means a year ago. A couple of months is how long she did nothing.\nAnswer: C."
   };
+  // Свежие работы Use of English: короткий разбор каждого письменного ответа. Ответы — по официальному ключу.
+  E["p-u1-2526-9"] = {
+    1: "\"so\" cannot stand before an adjective with a plural noun here: result in unfair judgements.\nAnswer: so.",
+    2: "The fixed phrase has no article: stand you in good stead.\nAnswer: a.",
+    3: "A debate can be hot. \"Mostly\" adds nothing that fits here: a hot debate.\nAnswer: mostly.",
+    4: "The years of education were put into the PhD, so we need the past participle \"put\", not an active form.\nAnswer: having.",
+    5: "The pattern is: conceive something as + adjective. Conceived as minor.\nAnswer: if.",
+    6: "Every word is needed.\nAnswer: V.",
+    7: "\"Americans… now tend to prefer\": Americans are the subject of the second part. With \"unlike\" the verb has no subject.\nAnswer: unlike.",
+    8: "\"how your conversation partner addresses you\" is already the object of \"observe\".\nAnswer: it.",
+    9: "This is a fact from a study, not a process: individuals were considered more intelligent.\nAnswer: being.",
+    10: "Rated as less intelligent. \"Likely\" does not fit between \"less\" and \"intelligent\".\nAnswer: likely.",
+    11: "\"attention\" is uncountable: pay full attention.\nAnswer: a.",
+    12: "Every word is needed.\nAnswer: V.",
+    13: "After \"it is vital that\" we do not use \"will\": it is vital that we remember.\nAnswer: will.",
+    14: "\"shape the way we behave\" means influence it. \"Shape up\" means get better or fitter.\nAnswer: up.",
+    15: "The contrast is in \"rather than\": it should be something we keep in mind, rather than something we use to pigeonhole people.\nAnswer: not."
+  };
+  E["p-u2-2526-9"] = {
+    1: "Idiom: pull somebody's leg = joke with somebody.\nAnswer: was pulling my leg.",
+    2: "go on to do something = do it next, after something else.\nAnswer: went on to write.",
+    3: "regret to tell somebody = I am sorry to say this now. With -ing, regret is about the past.\nAnswer: regret to tell (or: regret to inform).",
+    4: "People say + is having → is said + continuous infinitive: to be having.\nAnswer: is said to be having.",
+    5: "had better + verb without \"to\" = it is a good idea.\nAnswer: had better leave.",
+    6: "wish + somebody + would: I want a change, but I do not expect it.\nAnswer: wish you would be.",
+    7: "have + object + V3: somebody else does it for her. The form here is continuous: is having… taken out.\nAnswer: having her appendix taken.",
+    8: "stand in for somebody = replace somebody for a short time.\nAnswer: to stand in for.",
+    9: "would like + perfect infinitive: I wanted it in the past, but it did not happen.\nAnswer: would like to have stayed.",
+    10: "would rather + another person + Past Simple.\nAnswer: would rather we did not."
+  };
+  E["p-u3-2526-9"] = {
+    1: "After \"the\" we need a noun: a place in a house. BASE + -ment.\nAnswer: basement.",
+    2: "\"the evil ___\" is a person, and this person has hidden the tools.\nAnswer: psychopath (or: psycho).",
+    3: "After \"maintain\" we need a noun: the feeling of waiting for something exciting.\nAnswer: suspense.",
+    4: "Phone coverage = the area where your phone has a signal.\nAnswer: coverage.",
+    5: "Before a noun we need an adjective. The next sentence names empty places, so the meaning is negative: un-.\nAnswer: uninhabited (also: uninhabitable, uninhabitated).",
+    6: "An adjective before \"hospital\": left empty.\nAnswer: abandoned.",
+    7: "keep somebody awake = not let somebody sleep.\nAnswer: awake (also: awaken, awakened).",
+    8: "enjoy needs an object here. THEY → a reflexive pronoun.\nAnswer: themselves.",
+    9: "After \"the\" we need a noun. SOLVE → the answer to a problem.\nAnswer: solution.",
+    10: "After \"the most\" and before \"person\" we need an adjective: good at finding ways to deal with problems.\nAnswer: resourceful."
+  };
+  E["p-u1-2425-9"] = {
+    1: "The developer did the announcing, so the verb is active: has announced.\nAnswer: been.",
+    2: "\"those buying them\" is a short form of \"those who buy them\". \"who buying\" is wrong.\nAnswer: who.",
+    3: "The pattern is: be about to do something. That is about to rise.\nAnswer: being.",
+    4: "No article before the name: St Paul's cathedral.\nAnswer: the.",
+    5: "Either \"does matter\" or \"matters\". The verb here already has -s.\nAnswer: does.",
+    6: "Every word is needed.\nAnswer: V.",
+    7: "see + object + verb without \"to\": has seen two towers rise.\nAnswer: to.",
+    8: "\"is a subsidiary\" is the whole verb phrase: the word \"spotted\" has no place in it.\nAnswer: spotted.",
+    9: "\"litter\" is the verb here: these towers now litter the Thames.\nAnswer: are.",
+    10: "\"urban\" says what type of canyon it is. We do not use \"utterly\" with this type of adjective.\nAnswer: utterly.",
+    11: "Every word is needed.\nAnswer: V.",
+    12: "\"greed\" is uncountable: the power of greed.\nAnswer: a.",
+    13: "The writer says that ministers refuse to act. \"hardly refuse\" would mean the opposite.\nAnswer: hardly.",
+    14: "After \"demand that\" we use the base form: that the beauty be respected.\nAnswer: shall.",
+    15: "Every word is needed.\nAnswer: V."
+  };
+  E["p-u2-2425-9"] = {
+    19: "would rather not + verb without \"to\". He prefers to work alone, so not with other people.\nAnswer: he would rather not.",
+    20: "have + object + V3: somebody else does it.\nAnswer: have all the cooking done.",
+    21: "claim + perfect infinitive: the finding came before the claim.\nAnswer: to have found.",
+    22: "said she had never seen = denied. deny + having + V3.\nAnswer: denied having seen.",
+    23: "spend + time + -ing. search for something.\nAnswer: spent five minutes searching for.",
+    24: "If B comes after A, then A will be followed by B.\nAnswer: will be followed by.",
+    25: "It will be a pleasure to do something. take somebody on a tour.\nAnswer: pleasure to take you on (or: for).",
+    26: "in spite of + -ing. The perfect form shows the earlier time.\nAnswer: in spite of never having (or: in spite of having never).",
+    27: "As far as I am concerned = in my opinion.\nAnswer: As far as I am.",
+    28: "call for = need. a great deal of + uncountable noun.\nAnswer: for a great deal of (or: for a good deal of)."
+  };
+  E["p-u3-2425-9"] = {
+    1: "After \"a decade of\" we need a noun. The numbers fell, so there was too little money: under-.\nAnswer: underinvestment.",
+    2: "After \"Pupils'\" we need a noun. ENGAGE + -ment.\nAnswer: engagement.",
+    3: "\"fallen by a ___\": a part of the whole. FIVE → one out of five.\nAnswer: fifth.",
+    4: "An adjective before \"subjects\".\nAnswer: academic.",
+    5: "Further education is study after school. FAR → further.\nAnswer: further.",
+    6: "After \"future\" we need a noun: wealth and success.\nAnswer: prosperity.",
+    7: "After \"parents'\" we need a noun. Parents have more than one: plural.\nAnswer: priorities.",
+    8: "An adverb before the verb \"becoming\": more and more.\nAnswer: increasingly.",
+    9: "\"___ teachers\" are people who are still learning the job.\nAnswer: trainee.",
+    10: "A preposition before \"the education system\": in all of it. THROUGH + -out.\nAnswer: throughout."
+  };
+  E["p-sch-2627-1"] = {
+    1: "An adjective before \"analysis\".\nAnswer: scientific (also: scientifical).",
+    2: "After \"your social media\" we need a noun.\nAnswer: consumption.",
+    3: "After \"results are often\" we need an adjective with a negative meaning: not the same every time.\nAnswer: uneven.",
+    4: "An adjective before \"fees\": they cost a lot.\nAnswer: costly.",
+    5: "A browser extension is a small program you add to a browser.\nAnswer: extension.",
+    6: "After \"We've\" we need V3. re- = again: the same experience, now in your browser.\nAnswer: recreated.",
+    7: "After \"humans are just\": we do what cats want.\nAnswer: servants (also: subservient, servile).",
+    8: "After \"their\" we need a noun.\nAnswer: adorableness (also: adorability, adoration)."
+  };
+  E["p-sch-2627-2"] = {
+    1: "The default setting is the one that works if you change nothing.\nAnswer: default.",
+    2: "A browser window.\nAnswer: window.",
+    3: "The cat is on the screen, so it is a digital cat.\nAnswer: digital.",
+    4: "The text has already named it: the timer is customizable.\nAnswer: timer.",
+    5: "Social media platforms, such as TikTok and VK.\nAnswer: platforms.",
+    6: "cheat the system = break the rules without being caught.\nAnswer: cheat."
+  };
+  E["p-sch-2627-3"] = {
+    1: "\"standpaint\": the word is a point of view.\nAnswer: standpoint.",
+    2: "\"no date is collected\": the extension collects information.\nAnswer: data.",
+    3: "\"truck its own settings\": a truck is a vehicle. It needs to follow the settings.\nAnswer: track.",
+    4: "\"giving it a shoot\": the fixed phrase is give it a shot = try it.\nAnswer: shot.",
+    5: "\"dependancy\" has the wrong vowel.\nAnswer: dependency."
+  };
+  E["p-sch-2627-4"] = {
+    29: "Like headless chickens = in a panic. Chickens come home to roost = bad actions bring their results later. Chicken out = decide not to do something because of fear (here: he chickens out).\nAnswer: chickens.",
+    30: "A big fish in a small pond. A cold fish = an unfriendly person. A different kettle of fish = a very different thing.\nAnswer: fish.",
+    31: "A paper tiger only looks strong. The eye of the tiger = great determination. Ride the tiger = deal with something dangerous that you cannot stop.\nAnswer: tiger.",
+    32: "See the elephant = see a lot of the world. The elephant in the room = a big problem nobody talks about. A white elephant = something expensive and useless.\nAnswer: elephant.",
+    33: "An easy pigeon = somebody easy to trick. A clay pigeon = an easy target. A stool pigeon = a person who gives information about friends.\nAnswer: pigeon.",
+    34: "Act the goat = behave in a silly way. Get somebody's goat = make somebody angry. In the third sentence, the word is the short form of scapegoat: something you blame.\nAnswer: goat."
+  };
 })();
