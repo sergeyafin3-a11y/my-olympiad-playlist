@@ -262,7 +262,7 @@
       var dp = dateParts(l.date), isCur = l === cur, past = l.date < t && !isCur;
       var badge = isCur ? '<span class="ls-badge now">' + (l.date === t ? 'Today' : 'Next') + '</span>' : past ? '<span class="ls-badge done">✓ done</span>' : '<span class="ls-badge soon">soon</span>';
       h += '<a class="ls-card' + (isCur ? ' today' : '') + '" href="#/lesson/' + l.id + '">' + (l.cover ? '<img class="ls-thumb" src="' + esc(thumb(l.cover)) + '" alt="" loading="lazy">' : '<span class="ls-date"><b>' + dp[0] + '</b><small>' + dp[1] + '</small></span>') +
-        '<span><span class="ls-when">' + dp[0] + ' ' + dp[1] + (l.emoji ? ' · ' + l.emoji : '') + '</span><span class="ls-title">' + esc(l.title) + '</span><span class="ls-sub">' + (l.steps ? l.steps.length + ' steps · ' + classMinutes(l) + ' min' : (l.summary ? 'Summary and links' : 'Coming soon')) + '</span></span>' + badge + '</a>';
+        '<span><span class="ls-when">' + dp[0] + ' ' + dp[1] + (l.emoji ? ' · ' + l.emoji : '') + '</span><span class="ls-title">' + esc(l.title) + '</span><span class="ls-sub">' + (l.steps ? l.steps.length + ' steps · ' + classMinutes(l) + ' min' : (l.summary || l.links ? 'Summary and links' : 'Coming soon')) + '</span></span>' + badge + '</a>';
     });
     return h + '</div>';
   }
@@ -290,7 +290,9 @@
     s.blocks.forEach(function (b, k) { h += block(l, i, k, b, b.type === "brief" || b.type === "paper" || b.type === "sample" ? ++tn : 0); });
     // Учитель 26.10: «сейчас я себя проверяю, а завтра показываю экран ученице — ответы должны стереться».
     var canCheck = s.blocks.some(function (b) { return ["gapfill", "transform", "upgrade", "matchsheet"].indexOf(b.type) >= 0 || (b.type === "paper" && b.task); });
-    h += '<div class="ls-clear">' + (canCheck ? '<button class="bigplay" data-lscheckall="' + l.id + ':' + i + '">✓ Check answers</button>' : '') +
+    // В уроке-разборе заполнять нечего, кнопки стирания там не нужны. В остальных уроках они есть в каждом разделе.
+    var hasWork = l.steps.some(function (st) { return st.blocks.some(function (b) { return ["sample", "brief", "wpaper"].indexOf(b.type) < 0; }); });
+    if (hasWork) h += '<div class="ls-clear">' + (canCheck ? '<button class="bigplay" data-lscheckall="' + l.id + ':' + i + '">✓ Check answers</button>' : '') +
       '<button class="ghost" data-lsclear="' + l.id + ':' + i + ':">↺ Clear answers in this section</button>' +
       '<button class="ghost" data-lsclear="' + l.id + ':">↺ Clear the whole lesson</button></div>';
     h += '<div class="ls-nav">' + (i > 0 ? '<button class="ghost" data-lsgo="' + l.id + ':' + (i - 1) + '">← Back</button>' : '<span></span>') +
@@ -322,7 +324,9 @@
       if (!sit) return "";
       var sop = sit.opts || sm.opts || [], slist = sop.length ? '<div class="ls-popts">' + sop.map(function (o) { return '<p><b>' + esc(o.k) + ')</b> ' + esc(o.t) + '</p>'; }).join("") + '</div>' : "";
       return '<h3 class="ls-ptask">📋 Task ' + num + ' · ' + esc(b.title) + '</h3><div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p class="ins">' + esc(sm.intro) + '</p>' +
-        (b.para != null ? '<p>' + esc(sm.text[b.para]) + '</p>' : '') +
+        (sm.example ? '<p>' + esc(sm.example) + '</p>' : '') +
+        (sm.examples || []).map(function (e) { return '<p><b>' + esc(e.label) + '.</b> ' + esc(e.show) + ' — ' + esc(e.answer || 'V') + '</p>'; }).join("") +
+        (b.para != null ? (sm.textTitle ? '<p class="ttl">' + esc(sm.textTitle) + '</p>' : '') + (sm.textSubtitle ? '<p>' + esc(sm.textSubtitle) + '</p>' : '') + '<p>' + esc(sm.text[b.para]) + '</p>' : '') +
         (/^Gap /.test(sit.q) ? '' : '<p><b>' + sit.n + '.</b> ' + esc(sit.q) + '</p>') +
         (sop.length > 4 ? '<details><summary><b>' + esc(sop[0].k) + '–' + esc(sop[sop.length - 1].k) + '</b></summary>' + slist + '</details>' : slist) + '</div>';
     }

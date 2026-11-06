@@ -28,7 +28,7 @@ KEYS = {
 
 
 def data():
-    files = ["data/variant-mun-msk-25-26.js", "data/variant-mun-msk-22-23.js", "data/variant-reg-25-26.js", "data/variant.js",
+    files = ["data/variant-mun-msk-25-26.js", "data/variant-mun-msk-23-24.js", "data/variant-mun-msk-22-23.js", "data/variant-reg-25-26.js", "data/variant.js",
              "data/howto.js", "data/howto-mun.js", "data/howto-reg.js", "data/practice-mun.js", "data/lessons.js", "js/check.js"]
     src = "\n".join(["var window = this;"] + [(ROOT / f).read_text(encoding="utf-8") for f in files] + ["""JSON.stringify((function(){
       var V = window.VARIANTS.filter(function(x){ return x.id === "mun-msk-22-23"; })[0], C = window.Check, full = {};
@@ -58,7 +58,7 @@ class Mock(unittest.TestCase):
         cls.paper = norm((ROOT / "tests" / "fixtures" / "mock-mun-2223.txt").read_text(encoding="utf-8"))
 
     def test_is_a_separate_variant_right_after_the_main_one(self):
-        self.assertEqual(self.r["order"], ["mun-msk-25-26", "mun-msk-22-23", "reg-2025-26", "final-2025-26"])
+        self.assertEqual(self.r["order"], ["mun-msk-25-26", "mun-msk-23-24", "mun-msk-22-23", "reg-2025-26", "final-2025-26"])
         self.assertEqual(self.r["v"]["title"], "Municipal 2022/23 · Moscow")
         self.assertNotIn("mock", self.r["v"])
         self.assertIn("variant-mun-msk-22-23.js?v=", HTML)
@@ -162,21 +162,108 @@ class Mock(unittest.TestCase):
         self.assertTrue(self.r["stages"]["mun-msk-22-23"]["note"])
         self.assertIn("(FULLMODE ? '' : ' open')", HTML)
 
-    def test_nothing_else_in_the_app_gives_the_mock_away(self):
-        # Ревью PR 62: цитата эссе и пункты Task 4 были в разминках, ответ Task 2 — в таблице урока 23.10, пословица — в разборе.
-        phrases = ["Lost Gardens of Heligan", "thousand miles", "Blarney", "Smithsonian", "Ashmolean", "the Fringe", "Anorak", "on the dole",
-                   "Early to bed", "East is East", "Haseltine", "being recognised", "long hair that", "bound to get", "been driving for",
-                   "more than enough of", "sufficient amount", "unless I finish", "must have done", "said to have taken", "Leonardo"]
+
+class Mock2324(unittest.TestCase):
+    """Пробник 16 ноября (учитель 06.11: «да давай другой год»): 2023/24, 10–11 классы. Самая свежая работа, которую Варя почти не видела:
+    2025/26 и 2024/25 уже были на уроках и в домашках. Ключи — из файла ответов, Reading Task 1 — с отрисованных страниц (жирный)."""
+    KEYS = {
+        "p-l1-2324": list("BABBBBABAB"), "p-l2-2324": list("BBACA"),
+        "p-r1-2324": list("ACBDAABBCD"), "p-r2-2324": list("HDJAEKCIFG"),
+        "p-u1-2324": ["far", "have", "too", "V", "of", "within", "a", "V", "made", "be", "being", "of", "V", "remains", "it"],
+        "p-u2-2324": ["for Suzy to reach", "will have gone off", "such terrible weather that", "take plenty of exercise/do plenty of exercise/have plenty of exercise/get plenty of exercise/take plenty of exercises/do plenty of exercises/have plenty of exercises/get plenty of exercises", "set off",
+                 "was Vicki's favourite subject", "if it is sunny/if it gets sunny", "about time that he took/about time that he had/about time that he showed/about time that he expressed/about time he started taking/about time he started having/about time her husband took",
+                 "would rather have gone", "would have the rubbish taken/would have the rubbish thrown/would have the rubbish cleaned"],
+        "p-u3-2324": ["coproduction/co-production", "nervous", "refuel", "miscalculated", "disappearance", "discomfort", "underestimated",
+                 "supersonic", "superhero", "overconfident"],
+        "p-u4-2324": list("JEKAHMLFGB"),
+    }
+
+    @classmethod
+    def setUpClass(cls):
+        files = ["data/variant-mun-msk-25-26.js", "data/variant-mun-msk-23-24.js", "data/practice-mun.js", "data/explain-mun.js", "data/howto-mun.js", "data/lessons.js", "js/check.js"]
+        src = "\n".join(["var window = this;"] + [(ROOT / f).read_text(encoding="utf-8") for f in files] + ["""JSON.stringify((function(){
+          var V = window.VARIANTS.filter(function(x){ return x.id === "mun-msk-23-24"; })[0], C = window.Check, full = {};
+          V.parts.forEach(function(p){ p.tasks.forEach(function(t){ if (t.type === "writing") return;
+            var sheet = {}; t.items.forEach(function(it){ sheet[it.n] = t.type === "choice" ? it.a[0] : it.accept[0]; });
+            var s = C.score(t, sheet); full[t.id] = [s.got, s.max]; }); });
+          return { v: V, full: full, ex: window.EXPLAIN, how: window.HOWTO.tasks, stops: [C.stopAfter(V, 0), C.stopAfter(V, 500)], practice: JSON.stringify(window.PRACTICE),
+                   l6: window.LESSONS.filter(function(l){ return l.id === "l6"; })[0] }; })());"""])
+        cls.r = json.loads(subprocess.run(["osascript", "-l", "JavaScript", "-e", src], capture_output=True, text=True, check=True).stdout)
+        cls.tasks = {t["id"]: t for p in cls.r["v"]["parts"] for t in p["tasks"]}
+
+    def test_whole_paper_as_on_the_day_and_full_marks_with_the_key(self):
+        parts = [(p["title"], p["minutes"], p["max"]) for p in self.r["v"]["parts"]]
+        self.assertEqual(parts, [("Listening", 15, 15), ("Reading", 45, 20), ("Use of English", 60, 45), ("Writing", 60, 20)])
+        self.assertEqual(self.r["v"]["title"], "Mock exam · Municipal 2023/24")
+        self.assertEqual(self.r["v"]["audio"], "media/listening-mun-msk-23-24.mp3")
+        self.assertTrue((ROOT / self.r["v"]["audio"]).is_file())
+        self.assertEqual(self.r["stops"], [500, None])
+        for tid, (got, mx) in self.r["full"].items():
+            self.assertEqual(got, mx, tid)
+        self.assertEqual(self.r["l6"]["links"][0]["href"], "#/full/p-l1-2324")
+
+    def test_official_keys(self):
+        for tid, want in self.KEYS.items():
+            t = self.tasks[tid]
+            got = [it["a"] if t["type"] == "choice" else it["accept"] for it in t["items"]]
+            self.assertEqual(len(got), len(want), tid)
+            for i, (g, w) in enumerate(zip(got, want)):
+                self.assertEqual(sorted(norm(x).lower() for x in g), sorted(norm(x).lower() for x in re.split(r"[/;]", w)), (tid, i + 1))
+
+    def test_words_are_the_official_ones_both_ways(self):
+        w = lambda s: sorted(x for x in re.findall(r"[a-z]{2,}|[0-9]{3,}", norm(s).lower())
+                             if x not in ("task", "points", "time", "minutes", "true", "false", "items", "questions", "for", "of", "use", "english", "the", "example"))
+        ours = []
+        for t in self.tasks.values():
+            for k in ("intro", "textTitle", "textSubtitle", "premise", "outro", "pointsLabel", "example"):
+                if t.get(k) and not (t["id"] == "p-r2-2324" and k == "textTitle"):
+                    ours.append(t[k].replace(" — ", " ").replace("…………………….", ""))
+            ours += t.get("points", []) + t.get("text", [])
+            ours += [o["t"] for o in t.get("opts", []) if o["t"] not in ("True", "False")]
+            for e in t.get("examples", []):
+                ours += [e["show"], e.get("answer", "")]
+            for it in t.get("items", []):
+                if not it["q"].startswith("Gap ("):
+                    ours.append(it["q"].replace(" — ", " "))
+                ours += [o["t"] for o in it.get("opts", [])]
+        paper = (ROOT / "tests" / "fixtures" / "mock-mun-2324.txt").read_text(encoding="utf-8")
+        paper = re.sub(r"\b(LISTENING|READING|USE OF ENGLISH|WRITING)\b", " ", paper)
+        a, b = w(" ".join(ours)), w(paper)
+        diff = sorted({x for x in a + b if a.count(x) != b.count(x)})
+        self.assertEqual(diff, [], [(x, a.count(x), b.count(x)) for x in diff])
+
+    def test_answers_are_not_one_tap_away_during_the_timed_exam(self):
+        # Ревью PR 70: «Show how to solve» заканчивается ответом и открывался в полном экзамене.
+        self.assertIn("if (ex && (!FULLMODE || checked))", HTML)
+        self.assertIn("(FULLMODE ? '' : ' open')", HTML)
+
+    def test_every_task_has_a_card_and_listening_breakdowns_quote_the_recording(self):
+        for tid in self.tasks:
+            self.assertGreaterEqual(len(self.r["how"][tid]["steps"]), 2, tid)
+        def text(s):
+            s = unicodedata.normalize("NFC", s).replace("’", "'").replace("`", "'").replace("“", "").replace("”", "")
+            return re.sub(r"\s+", " ", re.sub(r"-\s*\n\s*", "-", s))
+        script = text((ROOT / "tests" / "fixtures" / "listening-mun-2324-script.txt").read_text(encoding="utf-8"))
+        for tid in ("p-l1-2324", "p-l2-2324"):
+            for it in self.tasks[tid]["items"]:
+                e = self.r["ex"][tid][str(it["n"])]
+                self.assertIn("Answer: " + it["a"][0], e)
+                for q in re.findall(r'"([^"]+)"', e):
+                    self.assertIn(text(q), script, (tid, it["n"]))
+
+    def test_nothing_else_in_the_app_gives_this_paper_away(self):
+        self.assertNotIn("2324", self.r["practice"])
+        phrases = ["Naoise", "Lena Pillars", "Bismarck", "Mérimée", "Lewis Carroll", "Steve and Kelly", "for Suzy to reach", "will have gone off", "such terrible weather",
+                   "set off a chain", "Gretna", "Athens of the North", "spin doctor", "Joneses", "p-l1-2324"]
+        allowed = {"variant-mun-msk-23-24.js", "explain-mun.js", "howto-mun.js", "dict.js"}
         for f in sorted((ROOT / "data").glob("*.js")) + sorted((ROOT / "js").glob("*.js")):
-            if f.name in ("variant-mun-msk-22-23.js", "dict.js"):
+            if f.name in allowed:
                 continue
             text = f.read_text(encoding="utf-8").lower()
-            self.assertEqual([p for p in phrases if p.lower() in text], [], f.name)
-        # Год называем только как пробник: не «задания 2022/23» в разминках и таблицах.
-        for name in ("warmups.js", "lessons.js", "explain-mun.js"):
-            text = (ROOT / "data" / name).read_text(encoding="utf-8")
-            lines = [l for l in text.split("\n") if "2022/23" in l and "Mock exam" not in l and not l.strip().startswith("//")]
-            self.assertEqual(lines, [], name)
+            found = [p for p in phrases if p.lower() in text]
+            if f.name == "lessons.js":
+                found = [p for p in found if p != "p-l1-2324"]  # ссылка урока 16 ноября
+            self.assertEqual(found, [], f.name)
 
 
 if __name__ == "__main__":

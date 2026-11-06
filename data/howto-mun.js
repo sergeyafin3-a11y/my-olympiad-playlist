@@ -163,7 +163,7 @@
     "For each gap, read the sentence before it and the sentence after it.",
     "Start with the gaps you are sure about. You can use every letter only once."
   ] };
-  H.tasks["mock-u1"] = { what: "Find the extra word: some parts of the text have one word that must not be there. Others are correct.", steps: [
+  H.tasks["mock-u1"] = { what: "Find the extra word: some parts of the text contain one word that must not be there. Others are correct.", steps: [
     "Try to take out one word. If the sentence is correct without it, this is the extra word.",
     "If every word is needed, type V. Type only one word."
   ] };
@@ -183,4 +183,10 @@
     "Follow the plan: introduction, your opinion with reasons, examples from literature or history, conclusion.",
     "Count your words: fewer than 180 words = 0 points. After 275 words only the first 250 are checked."
   ] };
+  // Пробник 16 ноября (работа 2023/24): карточки те же короткие, что у работы 2022/23; у Listening — свои, они есть выше.
+  H.stages["mun-msk-23-24"] = {
+    title: "Mock exam · Municipal 2023/24",
+    note: "A real paper of your stage. Do all four parts in one go and use the timer: Listening (15 min, 15 points), Reading (45 min, 20 points), Use of English (60 min, 45 points), Writing (60 min, 20 points). The maximum is 100 points."
+  };
+  [["p-r1-2324", "mock-r1"], ["p-r2-2324", "mock-r2"], ["p-u1-2324", "mock-u1"], ["p-u2-2324", "mock-u2"], ["p-u3-2324", "mock-u3"], ["p-u4-2324", "mock-u4"], ["p-w1-2324", "mock-w1"]].forEach(function (x) { H.tasks[x[0]] = H.tasks[x[1]]; });
 })();
