@@ -142,9 +142,9 @@
     ],
     tip: "Do not change even one word in the last sentence. Do not put a full stop after the title — it counts as a mistake. If the task is not done (0 for content), the whole story gets 0."
   };
-  // Пробник 2022/23: короткие карточки, закрыты по умолчанию: на экзамене подсказок нет. Без цифр и примеров из этой работы.
+  // Работа 2022/23: короткие карточки, без цифр и примеров из этой работы.
   H.stages["mun-msk-22-23"] = {
-    title: "Mock exam · Municipal 2022/23",
+    title: "Municipal 2022/23 · Moscow",
     note: "A real paper of your stage. Do all four parts in one go and use the timer: Listening (15 min, 15 points), Reading (45 min, 20 points), Use of English (60 min, 45 points), Writing (60 min, 20 points). The maximum is 100 points."
   };
   H.tasks["mock-l1"] = { what: "Listening: is each sentence true or false?", steps: [

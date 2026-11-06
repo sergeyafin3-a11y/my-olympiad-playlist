@@ -287,7 +287,7 @@
     if (s.image) h += '<div class="ls-photo"><img class="ls-hero" src="' + esc(s.image) + '" alt="">' + (s.sticker ? '<span class="ls-sticker">' + esc(s.sticker) + '</span>' : '') + '</div>';
     // Задания раздела нумеруются по порядку — Task 1, Task 2…: учитель задаёт на дом «Section 5 → Task 3».
     var tn = 0;
-    s.blocks.forEach(function (b, k) { h += block(l, i, k, b, b.type === "brief" || b.type === "paper" ? ++tn : 0); });
+    s.blocks.forEach(function (b, k) { h += block(l, i, k, b, b.type === "brief" || b.type === "paper" || b.type === "sample" ? ++tn : 0); });
     // Учитель 26.10: «сейчас я себя проверяю, а завтра показываю экран ученице — ответы должны стереться».
     var canCheck = s.blocks.some(function (b) { return ["gapfill", "transform", "upgrade", "matchsheet"].indexOf(b.type) >= 0 || (b.type === "paper" && b.task); });
     h += '<div class="ls-clear">' + (canCheck ? '<button class="bigplay" data-lscheckall="' + l.id + ':' + i + '">✓ Check answers</button>' : '') +
@@ -315,6 +315,17 @@
     if (b.type === "words") return '<div class="ls-words">' + b.items.map(function (x) { return '<button type="button" data-lsword="' + esc(x) + '">' + esc(x) + '</button>'; }).join("") + '</div>';
     if (b.type === "hooks") return '<div class="ls-hooks">' + b.items.map(function (x) { return '<div><b>' + esc(x.h) + '</b>' + rich(x.t) + '</div>'; }).join("") + '</div>';
     if (b.type === "reveal") return '<details class="ls-box"><summary><b>' + esc(b.label) + '</b></summary><p class="ls-text">' + rich(b.text) + '</p></details>';
+    // Один пункт настоящего задания: инструкция и пункт — из самого задания (b.task), копии в уроке нет. Его не решают, а разбирают вместе,
+    // поэтому нет ни полей, ни проверки; ключ и «почему» — в шпаргалке учителя. Длинный список вариантов свёрнут.
+    if (b.type === "sample") {
+      var sm = taskById(b.task), sit = sm && sm.items.filter(function (x) { return x.n === b.item; })[0];
+      if (!sit) return "";
+      var sop = sit.opts || sm.opts || [], slist = sop.length ? '<div class="ls-popts">' + sop.map(function (o) { return '<p><b>' + esc(o.k) + ')</b> ' + esc(o.t) + '</p>'; }).join("") + '</div>' : "";
+      return '<h3 class="ls-ptask">📋 Task ' + num + ' · ' + esc(b.title) + '</h3><div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p class="ins">' + esc(sm.intro) + '</p>' +
+        (b.para != null ? '<p>' + esc(sm.text[b.para]) + '</p>' : '') +
+        (/^Gap /.test(sit.q) ? '' : '<p><b>' + sit.n + '.</b> ' + esc(sit.q) + '</p>') +
+        (sop.length > 4 ? '<details><summary><b>' + esc(sop[0].k) + '–' + esc(sop[sop.length - 1].k) + '</b></summary>' + slist + '</details>' : slist) + '</div>';
+    }
     // Настоящее задание: букву можно напечатать прямо в пропуске или в таблице — это одно и то же поле.
     // Проверки нет нарочно: у задания урока (2025/26) и домашнего пирога (2024/25) шесть общих букв в ключе —
     // проверка на уроке выдала бы больше половины домашнего задания.
@@ -748,7 +759,7 @@
   // Ушли из уроков не через задание урока — обратная ссылка больше не нужна.
   window.addEventListener("hashchange", function () {
     var h = location.hash;
-    if (st.from && !/^#\/(t|lesson)\//.test(h) && h !== "#/lesson") { st.from = null; save(); }
+    if (st.from && !/^#\/(t|full|lesson)\//.test(h) && h !== "#/lesson") { st.from = null; save(); }
   });
   A.render();
 })();

@@ -1,7 +1,7 @@
-// Пробник: муниципальный этап ВсОШ по английскому языку, Москва, 2022/23, 10–11 классы (учитель 06.11, к уроку 9 ноября).
+// Муниципальный этап ВсОШ по английскому языку, Москва, 2022/23, 10–11 классы. Запасная работа: пробник 16 ноября — по работе 2025/26 (учитель 06.11).
 // Тексты и ключи — дословно из официальных файлов архива ЦПМ: tasks-/ans-/script-engl-10-11-mun-msk-22-23.pdf,
 // аудио audio-engl-10-11-mun-msk-22-23.mp3. Верные варианты в Listening и Reading Task 1 в файле ответов выделены
-// жирным: сверено по отрисованным страницам. Год нарочно не использован в отработке и уроках.
+// жирным: сверено по отрисованным страницам. Год не использован в отработке и уроках.
 // Что изменено: в бумаге у вариантов Reading Task 1 и Listening Task 2 маркеры без букв, буквы A, B, C, D — по порядку строк;
 // «сomplete» в инструкции Task 2 написано с кириллической «с», заменена латинской; пропуски Reading Task 2 записаны как
 // (11) ______, как в других вариантах. Task 3 разбит на 10 пунктов по абзацам: каждый заканчивается перед следующим пропуском.
@@ -16,8 +16,7 @@
   window.VARIANTS = window.VARIANTS || [];
   window.VARIANTS.push({
     id: "mun-msk-22-23",
-    mock: true,
-    title: "Mock exam · Municipal 2022/23",
+    title: "Municipal 2022/23 · Moscow",
     subtitle: "All-Russian Olympiad · municipal stage · Moscow · grades 10–11",
     audio: "media/listening-mun-msk-22-23.mp3",
     source: { name: "Official task archive · Centre for Pedagogical Excellence (Moscow)", url: "https://xn--b1ayi3a.xn--l1afu.xn--p1ai/upload/files/Arhive_tasks/2022-23/mun/engl/" },

@@ -1181,8 +1181,8 @@ class EssayAndCultureLesson(unittest.TestCase):
         self.assertEqual(self.l["title"], "Writing: an essay on a quotation")
         self.assertEqual([st["title"] for st in self.steps], [
             "Warm-up", "The task: an essay", "Build the essay", "Write the essay", "Check the essay",
-            "Homework: Grammar", "Homework: Use of English", "Homework: Listening", "Homework: Mock exam"])
-        self.assertEqual([st.get("home", False) for st in self.steps], [False] * 5 + [True] * 4)
+            "Homework: Grammar", "Homework: Use of English", "Homework: Listening"])
+        self.assertEqual([st.get("home", False) for st in self.steps], [False] * 5 + [True] * 3)
         self.assertEqual(sum(st["minutes"] for st in self.steps if not st.get("home")), 52, "8 минут из часа — на вопросы")
         imgs = [st["image"] for st in self.steps]
         self.assertEqual(len(set(imgs)), len(imgs))
@@ -1192,15 +1192,6 @@ class EssayAndCultureLesson(unittest.TestCase):
         step = self.steps[4]
         self.assertEqual([b["type"] for b in step["blocks"]], ["brief", "list"])
         self.assertIn("Checklist", step["blocks"][1]["title"])
-
-    def test_mock_exam_is_the_main_homework_and_opens_in_full_mode(self):
-        step = self.steps[-1]
-        self.assertEqual(step["minutes"], 180)
-        links = [b for b in step["blocks"] if b["type"] == "links"][0]
-        self.assertEqual(links["items"][0]["href"], "#/full/mock-l1")
-        text = json.dumps(step["blocks"], ensure_ascii=False)
-        for x in ["one device", "Check answers", "Try again", "screenshot"]:
-            self.assertIn(x, text)
 
     def test_new_pictures_instead_of_repeated_ones(self):
         # Учитель 06.11: «вместо повторяющихся картинок добавь эти».
@@ -1322,7 +1313,7 @@ class EssayAndCultureLesson(unittest.TestCase):
         self.assertEqual([c["t"] for c in cards if "fully agree" in c["t"] and c["b"] != "intro"], [])
 
     def test_homework_is_listening_with_tips_and_official_audio(self):
-        home = self.steps[-2]
+        home = self.steps[-1]
         self.assertTrue(home.get("home"))
         tips = json.dumps(home["blocks"][0], ensure_ascii=False)
         self.assertIn("How to do Listening", tips)
@@ -1429,6 +1420,20 @@ class EssayAndCultureLesson(unittest.TestCase):
         html = render_step("l4", i, events=[["click", "lsspot", "l4:%d:1:0:%d" % (i, spot["items"][0]["at"])]])
         self.assertIn("mix up", html)
 
+    def test_review_of_pr_69(self):
+        step = self.steps[6]
+        why = {it["wrong"]: it["why"] for it in step["blocks"][1]["items"]}
+        self.assertNotIn("cannot stand", why["so"])
+        self.assertNotIn("nothing goes between", why["all"])
+        notes = {it["word"]: it["note"] for it in step["blocks"][4]["items"] + step["blocks"][9]["items"]}
+        self.assertNotIn("After it, the past form", notes["idea"])
+        self.assertNotIn("**un-** = never", notes["PRECEDENT"])
+        noun = " ".join(step["blocks"][7]["cols"][0]["lines"])
+        self.assertIn("-ing", noun)
+        self.assertNotIn("drawing", noun, "это ответ следующего задания")
+        employ = [it for it in step["blocks"][9]["items"] if it["word"] == "EMPLOY"][0]
+        self.assertIn("barristers", employ["q"])
+
     def test_official_culture_task_2021_22(self):
         t = run_js("""var t = null; Object.keys(P).forEach(function(k){ P[k].forEach(function(x){ if (x.id === "p-u4-2122") t = x; }); });
                       return {opts: t.opts, items: t.items, intro: t.intro, ex: E["p-u4-2122"]};""")
@@ -1440,6 +1445,70 @@ class EssayAndCultureLesson(unittest.TestCase):
         self.assertEqual([o["k"] for o in t["opts"]], list("ABCDEFGHIJKLMN"))
         for it in t["items"]:
             self.assertIn("Answer: " + it["a"][0], t["ex"][str(it["n"])])
+
+
+class ExamWalkthroughLesson(unittest.TestCase):
+    """Учитель 06.11: урок 9.11 «Mock exam: review»: не решаем работу, а идём по ней подряд, по одному пункту из каждого задания,
+    из самой свежей работы 10–11 классов. Writing: только само задание, разбираем устно. Пробник — на 16 ноября, не в домашку."""
+
+    def setUp(self):
+        self.l = run_js('return L.filter(function(x){ return x.id === "l5"; })[0];')
+        self.steps = self.l["steps"]
+
+    def test_one_item_from_every_task_in_the_order_of_the_paper(self):
+        self.assertEqual(self.l["date"], "2026-11-09")
+        self.assertEqual(self.l["title"], "Mock exam: review")
+        self.assertEqual([st["title"] for st in self.steps], ["Listening", "Reading", "Use of English", "Writing"])
+        got = [[(b["task"], b["item"]) for b in st["blocks"] if b["type"] == "sample"] for st in self.steps]
+        self.assertEqual(got, [[("m-l1", 5), ("m-l2", 4)], [("m-r1", 1), ("m-r2", 1)], [("m-u1", 4), ("m-u2", 4), ("m-u3", 4), ("m-u4", 1)], []])
+        self.assertLessEqual(sum(st["minutes"] for st in self.steps), 50, "из часа остаётся запас на вопросы")
+        self.assertFalse(any(st.get("home") for st in self.steps))
+        for st in self.steps:
+            for b in st["blocks"]:
+                if b["type"] == "sample":
+                    self.assertIn("2025/26", b["source"])
+
+    def test_item_is_shown_as_in_the_paper_and_nothing_is_to_be_solved(self):
+        t = run_js("""var o = {}; V.parts.forEach(function(p){ p.tasks.forEach(function(x){ o[x.id] = x; }); }); return o;""")
+        for i, st in enumerate(self.steps[:3]):
+            html = render_step("l5", i).replace("&#39;", "'").replace("&quot;", '"')
+            n = 0
+            for b in st["blocks"]:
+                if b["type"] != "sample":
+                    continue
+                n += 1
+                self.assertIn("📋 Task %d · %s" % (n, b["title"]), html)
+                task = t[b["task"]]
+                self.assertIn(task["intro"], html)
+                item = [x for x in task["items"] if x["n"] == b["item"]][0]
+                if not item["q"].startswith("Gap"):
+                    self.assertIn(item["q"], html)
+                for o in item.get("opts") or task.get("opts") or []:
+                    self.assertIn(o["t"], html)
+            self.assertNotIn("<input", html, "не решаем, а разбираем")
+            self.assertNotIn("<select", html)
+            self.assertNotIn("✓ Check", html)
+        reading = render_step("l5", 1).replace("&#39;", "'")
+        self.assertIn(t["m-r1"]["text"][0], reading, "абзац, по которому отвечаем")
+        self.assertIn(t["m-r2"]["text"][0].split("(1)")[0], reading)
+
+    def test_writing_is_just_the_task(self):
+        st = self.steps[3]
+        self.assertEqual([b["type"] for b in st["blocks"]], ["brief", "wpaper"])
+        self.assertEqual(st["blocks"][1]["task"], "m-w1")
+        html = render_step("l5", 3)
+        self.assertIn("Jim happened to see the letter", html)
+        self.assertNotIn("<textarea", html)
+
+    def test_mock_exam_is_on_16_november_from_the_newest_paper(self):
+        l6 = run_js('return L.filter(function(x){ return x.id === "l6"; })[0];')
+        self.assertEqual(l6["date"], "2026-11-16")
+        self.assertEqual(l6["title"], "Mock exam")
+        self.assertEqual(l6["links"][0]["href"], "#/full/m-l1")
+        self.assertIn("2025/26", json.dumps(l6, ensure_ascii=False))
+        l4 = run_js('return L.filter(function(x){ return x.id === "l4"; })[0];')
+        self.assertNotIn("mock", json.dumps(l4, ensure_ascii=False).lower())
+        self.assertNotIn("mock-l1", (ROOT / "data" / "lessons.js").read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":

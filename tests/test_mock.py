@@ -1,6 +1,7 @@
-"""Пробник: настоящая работа муниципального этапа 2022/23 целиком (учитель 06.11: «да» — к уроку 9 ноября).
+"""Настоящая работа муниципального этапа 2022/23 целиком: отдельный этап на вкладке Exam (файлы mock-*: так она называлась сначала).
 
-Год держали для пробника, поэтому его нет ни в отработке, ни в уроках. Слова сверяются с официальным файлом
+Учитель 06.11: для пробника этот год слишком старый, пробник 16 ноября — по самой свежей работе 2025/26. Эта работа остаётся запасной,
+поэтому её нет ни в отработке, ни в уроках. Слова сверяются с официальным файлом
 (tests/fixtures/mock-mun-2223.txt), ключи ниже выписаны с отрисованных страниц файла ответов: верный вариант там жирным.
 """
 import json
@@ -58,9 +59,8 @@ class Mock(unittest.TestCase):
 
     def test_is_a_separate_variant_right_after_the_main_one(self):
         self.assertEqual(self.r["order"], ["mun-msk-25-26", "mun-msk-22-23", "reg-2025-26", "final-2025-26"])
-        self.assertIn("Mock exam", self.r["v"]["title"])
-        self.assertIn("2022/23", self.r["v"]["title"])
-        self.assertTrue(self.r["v"].get("mock"))
+        self.assertEqual(self.r["v"]["title"], "Municipal 2022/23 · Moscow")
+        self.assertNotIn("mock", self.r["v"])
         self.assertIn("variant-mun-msk-22-23.js?v=", HTML)
         self.assertLess(HTML.index("variant-mun-msk-25-26.js"), HTML.index("variant-mun-msk-22-23.js"))
         self.assertLess(HTML.index("variant-mun-msk-22-23.js"), HTML.index("variant-reg-25-26.js"))
@@ -154,13 +154,13 @@ class Mock(unittest.TestCase):
         self.assertEqual(sum(c["max"] for c in w["criteria"]), 20)
         self.assertIn("(t.needsTitle ? '<input class=\"inp\" id=\"wTitle\"", HTML)
 
-    def test_every_task_has_a_short_how_to_card_closed_in_the_mock(self):
+    def test_every_task_has_a_short_how_to_card_closed_in_the_timed_exam(self):
         for tid in self.tasks:
             how = self.r["how"][tid]
             self.assertTrue(how["what"], tid)
             self.assertGreaterEqual(len(how["steps"]), 2, tid)
         self.assertTrue(self.r["stages"]["mun-msk-22-23"]["note"])
-        self.assertIn("(V.mock ? '' : ' open')", HTML)
+        self.assertIn("(FULLMODE ? '' : ' open')", HTML)
 
     def test_nothing_else_in_the_app_gives_the_mock_away(self):
         # Ревью PR 62: цитата эссе и пункты Task 4 были в разминках, ответ Task 2 — в таблице урока 23.10, пословица — в разборе.
@@ -177,10 +177,6 @@ class Mock(unittest.TestCase):
             text = (ROOT / "data" / name).read_text(encoding="utf-8")
             lines = [l for l in text.split("\n") if "2022/23" in l and "Mock exam" not in l and not l.strip().startswith("//")]
             self.assertEqual(lines, [], name)
-
-    def test_lesson_of_9_november_says_to_do_it_first(self):
-        self.assertEqual(self.r["l5"]["date"], "2026-11-09")
-        self.assertIn("Mock exam · Municipal 2022/23", " ".join(self.r["l5"]["aims"]))
 
 
 if __name__ == "__main__":
