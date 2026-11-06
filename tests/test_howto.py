@@ -16,6 +16,7 @@ def run_js(body):
     src = "\n".join([
         "var window = this;",
         (ROOT / "data" / "variant-mun-msk-25-26.js").read_text(encoding="utf-8"),
+        (ROOT / "data" / "variant-mun-msk-22-23.js").read_text(encoding="utf-8"),
         (ROOT / "data" / "variant-reg-25-26.js").read_text(encoding="utf-8"),
         (ROOT / "data" / "variant.js").read_text(encoding="utf-8"),
         (ROOT / "data" / "howto.js").read_text(encoding="utf-8"),

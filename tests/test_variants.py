@@ -10,7 +10,7 @@ import subprocess
 import unittest
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-DATA = ["data/variant-mun-msk-25-26.js", "data/variant-reg-25-26.js", "data/variant.js", "data/howto.js", "data/howto-mun.js",
+DATA = ["data/variant-mun-msk-25-26.js", "data/variant-mun-msk-22-23.js", "data/variant-reg-25-26.js", "data/variant.js", "data/howto.js", "data/howto-mun.js",
         "data/howto-reg.js", "data/explain.js", "data/explain-mun.js", "data/explain-reg.js", "js/check.js"]
 
 
@@ -27,7 +27,7 @@ class Variants(unittest.TestCase):
           L.forEach(function(v){ v.parts.forEach(function(p){ p.tasks.forEach(function(t){ ids.push(t.id); }); }); });
           return {variants: L.map(function(v){ return v.id; }), dup: ids.filter(function(x, i){ return ids.indexOf(x) !== i; })};
         """)
-        self.assertEqual(r["variants"], ["mun-msk-25-26", "reg-2025-26", "final-2025-26"])
+        self.assertEqual(r["variants"], ["mun-msk-25-26", "mun-msk-22-23", "reg-2025-26", "final-2025-26"])
         self.assertEqual(r["dup"], [])
 
     def test_every_task_of_every_variant_has_how_to_solve(self):

@@ -834,7 +834,7 @@
       ]
     },
     { id: "l5", date: "2026-11-09", title: "Mock exam: review", emoji: "📝", cover: img("m05-you-can"),
-      aims: ["We check the mock exam together.", "Your weakest part: extra practice."] },
+      aims: ["📝 Before this lesson: do the whole mock exam (**Exam** → **Mock exam · Municipal 2022/23**).", "We check the mock exam together.", "Your weakest part: extra practice."] },
     { id: "l6", date: "2026-11-16", title: "Final practice before the olympiad", emoji: "🏔️", cover: img("m06-succeed"),
       aims: ["Quick practice of every task.", "Time and strategy on the day."] }
   ];
