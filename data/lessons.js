@@ -276,10 +276,10 @@
                 "**go on doing** = continue · **go on to do** = do something next"
               ] },
               { h: "🏆 Olympiad level: passive and perfect forms", lines: [
-                "**being done** — passive: avoid **being recognised**",
+                "**being done** — passive: avoid **being seen**",
                 "**having done** — perfect: regret **having bought**",
                 "**to have done** — perfect infinitive: claimed **not to have been**, is said **to have had**"
-              ], note: "Real answers from Use of English Task 2, Moscow municipal stage 2022/23–2025/26." }
+              ], note: "The last two lines are real answers from Use of English Task 2, Moscow municipal stage 2024/25 and 2025/26." }
             ] },
             { type: "brief", title: "Find them in the task", items: [
               "All the phrases below are from the alarm clock text or its sentences A–K.",

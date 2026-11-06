@@ -291,11 +291,9 @@
       id: "d-culture", kind: "drill", stages: ["mun"], part: "uoe", icon: "🏛️", minutes: 7,
       title: "Culture flash",
       before: "Use of English · Task 4 (culture) — Municipal",
-      goal: "Facts from the official Task 4 of the Moscow municipal stage in 2022/23 and 2023/24. Say the answer before you open it.",
+      goal: "Facts from past official Task 4 tasks of the Moscow municipal stage. Say the answer before you open it.",
       steps: ["The teacher reads the question.", "Answer in one sentence.", "These topics came up in past years, so they are worth knowing."],
       items: [
-        { q: "What is the Smithsonian?", a: "A research institution and group of museums in the USA, founded with money left by an English scientist (James Smithson)." },
-        { q: "What is the Ashmolean?", a: "The museum of the University of Oxford, opened in 1683 — Britain's oldest public museum. Today it is a museum of art and archaeology." },
         { q: "Where is Land's End?", a: "At the far western end of Cornwall, in the south-west of England." },
         { q: "Which city is called \"the Athens of the North\"?", a: "Edinburgh, the capital of Scotland." },
         { q: "What is Gretna Green famous for?", a: "A Scottish village just over the border where young English couples used to run away to marry without their parents' permission." },
@@ -351,11 +349,11 @@
     {
       id: "d-quote", kind: "drill", stages: ["mun"], part: "writing", icon: "💬", minutes: 10,
       title: "Quote chat",
-      before: "Writing · comment on a quotation — Municipal (2022/23, 2023/24)",
+      before: "Writing · comment on a quotation — Municipal",
       goal: "Explain a quotation and give your opinion with an example — the plan of the essay task.",
       steps: ["Say what the quotation means in your own words.", "Agree or disagree and give one reason.", "Give one example from a book, history or your life."],
       items: [
-        { q: "\"A journey of a thousand miles begins with a single step.\" (Lao Tzu)", a: "Meaning: every big goal starts with one small action. Example idea: learning a language starts with the first ten words. (This quotation was the municipal Writing task in 2022/23.)" },
+        { q: "\"Practice makes perfect.\" (English proverb)", a: "Meaning: we get better at something by doing it again and again. Example idea: a musician who practises every day." },
         { q: "\"Education is the most powerful weapon which you can use to change the world.\" (Nelson Mandela)", a: "Meaning: knowledge gives people the power to change their lives and their country. Example idea: a person from a poor family who becomes a doctor." },
         { q: "\"The only way to do great work is to love what you do.\" (Steve Jobs)", a: "Meaning: we are best at things we love. Possible disagreement: sometimes we must do great work that we do not love. Give an example." },
         { q: "\"Knowledge is power.\" (usually attributed to Francis Bacon)", a: "Meaning: people who know more can make better decisions and have more influence. Example idea: a scientist, an inventor, or a person who reads the news critically." },
