@@ -1339,6 +1339,12 @@ class EssayAndCultureLesson(unittest.TestCase):
             self.assertIn("(%d words)" % it["n"], after)
             self.assertEqual(it["accept"], hit[0]["accept"])
             self.assertTrue(it.get("note"), "почему — после проверки, дома учителя рядом нет")
+        # Ревью PR 57: «it did not happen» рядом с «had not been so much noise» путало (шум-то был); but for — и про сейчас, и про прошлое.
+        noise = [it for it in items if it["accept"] == ["had not been so much"]][0]
+        self.assertNotIn("did not happen", noise["note"])
+        self.assertIn("there was a lot of noise", noise["note"])
+        self.assertIn("if there were not", rule)
+        self.assertIn("if there had not been", rule)
         # В примерах правила нет ответов на задание.
         for it in items:
             self.assertNotIn(it["accept"][0], rule, it["accept"][0])

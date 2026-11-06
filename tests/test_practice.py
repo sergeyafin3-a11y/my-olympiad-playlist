@@ -188,6 +188,13 @@ class ListeningPractice(unittest.TestCase):
                 for q in quotes:
                     self.assertIn(text(q), script, (t["id"], it["n"]))
 
+    def test_breakdown_does_not_claim_what_the_recording_does_not_say(self):
+        # Ревью PR 57: «no rule about designer labels» в записи нет; менеджер на вопрос про лейблы говорит «Yes».
+        _, r = self.by_year()
+        e = r["ex"]["p-l2-2425"]["4"]
+        self.assertNotIn("no rule about designer labels", e)
+        self.assertIn("Staff can wear some of our fashions.", e)
+
     def test_how_to_card_describes_this_recording(self):
         # Карточка задания 2025/26 говорит про пилота и Сан-Франциско: на чужой записи она бы обманывала.
         sets, r = self.by_year()

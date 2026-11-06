@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#121212">
-<meta name="app-version" content="8c512be44b">
+<meta name="app-version" content="b715b4c8d0">
 <script>
 // Автообновление: браузер может до 10 минут показывать старую страницу из кэша GitHub Pages.
 // Сверяем свою версию с version.json (без кэша) и, если вышла новая, открываем её по новому адресу.
@@ -258,29 +258,29 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
 </div>
 <audio id="au" preload="none"></audio>
 
-<script src="data/videos.js?v=1a2a4e9457"></script>
-<script src="data/howto.js?v=1a2a4e9457"></script>
-<script src="data/howto-reg.js?v=1a2a4e9457"></script>
-<script src="data/howto-mun.js?v=1a2a4e9457"></script>
-<script src="data/variant-mun-msk-25-26.js?v=1a2a4e9457"></script>
-<script src="data/variant-reg-25-26.js?v=1a2a4e9457"></script>
-<script src="data/variant.js?v=1a2a4e9457"></script>
-<script src="js/check.js?v=1a2a4e9457"></script>
-<script src="js/vocab.js?v=1a2a4e9457"></script>
-<script src="js/streak.js?v=1a2a4e9457"></script>
-<script src="data/grammar/grammar-a1.js?v=1a2a4e9457"></script>
-<script src="data/grammar/grammar-a2.js?v=1a2a4e9457"></script>
-<script src="data/grammar/grammar-b1.js?v=1a2a4e9457"></script>
-<script src="data/grammar/grammar-b2.js?v=1a2a4e9457"></script>
-<script src="js/grammar.js?v=1a2a4e9457"></script>
-<script src="data/lexis/lexis-wf.js?v=1a2a4e9457"></script>
-<script src="data/lexis/lexis-pv.js?v=1a2a4e9457"></script>
-<script src="data/lexis/lexis-wp.js?v=1a2a4e9457"></script>
-<script src="data/explain.js?v=1a2a4e9457"></script>
-<script src="data/practice-mun.js?v=1a2a4e9457"></script>
-<script src="data/explain-reg.js?v=1a2a4e9457"></script>
-<script src="data/explain-mun.js?v=1a2a4e9457"></script>
-<script src="data/dict.js?v=1a2a4e9457"></script>
+<script src="data/videos.js?v=57869ba790"></script>
+<script src="data/howto.js?v=57869ba790"></script>
+<script src="data/howto-reg.js?v=57869ba790"></script>
+<script src="data/howto-mun.js?v=57869ba790"></script>
+<script src="data/variant-mun-msk-25-26.js?v=57869ba790"></script>
+<script src="data/variant-reg-25-26.js?v=57869ba790"></script>
+<script src="data/variant.js?v=57869ba790"></script>
+<script src="js/check.js?v=57869ba790"></script>
+<script src="js/vocab.js?v=57869ba790"></script>
+<script src="js/streak.js?v=57869ba790"></script>
+<script src="data/grammar/grammar-a1.js?v=57869ba790"></script>
+<script src="data/grammar/grammar-a2.js?v=57869ba790"></script>
+<script src="data/grammar/grammar-b1.js?v=57869ba790"></script>
+<script src="data/grammar/grammar-b2.js?v=57869ba790"></script>
+<script src="js/grammar.js?v=57869ba790"></script>
+<script src="data/lexis/lexis-wf.js?v=57869ba790"></script>
+<script src="data/lexis/lexis-pv.js?v=57869ba790"></script>
+<script src="data/lexis/lexis-wp.js?v=57869ba790"></script>
+<script src="data/explain.js?v=57869ba790"></script>
+<script src="data/practice-mun.js?v=57869ba790"></script>
+<script src="data/explain-reg.js?v=57869ba790"></script>
+<script src="data/explain-mun.js?v=57869ba790"></script>
+<script src="data/dict.js?v=57869ba790"></script>
 <script>
 (function () {
   // Вариантов несколько (муниципальный, региональный этап, финал); выбранный хранится в браузере.
@@ -753,7 +753,9 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
   }
   var stopAt = null, plLabel = "", clip = null;
   // Граница пересчитывается от текущей точки: после ▶ на паузе и после перемотки.
-  function resyncStop() { stopAt = C.stopAfter(V, au.currentTime, clip); }
+  // Пока файл не загружен, currentTime = 0, а перемотка ещё впереди: считать по нему нельзя. Иначе граница встаёт на начало
+  // этого же задания, и после перемотки запись сразу ставится на паузу.
+  function resyncStop() { if (au.readyState >= 1) stopAt = C.stopAfter(V, au.currentTime, clip); }
   au.addEventListener("play", resyncStop);
   au.addEventListener("seeked", resyncStop);
   au.addEventListener("play", function () { if (plLabel) $("plLabel").innerHTML = plLabel; });
@@ -783,21 +785,22 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
     // Прыжок перемоткой далеко за границу — не конец задания: просто новая граница.
     if (au.currentTime - stopAt > 2) { resyncStop(); return; }
     au.pause(); au.currentTime = stopAt;
-    $("plLabel").innerHTML = "End of this task<small>Press ▶ to go on to the next task</small>";
+    // У отработки следующее задание — на своей странице со своими вопросами.
+    $("plLabel").innerHTML = "End of this task<small>" + (clip ? "Open the next part" : "Press ▶ to go on to the next task") + "</small>";
   });
 
   window.App = { esc: esc, fmt: fmt, render: render, keepScroll: keepScroll, byId: byId, routes: ROUTES, homeTop: HOME_TOP, variant: V, sections: SEC };
   render();
 })();
 </script>
-<script src="js/vocab-ui.js?v=1a2a4e9457"></script>
-<script src="js/games-ui.js?v=1a2a4e9457"></script>
-<script src="js/grammar-ui.js?v=1a2a4e9457"></script>
-<script src="js/lexis-ui.js?v=1a2a4e9457"></script>
-<script src="data/lessons.js?v=1a2a4e9457"></script>
-<script src="js/lesson-ui.js?v=1a2a4e9457"></script>
-<script src="data/warmups.js?v=1a2a4e9457"></script>
-<script src="js/warmup-ui.js?v=1a2a4e9457"></script>
-<script src="js/streak-ui.js?v=1a2a4e9457"></script>
+<script src="js/vocab-ui.js?v=57869ba790"></script>
+<script src="js/games-ui.js?v=57869ba790"></script>
+<script src="js/grammar-ui.js?v=57869ba790"></script>
+<script src="js/lexis-ui.js?v=57869ba790"></script>
+<script src="data/lessons.js?v=57869ba790"></script>
+<script src="js/lesson-ui.js?v=57869ba790"></script>
+<script src="data/warmups.js?v=57869ba790"></script>
+<script src="js/warmup-ui.js?v=57869ba790"></script>
+<script src="js/streak-ui.js?v=57869ba790"></script>
 </body>
 </html>

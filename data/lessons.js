@@ -834,7 +834,7 @@
               { h: "if", lines: [
                 "**If + Past Simple, would + verb**: not true now. If I had a car, I would drive.",
                 "**If + had + V3, would have + V3**: it did not happen. If I had known, I would have come.",
-                "**But for + noun** = if there had not been. But for the rain, we would have won."
+                "**But for + noun** = if there were not (now), if there had not been (past). But for the rain, we would have won."
               ] }
             ] },
             { type: "brief", title: "Complete the second sentence", items: [
@@ -855,7 +855,7 @@
                 accept: ["about time that he took", "about time that he had", "about time that he showed", "about time that he expressed", "about time he started taking", "about time he started having", "about time her husband took"],
                 note: "**It is about time + somebody + Past Simple**: the form is past, but the time is now." },
               { q: "We didn’t stay long at the party because it was very noisy.", word: "so", before: "If there", after: "noise, we might have stayed longer at the party.", n: 5, accept: ["had not been so much"],
-                note: "**If + had + V3**: it is about the past, and it did not happen. **Noise** cannot be counted: so **much** noise." },
+                note: "**If + had + V3**: an unreal past. In fact, there was a lot of noise. **Noise** cannot be counted: so **much** noise." },
               { q: "There was a strong wind which caused the fire to spread quickly.", word: "so", before: "The fire", after: "quickly but for a strong wind.", n: 5, accept: ["would not have spread so"],
                 note: "**But for** a strong wind = if there had not been a strong wind. The result in the past: **would not have + V3**." }
             ] }
