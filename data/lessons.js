@@ -831,27 +831,27 @@
             ] }
           ]
         },
-        // Учитель 06.11: «больше заданий из use of english… максимально свежие». Только опубликованные официальные работы:
-        // муниципальный 2025/26 и 2024/25 для 9 класса (формат и авторы те же, что у 10–11), школьный этап 2026/27 (самая новая работа).
+        // Учитель 06.11: «она в 10 классе… муниципальный этап для 10 классов». Только работы этого этапа для 10–11 классов, от самой свежей.
+        // Школьный этап и 9 класс здесь не нужны: школьный Варя уже написала. 2022/23 — пробник.
         {
-          stage: "homework", home: true, title: "Homework: Use of English", minutes: 120, image: img("m03-studying"),
+          stage: "homework", home: true, title: "Homework: Use of English", minutes: 180, image: img("m03-studying"),
           blocks: [
             { type: "brief", title: "Use of English: three variants", items: [
               "Do one variant at a time, without a dictionary.",
-              "Press **✓ Check answers**, then read **💡 Show how to solve** under the wrong ones."
+              "Press **✓ Check answers** and look at the wrong ones again."
             ] },
-            { type: "task", task: "p-u1-2526-9", label: "Variant 1 · Municipal 2025/26 · Extra words" },
-            { type: "task", task: "p-u2-2526-9", label: "Variant 1 · Municipal 2025/26 · Key word transformations" },
-            { type: "task", task: "p-u3-2526-9", label: "Variant 1 · Municipal 2025/26 · Word formation" },
-            { type: "task", task: "p-u4-2526-9", label: "Variant 1 · Municipal 2025/26 · Culture: match" },
-            { type: "task", task: "p-sch-2627-1", label: "Variant 2 · School 2026/27 · Word formation" },
-            { type: "task", task: "p-sch-2627-2", label: "Variant 2 · School 2026/27 · Mixed-up words" },
-            { type: "task", task: "p-sch-2627-3", label: "Variant 2 · School 2026/27 · Misspelled words" },
-            { type: "task", task: "p-sch-2627-4", label: "Variant 2 · School 2026/27 · One word, three sentences" },
-            { type: "task", task: "p-u1-2425-9", label: "Variant 3 · Municipal 2024/25 · Extra words" },
-            { type: "task", task: "p-u2-2425-9", label: "Variant 3 · Municipal 2024/25 · Key word transformations" },
-            { type: "task", task: "p-u3-2425-9", label: "Variant 3 · Municipal 2024/25 · Word formation" },
-            { type: "task", task: "p-u4-2425-9", label: "Variant 3 · Municipal 2024/25 · Culture: match" }
+            { type: "task", task: "m-u1", label: "Variant 1 · Municipal 2025/26 · Extra words" },
+            { type: "task", task: "m-u2", label: "Variant 1 · Municipal 2025/26 · Key word transformations" },
+            { type: "task", task: "m-u3", label: "Variant 1 · Municipal 2025/26 · Word formation" },
+            { type: "task", task: "m-u4", label: "Variant 1 · Municipal 2025/26 · Culture: match" },
+            { type: "task", task: "p-u1-2425", label: "Variant 2 · Municipal 2024/25 · Extra words" },
+            { type: "task", task: "p-u2-2425", label: "Variant 2 · Municipal 2024/25 · Key word transformations" },
+            { type: "task", task: "p-u3-2425", label: "Variant 2 · Municipal 2024/25 · Word formation" },
+            { type: "task", task: "p-u4-2425", label: "Variant 2 · Municipal 2024/25 · Culture: match" },
+            { type: "task", task: "p-u1-2324", label: "Variant 3 · Municipal 2023/24 · Extra words" },
+            { type: "task", task: "p-u2-2324", label: "Variant 3 · Municipal 2023/24 · Key word transformations" },
+            { type: "task", task: "p-u3-2324", label: "Variant 3 · Municipal 2023/24 · Word formation" },
+            { type: "task", task: "p-u4-2324", label: "Variant 3 · Municipal 2023/24 · Culture: match" }
           ]
         }
       ]

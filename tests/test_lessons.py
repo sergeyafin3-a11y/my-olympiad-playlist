@@ -1366,22 +1366,22 @@ class EssayAndCultureLesson(unittest.TestCase):
         self.assertEqual(len(re.findall(r'class="ls-tf wrong"', html)), 7)
         self.assertIn("Task 1 · ", html)
 
-    def test_homework_use_of_english_links_the_freshest_official_papers(self):
-        # Учитель 06.11: «больше заданий из use of english… максимально свежие». Только опубликованные официальные работы.
+    def test_homework_use_of_english_is_only_the_municipal_stage_for_grades_10_11(self):
+        # Учитель 06.11: «она в 10 классе… убери школьный этап, ни в коем случае не добавляй… муниципальный этап для 10 классов».
         step = self.steps[-1]
         self.assertTrue(step.get("home"))
         self.assertEqual(step["title"], "Homework: Use of English")
         self.assertEqual(step["blocks"][0]["type"], "brief")
         links = [b for b in step["blocks"] if b["type"] == "task"]
         self.assertEqual([b["task"] for b in links], [
-            "p-u1-2526-9", "p-u2-2526-9", "p-u3-2526-9", "p-u4-2526-9",
-            "p-sch-2627-1", "p-sch-2627-2", "p-sch-2627-3", "p-sch-2627-4",
-            "p-u1-2425-9", "p-u2-2425-9", "p-u3-2425-9", "p-u4-2425-9"])
-        got = run_js("""var o = {}; Object.keys(P).forEach(function(k){ P[k].forEach(function(t){ o[t.id] = t.source; }); }); return o;""")
+            "m-u1", "m-u2", "m-u3", "m-u4",
+            "p-u1-2425", "p-u2-2425", "p-u3-2425", "p-u4-2425",
+            "p-u1-2324", "p-u2-2324", "p-u3-2324", "p-u4-2324"])
         for b in links:
-            self.assertIn("official", got[b["task"]])
-            self.assertRegex(b["label"], r"^Variant [123] · ")
-            self.assertNotRegex(b["label"], r"Task \\d")
+            self.assertRegex(b["label"], r"^Variant [123] · Municipal 20\\d\\d/\\d\\d · ")
+        src = (ROOT / "data" / "lessons.js").read_text(encoding="utf-8") + (ROOT / "data" / "practice-mun.js").read_text(encoding="utf-8")
+        for banned in ("p-sch-", "School 2026/27", "grade 9", "2526-9", "2425-9"):
+            self.assertNotIn(banned, src)
         self.assertIn("Section 8", " ".join(self.l["aims"]))
 
     def test_official_culture_task_2021_22(self):
