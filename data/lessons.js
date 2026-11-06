@@ -650,7 +650,7 @@
     },
     // Урок 6.11: одна цель — эссе по цитате 2021/22 (Стивен Кинг), которое не теряет баллы за содержание. Учитель 06.11: «цель у конкретного урока»,
     // «за час уложились», «на все вопросы ответила». На уроке 52 минуты заданий и 8 минут на вопросы. На экране — только задания.
-    // Дома только нужное: грамматика, подводки к Use of English и один Listening. Пробник — на 16 ноября, по работе 2023/24.
+    // Дома только нужное: грамматика, подводки к Use of English и один Listening. Пробник — домашка урока 9 ноября, по работе 2023/24.
     {
       id: "l4", date: "2026-11-06", title: "Writing: an essay on a quotation", emoji: "📚", cover: img("m24-me-when-english"),
       aims: [
@@ -981,17 +981,26 @@
             ] },
             { type: "wpaper", task: "m-w1", source: "Real task · Moscow municipal stage 2025/26 · Writing" }
           ]
+        },
+        // Учитель 06.11: пробник дома до урока 16 ноября, на уроке разбираем ошибки. Работа 2023/24: самая свежая из тех, что Варя почти не видела.
+        {
+          stage: "homework", home: true, title: "Homework: Mock exam", minutes: 180, image: img("m31-go-for-success"),
+          blocks: [
+            { type: "brief", title: "Mock exam", items: [
+              "Do it before our lesson on **16 November**.",
+              "Do it all on one device. The timer starts as soon as you press the button.",
+              "Do all 4 parts. It takes 3 hours.",
+              "At the very end, press **✓ Check answers** on every task. Do not press **Try again**.",
+              "Send a screenshot of **Results** and your essay to your teacher."
+            ] },
+            { type: "links", title: "📝 Mock exam · Municipal 2023/24", items: [
+              { href: "#/full/p-l1-2324", label: "▶ Start the mock exam", note: "Listening · Reading · Use of English · Writing" }
+            ] }
+          ]
         }
       ]
     },
-    // Пробник 16 ноября (учитель 06.11): по работе 2023/24, самой свежей из тех, что Варя почти не видела.
-    { id: "l6", date: "2026-11-16", title: "Mock exam", emoji: "🏔️", cover: img("m31-go-for-success"),
-      aims: [
-        "The whole exam in order, with the timer: Municipal 2023/24.",
-        "Do it all on one device.",
-        "At the very end, press **✓ Check answers** on every task. Do not press **Try again**.",
-        "Send a screenshot of **Results** and your essay to your teacher."
-      ],
-      links: [{ href: "#/full/p-l1-2324", label: "▶ Start the mock exam", note: "Municipal 2023/24" }] }
+    { id: "l6", date: "2026-11-16", title: "Mock exam: your mistakes", emoji: "🏔️", cover: img("m31-go-for-success"),
+      aims: ["We go through your mistakes in the mock exam."] }
   ];
 })();

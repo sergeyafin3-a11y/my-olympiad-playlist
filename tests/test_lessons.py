@@ -1206,7 +1206,7 @@ class EssayAndCultureLesson(unittest.TestCase):
         self.assertIn("m24-me-when-english", self.l["cover"])
         other = run_js('return L.filter(function(x){ return x.id === "l5" || x.id === "l6"; });')
         self.assertEqual([st["image"].split("/")[-1] for st in other[0]["steps"]],
-                         ["m25-in-english-please.jpg", "m27-help-me.jpg", "m28-bite-laptop.jpg", "m26-rock-dog.jpg"])
+                         ["m25-in-english-please.jpg", "m27-help-me.jpg", "m28-bite-laptop.jpg", "m26-rock-dog.jpg", "m31-go-for-success.jpg"])
         self.assertIn("m31-go-for-success", other[1]["cover"])
 
     def test_no_labels_about_who_does_what(self):
@@ -1465,11 +1465,11 @@ class ExamWalkthroughLesson(unittest.TestCase):
     def test_one_item_from_every_task_in_the_order_of_the_paper(self):
         self.assertEqual(self.l["date"], "2026-11-09")
         self.assertEqual(self.l["title"], "Mock exam: review")
-        self.assertEqual([st["title"] for st in self.steps], ["Listening", "Reading", "Use of English", "Writing"])
+        self.assertEqual([st["title"] for st in self.steps], ["Listening", "Reading", "Use of English", "Writing", "Homework: Mock exam"])
         got = [[(b["task"], b["item"]) for b in st["blocks"] if b["type"] == "sample"] for st in self.steps]
-        self.assertEqual(got, [[("m-l1", 5), ("m-l2", 4)], [("m-r1", 1), ("m-r2", 1)], [("m-u1", 4), ("m-u2", 4), ("m-u3", 4), ("m-u4", 1)], []])
-        self.assertLessEqual(sum(st["minutes"] for st in self.steps), 50, "из часа остаётся запас на вопросы")
-        self.assertFalse(any(st.get("home") for st in self.steps))
+        self.assertEqual(got, [[("m-l1", 5), ("m-l2", 4)], [("m-r1", 1), ("m-r2", 1)], [("m-u1", 4), ("m-u2", 4), ("m-u3", 4), ("m-u4", 1)], [], []])
+        self.assertLessEqual(sum(st["minutes"] for st in self.steps if not st.get("home")), 50, "из часа остаётся запас на вопросы")
+        self.assertEqual([st.get("home", False) for st in self.steps], [False] * 4 + [True])
         for st in self.steps:
             for b in st["blocks"]:
                 if b["type"] == "sample":
@@ -1504,7 +1504,7 @@ class ExamWalkthroughLesson(unittest.TestCase):
         self.assertIn("Greta Solomon", reading, "кто такая Greta: подзаголовок текста")
         uoe = render_step("l5", 2).replace("&#39;", "'")
         self.assertIn("The pool", uoe, "инструкция ссылается на образец: он на экране")
-        for i in range(4):
+        for i in range(5):
             self.assertNotIn("Clear answers", render_step("l5", i), "стирать здесь нечего")
         ui = (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8")
         self.assertIn("l.summary || l.links", ui)
@@ -1517,17 +1517,21 @@ class ExamWalkthroughLesson(unittest.TestCase):
         self.assertIn("Jim happened to see the letter", html)
         self.assertNotIn("<textarea", html)
 
-    def test_mock_exam_is_on_16_november_from_a_paper_she_has_not_done(self):
+    def test_mock_exam_is_homework_after_this_lesson_and_16_november_is_for_mistakes(self):
+        # Учитель 06.11: пробник дома до урока 16 ноября, на уроке разбираем ошибки. По работе 2023/24, в домашке 6 ноября его нет.
+        step = self.steps[-1]
+        self.assertEqual(step["minutes"], 180)
+        self.assertEqual([b["type"] for b in step["blocks"]], ["brief", "links"])
+        self.assertEqual(step["blocks"][1]["items"][0]["href"], "#/full/p-l1-2324")
+        text = json.dumps(step["blocks"], ensure_ascii=False)
+        for x in ["2023/24", "one device", "Check answers", "Try again", "screenshot", "16 November"]:
+            self.assertIn(x, text)
         l6 = run_js('return L.filter(function(x){ return x.id === "l6"; })[0];')
         self.assertEqual(l6["date"], "2026-11-16")
-        self.assertEqual(l6["title"], "Mock exam")
-        self.assertEqual(l6["links"][0]["href"], "#/full/p-l1-2324")
-        text = json.dumps(l6, ensure_ascii=False)
-        for x in ["2023/24", "one device", "Check answers", "Try again", "screenshot"]:
-            self.assertIn(x, text)
+        self.assertIn("mistakes", " ".join(l6["aims"]))
+        self.assertNotIn("links", l6)
         l4 = run_js('return L.filter(function(x){ return x.id === "l4"; })[0];')
         self.assertNotIn("mock", json.dumps(l4, ensure_ascii=False).lower())
-        self.assertNotIn("mock-l1", (ROOT / "data" / "lessons.js").read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":
