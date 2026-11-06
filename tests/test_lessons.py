@@ -1180,16 +1180,16 @@ class EssayAndCultureLesson(unittest.TestCase):
         self.assertEqual(self.l["date"], "2026-11-06")
         self.assertEqual(self.l["title"], "Writing: an essay on a quotation")
         self.assertEqual([st["title"] for st in self.steps], [
-            "Warm-up", "The task: an essay", "Build the essay", "Write the essay", "Check the essay",
+            "Homework check: your story", "Warm-up", "The task: an essay", "Build the essay", "Write the essay", "Check the essay",
             "Homework: Grammar", "Homework: Use of English", "Homework: Listening"])
-        self.assertEqual([st.get("home", False) for st in self.steps], [False] * 5 + [True] * 3)
-        self.assertEqual(sum(st["minutes"] for st in self.steps if not st.get("home")), 52, "8 минут из часа — на вопросы")
+        self.assertEqual([st.get("home", False) for st in self.steps], [False] * 6 + [True] * 3)
+        self.assertEqual(sum(st["minutes"] for st in self.steps if not st.get("home")), 58, "из часа остаётся запас на вопросы")
         imgs = [st["image"] for st in self.steps]
         self.assertEqual(len(set(imgs)), len(imgs))
         self.assertIn("Goal", self.l["aims"][0])
 
     def test_the_essay_is_checked_in_class(self):
-        step = self.steps[4]
+        step = self.steps[5]
         self.assertEqual([b["type"] for b in step["blocks"]], ["brief", "list"])
         self.assertIn("Checklist", step["blocks"][1]["title"])
 
@@ -1209,6 +1209,30 @@ class EssayAndCultureLesson(unittest.TestCase):
                          ["m25-in-english-please.jpg", "m27-help-me.jpg", "m28-bite-laptop.jpg", "m26-rock-dog.jpg", "m31-go-for-success.jpg"])
         self.assertIn("m31-go-for-success", other[1]["cover"])
 
+    def test_homework_story_is_first_marked_without_explanations(self):
+        # Учитель 06.11: разбор домашки до warm-up. Рассказ ученицы дословно, красным и жёлтым выделено, но объясняет учитель сама:
+        # ни подсказок по нажатию, ни объяснений на экране. В конце оценка по критериям жюри. Объяснения — в шпаргалке учителя.
+        step = self.steps[0]
+        self.assertEqual([b["type"] for b in step["blocks"]], ["brief", "marked"])
+        b = step["blocks"][1]
+        official = (ROOT / "tests" / "fixtures" / "homework-story-2526.txt").read_text(encoding="utf-8").strip().split("\n\n")
+        self.assertEqual(b["title"], official[0], "заголовок дословно")
+        ours = ["".join(x if isinstance(x, str) else x["t"] for x in p) for p in b["paras"]]
+        self.assertEqual(ours, official[1:], "текст дословно, со всеми её ошибками")
+        marks = [x for p in b["paras"] for x in p if not isinstance(x, str)]
+        self.assertEqual([m["c"] for m in marks], ["red", "red", "red", "red", "yellow", "yellow", "yellow", "red"])
+        for m in marks:
+            self.assertEqual(sorted(m), ["c", "t"], "только текст и цвет: объясняет учитель")
+        self.assertEqual([(r["t"], r["p"], r["max"]) for r in b["score"]], [("Task completion", 4, 4), ("Organisation", 3, 4), ("Vocabulary", 2, 4), ("Grammar", 4, 4), ("Spelling and punctuation", 3, 4)])
+        html = render_step("l4", 0).replace("&#39;", "'")
+        self.assertEqual(len(re.findall(r'<mark class="ls-red">', html)), 5)
+        self.assertEqual(len(re.findall(r'<mark class="ls-yellow">', html)), 3)
+        self.assertIn("16 / 20", html)
+        self.assertNotRegex(html, r"data-ls(check|spot|note)", "тыкать не во что")
+        for fix in ("cruel", "friends", "a minute longer", "property"):
+            self.assertNotIn(fix, html, "как исправить — говорит учитель")
+        self.assertTrue(self.l["aims"][-1].endswith("Sections 7–9."))
+
     def test_no_labels_about_who_does_what(self):
         # «Не надо помечать и выделять, это как ярлык». На экране нет ни «учитель читает», ни «напиши в чат».
         src = json.dumps(self.steps, ensure_ascii=False).lower()
@@ -1218,8 +1242,8 @@ class EssayAndCultureLesson(unittest.TestCase):
         self.assertEqual(kinds & {"speak", "talk", "counter"}, set())
 
     def test_warm_up_is_only_talent_or_hard_work(self):
-        self.assertEqual([b["type"] for b in self.steps[0]["blocks"]], ["brief", "thisorthat"])
-        self.assertEqual(self.steps[0]["blocks"][0]["title"], "Talent or hard work?")
+        self.assertEqual([b["type"] for b in self.steps[1]["blocks"]], ["brief", "thisorthat"])
+        self.assertEqual(self.steps[1]["blocks"][0]["title"], "Talent or hard work?")
 
     def test_every_task_says_what_to_do_shortly(self):
         games = ["matchsheet", "thisorthat", "sort", "spot", "quiz", "writebox", "storymap", "task"]
@@ -1237,9 +1261,9 @@ class EssayAndCultureLesson(unittest.TestCase):
                     if b["type"] != "task":
                         seen = False
         self.assertEqual(bad, [])
-        decode = [b for b in self.steps[1]["blocks"] if b["type"] == "brief"][0]
+        decode = [b for b in self.steps[2]["blocks"] if b["type"] == "brief"][0]
         self.assertEqual(decode["items"], ["Choose the right answer according to the quotation."])
-        self.assertEqual([b["title"] for b in self.steps[1]["blocks"] if b["type"] == "list"], [], "лишний текст убран")
+        self.assertEqual([b["title"] for b in self.steps[2]["blocks"] if b["type"] == "list"], [], "лишний текст убран")
 
     def test_no_narration_on_screen(self):
         blocks = [b for st in self.steps for b in st["blocks"]]
@@ -1345,7 +1369,7 @@ class EssayAndCultureLesson(unittest.TestCase):
         # Учитель 06.11: «каверзную тему, которая часто используется… в домашку, просто с правилом, чтобы напомнить»,
         # «не рандомные задания». Тема посчитана по Task 2 за 5 лет: wish / would rather / it is time / if — 9 пунктов из 50,
         # каждый год; это больше любой другой темы. Все пункты дословно из официальных заданий (2022/23 не берём: пробник).
-        step = self.steps[5]
+        step = self.steps[6]
         self.assertTrue(step.get("home"))
         self.assertEqual([b["type"] for b in step["blocks"]], ["vtable", "brief", "transform"])
         rule = json.dumps(step["blocks"][0], ensure_ascii=False)
@@ -1378,7 +1402,7 @@ class EssayAndCultureLesson(unittest.TestCase):
         # В примерах правила нет ответов на задание.
         for it in items:
             self.assertNotIn(it["accept"][0], rule, it["accept"][0])
-        i = 5
+        i = 6
         html = render_step("l4", i, events=[["click", "lscheckall", "l4:%d" % i]])
         self.assertEqual(len(re.findall(r'class="ls-tf wrong"', html)), 7)
         self.assertIn("Task 1 · ", html)
@@ -1387,7 +1411,7 @@ class EssayAndCultureLesson(unittest.TestCase):
         # Учитель 06.11: «задания, которые готовят к таким заданиям», «как репетитор»; «она в 10 классе». Подводки — на официальной
         # работе 10–11 классов 2021/22, которой ещё не было в приложении: лишнее слово и почему; модели Task 2;
         # сначала часть речи, потом слово; настоящий Task 4. Школьного этапа и 9 класса нет.
-        step = self.steps[6]
+        step = self.steps[7]
         kinds = [b["type"] for b in step["blocks"]]
         self.assertEqual(kinds, ["brief", "spot", "list", "brief", "transform", "brief", "sort", "vtable", "brief", "transform", "brief", "matchsheet"])
         norm = lambda t: re.sub(r"\s+", " ", t.replace("’", "'")).strip()
@@ -1417,7 +1441,7 @@ class EssayAndCultureLesson(unittest.TestCase):
             for part in (it["before"], it["after"]):
                 if part.strip(" ,."):
                     self.assertIn(norm(part).lstrip(", "), paper)
-        i = 6
+        i = 7
         html = render_step("l4", i, events=[["click", "lscheckall", "l4:%d" % i]])
         self.assertEqual(len(re.findall(r'class="ls-tf wrong"', html)), 19)
         self.assertNotIn("(1 words)", html)
@@ -1428,7 +1452,7 @@ class EssayAndCultureLesson(unittest.TestCase):
         self.assertIn("mix up", html)
 
     def test_review_of_pr_69(self):
-        step = self.steps[6]
+        step = self.steps[7]
         why = {it["wrong"]: it["why"] for it in step["blocks"][1]["items"]}
         self.assertNotIn("cannot stand", why["so"])
         self.assertNotIn("nothing goes between", why["all"])

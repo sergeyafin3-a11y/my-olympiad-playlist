@@ -649,16 +649,46 @@
       ]
     },
     // Урок 6.11: одна цель — эссе по цитате 2021/22 (Стивен Кинг), которое не теряет баллы за содержание. Учитель 06.11: «цель у конкретного урока»,
-    // «за час уложились», «на все вопросы ответила». На уроке 52 минуты заданий и 8 минут на вопросы. На экране — только задания.
+    // «за час уложились», «на все вопросы ответила». На уроке 58 минут заданий и 2 минуты запаса: 8 минут заняла проверка рассказа. На экране — только задания.
     // Дома только нужное: грамматика, подводки к Use of English и один Listening. Пробник — домашка урока 9 ноября, по работе 2023/24.
     {
       id: "l4", date: "2026-11-06", title: "Writing: an essay on a quotation", emoji: "📚", cover: img("m24-me-when-english"),
       aims: [
         "🎯 Goal: an essay on a quotation that keeps all the points for Task completion.",
         "✍️ One real quotation: build the essay, write it, check it.",
-        "🏠 Homework: Sections 6–8."
+        "🏠 Homework: Sections 7–9."
       ],
       steps: [
+        // Учитель 06.11: разбор домашки до warm-up. Рассказ ученицы дословно, с её ошибками. Красное жюри бы засчитало, жёлтое лучше сказать иначе.
+        // Объяснений и исправлений на экране нет: их даёт учитель, они в её шпаргалке. Баллы — по официальной шкале Writing.
+        {
+          stage: "feedback", title: "Homework check: your story", minutes: 8, image: img("m17-writing-tears"),
+          blocks: [
+            { type: "brief", title: "Your story", items: [
+              "Read your story.",
+              "**Red:** a mistake. **Yellow:** better to say it in another way."
+            ] },
+            { type: "marked", source: "Your homework · Story · Municipal 2025/26", title: "A ticket to a new life",
+              paras: [
+                ["Jim was an ordinary student living in a rented flat in New York. During the holidays, he visited his rich uncle Arthur, who lived in a magnificent country mansion. This beautiful house, with its huge garden and expensive furniture, always made Jim feel like an outsider. Arthur was ",
+                  { t: "a harmful man", c: "red" }, " and never missed an opportunity to make rude remarks about his nephew at dinner."],
+                ["After a serious argument, Jim decided to leave early. While waiting for a taxi in the hall, ",
+                  { t: "he accidentally dropped his bag, and a letter fell out of his uncle's coat", c: "red" }, ". Picking it up, Jim caught a glimpse of a familiar name."],
+                ["It was a letter from a lawyer. It stated that due to financial issues, ", { t: "uncle Arthur", c: "red" },
+                  " was completely bankrupt. The mansion and ", { t: "all his savings", c: "red" }, " were being auctioned off to pay his debts. Moreover, ",
+                  { t: "the letter mentioned that his uncle was planning to borrow money from Jim", c: "yellow" }, " to hide the truth from ", { t: "his mates", c: "yellow" }, "."],
+                ["Jim froze. ", { t: "The twist was that", c: "yellow" }, " nobody could have expected this: the rich man was actually a beggar. Jim realized he no longer had to put up with the humiliation, and he felt very relieved. He didn't want to stay in this house ",
+                  { t: "a minute .", c: "red" }, " Jim happened to see the letter and decided to book a ticket for the first train heading home."]
+              ],
+              score: [
+                { t: "Task completion", p: 4, max: 4 },
+                { t: "Organisation", p: 3, max: 4 },
+                { t: "Vocabulary", p: 2, max: 4 },
+                { t: "Grammar", p: 4, max: 4 },
+                { t: "Spelling and punctuation", p: 3, max: 4 }
+              ] }
+          ]
+        },
         {
           stage: "warm-up", title: "Warm-up", minutes: 3, image: img("m21-strong"),
           blocks: [
@@ -673,7 +703,7 @@
           ]
         },
         {
-          stage: "presentation", title: "The task: an essay", minutes: 6, image: img("m29-brain-tangled"),
+          stage: "presentation", title: "The task: an essay", minutes: 5, image: img("m29-brain-tangled"),
           blocks: [
             ESSAY_KING,
             { type: "brief", title: "Decode the quotation", items: [
@@ -694,7 +724,7 @@
           ]
         },
         {
-          stage: "practice", title: "Build the essay", minutes: 13, image: img("m32-sometimes-i-think"),
+          stage: "practice", title: "Build the essay", minutes: 12, image: img("m32-sometimes-i-think"),
           blocks: [
             ESSAY_RECIPE,
             ESSAY_PHRASES,
