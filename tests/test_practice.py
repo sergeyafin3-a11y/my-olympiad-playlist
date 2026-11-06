@@ -1,7 +1,7 @@
 """Отработка под каждым заданием Use of English муниципального этапа (просьба учителя 12.10).
 
 Не придуманные задания, а официальные задания муниципального этапа Москвы прошлых лет
-(2023/24 и 2024/25) в том же формате и с официальными ключами. 2022/23 не берём — он для пробника.
+(2024/25 и другие годы) в том же формате и с официальными ключами. 2023/24 не берём: это пробник.
 Отработка не идёт в баллы экзамена.
 
 Ключи ниже — из отдельной, ранее сверенной с PDF выгрузки (не из файла данных), поэтому тест
@@ -18,15 +18,6 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 HTML = (ROOT / "index.html").read_text(encoding="utf-8")
 
 KEYS = {
-    "2324": {
-        "m-u1": ["far", "have", "too", "V", "of", "within", "a", "V", "made", "be", "being", "of", "V", "remains", "it"],
-        "m-u2": ["for Suzy to reach", "will have gone off", "such terrible weather that", "take plenty of exercise/do plenty of exercise/have plenty of exercise/get plenty of exercise/take plenty of exercises/do plenty of exercises/have plenty of exercises/get plenty of exercises", "set off",
-                 "was Vicki's favourite subject", "if it is sunny/if it gets sunny", "about time that he took/about time that he had/about time that he showed/about time that he expressed/about time he started taking/about time he started having/about time her husband took",
-                 "would rather have gone", "would have the rubbish taken/would have the rubbish thrown/would have the rubbish cleaned"],
-        "m-u3": ["coproduction/co-production", "nervous", "refuel", "miscalculated", "disappearance", "discomfort", "underestimated",
-                 "supersonic", "superhero", "overconfident"],
-        "m-u4": list("JEKAHMLFGB"),
-    },
     "2425": {
         "m-u1": ["will", "one", "too", "a", "far", "being", "it", "V", "at", "a", "over", "had", "by", "after", "am"],
         "m-u2": ["whose favourite restaurant is/whose favorite restaurant is", "Help yourself to", "Against all odds", "had his luggage flown",
@@ -44,7 +35,6 @@ KEYS = {
              "m-l1": list("BBAABBABAA"), "m-l2": list("BCAAC")},
 }
 # Listening с отрисованных страниц ответов: у 2023/24 и 2024/25 верный вариант выделен жирным.
-KEYS["2324"].update({"m-l1": list("BABBBBABAB"), "m-l2": list("BBACA")})
 KEYS["2425"].update({"m-l1": list("AABBABABBA"), "m-l2": list("BACBC")})
 
 
@@ -69,7 +59,7 @@ class Practice(unittest.TestCase):
         """)
         self.assertEqual(sorted(r["sets"]), ["m-l1", "m-l2", "m-r2", "m-u1", "m-u2", "m-u3", "m-u4"])
         for tid, sets in r["sets"].items():
-            self.assertGreaterEqual(sum(s[2] for s in sets), 10 if tid == "m-r2" else 15, tid)
+            self.assertGreaterEqual(sum(s[2] for s in sets), 5, tid)
             for sid, typ, n, src in sets:
                 self.assertEqual(typ, r["parent"][tid], sid)
                 self.assertRegex(src, r"official")
@@ -129,8 +119,8 @@ class Practice(unittest.TestCase):
 
 class ListeningPractice(unittest.TestCase):
     """Учитель 05.11: на дом — Listening, несколько вариантов, «аудиозаписи официальные» и как это делать.
-    Записи, задания и ключи — официальные за 2021/22, 2023/24 и 2024/25 (2022/23 — для пробника)."""
-    YEARS = {"2122": "2021/22", "2324": "2023/24", "2425": "2024/25"}
+    Записи, задания и ключи — официальные за 2021/22 и 2024/25. 2023/24 — теперь пробник, он проверяется в test_mock.py."""
+    YEARS = {"2122": "2021/22", "2425": "2024/25"}
 
     def sets(self):
         files = ["data/variant-mun-msk-25-26.js", "data/practice-mun.js", "data/explain-mun.js", "data/howto-mun.js"]

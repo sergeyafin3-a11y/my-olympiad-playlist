@@ -68,7 +68,7 @@ class Warmups(unittest.TestCase):
     def test_warmups_do_not_give_away_answers_of_the_app_variants(self):
         # Ревью PR 27: Culture flash раскрывал 6 из 10 ответов Task 4 муниципального 2025/26,
         # а слова к теме «музыка» — ответ Task 3 (physicist). Разминка идёт ДО задания.
-        files = ["data/variant-mun-msk-25-26.js", "data/variant-mun-msk-22-23.js", "data/variant-reg-25-26.js", "data/variant.js", "data/warmups.js"]
+        files = ["data/variant-mun-msk-25-26.js", "data/variant-mun-msk-23-24.js", "data/variant-mun-msk-22-23.js", "data/variant-reg-25-26.js", "data/variant.js", "data/warmups.js"]
         src = "\n".join(["var window = this;"] + [(ROOT / f).read_text(encoding="utf-8") for f in files] + ["""JSON.stringify((function(){
           var ans = [];
           window.VARIANTS.forEach(function(v){ v.parts.forEach(function(p){ p.tasks.forEach(function(t){
@@ -81,8 +81,8 @@ class Warmups(unittest.TestCase):
             });
           }); }); });
           // Обычные слова из инструкций — не подсказка: «listen», «learnt», «heart» —
-          // ответы анаграмм финала, но встречаются в любом тексте; «private» — из просьбы рассказать о семье.
-          var COMMON = ["listen", "learnt", "heart", "private"];
+          // ответы анаграмм финала, но встречаются в любом тексте; «private» — из просьбы рассказать о семье, «nervous» — из вопроса о выступлениях.
+          var COMMON = ["listen", "learnt", "heart", "private", "nervous"];
           var text = JSON.stringify(window.WARMUPS).toLowerCase();
           return ans.filter(function(a){ return COMMON.indexOf(a) < 0 && text.indexOf(a) >= 0; });
         })());"""])

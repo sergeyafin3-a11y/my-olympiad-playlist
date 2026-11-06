@@ -650,7 +650,7 @@
     },
     // Урок 6.11: одна цель — эссе по цитате 2021/22 (Стивен Кинг), которое не теряет баллы за содержание. Учитель 06.11: «цель у конкретного урока»,
     // «за час уложились», «на все вопросы ответила». На уроке 52 минуты заданий и 8 минут на вопросы. На экране — только задания.
-    // Дома только нужное: грамматика, подводки к Use of English и один Listening. Пробник — на 16 ноября, по работе 2025/26.
+    // Дома только нужное: грамматика, подводки к Use of English и один Listening. Пробник — на 16 ноября, по работе 2023/24.
     // Картинки — пока временные, из прошлых уроков: учитель ищет свои.
     {
       id: "l4", date: "2026-11-06", title: "Writing: an essay on a quotation", emoji: "📚", cover: img("m04-smort"),
@@ -765,7 +765,7 @@
         },
         // Учитель 06.11: «каверзную тему, которая часто используется… в домашку, просто с правилом, чтобы напомнить».
         // Тема посчитана по официальному Task 2 за 5 лет: 9 пунктов из 50, каждый год; больше любой другой темы.
-        // Пункты — дословно из официальных заданий 2021/22, 2023/24, 2024/25, 2025/26 (2022/23 оставлен для пробника).
+        // Пункты — дословно из официальных заданий 2021/22, 2023/24, 2024/25, 2025/26 (2022/23 не взят).
         {
           stage: "homework", home: true, title: "Homework: Grammar", minutes: 10, image: img("m23-can-do-you"),
           blocks: [
@@ -934,8 +934,8 @@
               "Open the first part and press ▶. Do not stop the recording: it has its own pauses.",
               "Press **✓ Check answers**, then read **💡 Show how to solve** under the wrong ones."
             ] },
-            { type: "task", task: "p-l1-2324", label: "2023/24 · True or False: famous people who tried to learn Russian" },
-            { type: "task", task: "p-l2-2324", label: "2023/24 · A, B or C: Steve and Kelly" }
+            { type: "task", task: "p-l1-2425", label: "2024/25 · True or False: Amelia Earhart" },
+            { type: "task", task: "p-l2-2425", label: "2024/25 · A, B or C: Chloe and the manager" }
           ]
         }
       ]
@@ -985,8 +985,14 @@
         }
       ]
     },
+    // Пробник 16 ноября (учитель 06.11): по работе 2023/24, самой свежей из тех, что Варя почти не видела.
     { id: "l6", date: "2026-11-16", title: "Mock exam", emoji: "🏔️", cover: img("m06-succeed"),
-      aims: ["The whole exam in order, with the timer: Municipal 2025/26."],
-      links: [{ href: "#/full/m-l1", label: "▶ Start the mock exam", note: "Municipal 2025/26" }] }
+      aims: [
+        "The whole exam in order, with the timer: Municipal 2023/24.",
+        "Do it all on one device.",
+        "At the very end, press **✓ Check answers** on every task. Do not press **Try again**.",
+        "Send a screenshot of **Results** and your essay to your teacher."
+      ],
+      links: [{ href: "#/full/p-l1-2324", label: "▶ Start the mock exam", note: "Municipal 2023/24" }] }
   ];
 })();

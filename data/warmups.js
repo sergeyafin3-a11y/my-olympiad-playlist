@@ -288,21 +288,6 @@
       ]
     },
     {
-      id: "d-culture", kind: "drill", stages: ["mun"], part: "uoe", icon: "🏛️", minutes: 7,
-      title: "Culture flash",
-      before: "Use of English · Task 4 (culture) — Municipal",
-      goal: "Facts from past official Task 4 tasks of the Moscow municipal stage. Say the answer before you open it.",
-      steps: ["The teacher reads the question.", "Answer in one sentence.", "These topics came up in past years, so they are worth knowing."],
-      items: [
-        { q: "Where is Land's End?", a: "At the far western end of Cornwall, in the south-west of England." },
-        { q: "Which city is called \"the Athens of the North\"?", a: "Edinburgh, the capital of Scotland." },
-        { q: "What is Gretna Green famous for?", a: "A Scottish village just over the border where young English couples used to run away to marry without their parents' permission." },
-        { q: "What does a spin doctor do?", a: "Advises a politician or a party and makes them look good in the media." },
-        { q: "What does \"to keep up with the Joneses\" mean?", a: "To buy and do the same things as the people around you, so that you look as successful as they are." },
-        { q: "What is a whodunit?", a: "A detective story or film that is like a puzzle: the reader tries to guess who committed the crime." }
-      ]
-    },
-    {
       id: "d-definitions", kind: "drill", stages: ["reg"], part: "uoe", icon: "🔤", minutes: 5,
       title: "Definition race",
       before: "Use of English · Task 1 (crossword) — Regional",

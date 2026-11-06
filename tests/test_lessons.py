@@ -15,7 +15,7 @@ HTML = (ROOT / "index.html").read_text(encoding="utf-8")
 
 
 def run_js(body):
-    files = ["data/variant-mun-msk-25-26.js", "data/practice-mun.js", "data/explain-mun.js", "data/lessons.js"]
+    files = ["data/variant-mun-msk-25-26.js", "data/variant-mun-msk-23-24.js", "data/practice-mun.js", "data/explain-mun.js", "data/lessons.js"]
     src = "\n".join(["var window = this;"] + [(ROOT / f).read_text(encoding="utf-8") for f in files] +
                     ["JSON.stringify((function(){ var L = window.LESSONS, V = window.VARIANTS[0], P = window.PRACTICE['mun-msk-25-26'], E = window.EXPLAIN; " + body + "})());"])
     return json.loads(subprocess.run(["osascript", "-l", "JavaScript", "-e", src], capture_output=True, text=True, check=True).stdout)
@@ -1328,9 +1328,8 @@ class EssayAndCultureLesson(unittest.TestCase):
             self.assertIn("official", t["source"])
             self.assertTrue((ROOT / t["src"]).is_file(), t["src"])
         self.assertEqual(len({got[b["task"]]["src"] for b in links}), 1)
-        # Первым — официальный текст о тех, кто учил русский: Россия прямо в задании олимпиады.
-        self.assertIn("2023/24", links[0]["label"])
-        self.assertIn("Russian", links[0]["label"])
+        # Работа 2023/24 теперь пробник, поэтому в домашке Listening другого года.
+        self.assertIn("2024/25", links[0]["label"])
         for b in links:
             self.assertNotRegex(b["label"], r"Task \d", "номера Task — только у рамок раздела")
 
@@ -1345,7 +1344,7 @@ class EssayAndCultureLesson(unittest.TestCase):
         for x in ["wish", "would rather", "It is time", "If", "But for"]:
             self.assertIn(x, rule)
         official = run_js("""var o = [];
-          V.parts.forEach(function(p){ p.tasks.forEach(function(t){ if (t.id === "m-u2") o = o.concat(t.items); }); });
+          window.VARIANTS.forEach(function(v){ v.parts.forEach(function(p){ p.tasks.forEach(function(t){ if (t.id === "m-u2" || t.id === "p-u2-2324") o = o.concat(t.items); }); }); });
           P["m-u2"].forEach(function(t){ o = o.concat(t.items); }); return o;""")
         official.append({"q": "Moira says she prefers to do her homework on her own. — rather — Moira says that ___ ____ _____ _____ do her homework with someone else. (4 words)",
                          "accept": ["she would rather not"]})  # 2021/22, Task 2, п. 7; в приложении этого года нет
@@ -1449,7 +1448,7 @@ class EssayAndCultureLesson(unittest.TestCase):
 
 class ExamWalkthroughLesson(unittest.TestCase):
     """Учитель 06.11: урок 9.11 «Mock exam: review»: не решаем работу, а идём по ней подряд, по одному пункту из каждого задания,
-    из самой свежей работы 10–11 классов. Writing: только само задание, разбираем устно. Пробник — на 16 ноября, не в домашку."""
+    из самой свежей работы 10–11 классов. Writing: только само задание, разбираем устно. Пробник — на 16 ноября, не в домашку, по работе 2023/24."""
 
     def setUp(self):
         self.l = run_js('return L.filter(function(x){ return x.id === "l5"; })[0];')
@@ -1492,6 +1491,16 @@ class ExamWalkthroughLesson(unittest.TestCase):
         self.assertIn(t["m-r1"]["text"][0], reading, "абзац, по которому отвечаем")
         self.assertIn(t["m-r2"]["text"][0].split("(1)")[0], reading)
 
+    def test_review_of_pr_70(self):
+        reading = render_step("l5", 1).replace("&#39;", "'")
+        self.assertIn("Greta Solomon", reading, "кто такая Greta: подзаголовок текста")
+        uoe = render_step("l5", 2).replace("&#39;", "'")
+        self.assertIn("The pool", uoe, "инструкция ссылается на образец: он на экране")
+        for i in range(4):
+            self.assertNotIn("Clear answers", render_step("l5", i), "стирать здесь нечего")
+        ui = (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8")
+        self.assertIn("l.summary || l.links", ui)
+
     def test_writing_is_just_the_task(self):
         st = self.steps[3]
         self.assertEqual([b["type"] for b in st["blocks"]], ["brief", "wpaper"])
@@ -1500,12 +1509,14 @@ class ExamWalkthroughLesson(unittest.TestCase):
         self.assertIn("Jim happened to see the letter", html)
         self.assertNotIn("<textarea", html)
 
-    def test_mock_exam_is_on_16_november_from_the_newest_paper(self):
+    def test_mock_exam_is_on_16_november_from_a_paper_she_has_not_done(self):
         l6 = run_js('return L.filter(function(x){ return x.id === "l6"; })[0];')
         self.assertEqual(l6["date"], "2026-11-16")
         self.assertEqual(l6["title"], "Mock exam")
-        self.assertEqual(l6["links"][0]["href"], "#/full/m-l1")
-        self.assertIn("2025/26", json.dumps(l6, ensure_ascii=False))
+        self.assertEqual(l6["links"][0]["href"], "#/full/p-l1-2324")
+        text = json.dumps(l6, ensure_ascii=False)
+        for x in ["2023/24", "one device", "Check answers", "Try again", "screenshot"]:
+            self.assertIn(x, text)
         l4 = run_js('return L.filter(function(x){ return x.id === "l4"; })[0];')
         self.assertNotIn("mock", json.dumps(l4, ensure_ascii=False).lower())
         self.assertNotIn("mock-l1", (ROOT / "data" / "lessons.js").read_text(encoding="utf-8"))

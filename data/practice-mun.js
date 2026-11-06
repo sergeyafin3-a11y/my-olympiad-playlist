@@ -1,8 +1,8 @@
 // Тренировочные наборы Use of English к муниципальному варианту (Москва, 10–11 классы).
-// Источник — официальные файлы ЦПМ прошлых лет: tasks-/ans-…-2023-24 и tasks-/ans-…-2024-25 (PDF).
+// Источник — официальные файлы ЦПМ прошлых лет: tasks-/ans-…-2024-25 (PDF) и другие годы, указанные у наборов. Работа 2023/24 теперь пробник
+// (data/variant-mun-msk-23-24.js), поэтому в отработке её нет, чтобы Варя не увидела задания заранее.
 // Тексты, инструкции, примеры и ключи перенесены дословно; спорные места сверены по отрисованным
-// страницам, а не только по извлечённому тексту. 2022/23 сюда не взят намеренно — он оставлен
-// для пробного экзамена; 2025/26 уже есть в приложении как сам вариант.
+// страницам, а не только по извлечённому тексту. 2025/26 уже есть в приложении как сам вариант.
 //
 // Форма — та же, что у заданий m-u1…m-u4 в variant-mun-msk-25-26.js, чтобы экран и подсчёт
 // работали без правок: Task 1–3 — type "text" с accept, Task 4 — type "choice" с opts A–N.
@@ -23,31 +23,11 @@
   function abc(list) { return list.map(function (t, j) { return { k: "ABC"[j], t: t }; }); }
   var TF = [{ k: "A", t: "True" }, { k: "B", t: "False" }];
 
-  var SRC_2324 = "Moscow municipal stage 2023/24 (official)";
   var SRC_2425 = "Moscow municipal stage 2024/25 (official)";
   var SRC_2122 = "Moscow municipal stage 2021/22 (official)";
 
   // Образец Task 2 одинаков в оба года.
   var T2_EXAMPLE = "0. The pool isn’t deep enough to swim in. — too — The pool ____ ______ _____ ______ swim in. (4 words) — is too shallow to";
-
-  // 2023/24 Task 4: в инструкции написано «A – M», но в списке 14 явлений A–N, и N в ключ не входит —
-  // так в обоих официальных файлах. Инструкция оставлена дословно, список — полностью.
-  var PHEN_2324 = [
-    { k: "A", t: "To do the same things as the people around you to appear as successful as they are" },
-    { k: "B", t: "What is right or wrong for one sex is right or wrong for the other as well" },
-    { k: "C", t: "The capital of Ireland" },
-    { k: "D", t: "Attract more attention and praise than other people in a particular situation" },
-    { k: "E", t: "A work of fiction which is so bad and has so little meaning that its main value is in the paper it’s written on" },
-    { k: "F", t: "MPs who are their parties’ spokespeople" },
-    { k: "G", t: "A work of detective fiction, presented mainly as a puzzle" },
-    { k: "H", t: "The area that an MP represents in Parliament" },
-    { k: "I", t: "A peson who treats acute and chronic illnesses and provides preventive care and health education to patients of all ages" },
-    { k: "J", t: "It was long famous as the goal of eloping English couples seeking hasty marriage. They were obliged to cross the border into Scotland." },
-    { k: "K", t: "The westernmost peninsula of the county of Cornwall." },
-    { k: "L", t: "The capital of Scotland" },
-    { k: "M", t: "A person who is a close adviser to a politician or political party and whose job is to make them look good in the media" },
-    { k: "N", t: "a large gathering of people in a public place in support of an MP" }
-  ];
 
   // 2024/25 Task 4: явления A–N, лишние по ключу — B, E, H, J.
   // Последняя фраза B в PDF стоит отдельной строкой без отступа, но относится к B.
@@ -71,35 +51,7 @@
   window.PRACTICE = window.PRACTICE || {};
   window.PRACTICE["mun-msk-25-26"] = {
     "m-u1": [
-      {
-        // Ключ — с. 8–10 файла ответов 2023/24. «V» (верная строка) — в 4, 8 и 13.
-        // Строка 12: ключ — «of» («aware of when»); оставлено, как в официальном ключе.
-        id: "p-u1-2324", section: "uoe", type: "text",
-        title: "Practice · Task 1 · Moscow municipal 2023/24",
-        source: SRC_2324,
-        intro: "For Questions 1–15, read the text below and look carefully at each line. Some of the lines are correct, and some have a word which should not be there. If a line is correct put a tick. Use letter \"V\" as a tick. If a line has a word which should not be there, write the word in a given space. There are two examples at the beginning (0 and 00).",
-        examples: [
-          { label: "0", show: "Advertising will change profoundly over the next couple of decades, although there’s a good chance you won’t notice the difference, since the most meaningful changes won’t be visible to the casual observer.", answer: "V", correct: true },
-          { label: "00", show: "It’s the changes that are happening underground that will count, and they’re the ones we should be aware of. Advertising in the future will be such stealthily and eerily, targeted, disturbingly omnipresent and inescapable.", answer: "such", near: "be such stealthily", strike: "such" }
-        ],
-        items: [
-          tx(1, "Technology, naturally, will be the engine. User-tracking software that records your TV and Internet viewing habits in minute detail - and crosses it with your purchasing history - will allow the advertiser to know that you have children, that you eat meat, that your native tongue is Spanish and that your dishwasher is however far many years old.", ["far"]),
-          tx(2, "That way you will be shown commercials for mini-vans, cheeseburgers, and replacement dishwashers, all in Spanish, and not for sports cars, tofu and replacement refrigerators, in English. In fact, this technology already exists. Refined with data that track what kinds of online ads you tend to click on – funny, sentimental, fact-laden – every commercial will have hit home.", ["have"]),
-          tx(3, "Say what you will, that’s a nifty trick. In the future, people won’t be bothered with advertising messages irrelevant to them. They’ll tend to like advertising too better because it’s so carefully tailored to their tastes and will begin to feel less like an intrusion.", ["too"]),
-          tx(4, "This works for the advertiser too because fewer dollars will be wasted. While it’s a little dispiriting to think we can be so predictably manipulated, maybe that’s a fair price to pay to avoid the pollution of messages you don’t care about.", ["v"]),
-          tx(5, "Nevertheless, it seems clear that the advertising outlets that exist today - TV and audio commercials, prints ads, billboards and taxi tops – will be inadequate for accommodating all the commercial messages that are agitating to get out of.", ["of"]),
-          tx(6, "Advertising will therefore inevitably slip beyond within the boundaries of the 30-second commercial and the full-page ad and migrate to the rest of the world, including entertainment, journalism and art.", ["within"]),
-          tx(7, "You can glimpse the future now. A product placement in movies is an obvious instance of where advertising has slipped outside its traditional container into entertainment.", ["a"]),
-          tx(8, "The music channels which are an entertainment medium designed specially to sell records are another classic example. Every time an artist mentions a brand in their lyrics, advertising slips into art.", ["v"]),
-          tx(9, "It you have a tattoo of your team’s name, you’re already there. If you wear a T-shirt with a logo on it, you’re also there but with less pain. Eventually, every surface that can display a message will be made appropriated for advertising.", ["made"]),
-          tx(10, "A backlash is inevitable. Perhaps people will be pay a premium to live in advertising-free zones.", ["be"]),
-          tx(11, "People get very nervous when they see the line being blurring between advertising and other forms of content; they think advertising is some kind of infection that pollutes the purity of art, ruins objectivity and distracts from the pleasure of entertainment.", ["being"]),
-          tx(12, "Yet this is missing the point. Surely consumers are smart and perfectly aware of when they’re being sold something; surely people who go to company websites are happy to find worthwhile information there and are capable of distinguishing between a commercial message and an editorial one.", ["of"]),
-          tx(13, "In the main, art and journalism have long relied on direct subsidy from private sources. Don’t think for a minute that commercial interests didn’t enter into it.", ["v"]),
-          tx(14, "The genuinely disturbing aspect remains of advertising is that it has begun to take over what was formally the property of the community. Take, for example, the popular Boston Garden park, naturally named after the city. It is now known as the “Fleet Center”, after the sponsoring bank. A little town in the Pacific Northwest just renamed itself after a dotcom company in return for a generous denotation.", ["remains"]),
-          tx(15, "I won’t mention the name here, since I figure advertising should be paid for it. That’s when advertising has gone too far: when it’s become something we are, rather than something we see.", ["it"])
-        ]
-      },
+      
       {
         // Ключ — с. 8–10 файла ответов 2024/25. «V» — только в 8.
         // Фрагмент 5 в бумаге — одна ячейка вместе с абзацем «Quite a lot of people…»
@@ -134,32 +86,7 @@
     ],
 
     "m-u2": [
-      {
-        // Ключ — таблица на с. 11 файла ответов 2023/24. В бумаге задания пронумерованы «1. (19)»:
-        // 1–10 — номер задания, (19)–(28) — номер в листе ответов; на экране второй номер только путал — убран.
-        id: "p-u2-2324", section: "uoe", type: "text",
-        title: "Practice · Task 2 · Moscow municipal 2023/24",
-        source: SRC_2324,
-        intro: "For items 1–10, complete the second sentence so that it has a similar meaning to the first sentence, using the word given. Do not change the word given. Use from two to five words. The number of words is specified in the brackets. Do not use short forms. Please mind both grammar and spelling. There is an example at the beginning (0).",
-        example: T2_EXAMPLE,
-        items: [
-          tx(1, "Suzy couldn’t reach the picture without a ladder. — for — The picture was too high up ___ ___ ____ ____ without a ladder. (4 words)", ["for Suzy to reach"]),
-          tx(2, "Those eggs will be rotten by now. — off — Those eggs ___ ___ __ __ by now. (4 words)", ["will have gone off"]),
-          tx(3, "The weather was so terrible that we stayed inside and played cards. — such — It was __ ___ ___ ___ we stayed inside and played cards. (4 words)", ["such terrible weather that"]),
-          tx(4, "It’s important to exercise a lot if you want to stay fit. — plenty — It’s important to ___ ___ ___ ___ if you want to stay fit. (4 words)",
-            ["take plenty of exercise", "do plenty of exercise", "have plenty of exercise", "get plenty of exercise",
-             "take plenty of exercises", "do plenty of exercises", "have plenty of exercises", "get plenty of exercises"]),
-          tx(5, "The Wall Street Crash caused a chain reaction in stock markets around the world. — off — The Wall Street Crash __ ___ a chain reaction in stock markets around the world. (2 words)", ["set off"]),
-          tx(6, "Vicki liked physics best at school. — favourite — Physics ___ ___ ___ ___ at school. (4 words)", ["was Vicki’s favourite subject"]),
-          tx(7, "I hope it’ll be sunny tomorrow, then we can go to the seaside. — if — We can go to the seaside __ __ ___ ___ tomorrow. (4 words)", ["if it is sunny", "if it gets sunny"]),
-          tx(8, "Albert’s wife says he has to start being interested in his children’s lives. — about — Albert’s wife says it is ___ ____ ____ ____ ___ an interest in his children’s lives. (5 words)",
-            ["about time that he took", "about time that he had", "about time that he showed", "about time that he expressed",
-             "about time he started taking", "about time he started having", "about time her husband took"]),
-          tx(9, "I wish Jack had bought tickets for Venice but we went to Paris instead. — rather — Jack bought us tickets to Paris but I __ ___ ___ ___ to Venice. (4 words)", ["would rather have gone"]),
-          tx(10, "The council officer promised to get someone to remove the rubbish. — have — The council officer promised he __ __ ___ ___ ___ away. (5 words)",
-            ["would have the rubbish taken", "would have the rubbish thrown", "would have the rubbish cleaned"])
-        ]
-      },
+      
       {
         // Ключ — таблица на с. 12 файла ответов 2024/25. Номера 19–28 — как в бумаге («Задание 19.» …),
         // инструкция тоже говорит «For items 19–28».
@@ -184,26 +111,7 @@
     ],
 
     "m-u3": [
-      {
-        // Ключ — с. 12 файла ответов 2023/24. Пропуск в бумаге обозначен «…» — так и оставлено.
-        id: "p-u3-2324", section: "uoe", type: "text",
-        title: "Practice · Task 3 · Moscow municipal 2023/24",
-        source: SRC_2324,
-        intro: "For items 1 – 10 read the text below. Use the word given in capitals to form a new word that fits in the space in the same line. There is an example at the beginning (0).",
-        example: "0. French (0) … Franky Zapata became the first person to cross the English Channel on a jet-powered flyboard. INVENT — inventor",
-        items: [
-          tx(1, "The flyboard is a (1) … between Franky and the French army, who think his invention could have military uses in the future. PRODUCTION", ["coproduction", "co-production"]),
-          tx(2, "Preflight, Franky was a little (2) … because he hadn’t had time to do all the tests he wanted to do, but once he began flying, he felt fine. NERVE", ["nervous"]),
-          tx(3, "The flyboard only has enough kerosene for ten minutes of flight so he had to (3) … the board on a ship in the middle of the trip. FUEL", ["refuel"]),
-          tx(4, "Unfortunately, the first time he tried to do this he (4) … his landing and fell into the sea. He went under the waves for a second. CALCULATE", ["miscalculated"]),
-          tx(5, "His team were glad to see him after his (5) … . APPEAR", ["disappearance"]),
-          tx(6, "However, there was a lot of (6) … for Franky because his helmet filled with seawater and he had to drink it to be able to continue breathing. COMFORT", ["discomfort"]),
-          tx(7, "He realized he had (7) … the size of the ship he would need to land on and used a bigger one for his second attempt. ESTIMATE", ["underestimated"]),
-          tx(8, "He travelled in a total distance of 22 miles and reached a maximum speed of approximately 160 kph. That isn’t exactly (8) … but it’s not bad for a small flyboard. SONIC", ["supersonic"]),
-          tx(9, "Flying without wings, he looked like a (9) … . HERO", ["superhero"]),
-          tx(10, "Next, he says he’s going to build a flying car. Some people think he’s (10) … when he says that the car will fly at a speed of 400 kph! CONFIDENT", ["overconfident"])
-        ]
-      },
+      
       {
         // Ключ — с. 13 файла ответов 2024/25. Ответа к образцу (0) нет ни в бумаге заданий,
         // ни в файле ответов — поэтому в образце только предложение и слово INVEST, без ответа.
@@ -228,25 +136,7 @@
     ],
 
     "m-u4": [
-      {
-        // Ключ — таблица на с. 13 файла ответов 2023/24: J E K A H M L F G B; лишние — C, D, I, N.
-        id: "p-u4-2324", section: "uoe", type: "choice", opts: PHEN_2324, longOpts: true,
-        title: "Practice · Task 4 · Moscow municipal 2023/24",
-        source: SRC_2324,
-        intro: "For items 1 – 10, match the items 1 – 10 to the phenomena A – M. There are some extra phenomena which do not match.",
-        items: [
-          ch(1, "Gretna Green", ["J"]),
-          ch(2, "pulp fiction", ["E"]),
-          ch(3, "Land’s End", ["K"]),
-          ch(4, "To keep up with the Joneses", ["A"]),
-          ch(5, "constituency", ["H"]),
-          ch(6, "spin doctor", ["M"]),
-          ch(7, "The Athens of the North", ["L"]),
-          ch(8, "front benchers", ["F"]),
-          ch(9, "whodunit", ["G"]),
-          ch(10, "What’s sauce for the goose is sauce for the gander.", ["B"])
-        ]
-      },
+      
       {
         // Ключ — таблица на с. 15 файла ответов 2024/25: D I K L G N F C M A.
         // Пункт 2 — две строки стихотворения и подпись: строки разделены « / », подпись — « — ».
@@ -309,24 +199,7 @@
     // Номера пунктов — как в бумаге (2024/25: 2–6); номера МЭШ в скобках и «Задание N» убраны. Обратные кавычки бумаги —
     // обычные апострофы. В 2021/22 у вариантов нет букв: A, B, C — по порядку строк.
     "m-l1": [
-      {
-        id: "p-l1-2324", section: "listening", type: "choice", opts: TF,
-        title: "Practice · Task 1 · Moscow municipal 2023/24", source: SRC_2324,
-        audio: { src: "media/listening-mun-msk-23-24.mp3", from: 0, stop: 500, label: "Task 1 · talk (twice)", title: "Municipal 2023/24" },
-        intro: "For items 1–10 listen to a talk about famous people who tried to learn Russian and decide whether the statements (1–10) are TRUE (A), or FALSE (B) according to the text you hear. You will hear the text twice.",
-        items: [
-          ch(1, "A lot of people have been determined to learn Russian because of its challenging nature.", ["B"]),
-          ch(2, "Otto von Bismarck had studied Russian before he was sent to Russia as an official representative of Prussia.", ["A"]),
-          ch(3, "Otto von Bismarck considered studying Russian grammar as difficult as fighting the French Army.", ["B"]),
-          ch(4, "The Russian emperor complimented Otto von Bismarck on the unwillingness to show his true knowledge of Russian.", ["B"]),
-          ch(5, "Prosper Mérimée lacked fluency in Latin.", ["B"]),
-          ch(6, "Varvara taught Prosper Mérimée to translate from Russian into French.", ["B"]),
-          ch(7, "Prosper Mérimée was stunned by the ability of the Russian language to convey subtle shades of meaning.", ["A"]),
-          ch(8, "Lewis Carroll was professionally interested in religious beliefs of the Russians.", ["B"]),
-          ch(9, "Comments about difficult Russian words didn’t discourage Lewis Carroll from studying the language.", ["A"]),
-          ch(10, "Lewis Carroll wasn’t good enough at Russian to be able to bargain with the Russian merchants.", ["B"])
-        ]
-      },
+      
       {
         id: "p-l1-2425", section: "listening", type: "choice", opts: TF,
         title: "Practice · Task 1 · Moscow municipal 2024/25", source: SRC_2425,
@@ -365,19 +238,7 @@
       }
     ],
     "m-l2": [
-      {
-        id: "p-l2-2324", section: "listening", type: "choice",
-        title: "Practice · Task 2 · Moscow municipal 2023/24", source: SRC_2324,
-        audio: { src: "media/listening-mun-msk-23-24.mp3", from: 500, label: "Task 2 · dialogue (once)", title: "Municipal 2023/24" },
-        intro: "For items 11–15 listen to the dialogue. Choose the correct answer (A, B or C) to answer questions 11–15. You will hear the text only once.",
-        items: [
-          ch(11, "Kelly’s week was", ["B"], abc(["quite usual.", "very slow and boring.", "really nice."])),
-          ch(12, "What is NOT TRUE about Steve’s dinner?", ["B"], abc(["He will enjoy French cuisine.", "He will go to the restaurant on Saturday.", "It won’t take him long to get to the restaurant."])),
-          ch(13, "Steve feels certain that at the weekend he will", ["A"], abc(["prepare food for his friends.", "go to the cinema.", "have a lie-in."])),
-          ch(14, "On Friday evening Kelly is going to", ["C"], abc(["meet up her former colleagues.", "attend her friends’ party.", "spend a night at home."])),
-          ch(15, "Steve finally says that a boat is", ["A"], abc(["an awesome place for a party.", "a cosy place for a party.", "a tiny place for a party."]))
-        ]
-      },
+      
       {
         id: "p-l2-2425", section: "listening", type: "choice",
         title: "Practice · Task 2 · Moscow municipal 2024/25", source: SRC_2425,
