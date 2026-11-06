@@ -1165,7 +1165,7 @@ class WritingLesson(unittest.TestCase):
 class EssayAndCultureLesson(unittest.TestCase):
     """Урок 6.11 «Writing: an essay on a quotation · Culture». Учитель 05.11: весь про эссе по цитате; на экране
     только задания, коротко, без пометок, кто что читает и кто что печатает. Письмо — всё эссе целиком. Культура — не
-    выдуманное упражнение, а настоящий формат олимпиады (Task 4). Домашнее — Listening: официальные записи и как решать."""
+    выдуманное упражнение, а настоящий Task 4 2021/22. Домашнее — Listening: официальные записи и как решать."""
 
     def setUp(self):
         self.l = run_js('return L.filter(function(x){ return x.id === "l4"; })[0];')
@@ -1243,30 +1243,35 @@ class EssayAndCultureLesson(unittest.TestCase):
             self.assertIn(attr, box)
         self.assertEqual(self.find("counter"), [], "только поле и счётчик слов")
 
-    def test_culture_in_the_real_task_4_format(self):
-        # Учитель: «не выдуманное упражнение, а в разрезе самой олимпиады». Инструкция — как у настоящего Task 4,
-        # 10 пунктов и 14 явлений A–N, 4 лишних. Российских реалий в официальном Task 4 нет: набор наш и не назван официальным.
+    def test_culture_is_the_official_task_4(self):
+        # Учитель 06.11: вместо нашего набора про Россию — настоящий Task 4. На олимпиаде за 5 лет в нём только Британия и США.
         i, k, b = self.find("matchsheet")[0]
-        official = run_js("""var t = null; Object.keys(P).forEach(function(x){ P[x].forEach(function(y){ if (y.id === "p-u4-2122") t = y; }); }); return t.intro;""")
-        self.assertEqual(b["instruction"], official)
-        self.assertEqual([o["k"] for o in b["opts"]], list("ABCDEFGHIJKLMN"))
-        self.assertEqual(len(b["items"]), 10)
-        answers = [it["a"] for it in b["items"]]
-        self.assertEqual(len(set(answers)), 10)
-        self.assertNotIn("official", b["source"].lower())
-        self.assertNotIn("real task", b["source"].lower())
+        self.assertEqual(b["task"], "p-u4-2122", "текст берётся из самого задания, копии в уроке нет")
+        for extra in ("opts", "items", "instruction"):
+            self.assertNotIn(extra, b)
+        self.assertIn("Real task", b["source"])
+        self.assertIn("2021/22", b["source"])
+        self.assertIn("Task 4", b["source"])
+        self.assertEqual(self.steps[i]["title"], "Culture: Britain")
+        src = (ROOT / "data" / "lessons.js").read_text(encoding="utf-8")
+        for made_up in ("National Unity Day", "Maslenitsa", "Task 4 format"):
+            self.assertNotIn(made_up, src)
+        t = run_js("""var t = null; Object.keys(P).forEach(function(x){ P[x].forEach(function(y){ if (y.id === "p-u4-2122") t = y; }); }); return t;""")
         key = "l4:%d:%d" % (i, k)
-        html = render_step("l4", i)
+        html = render_step("l4", i).replace("&#39;", "'")
+        self.assertIn(t["intro"], html)
         self.assertIn('data-lmsel="%s:0"' % key, html)
-        for o in b["opts"]:
-            self.assertIn(o["t"], html.replace("&#39;", "'"), "все явления — на экране, как на бланке")
+        for o in t["opts"]:
+            self.assertIn(o["t"], html, "все явления — на экране, как на бланке")
+        for it in t["items"]:
+            self.assertIn(it["q"], html)
         self.assertNotRegex(html, r'class="ls-lmr (right|wrong)"')
-        first = b["items"][0]
-        out = render_step("l4", i, events=[["type", "lmsel", key + ":0", first["a"]], ["click", "lscheck", key]], with_store=True)
+        first = t["items"][0]["a"][0]
+        out = render_step("l4", i, events=[["type", "lmsel", key + ":0", first], ["click", "lscheck", key]], with_store=True)
         self.assertEqual(len(re.findall(r'class="ls-lmr right"', out["html"])), 1)
         self.assertEqual(len(re.findall(r'class="ls-lmr wrong"', out["html"])), 9)
         again = render_step("l4", i, init={"games": json.loads(out["store"]["olymp-lessons"])["games"]})
-        self.assertRegex(again, r'<option value="%s" selected>' % first["a"])
+        self.assertRegex(again, r'<option value="%s" selected>' % first)
         html = render_step("l4", i, events=[["click", "lscheckall", "l4:%d" % i]])
         self.assertEqual(len(re.findall(r'class="ls-lmr wrong"', html)), 10)
 

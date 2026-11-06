@@ -394,15 +394,18 @@
       }).join("") + '</div>' + (pg.done ? '<p class="why">✏️ ' + esc(it.cat) + ' mistake — ' + esc(b.then || "correct it aloud.") + '</p>' : '') + '</div>';
     }).join("");
     // Сопоставление в формате Use of English Task 4: явления A–N листом, как на бланке; у каждого пункта — выбор буквы.
+    // Сопоставление как на бланке: текст и ключ — из самого задания (b.task), копии в уроке нет.
     if (b.type === "matchsheet") {
+      var mt = taskById(b.task);
+      if (!mt) return "";
       var mg = game(key), mp = mg.pick || {};
-      return '<div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p class="ins">' + esc(b.instruction) + '</p><div class="ls-popts">' +
-        b.opts.map(function (o) { return '<p><b>' + esc(o.k) + ')</b> ' + esc(o.t) + '</p>'; }).join("") + '</div></div>' +
-        '<div class="ls-lm">' + b.items.map(function (it, n) {
-          var ok = mp[n] === it.a;
-          return '<div class="ls-lmr' + (mg.checked ? (ok ? ' right' : ' wrong') : '') + '"><label><b>' + (n + 1) + '.</b> ' + esc(it.t) + ' <select data-lmsel="' + key + ':' + n + '"><option value="">–</option>' +
-            b.opts.map(function (o) { return '<option value="' + esc(o.k) + '"' + (mp[n] === o.k ? ' selected' : '') + '>' + esc(o.k) + '</option>'; }).join("") + '</select></label>' +
-            (mg.checked ? '<p class="why">' + (ok ? '✓' : '✗ <b>' + esc(it.a) + '</b>') + '</p>' : '') + '</div>';
+      return '<div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p class="ins">' + esc(mt.intro) + '</p><div class="ls-popts">' +
+        mt.opts.map(function (o) { return '<p><b>' + esc(o.k) + ')</b> ' + esc(o.t) + '</p>'; }).join("") + '</div></div>' +
+        '<div class="ls-lm">' + mt.items.map(function (it, n) {
+          var right = it.a[0], ok = mp[n] === right;
+          return '<div class="ls-lmr' + (mg.checked ? (ok ? ' right' : ' wrong') : '') + '"><label><b>' + (n + 1) + '.</b> ' + esc(it.q) + ' <select data-lmsel="' + key + ':' + n + '"><option value="">–</option>' +
+            mt.opts.map(function (o) { return '<option value="' + esc(o.k) + '"' + (mp[n] === o.k ? ' selected' : '') + '>' + esc(o.k) + '</option>'; }).join("") + '</select></label>' +
+            (mg.checked ? '<p class="why">' + (ok ? '✓' : '✗ <b>' + esc(right) + '</b>') + '</p>' : '') + '</div>';
         }).join("") + '<div class="listen"><button class="ghost" data-lscheck="' + key + '">✓ Check</button></div></div>';
     }
     if (b.type === "storymap") {
