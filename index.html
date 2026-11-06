@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#121212">
-<meta name="app-version" content="b715b4c8d0">
+<meta name="app-version" content="b302714ea1">
 <script>
 // Автообновление: браузер может до 10 минут показывать старую страницу из кэша GitHub Pages.
 // Сверяем свою версию с version.json (без кэша) и, если вышла новая, открываем её по новому адресу.
@@ -597,8 +597,21 @@ textarea.essay{width:100%;min-height:340px;margin-top:10px;background:#101010;bo
 
   // ---------- routing ----------
   var FULLMODE = false;
+  // Какому этапу принадлежит задание: ссылка из урока могла прийти при другом выбранном этапе.
+  function variantOf(id) {
+    return LIST.filter(function (x) {
+      var mine = (x.parts || []).some(function (p) { return p.tasks.some(function (t) { return t.id === id; }); });
+      var pr = (window.PRACTICE || {})[x.id] || {};
+      return mine || Object.keys(pr).some(function (k) { return pr[k].some(function (t) { return t.id === id; }); });
+    })[0];
+  }
   function render() {
     var hash = location.hash.replace(/^#\/?/, ""), parts = hash.split("/"), html;
+    if ((parts[0] === "t" || parts[0] === "full") && !byId(parts[1])) {
+      // Открываем задание на его этапе. Перезагрузка, как и при обычном переключении: ответы этапов не смешиваются.
+      var other = variantOf(parts[1]);
+      if (other && other.id !== V.id) try { localStorage.setItem(VKEY, other.id); location.reload(); return; } catch (e) {}
+    }
     // Отработка — не часть экзамена на время: по адресу #/full/<отработка> открываем её как обычное задание.
     FULLMODE = parts[0] === "full" && !PARENT[parts[1]];
     if ((parts[0] === "t" || parts[0] === "full") && byId(parts[1])) html = task(byId(parts[1]));

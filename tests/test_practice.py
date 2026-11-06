@@ -195,6 +195,20 @@ class ListeningPractice(unittest.TestCase):
         self.assertNotIn("no rule about designer labels", e)
         self.assertIn("Staff can wear some of our fashions.", e)
 
+    def test_lesson_link_opens_a_task_of_another_stage(self):
+        # Ревью PR 57: отработка есть только у муниципального этапа. Выбран другой этап — ссылка из домашки молча открывала главную.
+        a = HTML.index("function variantOf(id)")
+        b = HTML.index("\n  }\n", a) + 4
+        src = "var window = this; var LIST = [{id: 'a', parts: [{tasks: [{id: 't1'}]}]}, {id: 'b', parts: [{tasks: [{id: 't2'}]}]}, {id: 'c'}];" \
+              "window.PRACTICE = {a: {t1: [{id: 'p1'}]}};" + HTML[a:b] + \
+              "JSON.stringify([variantOf('p1').id, variantOf('t1').id, variantOf('t2').id, variantOf('zz') || null]);"
+        out = subprocess.run(["osascript", "-l", "JavaScript", "-e", src], capture_output=True, text=True, check=True).stdout
+        self.assertEqual(json.loads(out), ["a", "a", "b", None])
+        render = HTML[HTML.index("function render()"):HTML.index("function render()") + 900]
+        self.assertIn("variantOf(parts[1])", render)
+        # Если браузер не сохранил выбор, перезагрузка не должна идти по кругу: reload — только после успешной записи.
+        self.assertRegex(render, r"try \{ localStorage\.setItem\(VKEY, other\.id\); location\.reload\(\); return; \}")
+
     def test_how_to_card_describes_this_recording(self):
         # Карточка задания 2025/26 говорит про пилота и Сан-Франциско: на чужой записи она бы обманывала.
         sets, r = self.by_year()
