@@ -1378,7 +1378,7 @@ class EssayAndCultureLesson(unittest.TestCase):
             "p-u1-2425", "p-u2-2425", "p-u3-2425", "p-u4-2425",
             "p-u1-2324", "p-u2-2324", "p-u3-2324", "p-u4-2324"])
         for b in links:
-            self.assertRegex(b["label"], r"^Variant [123] · Municipal 20\\d\\d/\\d\\d · ")
+            self.assertRegex(b["label"], r"^Variant [123] · Municipal 20\d\d/\d\d · ")
         src = (ROOT / "data" / "lessons.js").read_text(encoding="utf-8") + (ROOT / "data" / "practice-mun.js").read_text(encoding="utf-8")
         for banned in ("p-sch-", "School 2026/27", "grade 9", "2526-9", "2425-9"):
             self.assertNotIn(banned, src)
