@@ -136,7 +136,7 @@
   E["p-l2-2425"] = {
     2: "\"I've talked to a lot of the trainees and served a few customers.\" \"There were just a couple of customers who were a bit difficult, but they were OK in the end.\"\nA few customers, not plenty. A lot of trainees, not hardly any.\nAnswer: B.",
     3: "\"the best sales staff are not just fashion specialists\"\nNot just means more than just. Specialists means experts.\nAnswer: A.",
-    4: "\"We have no rules about uniforms.\" \"you and your colleagues are models for our fashions\"\nNo uniform, and no rule about designer labels: staff can wear them.\nAnswer: C.",
+    4: "\"We have no rules about uniforms. Staff can wear some of our fashions.\" \"you and your colleagues are models for our fashions\"\nThere is no uniform. Can wear does not mean must wear.\nAnswer: C.",
     5: "\"Never oversell or put too much pressure on a customer.\"\nThe question has NOT. The other two are in the recording: \"find out about the rest of the store\", \"Give them a lot of attention\".\nAnswer: B.",
     6: "\"Thanks very much. That’s very helpful.\"\nShe is grateful, so this one is not true. The other two are true: \"you’ve got the right personality\", \"I don’t have a lot of sales experience\".\nAnswer: C."
   };
