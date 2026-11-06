@@ -349,7 +349,7 @@
     if (b.type === "transform") return b.items.map(function (it, n) {
       var tg = game(key + ":" + n), val = tg.v || "", ok = tg.checked && matches(it, val);
       return '<div class="ls-tf' + (tg.checked ? (ok ? ' right' : ' wrong') : '') + '"><p class="q"><b>' + (n + 1) + '.</b> ' + esc(it.q) + '</p><p class="w">' + esc(it.word) + '</p>' +
-        '<p class="s">' + (it.before ? esc(it.before) + ' ' : '') + '<input data-tfin="' + key + ':' + n + '" value="' + esc(val) + '" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Answer ' + (n + 1) + '"> ' + esc(it.after) + ' <small>(' + it.n + ' words)</small></p>' +
+        '<p class="s">' + (it.before ? esc(it.before) + ' ' : '') + '<input data-tfin="' + key + ':' + n + '" value="' + esc(val) + '" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Answer ' + (n + 1) + '"> ' + esc(it.after) + (it.n > 1 ? ' <small>(' + it.n + ' words)</small>' : '') + '</p>' +
         '<div class="row"><button class="ghost" data-tfcheck="' + key + ':' + n + '">✓ Check</button>' +
         (tg.checked ? '<span class="why">' + (ok ? '✓ Right!' : '✗ Answer: <b>' + esc(it.accept[0]) + '</b>') + '</span>' : '') + '</div>' +
         (tg.checked && it.note ? '<p class="why">' + rich(it.note) + '</p>' : '') + '</div>';
@@ -391,7 +391,7 @@
       var pg = game(key + ":" + n), pw = it.text.split(" ");
       return '<div class="ls-game"><div class="ls-sent">' + pw.map(function (w, j) {
         return '<button class="w' + (pg.done && j === it.at ? ' bin' : pg.miss === j ? ' miss' : '') + '" data-lsspot="' + key + ':' + n + ':' + j + '"' + (pg.done ? ' disabled' : '') + '>' + esc(w) + '</button>';
-      }).join("") + '</div>' + (pg.done ? '<p class="why">✏️ ' + esc(it.cat) + ' mistake — ' + esc(b.then || "correct it aloud.") + '</p>' : '') + '</div>';
+      }).join("") + '</div>' + (pg.done ? '<p class="why">✏️ ' + (it.why ? rich(it.why) : esc(it.cat) + ' mistake — ' + esc(b.then || "correct it aloud.")) + '</p>' : '') + '</div>';
     }).join("");
     // Сопоставление в формате Use of English Task 4: явления A–N листом, как на бланке; у каждого пункта — выбор буквы.
     // Сопоставление как на бланке: текст и ключ — из самого задания (b.task), копии в уроке нет.

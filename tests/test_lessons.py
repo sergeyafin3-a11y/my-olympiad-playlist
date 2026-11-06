@@ -1175,19 +1175,39 @@ class EssayAndCultureLesson(unittest.TestCase):
     def find(self, kind):
         return [(i, k, b) for i, st in enumerate(self.steps) for k, b in enumerate(st["blocks"]) if b["type"] == kind]
 
-    def test_date_minutes_and_homework_section(self):
+    def test_one_goal_and_time_for_questions(self):
+        # Учитель 06.11: «цель у конкретного урока… за час уложились… на все вопросы ответила… в домашке только то, что реально надо».
         self.assertEqual(self.l["date"], "2026-11-06")
-        self.assertEqual(sum(st["minutes"] for st in self.steps if not st.get("home")), 50)
-        self.assertEqual([st.get("home", False) for st in self.steps], [False] * (len(self.steps) - 3) + [True, True, True])
+        self.assertEqual(self.l["title"], "Writing: an essay on a quotation")
+        self.assertEqual([st["title"] for st in self.steps], [
+            "Warm-up", "The task: an essay", "Build the essay", "Write the essay", "Check the essay",
+            "Homework: Grammar", "Homework: Use of English", "Homework: Listening", "Homework: Mock exam"])
+        self.assertEqual([st.get("home", False) for st in self.steps], [False] * 5 + [True] * 4)
+        self.assertEqual(sum(st["minutes"] for st in self.steps if not st.get("home")), 52, "8 минут из часа — на вопросы")
         imgs = [st["image"] for st in self.steps]
         self.assertEqual(len(set(imgs)), len(imgs))
+        self.assertIn("Goal", self.l["aims"][0])
+
+    def test_the_essay_is_checked_in_class(self):
+        step = self.steps[4]
+        self.assertEqual([b["type"] for b in step["blocks"]], ["brief", "list"])
+        self.assertIn("Checklist", step["blocks"][1]["title"])
+
+    def test_mock_exam_is_the_main_homework_and_opens_in_full_mode(self):
+        step = self.steps[-1]
+        self.assertEqual(step["minutes"], 180)
+        links = [b for b in step["blocks"] if b["type"] == "links"][0]
+        self.assertEqual(links["items"][0]["href"], "#/full/mock-l1")
+        text = json.dumps(step["blocks"], ensure_ascii=False)
+        for x in ["one device", "Check answers", "Try again", "screenshot"]:
+            self.assertIn(x, text)
 
     def test_new_pictures_instead_of_repeated_ones(self):
         # Учитель 06.11: «вместо повторяющихся картинок добавь эти».
         titles = {st["title"]: st["image"] for st in self.steps}
         self.assertIn("m21-strong", titles["Warm-up"])
         self.assertIn("m22-wont-give-up", titles["Write the essay"])
-        self.assertIn("m20-slay-queen", titles["Culture: Britain"])
+        self.assertIn("m20-slay-queen", titles["Check the essay"])
         self.assertIn("m23-can-do-you", titles["Homework: Grammar"])
 
     def test_no_labels_about_who_does_what(self):
@@ -1260,7 +1280,7 @@ class EssayAndCultureLesson(unittest.TestCase):
         self.assertIn("Real task", b["source"])
         self.assertIn("2021/22", b["source"])
         self.assertIn("Task 4", b["source"])
-        self.assertEqual(self.steps[i]["title"], "Culture: Britain")
+        self.assertEqual(self.steps[i]["title"], "Homework: Use of English")
         src = (ROOT / "data" / "lessons.js").read_text(encoding="utf-8")
         for made_up in ("National Unity Day", "Maslenitsa", "Task 4 format"):
             self.assertNotIn(made_up, src)
@@ -1302,33 +1322,32 @@ class EssayAndCultureLesson(unittest.TestCase):
         self.assertEqual([c["t"] for c in cards if "fully agree" in c["t"] and c["b"] != "intro"], [])
 
     def test_homework_is_listening_with_tips_and_official_audio(self):
-        home = self.steps[-3]
+        home = self.steps[-2]
         self.assertTrue(home.get("home"))
         tips = json.dumps(home["blocks"][0], ensure_ascii=False)
         self.assertIn("How to do Listening", tips)
         for x in ["twice", "once", "synonyms", "NOT"]:
             self.assertIn(x, tips)
         links = [b for b in home["blocks"] if b["type"] == "task"]
-        self.assertEqual(len(links), 6, "три варианта по два задания")
+        self.assertEqual(len(links), 2, "в домашке один вариант; остальные — к следующим урокам")
         got = run_js("""var o = {}; Object.keys(P).forEach(function(k){ P[k].forEach(function(t){ o[t.id] = {section: t.section, src: t.audio && t.audio.src, source: t.source}; }); }); return o;""")
         for b in links:
             t = got[b["task"]]
             self.assertEqual(t["section"], "listening", b["task"])
             self.assertIn("official", t["source"])
             self.assertTrue((ROOT / t["src"]).is_file(), t["src"])
-        self.assertEqual(len({got[b["task"]]["src"] for b in links}), 3)
+        self.assertEqual(len({got[b["task"]]["src"] for b in links}), 1)
         # Первым — официальный текст о тех, кто учил русский: Россия прямо в задании олимпиады.
         self.assertIn("2023/24", links[0]["label"])
         self.assertIn("Russian", links[0]["label"])
         for b in links:
-            self.assertRegex(b["label"], r"^Variant [123] · ")
             self.assertNotRegex(b["label"], r"Task \d", "номера Task — только у рамок раздела")
 
     def test_homework_grammar_is_a_rule_and_only_official_items(self):
         # Учитель 06.11: «каверзную тему, которая часто используется… в домашку, просто с правилом, чтобы напомнить»,
         # «не рандомные задания». Тема посчитана по Task 2 за 5 лет: wish / would rather / it is time / if — 9 пунктов из 50,
         # каждый год; это больше любой другой темы. Все пункты дословно из официальных заданий (2022/23 не берём: пробник).
-        step = self.steps[-2]
+        step = self.steps[5]
         self.assertTrue(step.get("home"))
         self.assertEqual([b["type"] for b in step["blocks"]], ["vtable", "brief", "transform"])
         rule = json.dumps(step["blocks"][0], ensure_ascii=False)
@@ -1361,28 +1380,54 @@ class EssayAndCultureLesson(unittest.TestCase):
         # В примерах правила нет ответов на задание.
         for it in items:
             self.assertNotIn(it["accept"][0], rule, it["accept"][0])
-        i = len(self.steps) - 2
+        i = 5
         html = render_step("l4", i, events=[["click", "lscheckall", "l4:%d" % i]])
         self.assertEqual(len(re.findall(r'class="ls-tf wrong"', html)), 7)
         self.assertIn("Task 1 · ", html)
 
-    def test_homework_use_of_english_is_only_the_municipal_stage_for_grades_10_11(self):
-        # Учитель 06.11: «она в 10 классе… убери школьный этап, ни в коем случае не добавляй… муниципальный этап для 10 классов».
-        step = self.steps[-1]
-        self.assertTrue(step.get("home"))
-        self.assertEqual(step["title"], "Homework: Use of English")
-        self.assertEqual(step["blocks"][0]["type"], "brief")
-        links = [b for b in step["blocks"] if b["type"] == "task"]
-        self.assertEqual([b["task"] for b in links], [
-            "m-u1", "m-u2", "m-u3", "m-u4",
-            "p-u1-2425", "p-u2-2425", "p-u3-2425", "p-u4-2425",
-            "p-u1-2324", "p-u2-2324", "p-u3-2324", "p-u4-2324"])
-        for b in links:
-            self.assertRegex(b["label"], r"^Variant [123] · Municipal 20\d\d/\d\d · ")
+    def test_homework_use_of_english_prepares_for_each_task_with_official_grade_10_11_items(self):
+        # Учитель 06.11: «задания, которые готовят к таким заданиям», «как репетитор»; «она в 10 классе». Подводки — на официальной
+        # работе 10–11 классов 2021/22, которой ещё не было в приложении: лишнее слово и почему; модели Task 2;
+        # сначала часть речи, потом слово; настоящий Task 4. Школьного этапа и 9 класса нет.
+        step = self.steps[6]
+        kinds = [b["type"] for b in step["blocks"]]
+        self.assertEqual(kinds, ["brief", "spot", "list", "brief", "transform", "brief", "sort", "vtable", "brief", "transform", "brief", "matchsheet"])
+        norm = lambda t: re.sub(r"\s+", " ", t.replace("’", "'")).strip()
+        paper = norm((ROOT / "tests" / "fixtures" / "uoe-mun-2122.txt").read_text(encoding="utf-8"))
+        spot = step["blocks"][1]
+        self.assertEqual([it["wrong"] for it in spot["items"]], ["all", "far", "being", "such", "so", "out", "up", "make"], "официальный ключ")
+        for it in spot["items"]:
+            self.assertEqual(re.sub(r"[.,!?]", "", it["text"].split(" ")[it["at"]]), it["wrong"], it["text"])
+            self.assertIn(norm(it["text"]), paper)
+            self.assertTrue(it.get("why"))
+        t2 = step["blocks"][4]["items"]
+        self.assertEqual([it["accept"][0] for it in t2], ["there is hardly any petrol", "to work as a volunteer", "on the point of leaving",
+            "cut down on the amount", "had no idea cars cost", "lack of leadership that caused", "will be followed by", "to be unable to keep", "pleasure to take you on"])
+        for it in t2:
+            self.assertIn(norm(it["q"]), paper)
+            for x in it["accept"]:
+                self.assertEqual(len(x.split()), it["n"], x)
+                self.assertIn(it["word"], x.split())
+            self.assertTrue(it.get("note"))
+        self.assertEqual({c["b"] for c in step["blocks"][6]["cards"]}, {"noun", "adj", "adv"})
+        t3 = step["blocks"][9]["items"]
+        self.assertEqual([it["accept"][0] for it in t3], ["addition", "unprecedented", "typically", "drawing", "services", "rigidly", "permissible", "competition", "self-employed", "perception"])
+        self.assertEqual([it["word"] for it in t3], ["ADD", "PRECEDENT", "TYPICAL", "DRAW", "SERVE", "RIGID", "PERMIT", "COMPETE", "EMPLOY", "PERCEIVE"])
+        for it in t3:
+            self.assertEqual(it["n"], 1)
+            self.assertTrue(it.get("note"))
+            for part in (it["before"], it["after"]):
+                if part.strip(" ,."):
+                    self.assertIn(norm(part).lstrip(", "), paper)
+        i = 6
+        html = render_step("l4", i, events=[["click", "lscheckall", "l4:%d" % i]])
+        self.assertEqual(len(re.findall(r'class="ls-tf wrong"', html)), 19)
+        self.assertNotIn("(1 words)", html)
         src = (ROOT / "data" / "lessons.js").read_text(encoding="utf-8") + (ROOT / "data" / "practice-mun.js").read_text(encoding="utf-8")
         for banned in ("p-sch-", "School 2026/27", "grade 9", "2526-9", "2425-9"):
             self.assertNotIn(banned, src)
-        self.assertIn("Section 8", " ".join(self.l["aims"]))
+        html = render_step("l4", i, events=[["click", "lsspot", "l4:%d:1:0:%d" % (i, spot["items"][0]["at"])]])
+        self.assertIn("mix up", html)
 
     def test_official_culture_task_2021_22(self):
         t = run_js("""var t = null; Object.keys(P).forEach(function(k){ P[k].forEach(function(x){ if (x.id === "p-u4-2122") t = x; }); });
