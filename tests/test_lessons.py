@@ -116,7 +116,7 @@ class Lessons(unittest.TestCase):
         self.assertEqual([p for p in r["pics"] if not (ROOT / p).is_file()], [])
         # Картинки — только те, что прислала учитель (media/memes), и каждая где-то стоит.
         # m18 — в запасе: раздел «итог», где она стояла, учитель 27.10 убрала; пойдёт в следующий урок.
-        SPARE = {"media/memes/m18-all-good.jpg"}
+        SPARE = {"media/memes/m18-all-good.jpg", "media/memes/m06-succeed.jpg"}
         files = sorted("media/memes/" + f.name for f in (ROOT / "media" / "memes").glob("*.jpg"))
         self.assertEqual(sorted(set(r["pics"]) | SPARE), files, "каждая картинка учителя — на своём месте")
         # Обложка урока видна только в списке уроков, поэтому может стать и картинкой шага;
@@ -1200,6 +1200,14 @@ class EssayAndCultureLesson(unittest.TestCase):
         self.assertIn("m22-wont-give-up", titles["Write the essay"])
         self.assertIn("m20-slay-queen", titles["Check the essay"])
         self.assertIn("m23-can-do-you", titles["Homework: Grammar"])
+        self.assertIn("m29-brain-tangled", titles["The task: an essay"])
+        self.assertIn("m32-sometimes-i-think", titles["Build the essay"])
+        self.assertIn("m30-head-swells", titles["Homework: Use of English"])
+        self.assertIn("m24-me-when-english", self.l["cover"])
+        other = run_js('return L.filter(function(x){ return x.id === "l5" || x.id === "l6"; });')
+        self.assertEqual([st["image"].split("/")[-1] for st in other[0]["steps"]],
+                         ["m25-in-english-please.jpg", "m27-help-me.jpg", "m28-bite-laptop.jpg", "m26-rock-dog.jpg"])
+        self.assertIn("m31-go-for-success", other[1]["cover"])
 
     def test_no_labels_about_who_does_what(self):
         # «Не надо помечать и выделять, это как ярлык». На экране нет ни «учитель читает», ни «напиши в чат».

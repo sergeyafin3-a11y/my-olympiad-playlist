@@ -651,9 +651,8 @@
     // Урок 6.11: одна цель — эссе по цитате 2021/22 (Стивен Кинг), которое не теряет баллы за содержание. Учитель 06.11: «цель у конкретного урока»,
     // «за час уложились», «на все вопросы ответила». На уроке 52 минуты заданий и 8 минут на вопросы. На экране — только задания.
     // Дома только нужное: грамматика, подводки к Use of English и один Listening. Пробник — на 16 ноября, по работе 2023/24.
-    // Картинки — пока временные, из прошлых уроков: учитель ищет свои.
     {
-      id: "l4", date: "2026-11-06", title: "Writing: an essay on a quotation", emoji: "📚", cover: img("m04-smort"),
+      id: "l4", date: "2026-11-06", title: "Writing: an essay on a quotation", emoji: "📚", cover: img("m24-me-when-english"),
       aims: [
         "🎯 Goal: an essay on a quotation that keeps all the points for Task completion.",
         "✍️ One real quotation: build the essay, write it, check it.",
@@ -674,7 +673,7 @@
           ]
         },
         {
-          stage: "presentation", title: "The task: an essay", minutes: 6, image: img("m08-brain"),
+          stage: "presentation", title: "The task: an essay", minutes: 6, image: img("m29-brain-tangled"),
           blocks: [
             ESSAY_KING,
             { type: "brief", title: "Decode the quotation", items: [
@@ -695,7 +694,7 @@
           ]
         },
         {
-          stage: "practice", title: "Build the essay", minutes: 13, image: img("m09-focus"),
+          stage: "practice", title: "Build the essay", minutes: 13, image: img("m32-sometimes-i-think"),
           blocks: [
             ESSAY_RECIPE,
             ESSAY_PHRASES,
@@ -817,7 +816,7 @@
         // English на официальной работе 10–11 классов 2021/22, которой ещё не было в приложении: пункты и ключи дословно, пояснения наши.
         // Task 4 2021/22 перенесён сюда с урока: урок — про одно эссе. 2025/26 Варя решала 12.10; 2024/25 и 2023/24 остаются на следующие домашки.
         {
-          stage: "homework", home: true, title: "Homework: Use of English", minutes: 45, image: img("m03-studying"),
+          stage: "homework", home: true, title: "Homework: Use of English", minutes: 45, image: img("m30-head-swells"),
           blocks: [
             { type: "brief", title: "Extra words", items: [
               "In each line, one word should not be there.",
@@ -942,7 +941,7 @@
     },
     // Урок 9.11 (учитель 06.11): не решаем работу, а идём по ней подряд: по одному пункту из каждого задания самой свежей работы 10–11 классов,
     // чтобы понимать порядок и что внутри. Текст берётся из самих заданий (блок sample), ключи и «почему» — в шпаргалке учителя. Writing: только задание,
-    // разбираем устно; в 2025/26 это рассказ. Картинки — пока временные, из прошлых уроков: учитель ищет свои.
+    // разбираем устно; в 2025/26 это рассказ.
     {
       id: "l5", date: "2026-11-09", title: "Mock exam: review", emoji: "📝", cover: img("m05-you-can"),
       aims: [
@@ -951,21 +950,21 @@
       ],
       steps: [
         {
-          stage: "presentation", title: "Listening", minutes: 8, image: img("m12-proud"),
+          stage: "presentation", title: "Listening", minutes: 8, image: img("m25-in-english-please"),
           blocks: [
             { type: "sample", title: "True or False", task: "m-l1", item: 5, source: "Real task · Moscow municipal stage 2025/26 · Listening" },
             { type: "sample", title: "A, B or C", task: "m-l2", item: 4, source: "Real task · Moscow municipal stage 2025/26 · Listening" }
           ]
         },
         {
-          stage: "presentation", title: "Reading", minutes: 10, image: img("m02-reading"),
+          stage: "presentation", title: "Reading", minutes: 10, image: img("m27-help-me"),
           blocks: [
             { type: "sample", title: "Choose the best answer", task: "m-r1", item: 1, para: 0, source: "Real task · Moscow municipal stage 2025/26 · Reading" },
             { type: "sample", title: "Missing sentences", task: "m-r2", item: 1, para: 0, source: "Real task · Moscow municipal stage 2025/26 · Reading" }
           ]
         },
         {
-          stage: "presentation", title: "Use of English", minutes: 20, image: img("m13-positive-energy"),
+          stage: "presentation", title: "Use of English", minutes: 20, image: img("m28-bite-laptop"),
           blocks: [
             { type: "sample", title: "Extra word", task: "m-u1", item: 4, source: "Real task · Moscow municipal stage 2025/26 · Use of English" },
             { type: "sample", title: "Key word transformations", task: "m-u2", item: 4, source: "Real task · Moscow municipal stage 2025/26 · Use of English" },
@@ -974,7 +973,7 @@
           ]
         },
         {
-          stage: "presentation", title: "Writing", minutes: 12, image: img("m14-smile-and-endure"),
+          stage: "presentation", title: "Writing", minutes: 12, image: img("m26-rock-dog"),
           blocks: [
             { type: "brief", title: "The task", items: [
               "Read the task.",
@@ -986,7 +985,7 @@
       ]
     },
     // Пробник 16 ноября (учитель 06.11): по работе 2023/24, самой свежей из тех, что Варя почти не видела.
-    { id: "l6", date: "2026-11-16", title: "Mock exam", emoji: "🏔️", cover: img("m06-succeed"),
+    { id: "l6", date: "2026-11-16", title: "Mock exam", emoji: "🏔️", cover: img("m31-go-for-success"),
       aims: [
         "The whole exam in order, with the timer: Municipal 2023/24.",
         "Do it all on one device.",
