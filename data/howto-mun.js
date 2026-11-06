@@ -142,4 +142,45 @@
     ],
     tip: "Do not change even one word in the last sentence. Do not put a full stop after the title — it counts as a mistake. If the task is not done (0 for content), the whole story gets 0."
   };
+  // Пробник 2022/23: короткие карточки, закрыты по умолчанию: на экзамене подсказок нет. Без цифр и примеров из этой работы.
+  H.stages["mun-msk-22-23"] = {
+    title: "Mock exam · Municipal 2022/23",
+    note: "A real paper of your stage. Do all four parts in one go and use the timer: Listening (15 min, 15 points), Reading (45 min, 20 points), Use of English (60 min, 45 points), Writing (60 min, 20 points). The maximum is 100 points."
+  };
+  H.tasks["mock-l1"] = { what: "Listening: is each sentence true or false?", steps: [
+    "The recording gives you 20 seconds to read sentences 1–10.",
+    "Listen the first time and mark your answers. Listen the second time and check the others."
+  ] };
+  H.tasks["mock-l2"] = { what: "Listening: choose A, B or C.", steps: [
+    "The recording gives you 25 seconds to read the questions and the options.",
+    "You hear it ONLY ONCE: answer while you listen."
+  ] };
+  H.tasks["mock-r1"] = { what: "Reading: a long article. Choose the best answer A, B, C or D for questions 1–10.", steps: [
+    "The questions go in the same order as the text.",
+    "For each question, find the right place in the text and compare every option with it."
+  ] };
+  H.tasks["mock-r2"] = { what: "Reading: a text with 10 gaps. Put the right sentence A–K into each gap. One sentence is extra.", steps: [
+    "For each gap, read the sentence before it and the sentence after it.",
+    "Start with the gaps you are sure about. You can use every letter only once."
+  ] };
+  H.tasks["mock-u1"] = { what: "Find the extra word: some parts of the text have one word that must not be there. Others are correct.", steps: [
+    "Try to take out one word. If the sentence is correct without it, this is the extra word.",
+    "If every word is needed, type V. Type only one word."
+  ] };
+  H.tasks["mock-u2"] = { what: "Key word transformations: finish the second sentence so it means the same as the first.", steps: [
+    "Do not change the word given. Use the number of words shown in brackets.",
+    "Do not use short forms. Check the spelling: it counts."
+  ] };
+  H.tasks["mock-u3"] = { what: "Word formation: change the word in brackets so it fits the gap.", steps: [
+    "Decide which part of speech you need: a noun, a verb, an adjective or an adverb.",
+    "Write the word and check the spelling letter by letter."
+  ] };
+  H.tasks["mock-u4"] = { what: "Culture and language: match 10 items with their descriptions. Some descriptions are extra.", steps: [
+    "First match the ones you know for sure.",
+    "Then work by elimination. Read every description to the end."
+  ] };
+  H.tasks["mock-w1"] = { what: "Writing: an essay on a quotation, 200–250 words.", steps: [
+    "Follow the plan: introduction, your opinion with reasons, examples from literature or history, conclusion.",
+    "Count your words: fewer than 180 words = 0 points. After 275 words only the first 250 are checked."
+  ] };
 })();

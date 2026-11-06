@@ -298,8 +298,6 @@
         { q: "What is the Ashmolean?", a: "The museum of the University of Oxford, opened in 1683 — Britain's oldest public museum. Today it is a museum of art and archaeology." },
         { q: "Where is Land's End?", a: "At the far western end of Cornwall, in the south-west of England." },
         { q: "Which city is called \"the Athens of the North\"?", a: "Edinburgh, the capital of Scotland." },
-        { q: "What is the Fringe?", a: "An arts festival in Edinburgh every August, for about three weeks." },
-        { q: "Where do you kiss the Blarney Stone, and what does it give you?", a: "At Blarney Castle in Ireland; the legend says it gives you the gift of eloquence (speaking well)." },
         { q: "What is Gretna Green famous for?", a: "A Scottish village just over the border where young English couples used to run away to marry without their parents' permission." },
         { q: "What does a spin doctor do?", a: "Advises a politician or a party and makes them look good in the media." },
         { q: "What does \"to keep up with the Joneses\" mean?", a: "To buy and do the same things as the people around you, so that you look as successful as they are." },
