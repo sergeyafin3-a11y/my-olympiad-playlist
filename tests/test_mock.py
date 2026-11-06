@@ -162,11 +162,21 @@ class Mock(unittest.TestCase):
         self.assertTrue(self.r["stages"]["mun-msk-22-23"]["note"])
         self.assertIn("(V.mock ? '' : ' open')", HTML)
 
-    def test_year_stays_only_here(self):
-        # Отработка и уроки не должны заранее раскрывать работу пробника.
-        for phrase in ("Lost Gardens of Heligan", "A journey of a thousand miles", "Blarney"):
-            self.assertNotIn(phrase, self.r["practice"])
-            self.assertNotIn(phrase, (ROOT / "data" / "lessons.js").read_text(encoding="utf-8"))
+    def test_nothing_else_in_the_app_gives_the_mock_away(self):
+        # Ревью PR 62: цитата эссе и пункты Task 4 были в разминках, ответ Task 2 — в таблице урока 23.10, пословица — в разборе.
+        phrases = ["Lost Gardens of Heligan", "thousand miles", "Blarney", "Smithsonian", "Ashmolean", "the Fringe", "Anorak", "on the dole",
+                   "Early to bed", "East is East", "Haseltine", "being recognised", "long hair that", "bound to get", "been driving for",
+                   "more than enough of", "sufficient amount", "unless I finish", "must have done", "said to have taken", "Leonardo"]
+        for f in sorted((ROOT / "data").glob("*.js")) + sorted((ROOT / "js").glob("*.js")):
+            if f.name in ("variant-mun-msk-22-23.js", "dict.js"):
+                continue
+            text = f.read_text(encoding="utf-8").lower()
+            self.assertEqual([p for p in phrases if p.lower() in text], [], f.name)
+        # Год называем только как пробник: не «задания 2022/23» в разминках и таблицах.
+        for name in ("warmups.js", "lessons.js", "explain-mun.js"):
+            text = (ROOT / "data" / name).read_text(encoding="utf-8")
+            lines = [l for l in text.split("\n") if "2022/23" in l and "Mock exam" not in l and not l.strip().startswith("//")]
+            self.assertEqual(lines, [], name)
 
     def test_lesson_of_9_november_says_to_do_it_first(self):
         self.assertEqual(self.r["l5"]["date"], "2026-11-09")
