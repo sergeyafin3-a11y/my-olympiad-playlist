@@ -1220,13 +1220,23 @@ class EssayAndCultureLesson(unittest.TestCase):
         ours = ["".join(x if isinstance(x, str) else x["t"] for x in p) for p in b["paras"]]
         self.assertEqual(ours, official[1:], "текст дословно, со всеми её ошибками")
         marks = [x for p in b["paras"] for x in p if not isinstance(x, str)]
-        self.assertEqual([m["c"] for m in marks], ["red", "red", "red", "red", "yellow", "yellow", "yellow", "red"])
+        # Учитель 06.11: «каким цветом какая ошибка» и все цвета, даже те, которых в тексте нет.
+        self.assertEqual([m["c"] for m in marks], ["lex", "org", "spell", "lex", "org", "style", "style", "lex"])
+        self.assertEqual([(k["c"], k["t"]) for k in b["key"]], [("task", "Task completion"), ("org", "Organisation and logic"), ("lex", "Vocabulary"),
+            ("gram", "Grammar"), ("spell", "Spelling and punctuation"), ("style", "Style: better to say it another way")])
         for m in marks:
             self.assertEqual(sorted(m), ["c", "t"], "только текст и цвет: объясняет учитель")
         self.assertEqual([(r["t"], r["p"], r["max"]) for r in b["score"]], [("Task completion", 4, 4), ("Organisation", 3, 4), ("Vocabulary", 2, 4), ("Grammar", 4, 4), ("Spelling and punctuation", 3, 4)])
         html = render_step("l4", 0).replace("&#39;", "'")
-        self.assertEqual(len(re.findall(r'<mark class="ls-red">', html)), 5)
-        self.assertEqual(len(re.findall(r'<mark class="ls-yellow">', html)), 3)
+        self.assertEqual(len(re.findall(r'<mark class="ls-c-lex">', html)), 3)
+        self.assertEqual(len(re.findall(r'<mark class="ls-c-org">', html)), 2)
+        self.assertEqual(len(re.findall(r'<mark class="ls-c-spell">', html)), 1)
+        self.assertEqual(len(re.findall(r'<mark class="ls-c-style">', html)), 2)
+        for c, nums in (("task", "—"), ("org", "2, 5"), ("lex", "1, 4, 8"), ("gram", "—"), ("spell", "3"), ("style", "6, 7")):
+            self.assertRegex(html, r'<span class="sw ls-c-%s"></span><span>[^<]+</span><b>%s</b>' % (c, nums))
+        ui = (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8")
+        for c in ("task", "org", "lex", "gram", "spell", "style"):
+            self.assertIn(".ls-c-%s{" % c, ui, "у каждого типа свой цвет")
         self.assertIn("16 / 20", html)
         self.assertNotRegex(html, r"data-ls(check|spot|note)", "тыкать не во что")
         for fix in ("cruel", "friends", "a minute longer", "property"):
