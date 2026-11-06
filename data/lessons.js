@@ -649,15 +649,14 @@
       ]
     },
     // Урок 6.11 (учитель 05.11): вместо 2 ноября, весь про эссе по цитате 2021/22 (Стивен Кинг). На экране — только
-    // задания: коротко, без пометок, кто что делает. Культура про Россию — наш набор в формате Use of English Task 4
-    // (официальный Task 4 муниципального этапа за 5 лет — про Британию и США, российских реалий в нём нет).
-    // Дома — Listening: официальные записи и как их решать.
+    // задания: коротко, без пометок, кто что делает. Культура — настоящий Task 4 2021/22 (учитель 06.11: на олимпиаде
+    // за 5 лет в нём только Британия и США). Дома — Listening: официальные записи и как их решать.
     // Картинки — пока временные, из прошлых уроков: учитель ищет свои.
     {
       id: "l4", date: "2026-11-06", title: "Writing: an essay on a quotation · Culture", emoji: "📚", cover: img("m04-smort"),
       aims: [
         "✍️ One real quotation: build an essay and write it.",
-        "🇷🇺 Culture: Russia in the format of Task 4.",
+        "🇬🇧 Culture: a real Task 4 (2021/22).",
         "🏠 Homework: Listening (Section 6) and grammar (Section 7)."
       ],
       steps: [
@@ -755,43 +754,14 @@
           ]
         },
         {
-          stage: "practice", title: "Culture: Russia", minutes: 8, image: img("m01-queen"),
+          stage: "practice", title: "Culture: Britain", minutes: 8, image: img("m01-queen"),
           blocks: [
             { type: "brief", title: "Match", items: [
               "Read the phenomena A–N.",
               "Choose a letter for each item 1–10. Four phenomena are extra.",
               "Press **✓ Check**."
             ] },
-            { type: "matchsheet", source: "Use of English · Task 4 format · Russia",
-              instruction: "Match the items to the phenomena. There are some extra phenomena which do not match.",
-              opts: [
-                { k: "A", t: "a day on 24 May that honours Cyril and Methodius, who created the first Slavic alphabet" },
-                { k: "B", t: "the chemist who created the periodic table" },
-                { k: "C", t: "a holiday on 4 November that commemorates the events of 1612, when a volunteer army led by Minin and Pozharsky freed Moscow" },
-                { k: "D", t: "a route of old towns north-east of Moscow, such as Suzdal and Vladimir" },
-                { k: "E", t: "a holiday on 9 May that marks the end of the Great Patriotic War in 1945" },
-                { k: "F", t: "a week of pancakes at the end of winter, when people burn a straw figure" },
-                { k: "G", t: "the first woman in space" },
-                { k: "H", t: "a holiday on 12 June: on this day in 1990, the Declaration of State Sovereignty was adopted" },
-                { k: "I", t: "the longest railway line in the world, from Moscow to Vladivostok" },
-                { k: "J", t: "a day on 12 April that marks the first human flight into space in 1961" },
-                { k: "K", t: "a huge art museum in St Petersburg; its main building is the Winter Palace" },
-                { k: "L", t: "the deepest lake in the world, in Siberia" },
-                { k: "M", t: "a holiday on 23 February that honours the people who serve or have served in the armed forces" },
-                { k: "N", t: "a scientist and poet, a fisherman's son; Moscow State University is named after him" }
-              ],
-              items: [
-                { t: "National Unity Day", a: "C" },
-                { t: "Maslenitsa", a: "F" },
-                { t: "The Golden Ring", a: "D" },
-                { t: "Cosmonautics Day", a: "J" },
-                { t: "Mikhail Lomonosov", a: "N" },
-                { t: "Russia Day", a: "H" },
-                { t: "The Hermitage", a: "K" },
-                { t: "Defender of the Fatherland Day", a: "M" },
-                { t: "Day of Slavic Writing and Culture", a: "A" },
-                { t: "Valentina Tereshkova", a: "G" }
-              ] }
+            { type: "matchsheet", task: "p-u4-2122", source: "Real task · Moscow municipal stage 2021/22 · Use of English · Task 4" }
           ]
         },
         {
