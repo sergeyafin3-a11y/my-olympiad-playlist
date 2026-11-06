@@ -657,7 +657,7 @@
       aims: [
         "✍️ One real quotation: build an essay and write it.",
         "🇬🇧 Culture: a real Task 4 (2021/22).",
-        "🏠 Homework: Listening (Section 6), grammar (Section 7), Use of English (Section 8)."
+        "🏠 Homework: Listening (Section 6) and grammar (Section 7)."
       ],
       steps: [
         {
@@ -829,29 +829,6 @@
               { q: "There was a strong wind which caused the fire to spread quickly.", word: "so", before: "The fire", after: "quickly but for a strong wind.", n: 5, accept: ["would not have spread so"],
                 note: "**But for** a strong wind = if there had not been a strong wind. The result in the past: **would not have + V3**." }
             ] }
-          ]
-        },
-        // Учитель 06.11: «больше заданий из use of english… максимально свежие». Только опубликованные официальные работы:
-        // муниципальный 2025/26 и 2024/25 для 9 класса (формат и авторы те же, что у 10–11), школьный этап 2026/27 (самая новая работа).
-        {
-          stage: "homework", home: true, title: "Homework: Use of English", minutes: 120, image: img("m03-studying"),
-          blocks: [
-            { type: "brief", title: "Use of English: three variants", items: [
-              "Do one variant at a time, without a dictionary.",
-              "Press **✓ Check answers**, then read **💡 Show how to solve** under the wrong ones."
-            ] },
-            { type: "task", task: "p-u1-2526-9", label: "Variant 1 · Municipal 2025/26 · Extra words" },
-            { type: "task", task: "p-u2-2526-9", label: "Variant 1 · Municipal 2025/26 · Key word transformations" },
-            { type: "task", task: "p-u3-2526-9", label: "Variant 1 · Municipal 2025/26 · Word formation" },
-            { type: "task", task: "p-u4-2526-9", label: "Variant 1 · Municipal 2025/26 · Culture: match" },
-            { type: "task", task: "p-sch-2627-1", label: "Variant 2 · School 2026/27 · Word formation" },
-            { type: "task", task: "p-sch-2627-2", label: "Variant 2 · School 2026/27 · Mixed-up words" },
-            { type: "task", task: "p-sch-2627-3", label: "Variant 2 · School 2026/27 · Misspelled words" },
-            { type: "task", task: "p-sch-2627-4", label: "Variant 2 · School 2026/27 · One word, three sentences" },
-            { type: "task", task: "p-u1-2425-9", label: "Variant 3 · Municipal 2024/25 · Extra words" },
-            { type: "task", task: "p-u2-2425-9", label: "Variant 3 · Municipal 2024/25 · Key word transformations" },
-            { type: "task", task: "p-u3-2425-9", label: "Variant 3 · Municipal 2024/25 · Word formation" },
-            { type: "task", task: "p-u4-2425-9", label: "Variant 3 · Municipal 2024/25 · Culture: match" }
           ]
         }
       ]

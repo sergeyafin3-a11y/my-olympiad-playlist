@@ -165,7 +165,7 @@ class Mock(unittest.TestCase):
     def test_nothing_else_in_the_app_gives_the_mock_away(self):
         # Ревью PR 62: цитата эссе и пункты Task 4 были в разминках, ответ Task 2 — в таблице урока 23.10, пословица — в разборе.
         phrases = ["Lost Gardens of Heligan", "thousand miles", "Blarney", "Smithsonian", "Ashmolean", "the Fringe", "Anorak", "on the dole",
-                   "Early to bed", "East is East", "Haseltine", "being recognised", "long hair that", "bound to get", "had been driving for",
+                   "Early to bed", "East is East", "Haseltine", "being recognised", "long hair that", "bound to get", "been driving for",
                    "more than enough of", "sufficient amount", "unless I finish", "must have done", "said to have taken", "Leonardo"]
         for f in sorted((ROOT / "data").glob("*.js")) + sorted((ROOT / "js").glob("*.js")):
             if f.name in ("variant-mun-msk-22-23.js", "dict.js"):
