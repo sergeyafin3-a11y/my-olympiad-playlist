@@ -171,6 +171,8 @@
     ".ls-notice .au{display:block;text-align:right;margin-top:6px}",
     ".ls-notice{border:2px solid #1A1A1A;border-radius:4px;padding:10px 12px;margin:8px 0 10px}.ls-notice .nt{display:block;text-align:center;font-size:17px;margin-bottom:4px}",
     ".ls-paper ul{margin:0 0 10px;padding-left:22px}",
+    ".ls-paper mark{color:inherit;padding:1px 2px;border-radius:3px}.ls-paper mark.ls-red{background:#F7C1BB;box-shadow:inset 0 -2px 0 #C62828}.ls-paper mark.ls-yellow{background:#FBE58A;box-shadow:inset 0 -2px 0 #B58900}.ls-paper mark sup{font:700 10px/1 Arial,sans-serif;margin-left:2px}",
+    ".ls-score p{display:flex;justify-content:space-between;gap:12px;margin:0;padding:6px 0;border-top:1px solid rgba(255,255,255,.1)}.ls-score p.tot{font-weight:700;font-size:17px}",
     ".ls-jury{margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--card)}",
     ".ls-jury .jr{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:6px 0}.ls-jury .jr b{flex:1 1 160px}",
     ".ls-jury .jr button{min-width:38px;height:36px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--ink);font-weight:700;font-size:15px}",
@@ -422,6 +424,17 @@
             mt.opts.map(function (o) { return '<option value="' + esc(o.k) + '"' + (mp[n] === o.k ? ' selected' : '') + '>' + esc(o.k) + '</option>'; }).join("") + '</select></label>' +
             (mg.checked ? '<p class="why">' + (ok ? '✓' : '✗ <b>' + esc(right) + '</b>') + '</p>' : '') + '</div>';
         }).join("") + '<div class="listen"><button class="ghost" data-lscheck="' + key + '">✓ Check</button></div></div>';
+    }
+    // Работа ученицы с выделениями: красное и жёлтое, у каждого номер, чтобы учитель могла сказать «посмотри на третье». Нажимать не на что,
+    // объяснений нет: объясняет учитель. Ниже — баллы по критериям жюри.
+    if (b.type === "marked") {
+      var mk = 0, mgot = 0, mmax = 0;
+      b.score.forEach(function (r) { mgot += r.p; mmax += r.max; });
+      return '<div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p class="ttl">' + esc(b.title) + '</p>' + b.paras.map(function (pa) {
+        return '<p>' + pa.map(function (x) { if (typeof x === "string") return esc(x); mk++; return '<mark class="ls-' + esc(x.c) + '">' + esc(x.t) + '<sup>' + mk + '</sup></mark>'; }).join("") + '</p>';
+      }).join("") + '</div><div class="ls-box ls-score"><h3>⚖️ Your points</h3>' + b.score.map(function (r) {
+        return '<p><span>' + esc(r.t) + '</span><b>' + r.p + ' / ' + r.max + '</b></p>';
+      }).join("") + '<p class="tot"><span>Total</span><b>' + mgot + ' / ' + mmax + '</b></p></div>';
     }
     if (b.type === "storymap") {
       var sm = notesOf(key);
