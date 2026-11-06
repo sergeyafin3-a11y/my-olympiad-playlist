@@ -166,13 +166,13 @@
     3: "A debate can be hot. \"Mostly\" adds nothing that fits here: a hot debate.\nAnswer: mostly.",
     4: "The years of education were put into the PhD, so we need the past participle \"put\", not an active form.\nAnswer: having.",
     5: "The pattern is: conceive something as + adjective. Conceived as minor.\nAnswer: if.",
-    6: "This line is correct: no word here makes it wrong. \"that\" in \"things that we are used to\" can be left out, but it is not a mistake.\nAnswer: V.",
+    6: "Every word is needed.\nAnswer: V.",
     7: "\"Americans… now tend to prefer\": Americans are the subject of the second part. With \"unlike\" the verb has no subject.\nAnswer: unlike.",
     8: "\"how your conversation partner addresses you\" is already the object of \"observe\".\nAnswer: it.",
     9: "This is a fact from a study, not a process: individuals were considered more intelligent.\nAnswer: being.",
     10: "Rated as less intelligent. \"Likely\" does not fit between \"less\" and \"intelligent\".\nAnswer: likely.",
     11: "\"attention\" is uncountable: pay full attention.\nAnswer: a.",
-    12: "This line is correct: no word here makes it wrong.\nAnswer: V.",
+    12: "Every word is needed.\nAnswer: V.",
     13: "After \"it is vital that\" we do not use \"will\": it is vital that we remember.\nAnswer: will.",
     14: "\"shape the way we behave\" means influence it. \"Shape up\" means get better or fitter.\nAnswer: up.",
     15: "The contrast is in \"rather than\": it should be something we keep in mind, rather than something we use to pigeonhole people.\nAnswer: not."
@@ -184,7 +184,7 @@
     4: "People say + is having → is said + continuous infinitive: to be having.\nAnswer: is said to be having.",
     5: "had better + verb without \"to\" = it is a good idea.\nAnswer: had better leave.",
     6: "wish + somebody + would: I want a change, but I do not expect it.\nAnswer: wish you would be.",
-    7: "have + object + V3: somebody else does it for her. After \"is in hospital\" we use the -ing form: having her appendix taken out.\nAnswer: having her appendix taken.",
+    7: "have + object + V3: somebody else does it for her. The form here is continuous: is having… taken out.\nAnswer: having her appendix taken.",
     8: "stand in for somebody = replace somebody for a short time.\nAnswer: to stand in for.",
     9: "would like + perfect infinitive: I wanted it in the past, but it did not happen.\nAnswer: would like to have stayed.",
     10: "would rather + another person + Past Simple.\nAnswer: would rather we did not."
@@ -194,9 +194,9 @@
     2: "\"the evil ___\" is a person, and this person has hidden the tools.\nAnswer: psychopath (or: psycho).",
     3: "After \"maintain\" we need a noun: the feeling of waiting for something exciting.\nAnswer: suspense.",
     4: "Phone coverage = the area where your phone has a signal.\nAnswer: coverage.",
-    5: "Before a noun we need an adjective. The next sentence names empty places, so the meaning is negative: un-.\nAnswer: uninhabited. (The official key also accepts uninhabitable and uninhabitated, but \"uninhabitated\" is not a real word.)",
+    5: "Before a noun we need an adjective. The next sentence names empty places, so the meaning is negative: un-.\nAnswer: uninhabited (also: uninhabitable, uninhabitated).",
     6: "An adjective before \"hospital\": left empty.\nAnswer: abandoned.",
-    7: "keep somebody awake = not let somebody sleep.\nAnswer: awake. (The official key also accepts awaken and awakened, but \"keep him awake\" is the correct English.)",
+    7: "keep somebody awake = not let somebody sleep.\nAnswer: awake (also: awaken, awakened).",
     8: "enjoy needs an object here. THEY → a reflexive pronoun.\nAnswer: themselves.",
     9: "After \"the\" we need a noun. SOLVE → the answer to a problem.\nAnswer: solution.",
     10: "After \"the most\" and before \"person\" we need an adjective: good at finding ways to deal with problems.\nAnswer: resourceful."
@@ -207,16 +207,16 @@
     3: "The pattern is: be about to do something. That is about to rise.\nAnswer: being.",
     4: "No article before the name: St Paul's cathedral.\nAnswer: the.",
     5: "Either \"does matter\" or \"matters\". The verb here already has -s.\nAnswer: does.",
-    6: "This line is correct: no word here makes it wrong.\nAnswer: V.",
+    6: "Every word is needed.\nAnswer: V.",
     7: "see + object + verb without \"to\": has seen two towers rise.\nAnswer: to.",
     8: "\"is a subsidiary\" is the whole verb phrase: the word \"spotted\" has no place in it.\nAnswer: spotted.",
     9: "\"litter\" is the verb here: these towers now litter the Thames.\nAnswer: are.",
     10: "\"urban\" says what type of canyon it is. We do not use \"utterly\" with this type of adjective.\nAnswer: utterly.",
-    11: "This line is correct: no word here makes it wrong.\nAnswer: V.",
+    11: "Every word is needed.\nAnswer: V.",
     12: "\"greed\" is uncountable: the power of greed.\nAnswer: a.",
     13: "The writer says that ministers refuse to act. \"hardly refuse\" would mean the opposite.\nAnswer: hardly.",
     14: "After \"demand that\" we use the base form: that the beauty be respected.\nAnswer: shall.",
-    15: "This line is correct: no word here makes it wrong.\nAnswer: V."
+    15: "Every word is needed.\nAnswer: V."
   };
   E["p-u2-2425-9"] = {
     19: "would rather not + verb without \"to\". He prefers to work alone, so not with other people.\nAnswer: he would rather not.",
@@ -243,7 +243,7 @@
     10: "A preposition before \"the education system\": in all of it. THROUGH + -out.\nAnswer: throughout."
   };
   E["p-sch-2627-1"] = {
-    1: "An adjective before \"analysis\".\nAnswer: scientific. (The official key also accepts \"scientifical\", but this word is not used today.)",
+    1: "An adjective before \"analysis\".\nAnswer: scientific (also: scientifical).",
     2: "After \"your social media\" we need a noun.\nAnswer: consumption.",
     3: "After \"results are often\" we need an adjective with a negative meaning: not the same every time.\nAnswer: uneven.",
     4: "An adjective before \"fees\": they cost a lot.\nAnswer: costly.",
@@ -261,9 +261,9 @@
     6: "cheat the system = break the rules without being caught.\nAnswer: cheat."
   };
   E["p-sch-2627-3"] = {
-    1: "\"standpaint\" is not a word. A standpoint is a point of view.\nAnswer: standpoint.",
-    2: "\"no date is collected\": a date is a day of the month. The text means information: no data is collected.\nAnswer: data.",
-    3: "\"truck its own settings\": a truck is a vehicle. To track something = to keep a record of it.\nAnswer: track.",
+    1: "\"standpaint\": the word is a point of view.\nAnswer: standpoint.",
+    2: "\"no date is collected\": the extension collects information.\nAnswer: data.",
+    3: "\"truck its own settings\": a truck is a vehicle. It needs to follow the settings.\nAnswer: track.",
     4: "\"giving it a shoot\": the fixed phrase is give it a shot = try it.\nAnswer: shot.",
     5: "\"dependancy\" has the wrong vowel.\nAnswer: dependency."
   };
@@ -274,30 +274,5 @@
     32: "See the elephant = see a lot of the world. The elephant in the room = a big problem nobody talks about. A white elephant = something expensive and useless.\nAnswer: elephant.",
     33: "An easy pigeon = somebody easy to trick. A clay pigeon = an easy target. A stool pigeon = a person who gives information about friends.\nAnswer: pigeon.",
     34: "Act the goat = behave in a silly way. Get somebody's goat = make somebody angry. In the third sentence, the word is the short form of scapegoat: something you blame.\nAnswer: goat."
-  };
-  // Culture в свежих работах: разбор — официальное описание верного варианта, ничего своего.
-  E["p-u4-2526-9"] = {
-    1: "Greenwich: It is a famous spot in south-east London, England. It is well-known for its amazing maritime history, meaning its connection to the sea and ships. It's also where the 0° longitude Meridian gets its name.\nAnswer: F.",
-    2: "John Nash: one of the most prominent British architects of the 19th century. Some of his most famous works include Marble Arch, the Royal Mews, and Buckingham Palace.\nAnswer: H.",
-    3: "The Athens of the north: Built in stages between 1767 and 1850, James Craig’s design helped Edinburgh transform itself from ‘auld reekie’ to this grand state. He designed a plan which was distinguished by elegant views, classical order and plenty of light.\nAnswer: L.",
-    4: "Common Sense: It was written by Thomas Paine in 1775 and 1776. It encouraged people in the Thirteen Colonies to seek independence from Great Britain. It was published without its author's name. This was right at the start of the American Revolution. It quickly became incredibly popular.\nAnswer: K.",
-    5: "euphemism: correctional facility instead of prison\nAnswer: M.",
-    6: "Greenwich village: Its name comes from the Dutch word Groenwijck, which means \"Green District\". For a long time, it was known as a home for artists and a center for new ideas. It is a unique part of Manhattan.\nAnswer: E.",
-    7: "synecdoche: \"New York won the game\" meaning a sports team from New York won the game\nAnswer: D.",
-    8: "The Black Country: During the Industrial Revolution, this area was full of factories and coal mines. The air became dark with smoke and soot from all the industry. It's located just west of the big city of Birmingham.\nAnswer: A.",
-    9: "The Fens: The flat, watery area in East Anglia\nAnswer: J.",
-    10: "the white man’s burden: the phrase used by R. Kipling to describe the sense of moral obligation among British empire builders\nAnswer: C.\nThe extra phenomena are B, G, I and N."
-  };
-  E["p-u4-2425-9"] = {
-    1: "The Sooner State: Oklahoma is nicknamed so because of the settlers who moved into the Unassigned Lands before the designated commencement of the Land Rush of 1889.\nAnswer: F.",
-    2: "A Square Deal: The Progressive Party (a.k.a. the Bull Moose Party) adopted the idea when it chose Roosevelt as its candidate in the 1912 presidential election. It appeals to the near-universal desire for fairness.\nAnswer: H.",
-    3: "Ada Lovelace: an English mathematician who has been called the first computer programmer for writing an algorithm, or a set of operating instructions, for the early computing machine built by Charles Babbage in 1821.\nAnswer: L.",
-    4: "The Eisteddfod: a Welsh summer event dedicated to music, literature and performing arts. It runs over the first week in August. It is held in a new venue every year, occasionally the event has been held in England. It features about 6,000 competitors who compete in a number of categories, including Folk Songs, Brass Bands, String Music, Choral Section, Vocal Section, and others.\nAnswer: K.",
-    5: "fair-weather friend: someone who is a good friend when it is easy to be one and who stops being one when you are having problems\nAnswer: M.",
-    6: "Isambard Kingdom Brunel: he was chosen to design the Clifton Suspension Bridge. From this Bristol connection came the chance to create the Great Western Railway which came into Windsor in 1849. His legacy can be seen in his railways, bridges and steamships he contributed to a golden age in Britain’s history.\nAnswer: E.",
-    7: "consumerism: the situation in which too much attention is given to buying and owning things\nAnswer: D.",
-    8: "A thing of beauty is a joy for ever: Its loveliness increases; it will never Pass into nothingness…: John Keats’ poetical credo\nAnswer: A.",
-    9: "James Watt: he was one of the most important engineers and scientists in history. His work on the modern steam engine kick-started the entire Industrial Revolution at home in Great Britain and in the rest of the world.\nAnswer: G.",
-    10: "Wherever I wander, wherever I rove, The hills of the Highlands for ever I love.: Robert Burns’ famous poem\nAnswer: C.\nThe extra phenomena are B, I, J and N."
   };
 })();

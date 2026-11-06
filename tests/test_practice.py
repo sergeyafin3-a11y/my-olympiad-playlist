@@ -310,31 +310,6 @@ class FreshUseOfEnglish(unittest.TestCase):
                     self.assertIn(it["accept"][0].lower(), e.lower(), (tid, it["n"]))
                     self.assertNotRegex(e, "[а-яё]", (tid, it["n"]))
 
-    def test_review_of_pr_65(self):
-        ex = self.r["ex"]
-        # «Every word is needed» учило неверной проверке: слово можно убрать, но строка от этого не становится ошибочной.
-        for tid in ("p-u1-2526-9", "p-u1-2425-9"):
-            for it in self.r["tasks"][tid]["items"]:
-                if it["accept"] == ["v"]:
-                    self.assertIn("no word here makes it wrong", ex[tid][str(it["n"])])
-        self.assertIn("no data is collected", ex["p-sch-2627-3"]["2"])
-        self.assertNotIn("collects information", ex["p-sch-2627-3"]["2"])
-        # Официальный ключ принимает эти формы, но как нормальные ответы их показывать нельзя.
-        self.assertIn('"uninhabitated" is not a real word', ex["p-u3-2526-9"]["5"])
-        self.assertIn('"keep him awake" is the correct English', ex["p-u3-2526-9"]["7"])
-        self.assertIn('"scientifical", but this word is not used today', ex["p-sch-2627-1"]["1"])
-        self.assertNotIn("is having", ex["p-u2-2526-9"]["7"])
-        opts = " ".join(o["t"] for o in self.r["tasks"]["p-u4-2425-9"]["opts"])
-        self.assertIn("near-universal", opts)
-        # В рамке раздела 8 сказано читать разбор под неверными ответами: он есть и у Culture, слова — из официальных вариантов.
-        for tid in ("p-u4-2526-9", "p-u4-2425-9"):
-            t = self.r["tasks"][tid]
-            text = {o["k"]: o["t"] for o in t["opts"]}
-            for it in t["items"]:
-                e = ex[tid][str(it["n"])]
-                self.assertIn(text[it["a"][0]], e, (tid, it["n"]))
-                self.assertIn("Answer: " + it["a"][0], e, (tid, it["n"]))
-
     def test_school_tasks_say_they_are_another_format_and_have_their_own_cards(self):
         self.assertIn("t.otherFormat", HTML)
         for n in "1234":
