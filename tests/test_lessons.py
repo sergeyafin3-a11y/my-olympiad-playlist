@@ -1182,6 +1182,14 @@ class EssayAndCultureLesson(unittest.TestCase):
         imgs = [st["image"] for st in self.steps]
         self.assertEqual(len(set(imgs)), len(imgs))
 
+    def test_new_pictures_instead_of_repeated_ones(self):
+        # Учитель 06.11: «вместо повторяющихся картинок добавь эти».
+        titles = {st["title"]: st["image"] for st in self.steps}
+        self.assertIn("m21-strong", titles["Warm-up"])
+        self.assertIn("m22-wont-give-up", titles["Write the essay"])
+        self.assertIn("m20-slay-queen", titles["Culture: Britain"])
+        self.assertIn("m23-can-do-you", titles["Homework: Grammar"])
+
     def test_no_labels_about_who_does_what(self):
         # «Не надо помечать и выделять, это как ярлык». На экране нет ни «учитель читает», ни «напиши в чат».
         src = json.dumps(self.steps, ensure_ascii=False).lower()

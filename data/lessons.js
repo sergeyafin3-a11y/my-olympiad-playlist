@@ -661,7 +661,7 @@
       ],
       steps: [
         {
-          stage: "warm-up", title: "Warm-up", minutes: 3, image: img("m05-you-can"),
+          stage: "warm-up", title: "Warm-up", minutes: 3, image: img("m21-strong"),
           blocks: [
             { type: "brief", title: "Talent or hard work?", items: [
               "Tap one side in each row.",
@@ -743,7 +743,7 @@
           ]
         },
         {
-          stage: "production", title: "Write the essay", minutes: 20, image: img("m10-lock-in"),
+          stage: "production", title: "Write the essay", minutes: 20, image: img("m22-wont-give-up"),
           blocks: [
             ESSAY_KING,
             { type: "brief", title: "Write the whole essay", items: [
@@ -754,7 +754,7 @@
           ]
         },
         {
-          stage: "practice", title: "Culture: Britain", minutes: 8, image: img("m01-queen"),
+          stage: "practice", title: "Culture: Britain", minutes: 8, image: img("m20-slay-queen"),
           blocks: [
             { type: "brief", title: "Match", items: [
               "Read the phenomena A–N.",
@@ -785,7 +785,7 @@
         // Тема посчитана по официальному Task 2 за 5 лет: 9 пунктов из 50, каждый год; больше любой другой темы.
         // Пункты — дословно из официальных заданий 2021/22, 2023/24, 2024/25, 2025/26 (2022/23 оставлен для пробника).
         {
-          stage: "homework", home: true, title: "Homework: Grammar", minutes: 10, image: img("m03-studying"),
+          stage: "homework", home: true, title: "Homework: Grammar", minutes: 10, image: img("m23-can-do-you"),
           blocks: [
             { type: "vtable", title: "🧩 Wish, would rather, it is time, if", cols: [
               { h: "wish", lines: [
