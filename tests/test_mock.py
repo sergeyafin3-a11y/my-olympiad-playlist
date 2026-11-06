@@ -187,7 +187,7 @@ class Mock2324(unittest.TestCase):
             var sheet = {}; t.items.forEach(function(it){ sheet[it.n] = t.type === "choice" ? it.a[0] : it.accept[0]; });
             var s = C.score(t, sheet); full[t.id] = [s.got, s.max]; }); });
           return { v: V, full: full, ex: window.EXPLAIN, how: window.HOWTO.tasks, stops: [C.stopAfter(V, 0), C.stopAfter(V, 500)], practice: JSON.stringify(window.PRACTICE),
-                   l6: window.LESSONS.filter(function(l){ return l.id === "l6"; })[0] }; })());"""])
+                   l5: window.LESSONS.filter(function(l){ return l.id === "l5"; })[0] }; })());"""])
         cls.r = json.loads(subprocess.run(["osascript", "-l", "JavaScript", "-e", src], capture_output=True, text=True, check=True).stdout)
         cls.tasks = {t["id"]: t for p in cls.r["v"]["parts"] for t in p["tasks"]}
 
@@ -200,7 +200,7 @@ class Mock2324(unittest.TestCase):
         self.assertEqual(self.r["stops"], [500, None])
         for tid, (got, mx) in self.r["full"].items():
             self.assertEqual(got, mx, tid)
-        self.assertEqual(self.r["l6"]["links"][0]["href"], "#/full/p-l1-2324")
+        self.assertEqual(self.r["l5"]["steps"][-1]["blocks"][1]["items"][0]["href"], "#/full/p-l1-2324")
 
     def test_official_keys(self):
         for tid, want in self.KEYS.items():
@@ -262,7 +262,7 @@ class Mock2324(unittest.TestCase):
             text = f.read_text(encoding="utf-8").lower()
             found = [p for p in phrases if p.lower() in text]
             if f.name == "lessons.js":
-                found = [p for p in found if p != "p-l1-2324"]  # ссылка урока 16 ноября
+                found = [p for p in found if p != "p-l1-2324"]  # ссылка в домашке урока 9 ноября
             self.assertEqual(found, [], f.name)
 
 

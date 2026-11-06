@@ -291,7 +291,7 @@
     // Учитель 26.10: «сейчас я себя проверяю, а завтра показываю экран ученице — ответы должны стереться».
     var canCheck = s.blocks.some(function (b) { return ["gapfill", "transform", "upgrade", "matchsheet"].indexOf(b.type) >= 0 || (b.type === "paper" && b.task); });
     // В уроке-разборе заполнять нечего, кнопки стирания там не нужны. В остальных уроках они есть в каждом разделе.
-    var hasWork = l.steps.some(function (st) { return st.blocks.some(function (b) { return ["sample", "brief", "wpaper"].indexOf(b.type) < 0; }); });
+    var hasWork = l.steps.some(function (st) { return st.blocks.some(function (b) { return ["sample", "brief", "wpaper", "links"].indexOf(b.type) < 0; }); });
     if (hasWork) h += '<div class="ls-clear">' + (canCheck ? '<button class="bigplay" data-lscheckall="' + l.id + ':' + i + '">✓ Check answers</button>' : '') +
       '<button class="ghost" data-lsclear="' + l.id + ':' + i + ':">↺ Clear answers in this section</button>' +
       '<button class="ghost" data-lsclear="' + l.id + ':">↺ Clear the whole lesson</button></div>';
