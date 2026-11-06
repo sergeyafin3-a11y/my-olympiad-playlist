@@ -648,16 +648,16 @@
         }
       ]
     },
-    // Урок 6.11 (учитель 05.11): вместо 2 ноября, весь про эссе по цитате 2021/22 (Стивен Кинг). На экране — только
-    // задания: коротко, без пометок, кто что делает. Культура — настоящий Task 4 2021/22 (учитель 06.11: на олимпиаде
-    // за 5 лет в нём только Британия и США). Дома — Listening: официальные записи и как их решать.
+    // Урок 6.11: одна цель — эссе по цитате 2021/22 (Стивен Кинг), которое не теряет баллы за содержание. Учитель 06.11: «цель у конкретного урока»,
+    // «за час уложились», «на все вопросы ответила». На уроке 52 минуты заданий и 8 минут на вопросы. На экране — только задания.
+    // Дома только нужное: грамматика, подводки к Use of English, один Listening и пробник. Остальные варианты — к следующим домашкам.
     // Картинки — пока временные, из прошлых уроков: учитель ищет свои.
     {
-      id: "l4", date: "2026-11-06", title: "Writing: an essay on a quotation · Culture", emoji: "📚", cover: img("m04-smort"),
+      id: "l4", date: "2026-11-06", title: "Writing: an essay on a quotation", emoji: "📚", cover: img("m04-smort"),
       aims: [
-        "✍️ One real quotation: build an essay and write it.",
-        "🇬🇧 Culture: a real Task 4 (2021/22).",
-        "🏠 Homework: Listening (Section 6), grammar (Section 7), Use of English (Section 8)."
+        "🎯 Goal: an essay on a quotation that keeps all the points for Task completion.",
+        "✍️ One real quotation: build the essay, write it, check it.",
+        "🏠 Homework: Sections 6–9."
       ],
       steps: [
         {
@@ -754,31 +754,13 @@
           ]
         },
         {
-          stage: "practice", title: "Culture: Britain", minutes: 8, image: img("m20-slay-queen"),
+          stage: "feedback", title: "Check the essay", minutes: 10, image: img("m20-slay-queen"),
           blocks: [
-            { type: "brief", title: "Match", items: [
-              "Read the phenomena A–N.",
-              "Choose a letter for each item 1–10. Four phenomena are extra.",
-              "Press **✓ Check**."
+            { type: "brief", title: "Check the essay", items: [
+              "Go through the checklist.",
+              "Find what is missing and fix it."
             ] },
-            { type: "matchsheet", task: "p-u4-2122", source: "Real task · Moscow municipal stage 2021/22 · Use of English · Task 4" }
-          ]
-        },
-        {
-          stage: "homework", home: true, title: "Homework: Listening", minutes: 45, image: img("m18-all-good"),
-          blocks: [
-            LISTENING_HOWTO,
-            { type: "brief", title: "Listening: three variants", items: [
-              "Read the tips above.",
-              "Do one variant at a time. Open the first part and press ▶. Do not stop the recording: it has its own pauses.",
-              "Press **✓ Check answers**, then read **💡 Show how to solve** under the wrong ones."
-            ] },
-            { type: "task", task: "p-l1-2324", label: "Variant 1 · 2023/24 · True or False: famous people who tried to learn Russian" },
-            { type: "task", task: "p-l2-2324", label: "Variant 1 · 2023/24 · A, B or C: Steve and Kelly" },
-            { type: "task", task: "p-l1-2425", label: "Variant 2 · 2024/25 · True or False: Amelia Earhart" },
-            { type: "task", task: "p-l2-2425", label: "Variant 2 · 2024/25 · A, B or C: Chloe and the manager" },
-            { type: "task", task: "p-l1-2122", label: "Variant 3 · 2021/22 · True or False: Liberace" },
-            { type: "task", task: "p-l2-2122", label: "Variant 3 · 2021/22 · A, B or C: Ian and Rika" }
+            ESSAY_CHECK
           ]
         },
         // Учитель 06.11: «каверзную тему, которая часто используется… в домашку, просто с правилом, чтобы напомнить».
@@ -831,27 +813,143 @@
             ] }
           ]
         },
-        // Учитель 06.11: «она в 10 классе… муниципальный этап для 10 классов». Только работы этого этапа для 10–11 классов, от самой свежей.
-        // Школьный этап и 9 класс здесь не нужны: школьный Варя уже написала. 2022/23 — пробник.
+        // Учитель 06.11: «задания, которые готовят к таким заданиям», «как репетитор», «она в 10 классе». Подводки к каждому заданию Use of
+        // English на официальной работе 10–11 классов 2021/22, которой ещё не было в приложении: пункты и ключи дословно, пояснения наши.
+        // Task 4 2021/22 перенесён сюда с урока: урок — про одно эссе. 2025/26 Варя решала 12.10; 2024/25 и 2023/24 остаются на следующие домашки.
         {
-          stage: "homework", home: true, title: "Homework: Use of English", minutes: 180, image: img("m03-studying"),
+          stage: "homework", home: true, title: "Homework: Use of English", minutes: 45, image: img("m03-studying"),
           blocks: [
-            { type: "brief", title: "Use of English: three variants", items: [
-              "Do one variant at a time, without a dictionary.",
-              "Press **✓ Check answers** and look at the wrong ones again."
+            { type: "brief", title: "Extra words", items: [
+              "In each line, one word should not be there.",
+              "Tap it and read why."
             ] },
-            { type: "task", task: "m-u1", label: "Variant 1 · Municipal 2025/26 · Extra words" },
-            { type: "task", task: "m-u2", label: "Variant 1 · Municipal 2025/26 · Key word transformations" },
-            { type: "task", task: "m-u3", label: "Variant 1 · Municipal 2025/26 · Word formation" },
-            { type: "task", task: "m-u4", label: "Variant 1 · Municipal 2025/26 · Culture: match" },
-            { type: "task", task: "p-u1-2425", label: "Variant 2 · Municipal 2024/25 · Extra words" },
-            { type: "task", task: "p-u2-2425", label: "Variant 2 · Municipal 2024/25 · Key word transformations" },
-            { type: "task", task: "p-u3-2425", label: "Variant 2 · Municipal 2024/25 · Word formation" },
-            { type: "task", task: "p-u4-2425", label: "Variant 2 · Municipal 2024/25 · Culture: match" },
-            { type: "task", task: "p-u1-2324", label: "Variant 3 · Municipal 2023/24 · Extra words" },
-            { type: "task", task: "p-u2-2324", label: "Variant 3 · Municipal 2023/24 · Key word transformations" },
-            { type: "task", task: "p-u3-2324", label: "Variant 3 · Municipal 2023/24 · Word formation" },
-            { type: "task", task: "p-u4-2324", label: "Variant 3 · Municipal 2023/24 · Culture: match" }
+            { type: "spot", items: [
+              { text: "The joke in the cartoon intentionally mixed all up a safe, childlike, rural world (the characters from Milne’s books and the footbridge) and the supposedly dangerous world of urban youth (their hoods and the suggestion to hang about).", at: 7, wrong: "all", right: "", cat: "Extra word", why: "**mix up** is a phrasal verb: nothing goes between its two parts here." },
+              { text: "A yob is a far rude, noisy and sometimes aggressive and violent boy or young man.", at: 4, wrong: "far", right: "", cat: "Extra word", why: "**far** goes with a comparative: far ruder. Here we need only: a rude boy." },
+              { text: "Apparently, the public was being intimidated by them.", at: 4, wrong: "being", right: "", cat: "Extra word", why: "This is how people felt at that time: **was intimidated**. The continuous form is not needed." },
+              { text: "With the help of this neologism underwolves (that is, a word which the writer has invented and you cannot find in a dictionary) the author intends to depict an image of poor and untrustworthy people and also dangerous such like wolves.", at: 38, wrong: "such", right: "", cat: "Extra word", why: "**dangerous like wolves** is enough. **such like** is wrong here." },
+              { text: "Even the Prime Minister indicated so mild approval for the Bluewater ban.", at: 5, wrong: "so", right: "", cat: "Extra word", why: "**so** cannot stand before an adjective + noun. Here we need only: mild approval." },
+              { text: "It was at this time that the term ASBO (Anti-Social Behaviour Order, which legally bans a person out from certain areas) became part of the everyday British lexicon.", at: 17, wrong: "out", right: "", cat: "Extra word", why: "The pattern is **ban somebody from a place**." },
+              { text: "The government was accused of making up scapegoats of the boys in the hoods.", at: 6, wrong: "up", right: "", cat: "Extra word", why: "The pattern is **make scapegoats of somebody**. **Make up** means invent." },
+              { text: "Naturally, the author intended to make pun on the meaning of hoodie.", at: 5, wrong: "make", right: "", cat: "Extra word", why: "Here **pun** is a verb: **to pun on** a word." }
+            ] },
+            { type: "list", title: "🔎 What is usually extra", items: [
+              "**Small words:** so, such, far, all, hardly. Is the sentence correct without the word?",
+              "**Articles:** a, the. Look for uncountable nouns and names.",
+              "**Verb words:** does, is, been, being, having, will. Check the verb form.",
+              "**Particles and prepositions:** up, out, of. Check the phrasal verb or the pattern.",
+              "**In the real task some lines are correct:** if no word makes a line wrong, type V."
+            ] },
+            { type: "brief", title: "Key word transformations", items: [
+              "First think: which pattern does the key word need?",
+              "Type the missing words. Do not change the key word. Use exactly the number of words in brackets.",
+              "Press **✓ Check** and read the note."
+            ] },
+            { type: "transform", items: [
+              { q: "I have just noticed that the car has almost run out of petrol.", word: "hardly", before: "I have just noticed that", after: "left in the car.", n: 5, accept: ["there is hardly any petrol"],
+                note: "**hardly any** + noun = almost no." },
+              { q: "Sally once worked for a charity organization on a voluntary basis.", word: "as", before: "Sally used", after: "with a charity organization.", n: 5, accept: ["to work as a volunteer"],
+                note: "**used to** + verb = in the past, not now. **work as** + a job." },
+              { q: "Rachel was about to leave the office when her boss asked her to type up a letter.", word: "point", before: "Rachel was", after: "the office when her boss asked her to type up a letter.", n: 5, accept: ["on the point of leaving"],
+                note: "**be on the point of + -ing** = be about to do it." },
+              { q: "Kevin has decided to eat less mayonnaise this month.", word: "down", before: "Kevin has decided to", after: "of mayonnaise he eats this month.", n: 5, accept: ["cut down on the amount", "cut down on the quantity"],
+                note: "**cut down on** = use less of something." },
+              { q: "I did not know that the cars were so expensive in this country.", word: "idea", before: "I", after: "so much in this country.", n: 5, accept: ["had no idea cars cost"],
+                note: "**have no idea** = not know. After it, the past form: cost." },
+              { q: "Most of the problems arose because there was no leadership on the committee.", word: "caused", before: "It was the", after: "most of the problems on the committee.", n: 5, accept: ["lack of leadership that caused", "absence of leadership that caused"],
+                note: "**It was the … that caused …** puts the main idea first. No leadership = a **lack of leadership**." },
+              { q: "A short meeting of the cast will take place after today’s rehearsal.", word: "by", before: "Today’s rehearsal", after: "a short meeting of the cast.", n: 4, accept: ["will be followed by"],
+                note: "If B comes after A, then A **will be followed by** B." },
+              { q: "It is thought that one in every five people cannot control how much they spend.", word: "unable", before: "One in every five people is thought", after: "their spending under control.", n: 5, accept: ["to be unable to keep"],
+                note: "**is thought to be** + adjective. **keep something under control**." },
+              { q: "I’ll be happy to show you round the sights of my city when you come to visit me.", word: "take", before: "It will be a", after: "a sightseeing tour of my city when you come to visit me.", n: 5, accept: ["pleasure to take you on", "pleasure to take you for"],
+                note: "**It will be a pleasure to** + verb. **take somebody on a tour**." }
+            ] },
+            { type: "brief", title: "Word formation: part of speech first", items: [
+              "Before you form a word, decide what the gap needs.",
+              "Drag each gap into the right box: noun, adjective or adverb.",
+              "On a phone or tablet: tap the gap, then tap the box."
+            ] },
+            { type: "sort", long: true,
+              buckets: [{ id: "noun", label: "📦 Noun" }, { id: "adj", label: "🎨 Adjective" }, { id: "adv", label: "⚡ Adverb" }],
+              cards: [
+                { t: "In ___, British lawyers do not often advertise their services directly.", b: "noun" },
+                { t: "a reason for this ___ public relations campaign", b: "adj" },
+                { t: "___, the former are the ones who deal with the public", b: "adv" },
+                { t: "including the ___ up of documents", b: "noun" },
+                { t: "the solicitor hires the ___ of the other kind of lawyer", b: "noun" },
+                { t: "the roles of the two kinds of lawyer were kept ___ apart", b: "adv" },
+                { t: "it became ___ both for members of the public…", b: "adj" },
+                { t: "the two kinds of lawyer came into ___ with each other", b: "noun" },
+                { t: "they are mostly ___ and have a prestige similar to that of doctors", b: "adj" },
+                { t: "Because of this popular ___, the country’s solicitors felt…", b: "noun" }
+              ] },
+            { type: "vtable", title: "🧩 Typical word endings", cols: [
+              { h: "📦 Noun", lines: ["-tion, -ment, -ness, -ity, -ance, -ence", "A person: -er, -or, -ist, -ant, -ee"] },
+              { h: "🎨 Adjective", lines: ["-ous, -ive, -ful, -less, -able, -ible, -al, -ed, -ing"] },
+              { h: "⚡ Adverb", lines: ["-ly"] },
+              { h: "🚫 Negative meaning", lines: ["un-, in-, im-, dis-, mis-, under-"] }
+            ] },
+            { type: "brief", title: "Word formation: now type the word", items: [
+              "Use the word in capitals to form the word the gap needs.",
+              "Type one word. Spelling counts.",
+              "Press **✓ Check** and read the note."
+            ] },
+            { type: "transform", items: [
+              { word: "ADD", before: "In", after: ", British lawyers do not often advertise their services directly.", n: 1, accept: ["addition"],
+                note: "After a preposition we need a noun. **In addition** = also." },
+              { word: "PRECEDENT", before: "But there was a reason for this", after: "public relations campaign.", n: 1, accept: ["unprecedented", "unprecedential"],
+                note: "An adjective before the noun **campaign**. **un-** = never seen before." },
+              { word: "TYPICAL", before: "", after: ", the former are the ones who deal with the public; anybody who needs a lawyer goes to see a solicitor.", n: 1, accept: ["typically"],
+                note: "At the start, before a comma: an adverb." },
+              { word: "DRAW", before: "They handle most legal matters for their clients, including the", after: "up of documents (such as wills, divorce papers and contracts), communicating with other parties and presenting their client’s case in a magistrates’ court.", n: 1, accept: ["drawing"],
+                note: "After **the** we need a noun: draw up a document → the **drawing** up." },
+              { word: "SERVE", before: "But if a case is to be heard in a higher court, the solicitor hires the", after: "of the other kind of lawyer - a barrister.", n: 1, accept: ["services", "service"],
+                note: "After **the** we need a noun: **services**." },
+              { word: "RIGID", before: "Until recently, the roles of the two kinds of lawyer were kept", after: "apart.", n: 1, accept: ["rigidly"],
+                note: "An adverb before **apart**: strictly." },
+              { word: "PERMIT", before: "But in the years around the turn of the century, it became", after: "both for members of the public to approach barristers directly, without going through a solicitor first, and also for solicitors to present cases in some higher courts, without hiring a barrister.", n: 1, accept: ["permissible", "permissive"],
+                note: "After **became** we need an adjective: allowed." },
+              { word: "COMPETE", before: "As a result, the two kinds of lawyer came into", after: "with each other for the first time.", n: 1, accept: ["competition"],
+                note: "**come into competition with** somebody." },
+              { word: "EMPLOY", before: "Unlike solicitors, they are mostly", after: "and have a prestige similar to that of doctors.", n: 1, accept: ["self-employed"],
+                note: "**self-employed** = working for yourself, not for a company." },
+              { word: "PERCEIVE", before: "Because of this popular", after: ", the country’s solicitors felt they needed to defend their territory by boosting their image.", n: 1, accept: ["perception"],
+                note: "After the adjective **popular** we need a noun: what people think." }
+            ] },
+            { type: "brief", title: "Culture: match", items: [
+              "Read the phenomena A–N.",
+              "Choose a letter for each item 1–10. Four phenomena are extra.",
+              "Press **✓ Check**."
+            ] },
+            { type: "matchsheet", task: "p-u4-2122", source: "Real task · Moscow municipal stage 2021/22 · Use of English · Task 4" }
+          ]
+        },
+        {
+          stage: "homework", home: true, title: "Homework: Listening", minutes: 20, image: img("m18-all-good"),
+          blocks: [
+            LISTENING_HOWTO,
+            { type: "brief", title: "Listening", items: [
+              "Read the tips above.",
+              "Open the first part and press ▶. Do not stop the recording: it has its own pauses.",
+              "Press **✓ Check answers**, then read **💡 Show how to solve** under the wrong ones."
+            ] },
+            { type: "task", task: "p-l1-2324", label: "2023/24 · True or False: famous people who tried to learn Russian" },
+            { type: "task", task: "p-l2-2324", label: "2023/24 · A, B or C: Steve and Kelly" }
+          ]
+        },
+        {
+          stage: "homework", home: true, title: "Homework: Mock exam", minutes: 180, image: img("m06-succeed"),
+          blocks: [
+            { type: "brief", title: "Mock exam", items: [
+              "Do it all on one device.",
+              "Press the button below and do all 4 parts. It takes 3 hours.",
+              "At the very end, press **✓ Check answers** on every task. Do not press **Try again**.",
+              "Send a screenshot of **Results** and your essay to your teacher."
+            ] },
+            { type: "links", title: "📝 Mock exam · Municipal 2022/23", items: [
+              { href: "#/full/mock-l1", label: "▶ Start the mock exam", note: "Listening · Reading · Use of English · Writing" }
+            ] }
           ]
         }
       ]
