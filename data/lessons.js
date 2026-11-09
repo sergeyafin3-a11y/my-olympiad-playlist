@@ -1013,6 +1013,22 @@
         "Real tasks from every part: we do them together."
       ],
       steps: [
+        // Учитель 09.11: «чтобы не сразу с лисинга начинать»: её картинка и короткое повторение пройденного.
+        {
+          stage: "warm-up", title: "Warm-up", minutes: 5, image: img("m40-warmup-30-seconds"), imageFull: true,
+          blocks: [
+            { type: "brief", title: "30 second challenge", items: ["Choose one.", "You have 30 seconds."] },
+            { type: "brief", title: "Quick revision", items: ["Tap the right answer."] },
+            { type: "quiz", items: [
+              { q: "She is good at ______ stories.", opts: ["telling", "to tell", "tell"], a: 0, why: "**telling**" },
+              { q: "I wish Jack ______ tickets for Venice but we went to Paris instead.", opts: ["had bought", "bought", "would buy"], a: 0, why: "**had bought**" },
+              { q: "Reading, missing sentences: what do you read to fill a gap?", opts: ["The sentence before AND after the gap", "Only the sentence before the gap", "Only the first paragraph"], a: 0, why: "**The sentence before AND after the gap**" },
+              { q: "Extra word: the line is correct. What do you write?", opts: ["V", "OK", "Nothing"], a: 0, why: "**V**" },
+              { q: "Key word transformations: can you write “didn’t”?", opts: ["No, no short forms", "Yes, always", "Only in the last item"], a: 0, why: "**No, no short forms**" },
+              { q: "Writing: how many words?", opts: ["200–250", "100–150", "300–350"], a: 0, why: "**200–250**" }
+            ] }
+          ]
+        },
         {
           stage: "practice", title: "Listening", minutes: 8, image: img("m25-in-english-please"),
           blocks: [
@@ -1030,7 +1046,7 @@
           ]
         },
         {
-          stage: "practice", title: "Use of English", minutes: 22, image: img("m28-bite-laptop"),
+          stage: "practice", title: "Use of English", minutes: 20, image: img("m28-bite-laptop"),
           blocks: [
             { type: "minitask", title: "Extra word", task: "mock-u1", items: [3, 7, 12], source: "Real task · Moscow municipal stage 2022/23 · Use of English" },
             { type: "minitask", title: "Key word transformations", task: "mock-u2", items: [2, 5, 7], source: "Real task · Moscow municipal stage 2022/23 · Use of English" },
