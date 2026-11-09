@@ -82,7 +82,7 @@
   // позиции — после паузы, перемотки и пропуска внутри задания.
   function stopAfter(variant, at, clip) {
     // У отработки прошлых лет своя запись (clip): её граница — своя, задания варианта к ней не относятся.
-    if (clip) return clip.stop > at ? clip.stop : null;
+    if (clip) return clip.part || clip.stop > at ? clip.stop : null;  // отрезок из урока: граница не сдвигается, за ней другие пункты
     var next = null;
     variant.parts.forEach(function (p) { p.tasks.forEach(function (t) {
       if (t.audio && t.audio.from > at && (next === null || t.audio.from < next)) next = t.audio.from;

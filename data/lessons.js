@@ -1003,8 +1003,8 @@
       ]
     },
     // Урок 9.11 (учитель 09.11): идём по работе подряд, задания настоящие, их решают. Listening с отрезком записи и Reading — по 2 пункта в каждом Task, Use of English:
-    // Task 1, 2, 4 — по 3, Task 3 — 5, Writing — 2 новых задания для устного плана. Только то, что Варя не решала: Listening и Reading Task 1 — самая свежая работа 2025/26,
-    // остальное — 2022/23: Use of English 2025/26 и Reading Task 2 2025/26 она уже делала. Текст берётся из самих заданий, ключи и «почему» — в шпаргалке учителя.
+    // Task 1, 2, 4 — по 3, Task 3 — 5, Writing — 2 новых задания для устного плана. Только то, что Варя не решала: Listening — самая свежая работа 2025/26,
+    // Reading и Use of English — 2022/23: те же части 2025/26 были в уроках и домашках. Текст берётся из самих заданий, ключи и «почему» — в шпаргалке учителя.
     // Отрезки записи найдены по паузам: Task 1 — первое чтение, 93,2–125,75 с (пункты 5 и 6); Task 2 — 422,3–447,5 с (пункты 3 и 4).
     {
       id: "l5", date: "2026-11-09", title: "Mock exam: review", emoji: "📝", cover: img("m05-you-can"),
@@ -1025,7 +1025,7 @@
         {
           stage: "practice", title: "Reading", minutes: 10, image: img("m27-help-me"),
           blocks: [
-            { type: "minitask", title: "Choose the best answer", task: "m-r1", items: [1, 2], paras: [0], source: "Real task · Moscow municipal stage 2025/26 · Reading" },
+            { type: "minitask", title: "Choose the best answer", task: "mock-r1", items: [4, 5], paras: [3], source: "Real task · Moscow municipal stage 2022/23 · Reading" },
             { type: "minitask", title: "Missing sentences", task: "mock-r2", items: [16, 17], paras: [2, 3], source: "Real task · Moscow municipal stage 2022/23 · Reading" }
           ]
         },

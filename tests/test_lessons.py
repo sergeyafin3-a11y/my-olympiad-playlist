@@ -1510,7 +1510,7 @@ class EssayAndCultureLesson(unittest.TestCase):
 class ExamWalkthroughLesson(unittest.TestCase):
     """Учитель 09.11: урок идёт по работе подряд, но задания настоящие, их решают: Listening с отрезком записи и Reading — минимум по 2 пункта
     в каждом Task, Use of English: Task 1, 2, 4 — по 3, Task 3 — 5, Writing — 2 новых задания для устного плана. Только то, что Варя ещё не решала."""
-    EXPECTED = [[("m-l1", [5, 6]), ("m-l2", [3, 4])], [("m-r1", [1, 2]), ("mock-r2", [16, 17])],
+    EXPECTED = [[("m-l1", [5, 6]), ("m-l2", [3, 4])], [("mock-r1", [4, 5]), ("mock-r2", [16, 17])],
                 [("mock-u1", [3, 7, 12]), ("mock-u2", [2, 5, 7]), ("mock-u3", [1, 2, 3, 4, 5]), ("mock-u4", [2, 5, 9])], [], []]
 
     def setUp(self):
@@ -1523,6 +1523,15 @@ class ExamWalkthroughLesson(unittest.TestCase):
         got = [[(b["task"], b["items"]) for b in st["blocks"] if b["type"] == "minitask"] for st in self.steps]
         self.assertEqual(got, self.EXPECTED)
         self.assertLessEqual(sum(st["minutes"] for st in self.steps if not st.get("home")), 55, "из часа остаётся запас на вопросы")
+
+    def test_nothing_here_was_set_in_earlier_lessons(self):
+        # Проверка PR 09.11: Reading Task 1 2025/26 был в домашке 23 октября, поэтому здесь другой год.
+        earlier = json.dumps(run_js('return L.filter(function(x){ return x.date < "2026-11-09"; });'), ensure_ascii=False)
+        for st in self.steps:
+            for b in st["blocks"]:
+                if b["type"] == "minitask":
+                    self.assertNotIn('"%s"' % b["task"], earlier)
+                    self.assertNotIn('#/t/%s"' % b["task"], earlier)
 
     def test_listening_has_a_short_official_clip_for_its_items(self):
         one, two = [b["audio"] for b in self.steps[0]["blocks"]]
@@ -1553,8 +1562,9 @@ class ExamWalkthroughLesson(unittest.TestCase):
                 self.assertIn('data-lscheck="l5:%d:%d"' % (i, k), html)
             self.assertNotIn("Answer:", html, "до проверки ответов нет")
         reading = render_step("l5", 1).replace("&#39;", "'")
-        self.assertIn("Greta Solomon", reading)
-        self.assertIn(t["m-r1"]["text"][0], reading, "абзац, по которому отвечаем")
+        self.assertIn(t["mock-r1"]["textTitle"], reading)
+        self.assertIn(t["mock-r1"]["text"][3], reading, "абзац, по которому отвечаем")
+        self.assertNotIn(t["mock-r1"]["text"][4], reading, "только этот абзац")
         for para in t["mock-r2"]["text"][2:4]:
             self.assertIn(para.split(" (1")[0], reading)
         self.assertIn("(16)", reading)
@@ -1583,10 +1593,19 @@ class ExamWalkthroughLesson(unittest.TestCase):
 
     def test_mock_exam_stays_homework_and_16_november_is_for_mistakes(self):
         step = self.steps[-1]
+        self.assertEqual(step["minutes"], 180)
         self.assertEqual([b["type"] for b in step["blocks"]], ["brief", "links"])
         self.assertEqual(step["blocks"][1]["items"][0]["href"], "#/full/p-l1-2324")
+        text = json.dumps(step["blocks"], ensure_ascii=False)
+        for x in ["2023/24", "one device", "Check answers", "Try again", "screenshot", "16 November"]:
+            self.assertIn(x, text)
         l6 = run_js('return L.filter(function(x){ return x.id === "l6"; })[0];')
+        self.assertEqual(l6["date"], "2026-11-16")
         self.assertIn("mistakes", " ".join(l6["aims"]))
+        self.assertNotIn("links", l6)
+        l4 = run_js('return L.filter(function(x){ return x.id === "l4"; })[0];')
+        self.assertNotIn("mock", json.dumps(l4, ensure_ascii=False).lower())
+        self.assertIn("l.summary || l.links", (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8"))
 
 if __name__ == "__main__":
     unittest.main()

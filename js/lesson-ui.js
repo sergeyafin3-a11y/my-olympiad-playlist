@@ -699,7 +699,8 @@
   // Ответ перефразирования помним, пока урок открыт; страницу не перерисовываем — иначе пропал бы курсор.
   document.addEventListener("input", function (e) {
     // Исправила ответ — старый ✓/✗ уже не про него: до нового «Check» поле снова не проверено.
-    var el = e.target; if (el.dataset && el.dataset.tfin != null) { var tg = game(el.dataset.tfin); tg.v = el.value; tg.checked = false; save(); }
+    var el = e.target; if (el.dataset && el.dataset.tfin != null) { var tg = game(el.dataset.tfin); tg.v = el.value; tg.checked = false; save();
+      var row = el.closest && el.closest(".ls-lm .ls-tf"); if (row) { row.classList.remove("right", "wrong"); var w = row.querySelector(".why"); if (w) w.remove(); } }
   });
   document.addEventListener("keydown", function (e) {
     var el = e.target; if (e.key !== "Enter" || !el.dataset || el.dataset.tfin == null) return;
