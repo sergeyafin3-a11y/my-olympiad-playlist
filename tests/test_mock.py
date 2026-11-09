@@ -170,9 +170,7 @@ class Mock2324(unittest.TestCase):
         "p-l1-2324": list("BABBBBABAB"), "p-l2-2324": list("BBACA"),
         "p-r1-2324": list("ACBDAABBCD"), "p-r2-2324": list("HDJAEKCIFG"),
         "p-u1-2324": ["far", "have", "too", "V", "of", "within", "a", "V", "made", "be", "being", "of", "V", "remains", "it"],
-        "p-u2-2324": ["for Suzy to reach", "will have gone off", "such terrible weather that", "take plenty of exercise/do plenty of exercise/have plenty of exercise/get plenty of exercise/take plenty of exercises/do plenty of exercises/have plenty of exercises/get plenty of exercises", "set off",
-                 "was Vicki's favourite subject", "if it is sunny/if it gets sunny", "about time that he took/about time that he had/about time that he showed/about time that he expressed/about time he started taking/about time he started having/about time her husband took",
-                 "would rather have gone", "would have the rubbish taken/would have the rubbish thrown/would have the rubbish cleaned"],
+        "p-u2-2324": ["for Suzy to reach", "will have gone off", "such terrible weather that", "take plenty of exercise/do plenty of exercise/have plenty of exercise/get plenty of exercise/take plenty of exercises/do plenty of exercises/have plenty of exercises/get plenty of exercises", "set off", "was Vicki's favourite subject", "if it is sunny/if it gets sunny", "is said to have taken", "had been driving for", "would have the rubbish taken/would have the rubbish thrown/would have the rubbish cleaned"],
         "p-u3-2324": ["coproduction/co-production", "nervous", "refuel", "miscalculated", "disappearance", "discomfort", "underestimated",
                  "supersonic", "superhero", "overconfident"],
         "p-u4-2324": list("JEKAHMLFGB"),
@@ -215,6 +213,8 @@ class Mock2324(unittest.TestCase):
                              if x not in ("task", "points", "time", "minutes", "true", "false", "items", "questions", "for", "of", "use", "english", "the", "example"))
         ours = []
         for t in self.tasks.values():
+            if t["id"] == "p-w1-2324":
+                continue  # эссе заменено, сверяется отдельно
             for k in ("intro", "textTitle", "textSubtitle", "premise", "outro", "pointsLabel", "example"):
                 if t.get(k) and not (t["id"] == "p-r2-2324" and k == "textTitle"):
                     ours.append(t[k].replace(" — ", " ").replace("…………………….", ""))
@@ -223,14 +223,33 @@ class Mock2324(unittest.TestCase):
             for e in t.get("examples", []):
                 ours += [e["show"], e.get("answer", "")]
             for it in t.get("items", []):
+                if t["id"] == "p-u2-2324" and it["n"] in (8, 9):
+                    continue  # заменены, сверяются отдельно
                 if not it["q"].startswith("Gap ("):
                     ours.append(it["q"].replace(" — ", " "))
                 ours += [o["t"] for o in it.get("opts", [])]
         paper = (ROOT / "tests" / "fixtures" / "mock-mun-2324.txt").read_text(encoding="utf-8")
+        paper = re.sub(r"8\. Albert.*?(?=10\. The council)", " ", paper, flags=re.S)
+        paper = paper[:paper.index("Comment on the following quotation")]
         paper = re.sub(r"\b(LISTENING|READING|USE OF ENGLISH|WRITING)\b", " ", paper)
         a, b = w(" ".join(ours)), w(paper)
         diff = sorted({x for x in a + b if a.count(x) != b.count(x)})
         self.assertEqual(diff, [], [(x, a.count(x), b.count(x)) for x in diff])
+
+    def test_nothing_she_has_already_done_is_in_the_mock(self):
+        # Учитель 09.11. Эссе «A leader is best» и два пункта Task 2 были в домашке и разборе 6 ноября: заменены официальными 2022/23.
+        w = self.tasks["p-w1-2324"]
+        self.assertIn("A journey of a thousand miles", w["premise"])
+        self.assertIn("2022/23", w["source"])
+        self.assertNotIn("A leader is best", json.dumps(self.r["v"], ensure_ascii=False))
+        u2 = {it["n"]: it for it in self.tasks["p-u2-2324"]["items"]}
+        self.assertEqual((u2[8]["accept"], u2[9]["accept"]), (["is said to have taken"], ["had been driving for"]))
+        text = json.dumps(self.tasks["p-u2-2324"], ensure_ascii=False)
+        for done in ("Albert", "Jack"):
+            self.assertNotIn(done, text)
+        lesson = (ROOT / "data" / "lessons.js").read_text(encoding="utf-8")
+        for it in (u2[8], u2[9]):
+            self.assertNotIn(it["q"].split(" — ")[0], lesson)
 
     def test_answers_are_not_one_tap_away_during_the_timed_exam(self):
         # Ревью PR 70: «Show how to solve» заканчивается ответом и открывался в полном экзамене.

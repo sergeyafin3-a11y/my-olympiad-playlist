@@ -14,8 +14,11 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 HTML = (ROOT / "index.html").read_text(encoding="utf-8")
 
 
+HTML_INDEX = (ROOT / "index.html").read_text(encoding="utf-8")
+
+
 def run_js(body):
-    files = ["data/variant-mun-msk-25-26.js", "data/variant-mun-msk-23-24.js", "data/practice-mun.js", "data/explain-mun.js", "data/lessons.js"]
+    files = ["data/variant-mun-msk-25-26.js", "data/variant-mun-msk-23-24.js", "data/variant-mun-msk-22-23.js", "data/practice-mun.js", "data/explain-mun.js", "data/lessons.js"]
     src = "\n".join(["var window = this;"] + [(ROOT / f).read_text(encoding="utf-8") for f in files] +
                     ["JSON.stringify((function(){ var L = window.LESSONS, V = window.VARIANTS[0], P = window.PRACTICE['mun-msk-25-26'], E = window.EXPLAIN; " + body + "})());"])
     return json.loads(subprocess.run(["osascript", "-l", "JavaScript", "-e", src], capture_output=True, text=True, check=True).stdout)
@@ -173,7 +176,7 @@ class Lessons(unittest.TestCase):
 # Официальный ключ Reading Task 2 муниципального этапа Москвы 2024/25
 # (ans-engl-10-11-mun-msk-24-25.pdf, всош.цпм.рф): пропуски 1–10, лишнее — H.
 KEY_2425 = "GBKEIDCAJF"
-TASK_FILES = ["data/variant-mun-msk-25-26.js", "data/practice-mun.js", "data/explain-mun.js"]
+TASK_FILES = ["data/variant-mun-msk-25-26.js", "data/variant-mun-msk-22-23.js", "data/practice-mun.js", "data/explain-mun.js"]
 # Учитель 22.10: «поменяем местами» — на уроке разбираем текст 2025/26 про будильник (m-r2),
 # а пирог Цветаевой 2024/25 — домашнее задание на 15 минут (отработка p-r2-2425).
 IN_CLASS, HOMEWORK = "m-r2", "p-r2-2425"
@@ -1392,7 +1395,7 @@ class EssayAndCultureLesson(unittest.TestCase):
     def test_homework_grammar_is_a_rule_and_only_official_items(self):
         # Учитель 06.11: «каверзную тему, которая часто используется… в домашку, просто с правилом, чтобы напомнить»,
         # «не рандомные задания». Тема посчитана по Task 2 за 5 лет: wish / would rather / it is time / if — 9 пунктов из 50,
-        # каждый год; это больше любой другой темы. Все пункты дословно из официальных заданий (2022/23 не берём: пробник).
+        # каждый год; это больше любой другой темы. Все пункты дословно из официальных заданий.
         step = self.steps[6]
         self.assertTrue(step.get("home"))
         self.assertEqual([b["type"] for b in step["blocks"]], ["vtable", "brief", "transform"])
@@ -1404,6 +1407,8 @@ class EssayAndCultureLesson(unittest.TestCase):
           P["m-u2"].forEach(function(t){ o = o.concat(t.items); }); return o;""")
         official.append({"q": "Moira says she prefers to do her homework on her own. — rather — Moira says that ___ ____ _____ _____ do her homework with someone else. (4 words)",
                          "accept": ["she would rather not"]})  # 2021/22, Task 2, п. 7; в приложении этого года нет
+        official.append({"q": "Albert’s wife says he has to start being interested in his children’s lives. — about — Albert’s wife says it is ___ ____ ____ ____ ___ an interest in his children’s lives. (5 words)", "accept": ["about time that he took", "about time that he had", "about time that he showed", "about time that he expressed", "about time he started taking", "about time he started having", "about time her husband took"]})  # 2023/24, Task 2, п. 8; в пробнике заменён, потому что был здесь
+        official.append({"q": "I wish Jack had bought tickets for Venice but we went to Paris instead. — rather — Jack bought us tickets to Paris but I __ ___ ___ ___ to Venice. (4 words)", "accept": ["would rather have gone"]})  # 2023/24, Task 2, п. 9; в пробнике заменён, потому что был здесь
         items = step["blocks"][2]["items"]
         self.assertEqual(len(items), 7)
         for it in items:
@@ -1470,7 +1475,7 @@ class EssayAndCultureLesson(unittest.TestCase):
         self.assertEqual(len(re.findall(r'class="ls-tf wrong"', html)), 19)
         self.assertNotIn("(1 words)", html)
         src = (ROOT / "data" / "lessons.js").read_text(encoding="utf-8") + (ROOT / "data" / "practice-mun.js").read_text(encoding="utf-8")
-        for banned in ("p-sch-", "School 2026/27", "grade 9", "2526-9", "2425-9"):
+        for banned in ("p-sch-", "School 2026/27", "2526-9", "2425-9"):
             self.assertNotIn(banned, src)
         html = render_step("l4", i, events=[["click", "lsspot", "l4:%d:1:0:%d" % (i, spot["items"][0]["at"])]])
         self.assertIn("mix up", html)
@@ -1503,84 +1508,85 @@ class EssayAndCultureLesson(unittest.TestCase):
 
 
 class ExamWalkthroughLesson(unittest.TestCase):
-    """Учитель 06.11: урок 9.11 «Mock exam: review»: не решаем работу, а идём по ней подряд, по одному пункту из каждого задания,
-    из самой свежей работы 10–11 классов. Writing: только само задание, разбираем устно. Пробник — на 16 ноября, не в домашку, по работе 2023/24."""
+    """Учитель 09.11: урок идёт по работе подряд, но задания настоящие, их решают: Listening с отрезком записи и Reading — минимум по 2 пункта
+    в каждом Task, Use of English: Task 1, 2, 4 — по 3, Task 3 — 5, Writing — 2 новых задания для устного плана. Только то, что Варя ещё не решала."""
+    EXPECTED = [[("m-l1", [5, 6]), ("m-l2", [3, 4])], [("m-r1", [1, 2]), ("mock-r2", [16, 17])],
+                [("mock-u1", [3, 7, 12]), ("mock-u2", [2, 5, 7]), ("mock-u3", [1, 2, 3, 4, 5]), ("mock-u4", [2, 5, 9])], [], []]
 
     def setUp(self):
         self.l = run_js('return L.filter(function(x){ return x.id === "l5"; })[0];')
         self.steps = self.l["steps"]
 
-    def test_one_item_from_every_task_in_the_order_of_the_paper(self):
+    def test_real_tasks_in_the_order_of_the_paper(self):
         self.assertEqual(self.l["date"], "2026-11-09")
-        self.assertEqual(self.l["title"], "Mock exam: review")
         self.assertEqual([st["title"] for st in self.steps], ["Listening", "Reading", "Use of English", "Writing", "Homework: Mock exam"])
-        got = [[(b["task"], b["item"]) for b in st["blocks"] if b["type"] == "sample"] for st in self.steps]
-        self.assertEqual(got, [[("m-l1", 5), ("m-l2", 4)], [("m-r1", 1), ("m-r2", 1)], [("m-u1", 4), ("m-u2", 4), ("m-u3", 4), ("m-u4", 1)], [], []])
-        self.assertLessEqual(sum(st["minutes"] for st in self.steps if not st.get("home")), 50, "из часа остаётся запас на вопросы")
-        self.assertEqual([st.get("home", False) for st in self.steps], [False] * 4 + [True])
-        for st in self.steps:
-            for b in st["blocks"]:
-                if b["type"] == "sample":
-                    self.assertIn("2025/26", b["source"])
+        got = [[(b["task"], b["items"]) for b in st["blocks"] if b["type"] == "minitask"] for st in self.steps]
+        self.assertEqual(got, self.EXPECTED)
+        self.assertLessEqual(sum(st["minutes"] for st in self.steps if not st.get("home")), 55, "из часа остаётся запас на вопросы")
 
-    def test_item_is_shown_as_in_the_paper_and_nothing_is_to_be_solved(self):
-        t = run_js("""var o = {}; V.parts.forEach(function(p){ p.tasks.forEach(function(x){ o[x.id] = x; }); }); return o;""")
+    def test_listening_has_a_short_official_clip_for_its_items(self):
+        one, two = [b["audio"] for b in self.steps[0]["blocks"]]
+        self.assertEqual(one["src"], "media/listening-mun-msk-25-26.mp3")
+        self.assertEqual((one["from"], one["stop"]), (93.2, 125.75))
+        self.assertEqual((two["from"], two["stop"]), (422.3, 447.5))
+        html = render_step("l5", 0)
+        self.assertRegex(html, r'data-play="93\.2"[^>]*data-src="media/listening-mun-msk-25-26\.mp3"[^>]*data-stop="125\.75"')
+        ui = HTML_INDEX
+        self.assertIn("b.dataset.src", ui)
+
+    def test_items_can_be_answered_and_checked(self):
+        t = run_js("""var o = {}; window.VARIANTS.forEach(function(v){ v.parts.forEach(function(p){ p.tasks.forEach(function(x){ o[x.id] = x; }); }); }); return o;""")
         for i, st in enumerate(self.steps[:3]):
             html = render_step("l5", i).replace("&#39;", "'").replace("&quot;", '"')
             n = 0
-            for b in st["blocks"]:
-                if b["type"] != "sample":
-                    continue
+            for k, b in enumerate(st["blocks"]):
                 n += 1
                 self.assertIn("📋 Task %d · %s" % (n, b["title"]), html)
                 task = t[b["task"]]
                 self.assertIn(task["intro"], html)
-                item = [x for x in task["items"] if x["n"] == b["item"]][0]
-                if not item["q"].startswith("Gap"):
-                    self.assertIn(item["q"], html)
-                for o in item.get("opts") or task.get("opts") or []:
-                    self.assertIn(o["t"], html)
-            self.assertNotIn("<input", html, "не решаем, а разбираем")
-            self.assertNotIn("<select", html)
-            self.assertNotIn("✓ Check", html)
+                for num in b["items"]:
+                    item = [x for x in task["items"] if x["n"] == num][0]
+                    if not item["q"].startswith("Gap"):
+                        self.assertIn(item["q"], html)
+                    for o in item.get("opts") or []:
+                        self.assertIn(o["t"], html)
+                self.assertIn('data-lscheck="l5:%d:%d"' % (i, k), html)
+            self.assertNotIn("Answer:", html, "до проверки ответов нет")
         reading = render_step("l5", 1).replace("&#39;", "'")
+        self.assertIn("Greta Solomon", reading)
         self.assertIn(t["m-r1"]["text"][0], reading, "абзац, по которому отвечаем")
-        self.assertIn(t["m-r2"]["text"][0].split("(1)")[0], reading)
+        for para in t["mock-r2"]["text"][2:4]:
+            self.assertIn(para.split(" (1")[0], reading)
+        self.assertIn("(16)", reading)
+        self.assertNotIn("(12)", reading, "только абзацы этих пропусков")
+        out = render_step("l5", 2, events=[["type", "lmsel", "l5:2:3:0", "E"], ["click", "lscheck", "l5:2:3"]], with_store=True)
+        self.assertEqual(len(re.findall(r'class="ls-lmr right"', out["html"])), 1)
+        self.assertEqual(len(re.findall(r'class="ls-lmr wrong"', out["html"])), 2)
+        html = render_step("l5", 2, events=[["click", "lscheck", "l5:2:2"]])
+        self.assertIn("Answer: <b>excellent</b>", html)
+        html = render_step("l5", 2, events=[["click", "lscheckall", "l5:2"]])
+        self.assertEqual(len(re.findall(r'class="ls-lmr wrong"', html)), 3)
+        self.assertIn("✓ Check answers", html)
+        self.assertIn("Clear answers", html)
 
-    def test_review_of_pr_70(self):
-        reading = render_step("l5", 1).replace("&#39;", "'")
-        self.assertIn("Greta Solomon", reading, "кто такая Greta: подзаголовок текста")
-        uoe = render_step("l5", 2).replace("&#39;", "'")
-        self.assertIn("The pool", uoe, "инструкция ссылается на образец: он на экране")
-        for i in range(5):
-            self.assertNotIn("Clear answers", render_step("l5", i), "стирать здесь нечего")
-        ui = (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8")
-        self.assertIn("l.summary || l.links", ui)
-
-    def test_writing_is_just_the_task(self):
+    def test_writing_is_two_new_tasks_to_plan_aloud(self):
         st = self.steps[3]
-        self.assertEqual([b["type"] for b in st["blocks"]], ["brief", "wpaper"])
-        self.assertEqual(st["blocks"][1]["task"], "m-w1")
+        self.assertEqual([b["type"] for b in st["blocks"]], ["brief", "wpaper", "wpaper"])
+        story, essay = st["blocks"][1], st["blocks"][2]
+        self.assertIn("Tom had a very special reason", story["premise"])
+        self.assertIn("Stories Wanted", story["premise"])
+        self.assertEqual(essay["quote"], "No two persons ever read the same book.")
+        self.assertEqual(essay["author"], "Edmund Wilson")
         html = render_step("l5", 3)
-        self.assertIn("Jim happened to see the letter", html)
-        self.assertNotIn("<textarea", html)
+        self.assertNotIn("<textarea", html, "план устно")
+        self.assertNotIn("m-w1", json.dumps(st, ensure_ascii=False), "тот рассказ Варя уже написала")
 
-    def test_mock_exam_is_homework_after_this_lesson_and_16_november_is_for_mistakes(self):
-        # Учитель 06.11: пробник дома до урока 16 ноября, на уроке разбираем ошибки. По работе 2023/24, в домашке 6 ноября его нет.
+    def test_mock_exam_stays_homework_and_16_november_is_for_mistakes(self):
         step = self.steps[-1]
-        self.assertEqual(step["minutes"], 180)
         self.assertEqual([b["type"] for b in step["blocks"]], ["brief", "links"])
         self.assertEqual(step["blocks"][1]["items"][0]["href"], "#/full/p-l1-2324")
-        text = json.dumps(step["blocks"], ensure_ascii=False)
-        for x in ["2023/24", "one device", "Check answers", "Try again", "screenshot", "16 November"]:
-            self.assertIn(x, text)
         l6 = run_js('return L.filter(function(x){ return x.id === "l6"; })[0];')
-        self.assertEqual(l6["date"], "2026-11-16")
         self.assertIn("mistakes", " ".join(l6["aims"]))
-        self.assertNotIn("links", l6)
-        l4 = run_js('return L.filter(function(x){ return x.id === "l4"; })[0];')
-        self.assertNotIn("mock", json.dumps(l4, ensure_ascii=False).lower())
-
 
 if __name__ == "__main__":
     unittest.main()

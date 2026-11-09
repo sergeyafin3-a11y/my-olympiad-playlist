@@ -293,11 +293,11 @@
     if (s.image) h += '<div class="ls-photo"><img class="ls-hero" src="' + esc(s.image) + '" alt="">' + (s.sticker ? '<span class="ls-sticker">' + esc(s.sticker) + '</span>' : '') + '</div>';
     // Задания раздела нумеруются по порядку — Task 1, Task 2…: учитель задаёт на дом «Section 5 → Task 3».
     var tn = 0;
-    s.blocks.forEach(function (b, k) { h += block(l, i, k, b, b.type === "brief" || b.type === "paper" || b.type === "sample" ? ++tn : 0); });
+    s.blocks.forEach(function (b, k) { h += block(l, i, k, b, b.type === "brief" || b.type === "paper" || b.type === "minitask" ? ++tn : 0); });
     // Учитель 26.10: «сейчас я себя проверяю, а завтра показываю экран ученице — ответы должны стереться».
-    var canCheck = s.blocks.some(function (b) { return ["gapfill", "transform", "upgrade", "matchsheet"].indexOf(b.type) >= 0 || (b.type === "paper" && b.task); });
+    var canCheck = s.blocks.some(function (b) { return ["gapfill", "transform", "upgrade", "matchsheet", "minitask"].indexOf(b.type) >= 0 || (b.type === "paper" && b.task); });
     // В уроке-разборе заполнять нечего, кнопки стирания там не нужны. В остальных уроках они есть в каждом разделе.
-    var hasWork = l.steps.some(function (st) { return st.blocks.some(function (b) { return ["sample", "brief", "wpaper", "links"].indexOf(b.type) < 0; }); });
+    var hasWork = l.steps.some(function (st) { return st.blocks.some(function (b) { return ["brief", "wpaper", "links"].indexOf(b.type) < 0; }); });
     if (hasWork) h += '<div class="ls-clear">' + (canCheck ? '<button class="bigplay" data-lscheckall="' + l.id + ':' + i + '">✓ Check answers</button>' : '') +
       '<button class="ghost" data-lsclear="' + l.id + ':' + i + ':">↺ Clear answers in this section</button>' +
       '<button class="ghost" data-lsclear="' + l.id + ':">↺ Clear the whole lesson</button></div>';
@@ -323,19 +323,6 @@
     if (b.type === "words") return '<div class="ls-words">' + b.items.map(function (x) { return '<button type="button" data-lsword="' + esc(x) + '">' + esc(x) + '</button>'; }).join("") + '</div>';
     if (b.type === "hooks") return '<div class="ls-hooks">' + b.items.map(function (x) { return '<div><b>' + esc(x.h) + '</b>' + rich(x.t) + '</div>'; }).join("") + '</div>';
     if (b.type === "reveal") return '<details class="ls-box"><summary><b>' + esc(b.label) + '</b></summary><p class="ls-text">' + rich(b.text) + '</p></details>';
-    // Один пункт настоящего задания: инструкция и пункт — из самого задания (b.task), копии в уроке нет. Его не решают, а разбирают вместе,
-    // поэтому нет ни полей, ни проверки; ключ и «почему» — в шпаргалке учителя. Длинный список вариантов свёрнут.
-    if (b.type === "sample") {
-      var sm = taskById(b.task), sit = sm && sm.items.filter(function (x) { return x.n === b.item; })[0];
-      if (!sit) return "";
-      var sop = sit.opts || sm.opts || [], slist = sop.length ? '<div class="ls-popts">' + sop.map(function (o) { return '<p><b>' + esc(o.k) + ')</b> ' + esc(o.t) + '</p>'; }).join("") + '</div>' : "";
-      return '<h3 class="ls-ptask">📋 Task ' + num + ' · ' + esc(b.title) + '</h3><div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p class="ins">' + esc(sm.intro) + '</p>' +
-        (sm.example ? '<p>' + esc(sm.example) + '</p>' : '') +
-        (sm.examples || []).map(function (e) { return '<p><b>' + esc(e.label) + '.</b> ' + esc(e.show) + ' — ' + esc(e.answer || 'V') + '</p>'; }).join("") +
-        (b.para != null ? (sm.textTitle ? '<p class="ttl">' + esc(sm.textTitle) + '</p>' : '') + (sm.textSubtitle ? '<p>' + esc(sm.textSubtitle) + '</p>' : '') + '<p>' + esc(sm.text[b.para]) + '</p>' : '') +
-        (/^Gap /.test(sit.q) ? '' : '<p><b>' + sit.n + '.</b> ' + esc(sit.q) + '</p>') +
-        (sop.length > 4 ? '<details><summary><b>' + esc(sop[0].k) + '–' + esc(sop[sop.length - 1].k) + '</b></summary>' + slist + '</details>' : slist) + '</div>';
-    }
     // Настоящее задание: букву можно напечатать прямо в пропуске или в таблице — это одно и то же поле.
     // Проверки нет нарочно: у задания урока (2025/26) и домашнего пирога (2024/25) шесть общих букв в ключе —
     // проверка на уроке выдала бы больше половины домашнего задания.
@@ -428,6 +415,33 @@
             mt.opts.map(function (o) { return '<option value="' + esc(o.k) + '"' + (mp[n] === o.k ? ' selected' : '') + '>' + esc(o.k) + '</option>'; }).join("") + '</select></label>' +
             (mg.checked ? '<p class="why">' + (ok ? '✓' : '✗ <b>' + esc(right) + '</b>') + '</p>' : '') + '</div>';
         }).join("") + '<div class="listen"><button class="ghost" data-lscheck="' + key + '">✓ Check</button></div></div>';
+    }
+    // Несколько пунктов настоящего задания: инструкция, текст и пункты — из самого задания (b.task), копии в уроке нет. Их решают: у выбора — список букв,
+    // у письменных — поле; по кнопке виден верный ответ. Почему — говорит учитель. У Listening — отрезок записи, он играет только эти пункты.
+    if (b.type === "minitask") {
+      var mi = taskById(b.task);
+      if (!mi) return "";
+      var mig = game(key), mip = mig.pick || {}, shared = mi.opts && mi.opts.length > 2 ? mi.opts : null;
+      var olist = function (os) { return '<div class="ls-popts">' + os.map(function (o) { return '<p><b>' + esc(o.k) + ')</b> ' + esc(o.t) + '</p>'; }).join("") + '</div>'; };
+      var rows = b.items.map(function (num, i) {
+        var it = mi.items.filter(function (x) { return x.n === num; })[0], own = it.opts || mi.opts;
+        if (mi.type === "choice") {
+          var good = mip[i] === it.a[0], label = /^Gap /.test(it.q) ? it.q : esc(it.q);
+          return '<div class="ls-lmr' + (mig.checked ? (good ? ' right' : ' wrong') : '') + '"><label><b>' + it.n + '.</b> ' + label + ' <select data-lmsel="' + key + ':' + i + '"><option value="">–</option>' +
+            own.map(function (o) { return '<option value="' + esc(o.k) + '"' + (mip[i] === o.k ? ' selected' : '') + '>' + esc(o.k) + (o.t.length < 8 ? ' ' + esc(o.t) : '') + '</option>'; }).join("") + '</select></label>' +
+            (it.opts ? olist(it.opts) : '') + (mig.checked ? '<p class="why">' + (good ? '✓' : '✗ <b>' + esc(it.a[0]) + '</b>') + '</p>' : '') + '</div>';
+        }
+        var tg = game(key + ":" + i), val = tg.v || "", ok = mig.checked && matches(it, val);
+        return '<div class="ls-tf' + (mig.checked ? (ok ? ' right' : ' wrong') : '') + '"><p class="q"><b>' + it.n + '.</b> ' + esc(it.q) + '</p><p class="s"><input data-tfin="' + key + ':' + i + '" value="' + esc(val) + '" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Answer ' + it.n + '"></p>' +
+          (mig.checked ? '<p class="why">' + (ok ? '✓ Right!' : '✗ Answer: <b>' + esc(it.accept[0]) + '</b>') + '</p>' : '') + '</div>';
+      }).join("");
+      return '<h3 class="ls-ptask">📋 Task ' + num + ' · ' + esc(b.title) + '</h3><div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p class="ins">' + esc(mi.intro) + '</p>' +
+        (mi.example ? '<p>' + esc(mi.example) + '</p>' : '') +
+        (mi.examples || []).map(function (e) { return '<p><b>' + esc(e.label) + '.</b> ' + esc(e.show) + ' — ' + esc(e.answer || 'V') + '</p>'; }).join("") +
+        (b.paras ? (mi.textTitle ? '<p class="ttl">' + esc(mi.textTitle) + '</p>' : '') + (mi.textSubtitle ? '<p>' + esc(mi.textSubtitle) + '</p>' : '') + b.paras.map(function (n) { return '<p>' + esc(mi.text[n]) + '</p>'; }).join("") : '') +
+        (shared ? olist(shared) : '') + '</div>' +
+        (b.audio ? '<div class="listen"><button class="bigplay" data-play="' + b.audio.from + '" data-label="' + esc(b.audio.label) + '" data-src="' + esc(b.audio.src) + '" data-stop="' + b.audio.stop + '" data-sub="' + esc(b.source) + '">▶ ' + esc(b.audio.label) + '</button></div>' : '') +
+        '<div class="ls-lm">' + rows + '<div class="listen"><button class="ghost" data-lscheck="' + key + '">✓ Check</button></div></div>';
     }
     // Работа ученицы с выделениями: цвет — тип ошибки, у каждой номер, чтобы учитель могла сказать «посмотри на третье». Справа — какие цвета что значат
     // и какие номера к какому типу; там все типы, даже те, которых в тексте нет. Нажимать не на что, объяснений нет: объясняет учитель. Ниже — баллы.
@@ -651,7 +665,7 @@
       cl.steps[ci].blocks.forEach(function (bb, k) {
         var bk = cl.id + ":" + ci + ":" + k;
         if (bb.type === "paper" && bb.task) st.pcheck[bk] = true;
-        if (bb.type === "gapfill" || bb.type === "matchsheet") game(bk).checked = true;
+        if (bb.type === "gapfill" || bb.type === "matchsheet" || bb.type === "minitask") game(bk).checked = true;
         if (bb.type === "transform") bb.items.forEach(function (it, n) { game(bk + ":" + n).checked = true; });
         if (bb.type === "upgrade") bb.items.forEach(function (it, n) { game(bk + ":" + n).model = true; });
       });

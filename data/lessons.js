@@ -1002,47 +1002,67 @@
         }
       ]
     },
-    // Урок 9.11 (учитель 06.11): не решаем работу, а идём по ней подряд: по одному пункту из каждого задания самой свежей работы 10–11 классов,
-    // чтобы понимать порядок и что внутри. Текст берётся из самих заданий (блок sample), ключи и «почему» — в шпаргалке учителя. Writing: только задание,
-    // разбираем устно; в 2025/26 это рассказ.
+    // Урок 9.11 (учитель 09.11): идём по работе подряд, задания настоящие, их решают. Listening с отрезком записи и Reading — по 2 пункта в каждом Task, Use of English:
+    // Task 1, 2, 4 — по 3, Task 3 — 5, Writing — 2 новых задания для устного плана. Только то, что Варя не решала: Listening и Reading Task 1 — самая свежая работа 2025/26,
+    // остальное — 2022/23: Use of English 2025/26 и Reading Task 2 2025/26 она уже делала. Текст берётся из самих заданий, ключи и «почему» — в шпаргалке учителя.
+    // Отрезки записи найдены по паузам: Task 1 — первое чтение, 93,2–125,75 с (пункты 5 и 6); Task 2 — 422,3–447,5 с (пункты 3 и 4).
     {
       id: "l5", date: "2026-11-09", title: "Mock exam: review", emoji: "📝", cover: img("m05-you-can"),
       aims: [
-        "🎯 Goal: see the whole exam in order and know what is inside every task.",
-        "One item from every task: we look at it together."
+        "🎯 Goal: see the whole exam in order and know how to do every task.",
+        "Real tasks from every part: we do them together."
       ],
       steps: [
         {
-          stage: "presentation", title: "Listening", minutes: 8, image: img("m25-in-english-please"),
+          stage: "practice", title: "Listening", minutes: 8, image: img("m25-in-english-please"),
           blocks: [
-            { type: "sample", title: "True or False", task: "m-l1", item: 5, source: "Real task · Moscow municipal stage 2025/26 · Listening" },
-            { type: "sample", title: "A, B or C", task: "m-l2", item: 4, source: "Real task · Moscow municipal stage 2025/26 · Listening" }
+            { type: "minitask", title: "True or False", task: "m-l1", items: [5, 6], source: "Real task · Moscow municipal stage 2025/26 · Listening",
+              audio: { src: "media/listening-mun-msk-25-26.mp3", from: 93.2, stop: 125.75, label: "Listen to this part" } },
+            { type: "minitask", title: "A, B or C", task: "m-l2", items: [3, 4], source: "Real task · Moscow municipal stage 2025/26 · Listening",
+              audio: { src: "media/listening-mun-msk-25-26.mp3", from: 422.3, stop: 447.5, label: "Listen to this part" } }
           ]
         },
         {
-          stage: "presentation", title: "Reading", minutes: 10, image: img("m27-help-me"),
+          stage: "practice", title: "Reading", minutes: 10, image: img("m27-help-me"),
           blocks: [
-            { type: "sample", title: "Choose the best answer", task: "m-r1", item: 1, para: 0, source: "Real task · Moscow municipal stage 2025/26 · Reading" },
-            { type: "sample", title: "Missing sentences", task: "m-r2", item: 1, para: 0, source: "Real task · Moscow municipal stage 2025/26 · Reading" }
+            { type: "minitask", title: "Choose the best answer", task: "m-r1", items: [1, 2], paras: [0], source: "Real task · Moscow municipal stage 2025/26 · Reading" },
+            { type: "minitask", title: "Missing sentences", task: "mock-r2", items: [16, 17], paras: [2, 3], source: "Real task · Moscow municipal stage 2022/23 · Reading" }
           ]
         },
         {
-          stage: "presentation", title: "Use of English", minutes: 20, image: img("m28-bite-laptop"),
+          stage: "practice", title: "Use of English", minutes: 22, image: img("m28-bite-laptop"),
           blocks: [
-            { type: "sample", title: "Extra word", task: "m-u1", item: 4, source: "Real task · Moscow municipal stage 2025/26 · Use of English" },
-            { type: "sample", title: "Key word transformations", task: "m-u2", item: 4, source: "Real task · Moscow municipal stage 2025/26 · Use of English" },
-            { type: "sample", title: "Word formation", task: "m-u3", item: 4, source: "Real task · Moscow municipal stage 2025/26 · Use of English" },
-            { type: "sample", title: "Culture: match", task: "m-u4", item: 1, source: "Real task · Moscow municipal stage 2025/26 · Use of English" }
+            { type: "minitask", title: "Extra word", task: "mock-u1", items: [3, 7, 12], source: "Real task · Moscow municipal stage 2022/23 · Use of English" },
+            { type: "minitask", title: "Key word transformations", task: "mock-u2", items: [2, 5, 7], source: "Real task · Moscow municipal stage 2022/23 · Use of English" },
+            { type: "minitask", title: "Word formation", task: "mock-u3", items: [1, 2, 3, 4, 5], source: "Real task · Moscow municipal stage 2022/23 · Use of English" },
+            { type: "minitask", title: "Culture: match", task: "mock-u4", items: [2, 5, 9], source: "Real task · Moscow municipal stage 2022/23 · Use of English" }
           ]
         },
         {
-          stage: "presentation", title: "Writing", minutes: 12, image: img("m26-rock-dog"),
+          stage: "production", title: "Writing", minutes: 12, image: img("m26-rock-dog"),
           blocks: [
-            { type: "brief", title: "The task", items: [
-              "Read the task.",
+            { type: "brief", title: "Two tasks", items: [
+              "Read the tasks.",
               "Think: what will you write in each part?"
             ] },
-            { type: "wpaper", task: "m-w1", source: "Real task · Moscow municipal stage 2025/26 · Writing" }
+            { type: "wpaper", source: "Real task · Moscow municipal stage 2025/26 · Grade 9 · Writing",
+              intro: "You see the following notice in an English youth magazine and decide to send your story.",
+              premise: "Stories Wanted. Write a story for our magazine. The story must begin with the sentence: Tom had a very special reason for getting up early the next day, so he set the alarm for 6 am.",
+              pointsLabel: "The story must include:",
+              points: ["a title", "a phone call", "a trip"],
+              outro: "Write 200-250 words (the title is included in the word count)." },
+            { type: "wpaper", source: "Real task · Moscow municipal stage 2020/21 · Writing",
+              intro: "Comment on the following quotation.",
+              quote: "No two persons ever read the same book.",
+              author: "Edmund Wilson",
+              outro: "Write 200–250 words.",
+              pointsLabel: "Use the following plan:",
+              points: [
+                "make an introduction, explaining how you understand the author’s point of view;",
+                "express your personal opinion and give reasons to support it;",
+                "give examples from literature or history to illustrate your reasons;",
+                "make a conclusion restating your position."
+              ] }
           ]
         },
         // Учитель 06.11: пробник дома до урока 16 ноября, на уроке разбираем ошибки. Работа 2023/24: самая свежая из тех, что Варя почти не видела.

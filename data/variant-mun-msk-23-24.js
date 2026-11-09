@@ -3,6 +3,8 @@
 // Тексты и ключи — дословно из официальных файлов tasks-/ans-/script-engl-10-11-mun-msk-23-24. Верные варианты Reading Task 1 в файле ответов
 // выделены жирным, сверено по страницам. Убраны номера МЭШ в скобках; пропуски Reading Task 2 записаны как (1) ______; опечатки оригинала оставлены.
 // Аудио: Task 2 начинается с 500-й секунды, в паузе перед его инструкцией (пауза 477,4–500,8).
+// Учитель 09.11: в пробнике не должно быть того, что Варя уже решала. Поэтому эссе и пункты 8 и 9 Task 2 (были в домашке и в разборе 6 ноября) заменены
+// официальными заданиями 2022/23: цитата Лао-цзы и пункты 9 и 10 Task 2 той работы; в уроке 9 ноября они не используются.
 (function () {
   window.VARIANTS = window.VARIANTS || [];
   window.VARIANTS.push({
@@ -882,22 +884,16 @@
             },
             {
               "n": 8,
-              "q": "Albert’s wife says he has to start being interested in his children’s lives. — about — Albert’s wife says it is ___ ____ ____ ____ ___ an interest in his children’s lives. (5 words)",
+              "q": "People say that Amina has taken the children to the south of Spain. — have — Amina ____ _____ ____ _____ _____ the children to the south of Spain. (5 words)",
               "accept": [
-                "about time that he took",
-                "about time that he had",
-                "about time that he showed",
-                "about time that he expressed",
-                "about time he started taking",
-                "about time he started having",
-                "about time her husband took"
+                "is said to have taken"
               ]
             },
             {
               "n": 9,
-              "q": "I wish Jack had bought tickets for Venice but we went to Paris instead. — rather — Jack bought us tickets to Paris but I __ ___ ___ ___ to Venice. (4 words)",
+              "q": "Suzy had the accident four hours after she started driving. — for — Suzy ___ ____ ____ ____ four hours when she had the accident. (4 words)",
               "accept": [
-                "would rather have gone"
+                "had been driving for"
               ]
             },
             {
@@ -1143,11 +1139,11 @@
         {
           "id": "p-w1-2324",
           "section": "writing",
-          "title": "Essay · A leader is best",
+          "title": "Essay · A journey of a thousand miles",
           "type": "writing",
-          "source": "Moscow municipal stage 2023/24 (official)",
+          "source": "Moscow municipal stage 2022/23 (official)",
           "intro": "Comment on the following quotation.",
-          "premise": "A leader is best when people barely know he exists, when his work is done, his aim fulfilled, they will say: we did it ourselves. — Lao Tzu",
+          "premise": "A journey of a thousand miles begins with a single step. — Lao Tzu",
           "outro": "Write 200–250 words.",
           "pointsLabel": "Use the following plan:",
           "points": [
