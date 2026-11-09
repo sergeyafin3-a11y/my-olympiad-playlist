@@ -1151,10 +1151,10 @@
                   text: "Clever but bored, Pechorin plays with other people’s lives. He breaks Princess Mary’s heart, kills Grushnitsky in a duel and ends up completely alone." },
                 { work: "After the Ball", author: "Leo Tolstoy",
                   proves: "One moment can change a whole life, and appearances can deceive.",
-                  text: "Ivan Vasilievich loves Varenka and admires her charming father. The next morning he sees this colonel ordering the cruel beating of a soldier, and his love dies." },
+                  text: "Ivan Vasilievich loves Varenka and admires her charming father. The next morning he sees this colonel ordering the cruel beating of a soldier, and his love slowly fades." },
                 { work: "The Adventures of Tom Sawyer", author: "Mark Twain",
                   proves: "People want most what seems hard to get.",
-                  text: "Told to paint a fence as a punishment, Tom pretends that it is a rare privilege. Soon other boys are giving him their treasures for the chance to do the work." }
+                  text: "Told to whitewash a fence as a punishment, Tom pretends that it is a rare privilege. Soon other boys are giving him their treasures for the chance to do the work." }
               ] }
             ] }
           ]
