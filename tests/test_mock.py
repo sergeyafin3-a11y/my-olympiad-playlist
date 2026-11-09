@@ -140,7 +140,7 @@ class Mock(unittest.TestCase):
         self.assertEqual(sorted(extra), [], [(x, a.count(x), b.count(x)) for x in sorted(extra)])
 
     def test_recording_is_official_and_tasks_stop_at_each_other(self):
-        self.assertEqual(self.r["v"]["audio"], "media/listening-mun-msk-22-23.mp3")
+        self.assertEqual(self.r["v"]["audio"], "media/listening-mun-msk-22-23.m4a")
         self.assertTrue((ROOT / self.r["v"]["audio"]).is_file())
         self.assertEqual(self.tasks["mock-l1"]["audio"]["from"], 0)
         self.assertEqual(self.tasks["mock-l2"]["audio"]["from"], 419)

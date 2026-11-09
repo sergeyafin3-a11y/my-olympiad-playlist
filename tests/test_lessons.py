@@ -1612,5 +1612,42 @@ class ExamWalkthroughLesson(unittest.TestCase):
         self.assertNotIn("mock", json.dumps(l4, ensure_ascii=False).lower())
         self.assertIn("l.summary || l.links", (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8"))
 
+class RecordingsJumpExactly(unittest.TestCase):
+    """Учитель 09.11: в Task 2 играло не то место. MP3 с плавающим битрейтом браузер перематывает по оценке и промахивается на десятки секунд,
+    поэтому всё, куда приложение прыгает кнопкой, лежит в файле, где перемотка точная."""
+
+    @staticmethod
+    def mp3_bitrates(path):
+        d = path.read_bytes()
+        i = 10 + ((d[6] & 127) << 21 | (d[7] & 127) << 14 | (d[8] & 127) << 7 | (d[9] & 127)) if d[:3] == b"ID3" else 0
+        v1 = [0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320]
+        v2 = [0, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160]
+        rates = {3: [44100, 48000, 32000], 2: [22050, 24000, 16000], 0: [11025, 12000, 8000]}
+        seen, first = set(), True
+        while i + 4 <= len(d):
+            v, layer, b, sr, pad = (d[i + 1] >> 3) & 3, (d[i + 1] >> 1) & 3, d[i + 2] >> 4, (d[i + 2] >> 2) & 3, (d[i + 2] >> 1) & 1
+            if d[i] != 0xFF or d[i + 1] & 0xE0 != 0xE0 or v == 1 or layer != 1 or b in (0, 15) or sr == 3:
+                i += 1
+                continue
+            br = (v1 if v == 3 else v2)[b]
+            if not first:  # первый кадр — служебный заголовок, его битрейт ничего не значит
+                seen.add(br)
+            first = False
+            i += (144 if v == 3 else 72) * br * 1000 // rates[v][sr] + pad
+        return seen
+
+    def test_every_jump_target_is_in_a_file_with_exact_seeking(self):
+        srcs = run_js("""var o = [];
+          window.VARIANTS.forEach(function(v){ v.parts.forEach(function(p){ p.tasks.forEach(function(t){ if (t.audio && t.audio.from > 0) o.push(t.audio.src || v.audio); }); }); });
+          Object.keys(window.PRACTICE).forEach(function(k){ Object.keys(window.PRACTICE[k]).forEach(function(x){ window.PRACTICE[k][x].forEach(function(t){ if (t.audio && t.audio.from > 0) o.push(t.audio.src); }); }); });
+          return o;""")
+        self.assertGreaterEqual(len(set(srcs)), 4)
+        for src in sorted(set(srcs)):
+            path = ROOT / src
+            self.assertTrue(path.is_file(), src)
+            if path.suffix == ".mp3":
+                self.assertEqual(len(self.mp3_bitrates(path)), 1, src + ": плавающий битрейт, браузер промахнётся")
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -91,7 +91,7 @@ class Variants(unittest.TestCase):
         self.assertIn('src="data/variant-mun-msk-25-26.js?v=', html)
         self.assertLess(html.index("variant-mun-msk-25-26.js"), html.index('src="data/variant.js'))
         self.assertIn("data-variant", html)
-        self.assertTrue((ROOT / "media" / "listening-mun-msk-25-26.mp3").is_file())
+        self.assertTrue((ROOT / "media" / "listening-mun-msk-25-26.m4a").is_file())
 
 
 if __name__ == "__main__":
