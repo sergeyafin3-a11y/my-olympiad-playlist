@@ -8,6 +8,11 @@
   var st = { step: {}, from: null, timer: null };
   try { var raw = JSON.parse(localStorage.getItem(KEY) || "{}"); if (raw && typeof raw === "object" && !Array.isArray(raw)) st = Object.assign(st, raw); } catch (e) {}
   if (!st.step || typeof st.step !== "object") st.step = {};
+  // Учитель 09.11: в урок 9 ноября первым разделом добавлена разминка, номера разделов сдвинулись: старые ответы попали бы в другие задания.
+  if (st.l5rev !== 2) {
+    Object.keys(st).forEach(function (k) { var o = st[k]; if (o && typeof o === "object" && !Array.isArray(o)) Object.keys(o).forEach(function (x) { if (x.indexOf("l5:") === 0) delete o[x]; }); });
+    st.l5rev = 2;
+  }
   // Буквы, напечатанные в настоящем задании урока: "l2:1:1" → {"6": "D"}. Помнятся, пока ходим по шагам.
   if (!st.paper || typeof st.paper !== "object" || Array.isArray(st.paper)) st.paper = {};
   // Записи ученицы в уроке (карта сюжета, свои версии фраз, абзац): "l3:5:1" → {text: "…"}. Помнятся между шагами.
@@ -146,6 +151,7 @@
     ".ls-paper{margin-top:12px;padding:16px;border-radius:6px;background:#FBF8F1;color:#1A1A1A;font-family:Georgia,'Times New Roman',serif;font-size:15px;line-height:1.55;box-shadow:0 8px 24px rgba(0,0,0,.35)}",
     ".ls-paper .src{font-family:inherit;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6B6457;border-bottom:1px solid #D9D2C3;padding-bottom:6px;margin-bottom:10px}",
     ".ls-ptask{margin-top:16px;font-size:16px}",
+    ".ls-hero.ls-full{max-height:none}",
     ".ls-bank h4{margin:16px 0 8px;font-size:15px}.ls-bank .it{margin:0 0 12px}.ls-bank .it p{margin:2px 0}",
     ".ls-paper p{margin:0 0 10px}.ls-paper .ins{font-weight:700}.ls-paper .ttl{font-weight:700;font-size:17px;text-align:center}",
     ".ls-paper .ls-popts{border-top:1px solid #D9D2C3;padding-top:10px;margin-top:4px}.ls-paper .ls-popts p{margin:0 0 7px}",
@@ -291,7 +297,7 @@
       return '<button class="' + (j === i ? 'on' : j < i ? 'past' : '') + '" data-lsgo="' + l.id + ':' + j + '" role="tab" aria-selected="' + (j === i) + '">' + (j + 1) + ' · ' + esc(x.title) + '</button>';
     }).join("") + '</div>';
     h += '<div class="ls-head"><h2>' + (STAGE[s.stage] || '') + ' ' + esc(s.title) + '</h2><span>Section ' + (i + 1) + ' of ' + l.steps.length + ' · ' + (s.home ? 'at home · ' : '') + s.minutes + ' min</span></div>';
-    if (s.image) h += '<div class="ls-photo"><img class="ls-hero" src="' + esc(s.image) + '" alt="">' + (s.sticker ? '<span class="ls-sticker">' + esc(s.sticker) + '</span>' : '') + '</div>';
+    if (s.image) h += '<div class="ls-photo"><img class="ls-hero' + (s.imageFull ? ' ls-full' : '') + '" src="' + esc(s.image) + '" alt="">' + (s.sticker ? '<span class="ls-sticker">' + esc(s.sticker) + '</span>' : '') + '</div>';
     // Задания раздела нумеруются по порядку — Task 1, Task 2…: учитель задаёт на дом «Section 5 → Task 3».
     var tn = 0;
     s.blocks.forEach(function (b, k) { h += block(l, i, k, b, b.type === "brief" || b.type === "paper" || b.type === "minitask" ? ++tn : 0); });

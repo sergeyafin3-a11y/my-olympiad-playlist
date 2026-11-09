@@ -1209,7 +1209,7 @@ class EssayAndCultureLesson(unittest.TestCase):
         self.assertIn("m24-me-when-english", self.l["cover"])
         other = run_js('return L.filter(function(x){ return x.id === "l5" || x.id === "l6"; });')
         self.assertEqual([st["image"].split("/")[-1] for st in other[0]["steps"]],
-                         ["m25-in-english-please.jpg", "m27-help-me.jpg", "m28-bite-laptop.jpg", "m26-rock-dog.jpg", "m31-go-for-success.jpg"])
+                         ["m40-warmup-30-seconds.jpg", "m25-in-english-please.jpg", "m27-help-me.jpg", "m28-bite-laptop.jpg", "m26-rock-dog.jpg", "m31-go-for-success.jpg"])
         self.assertIn("m31-go-for-success", other[1]["cover"])
 
     def test_homework_story_is_first_marked_without_explanations(self):
@@ -1510,16 +1510,31 @@ class EssayAndCultureLesson(unittest.TestCase):
 class ExamWalkthroughLesson(unittest.TestCase):
     """Учитель 09.11: урок идёт по работе подряд, но задания настоящие, их решают: Listening с отрезком записи и Reading — минимум по 2 пункта
     в каждом Task, Use of English: Task 1, 2, 4 — по 3, Task 3 — 5, Writing — 2 новых задания для устного плана. Только то, что Варя ещё не решала."""
-    EXPECTED = [[("m-l1", [5, 6]), ("m-l2", [3, 4])], [("mock-r1", [4, 5]), ("mock-r2", [16, 17])],
+    EXPECTED = [[], [("m-l1", [5, 6]), ("m-l2", [3, 4])], [("mock-r1", [4, 5]), ("mock-r2", [16, 17])],
                 [("mock-u1", [3, 7, 12]), ("mock-u2", [2, 5, 7]), ("mock-u3", [1, 2, 3, 4, 5]), ("mock-u4", [2, 5, 9])], [], []]
 
     def setUp(self):
         self.l = run_js('return L.filter(function(x){ return x.id === "l5"; })[0];')
         self.steps = self.l["steps"]
 
+    def test_lesson_starts_with_a_warm_up_not_with_the_exam(self):
+        # Учитель 09.11: «чтобы не сразу с лисинга начинать»: её картинка и короткое повторение; весь урок в пределах часа.
+        st = self.steps[0]
+        self.assertEqual(st["stage"], "warm-up")
+        self.assertEqual([b["type"] for b in st["blocks"]], ["brief", "brief", "quiz"])
+        self.assertTrue((ROOT / st["image"]).is_file())
+        html = render_step("l5", 0)
+        self.assertIn('class="ls-hero ls-full" src="%s"' % st["image"], html)
+        self.assertIn("📋 Task 1 · 30 second challenge", html)
+        self.assertIn("📋 Task 2 · Quick revision", html)
+        self.assertGreaterEqual(len(st["blocks"][2]["items"]), 5)
+        self.assertLessEqual(sum(x["minutes"] for x in self.steps if not x.get("home")), 55)
+        ui = (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8")
+        self.assertIn('st.l5rev !== 2', ui, "номера разделов сдвинулись: старые ответы не должны попасть в другие задания")
+
     def test_real_tasks_in_the_order_of_the_paper(self):
         self.assertEqual(self.l["date"], "2026-11-09")
-        self.assertEqual([st["title"] for st in self.steps], ["Listening", "Reading", "Use of English", "Writing", "Homework: Mock exam"])
+        self.assertEqual([st["title"] for st in self.steps], ["Warm-up", "Listening", "Reading", "Use of English", "Writing", "Homework: Mock exam"])
         got = [[(b["task"], b["items"]) for b in st["blocks"] if b["type"] == "minitask"] for st in self.steps]
         self.assertEqual(got, self.EXPECTED)
         self.assertLessEqual(sum(st["minutes"] for st in self.steps if not st.get("home")), 55, "из часа остаётся запас на вопросы")
@@ -1536,12 +1551,12 @@ class ExamWalkthroughLesson(unittest.TestCase):
     def test_listening_has_a_short_official_clip_for_its_items(self):
         # Учитель 09.11: в Task 2 играло объяснение задания. Запись сжата неравномерно, браузер при перемотке промахивается,
         # и тем сильнее, чем дальше от начала. Поэтому у каждого отрезка свой короткий файл и перематывать нечего.
-        one, two = [b["audio"] for b in self.steps[0]["blocks"]]
+        one, two = [b["audio"] for b in self.steps[1]["blocks"]]
         self.assertEqual((one["src"], one["from"], one["stop"]), ("media/lesson-nov9-listening-1.mp3", 0, 32.49))
         self.assertEqual((two["src"], two["from"], two["stop"]), ("media/lesson-nov9-listening-2.mp3", 0, 25.2))
         for a in (one, two):
             self.assertLess((ROOT / a["src"]).stat().st_size, 500000, "короткий отрезок, а не вся запись")
-        html = render_step("l5", 0)
+        html = render_step("l5", 1)
         self.assertRegex(html, r'data-play="0"[^>]*data-src="media/lesson-nov9-listening-1\.mp3"[^>]*data-stop="32\.49"')
         self.assertRegex(html, r'data-play="0"[^>]*data-src="media/lesson-nov9-listening-2\.mp3"[^>]*data-stop="25\.2"')
         ui = HTML_INDEX
@@ -1549,7 +1564,7 @@ class ExamWalkthroughLesson(unittest.TestCase):
 
     def test_items_can_be_answered_and_checked(self):
         t = run_js("""var o = {}; window.VARIANTS.forEach(function(v){ v.parts.forEach(function(p){ p.tasks.forEach(function(x){ o[x.id] = x; }); }); }); return o;""")
-        for i, st in enumerate(self.steps[:3]):
+        for i, st in enumerate(self.steps[1:4], 1):
             html = render_step("l5", i).replace("&#39;", "'").replace("&quot;", '"')
             n = 0
             for k, b in enumerate(st["blocks"]):
@@ -1565,7 +1580,7 @@ class ExamWalkthroughLesson(unittest.TestCase):
                         self.assertIn(o["t"], html)
                 self.assertIn('data-lscheck="l5:%d:%d"' % (i, k), html)
             self.assertNotIn("Answer:", html, "до проверки ответов нет")
-        reading = render_step("l5", 1).replace("&#39;", "'")
+        reading = render_step("l5", 2).replace("&#39;", "'")
         self.assertIn(t["mock-r1"]["textTitle"], reading)
         self.assertIn(t["mock-r1"]["text"][3], reading, "абзац, по которому отвечаем")
         self.assertNotIn(t["mock-r1"]["text"][4], reading, "только этот абзац")
@@ -1573,25 +1588,25 @@ class ExamWalkthroughLesson(unittest.TestCase):
             self.assertIn(para.split(" (1")[0], reading)
         self.assertIn("(16)", reading)
         self.assertNotIn("(12)", reading, "только абзацы этих пропусков")
-        out = render_step("l5", 2, events=[["type", "lmsel", "l5:2:3:0", "E"], ["click", "lscheck", "l5:2:3"]], with_store=True)
+        out = render_step("l5", 3, events=[["type", "lmsel", "l5:3:3:0", "E"], ["click", "lscheck", "l5:3:3"]], with_store=True)
         self.assertEqual(len(re.findall(r'class="ls-lmr right"', out["html"])), 1)
         self.assertEqual(len(re.findall(r'class="ls-lmr wrong"', out["html"])), 2)
-        html = render_step("l5", 2, events=[["click", "lscheck", "l5:2:2"]])
+        html = render_step("l5", 3, events=[["click", "lscheck", "l5:3:2"]])
         self.assertIn("Answer: <b>excellent</b>", html)
-        html = render_step("l5", 2, events=[["click", "lscheckall", "l5:2"]])
+        html = render_step("l5", 3, events=[["click", "lscheckall", "l5:3"]])
         self.assertEqual(len(re.findall(r'class="ls-lmr wrong"', html)), 3)
         self.assertIn("✓ Check answers", html)
         self.assertIn("Clear answers", html)
 
     def test_writing_is_two_new_tasks_to_plan_aloud(self):
-        st = self.steps[3]
+        st = self.steps[4]
         self.assertEqual([b["type"] for b in st["blocks"]], ["brief", "wpaper", "wpaper", "bank"])
         story, essay = st["blocks"][1], st["blocks"][2]
         self.assertIn("Tom had a very special reason", story["premise"])
         self.assertIn("Stories Wanted", story["premise"])
         self.assertEqual(essay["quote"], "No two persons ever read the same book.")
         self.assertEqual(essay["author"], "Edmund Wilson")
-        html = render_step("l5", 3)
+        html = render_step("l5", 4)
         self.assertNotIn("<textarea", html, "план устно")
         self.assertNotIn("m-w1", json.dumps(st, ensure_ascii=False), "тот рассказ Варя уже написала")
         self.assertNotIn("Grade 9", html, "учитель 09.11: подпись убрать")
@@ -1599,13 +1614,13 @@ class ExamWalkthroughLesson(unittest.TestCase):
     def test_examples_for_any_quotation_are_plain_text_under_the_tasks(self):
         # Учитель 09.11: под Writing — примеры для цитат, на английском: произведение и автор, что доказывает, кратко сам пример.
         # Русская классика — под принятыми английскими названиями; только школьная программа.
-        b = self.steps[3]["blocks"][-1]
+        b = self.steps[4]["blocks"][-1]
         items = [it for g in b["groups"] for it in g["items"]]
         self.assertGreaterEqual(len(b["groups"]), 6)
         self.assertGreaterEqual(len(items), 20)
         self.assertEqual(len({it["work"] for it in items}), len(items))
         self.assertNotRegex(json.dumps(b, ensure_ascii=False), "[А-Яа-яЁё]", "всё на английском")
-        html = render_step("l5", 3)
+        html = render_step("l5", 4)
         for n, it in enumerate(items, 1):
             for field in ("work", "author", "proves", "text"):
                 self.assertIn(it[field], html)
