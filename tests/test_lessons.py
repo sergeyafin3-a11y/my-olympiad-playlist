@@ -1475,7 +1475,7 @@ class EssayAndCultureLesson(unittest.TestCase):
         self.assertEqual(len(re.findall(r'class="ls-tf wrong"', html)), 19)
         self.assertNotIn("(1 words)", html)
         src = (ROOT / "data" / "lessons.js").read_text(encoding="utf-8") + (ROOT / "data" / "practice-mun.js").read_text(encoding="utf-8")
-        for banned in ("p-sch-", "School 2026/27", "2526-9", "2425-9"):
+        for banned in ("p-sch-", "School 2026/27", "grade 9", "Grade 9", "2526-9", "2425-9"):
             self.assertNotIn(banned, src)
         html = render_step("l4", i, events=[["click", "lsspot", "l4:%d:1:0:%d" % (i, spot["items"][0]["at"])]])
         self.assertIn("mix up", html)
@@ -1534,12 +1534,16 @@ class ExamWalkthroughLesson(unittest.TestCase):
                     self.assertNotIn('#/t/%s"' % b["task"], earlier)
 
     def test_listening_has_a_short_official_clip_for_its_items(self):
+        # Учитель 09.11: в Task 2 играло объяснение задания. Запись сжата неравномерно, браузер при перемотке промахивается,
+        # и тем сильнее, чем дальше от начала. Поэтому у каждого отрезка свой короткий файл и перематывать нечего.
         one, two = [b["audio"] for b in self.steps[0]["blocks"]]
-        self.assertEqual(one["src"], "media/listening-mun-msk-25-26.mp3")
-        self.assertEqual((one["from"], one["stop"]), (93.2, 125.75))
-        self.assertEqual((two["from"], two["stop"]), (422.3, 447.5))
+        self.assertEqual((one["src"], one["from"], one["stop"]), ("media/lesson-nov9-listening-1.mp3", 0, 32.49))
+        self.assertEqual((two["src"], two["from"], two["stop"]), ("media/lesson-nov9-listening-2.mp3", 0, 25.2))
+        for a in (one, two):
+            self.assertLess((ROOT / a["src"]).stat().st_size, 500000, "короткий отрезок, а не вся запись")
         html = render_step("l5", 0)
-        self.assertRegex(html, r'data-play="93\.2"[^>]*data-src="media/listening-mun-msk-25-26\.mp3"[^>]*data-stop="125\.75"')
+        self.assertRegex(html, r'data-play="0"[^>]*data-src="media/lesson-nov9-listening-1\.mp3"[^>]*data-stop="32\.49"')
+        self.assertRegex(html, r'data-play="0"[^>]*data-src="media/lesson-nov9-listening-2\.mp3"[^>]*data-stop="25\.2"')
         ui = HTML_INDEX
         self.assertIn("b.dataset.src", ui)
 
@@ -1590,6 +1594,7 @@ class ExamWalkthroughLesson(unittest.TestCase):
         html = render_step("l5", 3)
         self.assertNotIn("<textarea", html, "план устно")
         self.assertNotIn("m-w1", json.dumps(st, ensure_ascii=False), "тот рассказ Варя уже написала")
+        self.assertNotIn("Grade 9", html, "учитель 09.11: подпись убрать")
 
     def test_mock_exam_stays_homework_and_16_november_is_for_mistakes(self):
         step = self.steps[-1]
