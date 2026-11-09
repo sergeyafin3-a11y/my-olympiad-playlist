@@ -1585,7 +1585,7 @@ class ExamWalkthroughLesson(unittest.TestCase):
 
     def test_writing_is_two_new_tasks_to_plan_aloud(self):
         st = self.steps[3]
-        self.assertEqual([b["type"] for b in st["blocks"]], ["brief", "wpaper", "wpaper"])
+        self.assertEqual([b["type"] for b in st["blocks"]], ["brief", "wpaper", "wpaper", "bank"])
         story, essay = st["blocks"][1], st["blocks"][2]
         self.assertIn("Tom had a very special reason", story["premise"])
         self.assertIn("Stories Wanted", story["premise"])
@@ -1595,6 +1595,28 @@ class ExamWalkthroughLesson(unittest.TestCase):
         self.assertNotIn("<textarea", html, "план устно")
         self.assertNotIn("m-w1", json.dumps(st, ensure_ascii=False), "тот рассказ Варя уже написала")
         self.assertNotIn("Grade 9", html, "учитель 09.11: подпись убрать")
+
+    def test_examples_for_any_quotation_are_plain_text_under_the_tasks(self):
+        # Учитель 09.11: под Writing — примеры для цитат, на английском: произведение и автор, что доказывает, кратко сам пример.
+        # Русская классика — под принятыми английскими названиями; только школьная программа.
+        b = self.steps[3]["blocks"][-1]
+        items = [it for g in b["groups"] for it in g["items"]]
+        self.assertGreaterEqual(len(b["groups"]), 6)
+        self.assertGreaterEqual(len(items), 20)
+        self.assertEqual(len({it["work"] for it in items}), len(items))
+        self.assertNotRegex(json.dumps(b, ensure_ascii=False), "[А-Яа-яЁё]", "всё на английском")
+        html = render_step("l5", 3)
+        for n, it in enumerate(items, 1):
+            for field in ("work", "author", "proves", "text"):
+                self.assertIn(it[field], html)
+            self.assertLessEqual(len(it["text"].split()), 40, "кратко: " + it["work"])
+            self.assertIn("<b>%d. “%s”</b> by %s" % (n, it["work"], it["author"]), html)
+        for g in b["groups"]:
+            self.assertIn(g["theme"], html)
+        self.assertEqual(html.count("<b>Proves:</b>"), len(items))
+        self.assertEqual(html.count("<b>Example:</b>"), len(items))
+        self.assertNotIn("<details", html[html.index("Proves:"):], "просто текстом")
+        self.assertNotIn("📋 Task 2", html, "это не задание")
 
     def test_mock_exam_stays_homework_and_16_november_is_for_mistakes(self):
         step = self.steps[-1]
