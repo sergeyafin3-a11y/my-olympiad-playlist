@@ -57,7 +57,8 @@
     id: "mun-msk-25-26",
     title: "Municipal 2025/26 · Moscow",
     subtitle: "All-Russian Olympiad · municipal stage · Moscow · grades 10–11",
-    audio: "media/listening-mun-msk-25-26.mp3",
+    // Не MP3: MP3 с плавающим битрейтом браузер перематывает с промахом на десятки секунд, а здесь есть прыжок к Task 2.
+    audio: "media/listening-mun-msk-25-26.m4a",
     source: { name: "Official task archive · Centre for Pedagogical Excellence (Moscow)", url: "https://xn--b1ayi3a.xn--l1afu.xn--p1ai/upload/files/Arhive_tasks/2025-26/mun/engl/" },
     sections: [
       { id: "listening", title: "Listening", color: "#5B7CFF", icon: "🎧" },
