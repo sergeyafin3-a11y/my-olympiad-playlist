@@ -86,7 +86,7 @@ class Player(unittest.TestCase):
     def test_redraw_keeps_the_lesson_clip_and_leaving_closes_it(self):
         # Ревью 09.11: «Check» и смена ответа перерисовывают страницу, плеер закрывался прямо во время записи.
         r = self.simulate("""var onPage = true;
-            els.app = { querySelector: function(s) { return onPage && s.indexOf("93.2") >= 0 ? {} : null; } };
+            els.app = { querySelector: function(s) { return onPage && s.indexOf("media/x.mp3") >= 0 ? {} : null; } };
         """ + self.LESSON_CLIP + """
             syncPlayer(["lesson", "l5"]);
             var kept = [au.paused, el("player").hidden];

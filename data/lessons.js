@@ -1005,7 +1005,7 @@
     // Урок 9.11 (учитель 09.11): идём по работе подряд, задания настоящие, их решают. Listening с отрезком записи и Reading — по 2 пункта в каждом Task, Use of English:
     // Task 1, 2, 4 — по 3, Task 3 — 5, Writing — 2 новых задания для устного плана. Только то, что Варя не решала: Listening — самая свежая работа 2025/26,
     // Reading и Use of English — 2022/23: те же части 2025/26 были в уроках и домашках. Текст берётся из самих заданий, ключи и «почему» — в шпаргалке учителя.
-    // Отрезки записи найдены по паузам: Task 1 — первое чтение, 93,2–125,75 с (пункты 5 и 6); Task 2 — 422,3–447,5 с (пункты 3 и 4).
+    // Отрезки записи 2025/26 вырезаны в отдельные файлы: запись сжата неравномерно, и браузер при перемотке промахивается. Task 1 — первое чтение, 93,2–125,75 с (пункты 5 и 6); Task 2 — 422,25–447,5 с (пункты 3 и 4).
     {
       id: "l5", date: "2026-11-09", title: "Mock exam: review", emoji: "📝", cover: img("m05-you-can"),
       aims: [
@@ -1017,9 +1017,9 @@
           stage: "practice", title: "Listening", minutes: 8, image: img("m25-in-english-please"),
           blocks: [
             { type: "minitask", title: "True or False", task: "m-l1", items: [5, 6], source: "Real task · Moscow municipal stage 2025/26 · Listening",
-              audio: { src: "media/listening-mun-msk-25-26.mp3", from: 93.2, stop: 125.75, label: "Listen to this part" } },
+              audio: { src: "media/lesson-nov9-listening-1.mp3", from: 0, stop: 32.49, label: "Listen to this part" } },
             { type: "minitask", title: "A, B or C", task: "m-l2", items: [3, 4], source: "Real task · Moscow municipal stage 2025/26 · Listening",
-              audio: { src: "media/listening-mun-msk-25-26.mp3", from: 422.3, stop: 447.5, label: "Listen to this part" } }
+              audio: { src: "media/lesson-nov9-listening-2.mp3", from: 0, stop: 25.2, label: "Listen to this part" } }
           ]
         },
         {
@@ -1045,7 +1045,7 @@
               "Read the tasks.",
               "Think: what will you write in each part?"
             ] },
-            { type: "wpaper", source: "Real task · Moscow municipal stage 2025/26 · Grade 9 · Writing",
+            { type: "wpaper", source: "Real task · Moscow municipal stage 2025/26 · Writing",
               intro: "You see the following notice in an English youth magazine and decide to send your story.",
               premise: "Stories Wanted. Write a story for our magazine. The story must begin with the sentence: Tom had a very special reason for getting up early the next day, so he set the alarm for 6 am.",
               pointsLabel: "The story must include:",
