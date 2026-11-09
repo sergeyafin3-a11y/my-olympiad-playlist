@@ -146,6 +146,7 @@
     ".ls-paper{margin-top:12px;padding:16px;border-radius:6px;background:#FBF8F1;color:#1A1A1A;font-family:Georgia,'Times New Roman',serif;font-size:15px;line-height:1.55;box-shadow:0 8px 24px rgba(0,0,0,.35)}",
     ".ls-paper .src{font-family:inherit;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6B6457;border-bottom:1px solid #D9D2C3;padding-bottom:6px;margin-bottom:10px}",
     ".ls-ptask{margin-top:16px;font-size:16px}",
+    ".ls-bank h4{margin:16px 0 8px;font-size:15px}.ls-bank .it{margin:0 0 12px}.ls-bank .it p{margin:2px 0}",
     ".ls-paper p{margin:0 0 10px}.ls-paper .ins{font-weight:700}.ls-paper .ttl{font-weight:700;font-size:17px;text-align:center}",
     ".ls-paper .ls-popts{border-top:1px solid #D9D2C3;padding-top:10px;margin-top:4px}.ls-paper .ls-popts p{margin:0 0 7px}",
     ".ls-pgap{font-weight:700;color:#B3261E;white-space:nowrap}",
@@ -297,7 +298,7 @@
     // Учитель 26.10: «сейчас я себя проверяю, а завтра показываю экран ученице — ответы должны стереться».
     var canCheck = s.blocks.some(function (b) { return ["gapfill", "transform", "upgrade", "matchsheet", "minitask"].indexOf(b.type) >= 0 || (b.type === "paper" && b.task); });
     // В уроке-разборе заполнять нечего, кнопки стирания там не нужны. В остальных уроках они есть в каждом разделе.
-    var hasWork = l.steps.some(function (st) { return st.blocks.some(function (b) { return ["brief", "wpaper", "links"].indexOf(b.type) < 0; }); });
+    var hasWork = l.steps.some(function (st) { return st.blocks.some(function (b) { return ["brief", "wpaper", "links", "bank"].indexOf(b.type) < 0; }); });
     if (hasWork) h += '<div class="ls-clear">' + (canCheck ? '<button class="bigplay" data-lscheckall="' + l.id + ':' + i + '">✓ Check answers</button>' : '') +
       '<button class="ghost" data-lsclear="' + l.id + ':' + i + ':">↺ Clear answers in this section</button>' +
       '<button class="ghost" data-lsclear="' + l.id + ':">↺ Clear the whole lesson</button></div>';
@@ -495,6 +496,15 @@
         return '<div class="cr"><b>' + esc(c.t) + '</b> <span class="pts">' + n + ' mistake' + (n === 1 ? '' : 's') + ' → ' + p + ' point' + (p === 1 ? '' : 's') + '</span>' +
           '<span class="btns"><button class="ghost" data-lscount="' + key + ':' + c.id + ':-1" aria-label="One mistake less">−</button><button class="ghost" data-lscount="' + key + ':' + c.id + ':1" aria-label="One more mistake">+</button></span></div>';
       }).join("") + '<p class="tot"><b>Criteria 2–5: ' + ctot + ' / ' + b.crits.length * 4 + '</b> <button class="ghost" data-lscreset="' + key + '">↺ Start again</button></p></div>';
+    }
+    // Запас примеров для эссе: просто текст, нумерация сквозная, чтобы на уроке можно было назвать номер.
+    if (b.type === "bank") {
+      var bn = 0;
+      return '<div class="ls-box ls-bank"><h3>📚 ' + esc(b.title) + '</h3><p>' + esc(b.intro) + '</p>' + b.groups.map(function (g) {
+        return '<h4>' + esc(g.theme) + '</h4>' + g.items.map(function (it) {
+          return '<div class="it"><p><b>' + (++bn) + '. “' + esc(it.work) + '”</b> by ' + esc(it.author) + '</p><p><b>Proves:</b> ' + esc(it.proves) + '</p><p><b>Example:</b> ' + esc(it.text) + '</p></div>';
+        }).join("");
+      }).join("") + '</div>';
     }
     if (b.type === "brief") return '<div class="ls-brief"><h3>📋 ' + (num ? 'Task ' + num + ' · ' : '') + esc(b.title) + '</h3><p class="lbl">What to do</p><ol class="ls-ol">' +
       b.items.map(function (x) { return '<li>' + rich(x) + '</li>'; }).join("") + '</ol>' + (b.example ? '<p class="ls-ex"><b>Example:</b> ' + rich(b.example) + '</p>' : '') + '</div>';

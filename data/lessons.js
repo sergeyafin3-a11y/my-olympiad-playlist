@@ -1062,7 +1062,101 @@
                 "express your personal opinion and give reasons to support it;",
                 "give examples from literature or history to illustrate your reasons;",
                 "make a conclusion restating your position."
+              ] },
+            // Учитель 09.11: запас примеров для любой цитаты: произведения школьной программы, принятые английские названия, что доказывает и что происходит.
+            { type: "bank", title: "Examples for your essay", intro: "Famous works from school. Choose one that fits your quotation.", groups: [
+              { theme: "Honour, courage and not giving up", items: [
+                { work: "The Captain’s Daughter", author: "Alexander Pushkin",
+                  proves: "Honour matters more than safety, and a small kindness can come back to you.",
+                  text: "Pyotr Grinyov refuses to swear loyalty to the rebel leader Pugachev, although he could be executed. Pugachev spares him because Grinyov once gave him a warm coat." },
+                { work: "A Prisoner in the Caucasus", author: "Leo Tolstoy",
+                  proves: "Your fate depends on your own actions, and kindness is possible even between enemies.",
+                  text: "Two Russian officers are captured. Kostylin only waits for his family to pay a ransom, while Zhilin makes a plan and escapes with the help of Dina, a local girl." },
+                { work: "The Fate of a Man", author: "Mikhail Sholokhov",
+                  proves: "People can stay human after terrible losses, and caring for others gives life meaning.",
+                  text: "Andrei Sokolov survives a German prison camp and loses his whole family in the war. He adopts an orphan boy, Vanya, and they give each other a reason to live." },
+                { work: "Robinson Crusoe", author: "Daniel Defoe",
+                  proves: "Hard work and patience can help a person survive almost anything.",
+                  text: "Cast away on an island for twenty-eight years, Crusoe builds a home, grows his own food and learns to rely on himself." }
+              ] },
+              { theme: "Love and sacrifice", items: [
+                { work: "Romeo and Juliet", author: "William Shakespeare",
+                  proves: "Hatred destroys the innocent, and love can be stronger than hatred.",
+                  text: "Two young people from enemy families fall in love and die because of the feud. Only their deaths bring the Montagues and the Capulets together." },
+                { work: "The Gift of the Magi", author: "O. Henry",
+                  proves: "True love means giving up what you value most.",
+                  text: "Della sells her beautiful hair to buy a chain for Jim’s watch. Jim sells his watch to buy combs for her hair." },
+                { work: "Eugene Onegin", author: "Alexander Pushkin",
+                  proves: "We often understand the value of something only after losing it, and duty can be stronger than feelings.",
+                  text: "Onegin rejects Tatyana’s love and kills his friend Lensky in a duel. Years later he falls in love with her, but she is married and, although she still loves him, she turns him down." }
+              ] },
+              { theme: "Kindness and what really matters", items: [
+                { work: "The Little Prince", author: "Antoine de Saint-Exupéry",
+                  proves: "The most important things cannot be seen, and we are responsible for those we love.",
+                  text: "A little prince leaves his rose and travels to Earth. A fox teaches him that his rose is special because of the time and care he has given her." },
+                { work: "White Fang", author: "Jack London",
+                  proves: "Cruelty and kindness both shape character, and love can change anyone.",
+                  text: "White Fang, a wolf-dog, turns savage when a cruel owner makes him fight. A new master, Weedon Scott, treats him kindly, and he slowly learns to trust and love." },
+                { work: "Matryona’s Home", author: "Alexander Solzhenitsyn",
+                  proves: "True goodness is quiet and often goes unnoticed.",
+                  text: "Poor old Matryona helps everyone and asks for nothing. Only after her death does the narrator understand that she is the righteous person without whom a village cannot stand." }
+              ] },
+              { theme: "Money and greed", items: [
+                { work: "A Christmas Carol", author: "Charles Dickens",
+                  proves: "Money does not bring happiness, and it is never too late to change.",
+                  text: "Scrooge, a rich and mean old man, is visited by spirits who show him his past, present and future. He wakes up a generous and happy person." },
+                { work: "Dead Souls", author: "Nikolai Gogol",
+                  proves: "Greed can kill the soul while the body is still alive.",
+                  text: "Chichikov travels around Russia buying the names of dead serfs so that he can borrow money against them. The landowners he meets are greedy, empty or foolish." }
+              ] },
+              { theme: "Power and society", items: [
+                { work: "The Government Inspector", author: "Nikolai Gogol",
+                  proves: "A guilty conscience makes people blind, and corruption can rule a whole town.",
+                  text: "Officials in a small town take Khlestakov, a penniless young man, for a government inspector and give him bribes. He leaves just before the real inspector arrives." },
+                { work: "The Chameleon", author: "Anton Chekhov",
+                  proves: "People who fear power change their opinions to please the powerful.",
+                  text: "Police officer Ochumelov keeps changing his mind about a dog that has bitten a man. He is strict when it seems to be a stray and gentle when it may belong to a general." },
+                { work: "Woe from Wit", author: "Alexander Griboyedov",
+                  proves: "Society often rejects people who tell the truth or think differently.",
+                  text: "Chatsky returns to Moscow and openly criticises the way people live there. In response, society spreads the rumour that he has gone mad." },
+                { work: "Gulliver’s Travels", author: "Jonathan Swift",
+                  proves: "People and governments often fight over small, silly things.",
+                  text: "In the tiny country of Lilliput, Gulliver learns about a long war that began over which end of an egg should be broken." },
+                { work: "The Overcoat", author: "Nikolai Gogol",
+                  proves: "Society can be cruel to ordinary, powerless people.",
+                  text: "Akaky Akakievich, a poor clerk, saves for a long time to buy a new overcoat. It is stolen, an important official shouts at him instead of helping, and he dies." }
+              ] },
+              { theme: "Freedom and fear", items: [
+                { work: "Mtsyri (The Novice)", author: "Mikhail Lermontov",
+                  proves: "Freedom can be worth more than a long, safe life.",
+                  text: "A young novice escapes from a monastery and lives free for three days. Dying, he says that those days were the only time he truly lived." },
+                { work: "The Man in a Case", author: "Anton Chekhov",
+                  proves: "Fear of change can ruin a whole life.",
+                  text: "Belikov, a teacher of Greek, hides from life behind rules, galoshes and an umbrella, always worried that something might go wrong. His fear keeps a whole town afraid." }
+              ] },
+              { theme: "Books, knowledge and science", items: [
+                { work: "Fahrenheit 451", author: "Ray Bradbury",
+                  proves: "Books protect freedom of thought, and a society without them stops thinking.",
+                  text: "Guy Montag is a fireman whose job is to burn books. When he starts reading them, he sees how empty his world is and joins people who memorise books to save them." },
+                { work: "Don Quixote", author: "Miguel de Cervantes",
+                  proves: "Books can change how we see the world, and ideals can clash with reality.",
+                  text: "After reading too many stories about knights, Don Quixote sets out to fight evil and attacks windmills, believing they are giants." },
+                { work: "Heart of a Dog", author: "Mikhail Bulgakov",
+                  proves: "Science without responsibility is dangerous, and a person cannot be changed by force.",
+                  text: "Professor Preobrazhensky turns a stray dog into a man. The new man, Sharikov, is rude and dangerous, so the professor reverses the operation." }
+              ] },
+              { theme: "Character and choices", items: [
+                { work: "A Hero of Our Time", author: "Mikhail Lermontov",
+                  proves: "Talent without a purpose is wasted, and selfishness hurts everyone, including the selfish person.",
+                  text: "Clever but bored, Pechorin plays with other people’s lives. He breaks Princess Mary’s heart, kills Grushnitsky in a duel and ends up completely alone." },
+                { work: "After the Ball", author: "Leo Tolstoy",
+                  proves: "One moment can change a whole life, and appearances can deceive.",
+                  text: "Ivan Vasilievich loves Varenka and admires her charming father. The next morning he sees this colonel ordering the cruel beating of a soldier, and his love slowly fades." },
+                { work: "The Adventures of Tom Sawyer", author: "Mark Twain",
+                  proves: "People want most what seems hard to get.",
+                  text: "Told to whitewash a fence as a punishment, Tom pretends that it is a rare privilege. Soon other boys are giving him their treasures for the chance to do the work." }
               ] }
+            ] }
           ]
         },
         // Учитель 06.11: пробник дома до урока 16 ноября, на уроке разбираем ошибки. Работа 2023/24: самая свежая из тех, что Варя почти не видела.
