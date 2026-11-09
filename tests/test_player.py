@@ -43,7 +43,7 @@ class Player(unittest.TestCase):
         variant = (ROOT / "data" / "variant-mun-msk-25-26.js").read_text(encoding="utf-8")
         src = "var window = this;\n" + variant + "\n" + check + """
           var V = window.VARIANTS[0], C = window.Check, els = {};
-          function el(id) { if (!els[id]) els[id] = { dataset: {}, setAttribute: function(){}, classList: {add: function(){}, remove: function(){}}, innerHTML: "", textContent: "", hidden: true, addEventListener: function(){} }; return els[id]; }
+          function el(id) { if (!els[id]) els[id] = { dataset: {}, setAttribute: function(){}, classList: {add: function(){}, remove: function(){}}, innerHTML: "", textContent: "", hidden: true, addEventListener: function(n, f){ this["on" + n] = f; } }; return els[id]; }
           var ls = {}, au = { readyState: 0, currentTime: 0, seeking: false, paused: true, duration: 700, attr: null,
             getAttribute: function(){ return this.attr; },
             set src(v) { this.attr = v; this.readyState = 0; this.currentTime = 0; }, get src() { return this.attr || ""; },
@@ -61,6 +61,39 @@ class Player(unittest.TestCase):
           JSON.stringify(scenario());"""
         out = subprocess.run(["osascript", "-l", "JavaScript", "-e", src], capture_output=True, text=True, check=True).stdout
         return json.loads(out)
+
+    LESSON_CLIP = """var part = { src: "media/x.mp3", from: 93.2, stop: 125.75, title: "T", part: true };
+            playFrom(93.2, "Part", part);
+            fire("play"); au.readyState = 1; fire("loadedmetadata"); fire("seeked");
+    """
+
+    def test_lesson_clip_stays_inside_its_part(self):
+        # Ревью 09.11: после конца отрезка ▶ играл файл дальше, ещё минут семь, с другими пунктами; перемотка уводила за границы.
+        r = self.simulate(self.LESSON_CLIP + """
+            au.currentTime = 126; fire("timeupdate");
+            var ended = [au.paused, au.currentTime];
+            fire("seeked");
+            el("plPP").onclick();
+            var replay = [au.paused, au.currentTime];
+            fire("play"); fire("seeked");
+            au.currentTime = 300; fire("timeupdate");
+            var jumped = [au.paused, au.currentTime];
+            el("plPP").onclick(); fire("play"); fire("seeked");
+            au.currentTime = 20; fire("timeupdate");
+            return { ended: ended, replay: replay, jumped: jumped, back: au.currentTime };""")
+        self.assertEqual(r, {"ended": [True, 125.75], "replay": [False, 93.2], "jumped": [True, 125.75], "back": 93.2})
+
+    def test_redraw_keeps_the_lesson_clip_and_leaving_closes_it(self):
+        # Ревью 09.11: «Check» и смена ответа перерисовывают страницу, плеер закрывался прямо во время записи.
+        r = self.simulate("""var onPage = true;
+            els.app = { querySelector: function(s) { return onPage && s.indexOf("93.2") >= 0 ? {} : null; } };
+        """ + self.LESSON_CLIP + """
+            syncPlayer(["lesson", "l5"]);
+            var kept = [au.paused, el("player").hidden];
+            onPage = false;
+            syncPlayer(["lesson", "l5"]);
+            return { kept: kept, gone: [au.paused, el("player").hidden] };""")
+        self.assertEqual(r, {"kept": [False, False], "gone": [True, True]})
 
     def test_task_2_plays_on_the_first_press(self):
         # Ревью PR 57: файл ещё не загружен, «play» приходит при currentTime = 0, граница считалась как 371 (начало Task 2),
