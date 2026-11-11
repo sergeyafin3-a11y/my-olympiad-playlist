@@ -1600,14 +1600,19 @@ class ExamWalkthroughLesson(unittest.TestCase):
 
     def test_writing_is_two_new_tasks_to_plan_aloud(self):
         st = self.steps[4]
-        self.assertEqual([b["type"] for b in st["blocks"]], ["brief", "wpaper", "wpaper", "bank"])
-        story, essay = st["blocks"][1], st["blocks"][2]
+        # Учитель 11.11: оба текста — домашка, под каждым заданием окно без Т9 и кнопка «отправить».
+        self.assertEqual([b["type"] for b in st["blocks"]], ["brief", "wpaper", "writebox", "wpaper", "writebox", "bank"])
+        story, essay = st["blocks"][1], st["blocks"][3]
         self.assertIn("Tom had a very special reason", story["premise"])
         self.assertIn("Stories Wanted", story["premise"])
         self.assertEqual(essay["quote"], "No two persons ever read the same book.")
         self.assertEqual(essay["author"], "Edmund Wilson")
         html = render_step("l5", 4)
-        self.assertNotIn("<textarea", html, "план устно")
+        self.assertEqual(html.count("<textarea"), 2)
+        self.assertEqual(html.count('spellcheck="false" autocorrect="off" autocapitalize="off"'), 2, "без Т9")
+        self.assertEqual(html.count("📤 Send to my teacher"), 2)
+        self.assertLess(html.index("Tom had a very special reason"), html.index("<textarea"), "окно — под своим заданием")
+        self.assertLess(html.index("<textarea"), html.index("No two persons ever read the same book"))
         self.assertNotIn("m-w1", json.dumps(st, ensure_ascii=False), "тот рассказ Варя уже написала")
         self.assertNotIn("Grade 9", html, "учитель 09.11: подпись убрать")
 
@@ -1639,8 +1644,10 @@ class ExamWalkthroughLesson(unittest.TestCase):
         self.assertEqual([b["type"] for b in step["blocks"]], ["brief", "links"])
         self.assertEqual(step["blocks"][1]["items"][0]["href"], "#/full/p-l1-2324")
         text = json.dumps(step["blocks"], ensure_ascii=False)
-        for x in ["2023/24", "one device", "Check answers", "Try again", "screenshot", "16 November"]:
+        # Учитель 11.11: пробник — не к следующему уроку, а когда будет время.
+        for x in ["2023/24", "one device", "Check answers", "Try again", "screenshot", "when you have time"]:
             self.assertIn(x, text)
+        self.assertNotIn("16 November", text)
         l6 = run_js('return L.filter(function(x){ return x.id === "l6"; })[0];')
         self.assertEqual(l6["date"], "2026-11-16")
         self.assertIn("mistakes", " ".join(l6["aims"]))
