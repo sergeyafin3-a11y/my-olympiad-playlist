@@ -1059,7 +1059,8 @@
           blocks: [
             { type: "brief", title: "Two tasks", items: [
               "Read the tasks.",
-              "Think: what will you write in each part?"
+              "Think: what will you write in each part?",
+              "At home: write both texts in the boxes and send them to your teacher."
             ] },
             { type: "wpaper", source: "Real task · Moscow municipal stage 2025/26 · Writing",
               intro: "You see the following notice in an English youth magazine and decide to send your story.",
@@ -1067,6 +1068,7 @@
               pointsLabel: "The story must include:",
               points: ["a title", "a phone call", "a trip"],
               outro: "Write 200-250 words (the title is included in the word count)." },
+            { type: "writebox", min: 200, max: 250, label: "story", send: "Writing homework · Story (Tom)" },
             { type: "wpaper", source: "Real task · Moscow municipal stage 2020/21 · Writing",
               intro: "Comment on the following quotation.",
               quote: "No two persons ever read the same book.",
@@ -1079,6 +1081,7 @@
                 "give examples from literature or history to illustrate your reasons;",
                 "make a conclusion restating your position."
               ] },
+            { type: "writebox", min: 200, max: 250, label: "essay", send: "Writing homework · Essay (Edmund Wilson)" },
             // Учитель 09.11: запас примеров для любой цитаты: произведения школьной программы, принятые английские названия, что доказывает и что происходит.
             { type: "bank", title: "Examples for your essay", intro: "Famous works from school. Choose one that fits your quotation.", groups: [
               { theme: "Honour, courage and not giving up", items: [
@@ -1180,7 +1183,7 @@
           stage: "homework", home: true, title: "Homework: Mock exam", minutes: 180, image: img("m31-go-for-success"),
           blocks: [
             { type: "brief", title: "Mock exam", items: [
-              "Do it before our lesson on **16 November**.",
+              "Extra: do it when you have time.",
               "Do it all on one device. The timer starts as soon as you press the button.",
               "Do all 4 parts. It takes 3 hours.",
               "At the very end, press **✓ Check answers** on every task. Do not press **Try again**.",
