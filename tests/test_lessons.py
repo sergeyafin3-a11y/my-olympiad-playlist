@@ -1656,23 +1656,23 @@ class ExamWalkthroughLesson(unittest.TestCase):
         self.assertIn("l.summary || l.links", (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8"))
 
 class FinalLesson(unittest.TestCase):
-    """Учитель 16.11: последний урок до олимпиады. Один финальный тест на одной странице, как на компьютере на олимпиаде:
-    над каждой частью — время и баллы олимпиады и таймер на сегодня; ответы сразу в поля, одна кнопка Check answers — верно,
-    неверно и сколько баллов. Задания вперемешку из разных лет, разделы и задания названы как в олимпиаде. Потом — её Writing."""
-    TEST = [("Listening", [("mock-l2", [11, 12, 13, 14, 15], "Task 2")]),
-            ("Reading", [("mock-r1", [8, 9, 10], "Task 1"), ("mock-r2", [12, 13, 14, 15], "Task 2")]),
-            ("Use of English", [("mock-u1", [2, 4, 8, 11, 14], "Task 1"), ("mock-u2", [1, 3, 8], "Task 2"),
-                                ("mock-u3", [6, 7, 8, 9, 10], "Task 3"), ("mock-u4", [3, 4, 7, 10], "Task 4")])]
+    """Учитель 16.11: последний урок до олимпиады. В начале — ловушки по всем частям и «как удобнее тебе» без единственного верного.
+    Потом один финальный тест на одной странице, как на компьютере на олимпиаде: над каждой частью время и баллы олимпиады и таймер,
+    ответы сразу в поля, одна кнопка Check answers — верно, неверно, баллы. Use of English — столько пунктов, сколько на олимпиаде.
+    Внизу два Writing на выбор. Потом её Writing с разбором. Listening — домой, целиком."""
+    TEST = [("Reading", [("mock-r1", [8, 9, 10], "Task 1"), ("mock-r2", [12, 13, 14, 15], "Task 2")]),
+            ("Use of English", [("mock-u1", list(range(1, 16)), "Task 1"), ("mock-u2", list(range(1, 11)), "Task 2"),
+                                ("mock-u3", list(range(1, 11)), "Task 3"), ("mock-u4", list(range(1, 11)), "Task 4")]),
+            ("Writing", [])]
 
     def setUp(self):
         self.l = run_js('return L.filter(function(x){ return x.id === "l6"; })[0];')
         self.steps = self.l["steps"]
 
-    def test_one_final_test_then_her_writing(self):
+    def test_traps_first_then_one_final_test_then_her_writing(self):
         self.assertEqual(self.l["date"], "2026-11-16")
-        self.assertEqual([st["title"] for st in self.steps], ["Warm-up", "Final test", "Writing"])
-        self.assertLessEqual(sum(st["minutes"] for st in self.steps), 55, "из часа остаётся запас")
-        self.assertFalse(any(st.get("home") for st in self.steps))
+        self.assertEqual([st["title"] for st in self.steps], ["Warm-up", "Final test", "Writing", "Homework: Listening"])
+        self.assertLessEqual(sum(st["minutes"] for st in self.steps if not st.get("home")), 55, "урок в пределах часа")
         st = self.steps[1]
         self.assertTrue(st.get("test"))
         got, part = [], None
@@ -1683,49 +1683,69 @@ class FinalLesson(unittest.TestCase):
                 part[1].append((b["task"], b["items"], b["label"]))
         self.assertEqual(got, self.TEST)
         parts = [b for b in st["blocks"] if b["type"] == "part"]
-        for b, want in zip(parts, ["15 minutes · 2 tasks · 15 points", "45 minutes · 2 tasks · 20 points", "60 minutes · 4 tasks · 45 points"]):
+        for b, want in zip(parts, ["45 minutes · 2 tasks · 20 points", "60 minutes · 4 tasks · 45 points", "60 minutes · 1 task · 20 points"]):
             self.assertEqual(b["olympiad"], want, "время и баллы — как на олимпиаде")
-        self.assertEqual(sum(b["minutes"] for b in parts), st["minutes"])
+        self.assertEqual(sum(b["minutes"] for b in parts if not b.get("extra")), st["minutes"])
+
+    def test_use_of_english_has_as_many_items_as_the_olympiad(self):
+        # Учитель 16.11: «столько заданий, сколько реально в олимпиаде» — 15, 10, 10, 10 = 45 баллов.
+        uoe = [b for b in self.steps[1]["blocks"] if b["type"] == "minitask" and b["task"].startswith("mock-u")]
+        self.assertEqual([len(b["items"]) for b in uoe], [15, 10, 10, 10])
+        for b in self.steps[1]["blocks"] + self.steps[3]["blocks"]:
+            if b["type"] == "minitask":
+                self.assertFalse(b["task"].endswith("-2324"), "пробник 2023/24 Варя, скорее всего, делала")
+
+    def test_warm_up_is_traps_and_free_choice_of_method(self):
+        st = self.steps[0]
+        self.assertEqual([b["type"] for b in st["blocks"]], ["brief", "quiz", "brief", "thisorthat"])
+        quiz = st["blocks"][1]["items"]
+        self.assertGreaterEqual(len(quiz), 12)
+        text = json.dumps(quiz, ensure_ascii=False)
+        for part in ("Listening", "Reading", "Use of English", "Writing"):
+            self.assertIn(part, text, "ловушки по всем частям")
+        self.assertIn("no wrong answer", json.dumps(st["blocks"][2], ensure_ascii=False), "способ выбирает она")
+        self.assertNotIn("a", [k for it in st["blocks"][3]["items"] for k in it if k == "right"])
 
     def test_looks_like_the_olympiad_and_checks_with_points(self):
         html = render_step("l6", 1)
         self.assertEqual(html.count("data-lstimer="), 3, "таймер на каждую часть")
         self.assertIn("At the olympiad:", html)
         self.assertNotIn("data-lscheck=", html, "одна кнопка на весь тест")
-        self.assertIn("✓ Check answers", html)
-        self.assertIn('<h3 class="ls-ptask">📋 Task 2 <small>5 points</small></h3>', html)
-        self.assertNotIn("Total", html, "до проверки баллов нет")
+        self.assertIn('<h3 class="ls-ptask">📋 Task 1 <small>15 points</small></h3>', html)
+        self.assertNotIn("Your result", html, "до проверки баллов нет")
+        self.assertEqual(html.count("<textarea"), 2, "два Writing — с окнами")
         out = render_step("l6", 1, events=[["click", "lscheckall", "l6:1"]])
-        self.assertIn("Total", out)
-        self.assertIn("0 / 29 points", out)
-        for name, mx in (("Listening", 5), ("Reading", 7), ("Use of English", 17)):
+        self.assertIn("0 / 52 points", out)
+        for name, mx in (("Reading", 7), ("Use of English", 45)):
             self.assertIn("<span>%s</span><b>0 / %d</b>" % (name, mx), out)
-        self.assertEqual(out.count("0 / 5 points"), 3, "у каждого задания свои баллы")
-        out = render_step("l6", 1, events=[["type", "lmsel", "l6:1:2:0", "B"], ["click", "lscheckall", "l6:1"]], with_store=True)
-        self.assertIn("1 / 29 points", out["html"])
-        # Проверка PR 83: исправила напечатанный ответ после Check — старые баллы не должны висеть, пока снова не нажмёт Check.
+        self.assertNotIn("<span>Writing</span>", out, "у Writing баллы ставит учитель")
+        self.assertEqual(out.count("0 / 10 points"), 3)
+        out = render_step("l6", 1, events=[["type", "lmsel", "l6:1:2:0", "D"], ["click", "lscheckall", "l6:1"]], with_store=True)
+        self.assertIn("1 / 52 points", out["html"])
         out = render_step("l6", 1, events=[["click", "lscheckall", "l6:1"], ["type", "tfin", "l6:1:7:0", "V"]])
         self.assertNotIn("Your result", out)
 
-    def test_items_not_done_in_earlier_lessons(self):
-        before = run_js('return L.filter(function(x){ return x.date < "2026-11-16"; });')
-        used = {(b["task"], n) for l in before for st in l.get("steps", []) for b in st["blocks"] if b["type"] == "minitask" for n in b["items"]}
-        for b in self.steps[1]["blocks"]:
-            if b["type"] == "minitask":
-                for n in b["items"]:
-                    self.assertNotIn((b["task"], n), used)
-        # Проверка PR 83: пробник 2023/24 Варя, скорее всего, делала — из него ничего; и пункты 2022/23, перенесённые в пробник, тоже нет.
-        mock = json.dumps(run_js('var o = []; window.VARIANTS.forEach(function(v){ v.parts.forEach(function(p){ p.tasks.forEach(function(t){ if (/-2324$/.test(t.id)) o.push(t); }); }); }); return o;'), ensure_ascii=False)
-        for b in self.steps[1]["blocks"]:
-            if b["type"] == "minitask":
-                self.assertFalse(b["task"].endswith("-2324"), b["task"])
-        for q in ("travel incognito", "If I finish my homework early", "did it on purpose"):
-            self.assertNotIn(q, mock)
+    def test_two_writing_tasks_to_choose_at_the_bottom(self):
+        blocks = self.steps[1]["blocks"]
+        i = [b.get("title") for b in blocks].index("Writing")
+        self.assertEqual([b["type"] for b in blocks[i:]], ["part", "wpaper", "writebox", "wpaper", "writebox"])
+        essay, story = blocks[i + 1], blocks[i + 3]
+        self.assertEqual(essay["quote"], "A journey of a thousand miles begins with a single step.")
+        final = (ROOT / "data" / "variant.js").read_text(encoding="utf-8")
+        self.assertIn(story["premise"], final, "дословно из официального задания")
+        for x in story["points"]:
+            self.assertIn(x, final)
+        self.assertEqual((blocks[i + 4]["min"], blocks[i + 4]["max"]), (220, 250))
 
-    def test_listening_is_the_whole_task_2_heard_once(self):
-        b = [x for x in self.steps[1]["blocks"] if x["type"] == "minitask"][0]
-        self.assertEqual(b["audio"]["src"], "media/listening-mun-msk-22-23.m4a")
-        self.assertEqual((b["audio"]["from"], b["audio"]["stop"]), (419, 618))
+    def test_listening_at_home_both_tasks_in_full(self):
+        st = self.steps[3]
+        self.assertTrue(st.get("home"))
+        self.assertTrue(st.get("test"))
+        tasks = [(b["task"], b["items"], b["audio"]["from"], b["audio"]["stop"]) for b in st["blocks"] if b["type"] == "minitask"]
+        self.assertEqual(tasks, [("mock-l1", list(range(1, 11)), 0, 419), ("mock-l2", [11, 12, 13, 14, 15], 419, 618)])
+        for b in st["blocks"]:
+            if b["type"] == "minitask":
+                self.assertEqual(b["audio"]["src"], "media/listening-mun-msk-22-23.m4a")
 
     def _check_homework(self, b, fixture, colours, points):
         official = (ROOT / "tests" / "fixtures" / fixture).read_text(encoding="utf-8").strip().split("\n\n")
