@@ -322,7 +322,7 @@
       });
       if (tall && tparts.length) {
         var tgot = 0, tmax = 0;
-        h += '<div class="ls-box ls-score ls-result"><h3>🏁 Your result</h3>' + tparts.map(function (p) { tgot += p.got; tmax += p.max; return '<p><span>' + esc(p.t) + '</span><b>' + p.got + ' / ' + p.max + '</b></p>'; }).join("") +
+        h += '<div class="ls-box ls-score ls-result"><h3>🏁 Your result</h3>' + tparts.map(function (p) { if (!p.max) return ""; tgot += p.got; tmax += p.max; return '<p><span>' + esc(p.t) + '</span><b>' + p.got + ' / ' + p.max + '</b></p>'; }).join("") +
           '<p class="tot"><span>Total</span><b>' + tgot + ' / ' + tmax + ' points</b></p></div>';
       }
     }
@@ -402,7 +402,7 @@
       if (w.quote) return '<div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p class="ins">' + esc(w.intro) + '</p>' +
         '<div class="ls-notice"><i>' + esc(w.quote) + '</i><b class="au">' + esc(w.author) + '</b></div><p>' + esc(w.outro) + '</p>' +
         '<p class="ins">' + esc(w.pointsLabel) + '</p><ul>' + w.points.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ul></div>';
-      var dot = w.premise.indexOf(". "), head = dot > 0 ? w.premise.slice(0, dot) : "", rest = dot > 0 ? w.premise.slice(dot + 2) : w.premise;
+      var dot = w.plain ? -1 : w.premise.indexOf(". "), head = dot > 0 ? w.premise.slice(0, dot) : "", rest = dot > 0 ? w.premise.slice(dot + 2) : w.premise;
       return '<div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p>' + esc(w.intro) + '</p><div class="ls-notice">' +
         (head ? '<b class="nt">' + esc(head) + '</b>' : '') + esc(rest).replace(/(sentence: )(.+)$/, '$1<b>$2</b>') + '</div>' +
         '<p class="ins">' + esc(w.pointsLabel) + '</p><ul>' + w.points.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ul><p>' + esc(w.outro) + '</p></div>';
@@ -554,7 +554,7 @@
     if (b.type === "part") {
       var pon = st.timer && st.timer.key === key;
       return '<div class="ls-part"><h2>' + esc(b.icon) + ' ' + esc(b.title) + '</h2><p><b>At the olympiad:</b> ' + esc(b.olympiad) + '.</p>' + (b.tip ? '<p>' + esc(b.tip) + '</p>' : '') +
-        '<div class="ls-timer"><b class="ls-clock" data-key="' + key + '">' + (pon ? left(st.timer.end) : b.minutes + ':00') + '</b><button class="ghost" data-lstimer="' + key + '" data-min="' + b.minutes + '">' + (pon ? '↺ Restart' : '▶ Today: ' + b.minutes + ' minutes') + '</button></div></div>';
+        '<div class="ls-timer"><b class="ls-clock" data-key="' + key + '">' + (pon ? left(st.timer.end) : b.minutes + ':00') + '</b><button class="ghost" data-lstimer="' + key + '" data-min="' + b.minutes + '">' + (pon ? '↺ Restart' : '▶ ' + (b.extra ? '' : 'Today: ') + b.minutes + ' minutes') + '</button></div></div>';
     }
     if (b.type === "timer") {
       var on = st.timer && st.timer.key === key;

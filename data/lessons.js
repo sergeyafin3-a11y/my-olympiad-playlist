@@ -1196,9 +1196,10 @@
         }
       ]
     },
-    // Учитель 16.11: последний урок до олимпиады 21 ноября. Один финальный тест на одной странице, как на компьютере на олимпиаде:
-    // над каждой частью — время и баллы олимпиады и таймер на сегодня, ответы сразу в поля, одна кнопка Check answers — верно, неверно, баллы.
-    // Пункты работы 2022/23, которых не было в уроках; пробник 2023/24 Варя, скорее всего, делала — из него ничего. Потом — её Writing, размечен как 6 ноября.
+    // Учитель 16.11: последний урок до олимпиады 21 ноября. В начале — ловушки по всем частям и «как удобнее тебе» без единственного верного.
+    // Потом один финальный тест на одной странице, как на компьютере на олимпиаде: над каждой частью время и баллы олимпиады и таймер, ответы сразу
+    // в поля, одна кнопка Check answers. Use of English — столько пунктов, сколько на олимпиаде (15, 10, 10, 10), задания работы 2022/23 целиком;
+    // пробник 2023/24 Варя, скорее всего, делала — из него ничего. Внизу два Writing на выбор. Потом её Writing, размечен как 6 ноября. Listening — домой.
     {
       id: "l6", date: "2026-11-16", title: "Final check", emoji: "🏁", cover: img("m31-go-for-success"),
       aims: [
@@ -1207,35 +1208,77 @@
       ],
       steps: [
         {
-          stage: "warm-up", title: "Warm-up", minutes: 2, image: img("m18-all-good"),
+          stage: "warm-up", title: "Warm-up", minutes: 5, image: img("m18-all-good"),
           blocks: [
-            { type: "brief", title: "This or that", items: ["Tap one in each row."] },
+            { type: "brief", title: "Tips and traps", items: ["Tap the right answer."] },
+            { type: "quiz", items: [
+              { q: "Listening Task 2: how many times do you hear the recording?", opts: ["Once", "Twice", "Three times"], a: 0, why: "**Once**" },
+              { q: "Listening: when do you read the questions?", opts: ["In the pause before the recording", "After the recording", "Only after the first answer"], a: 0, why: "**In the pause before the recording**" },
+              { q: "Reading Task 1: an option has the same words as the text. Is it the right answer?", opts: ["Not always: the right answer often says it in other words", "Yes, always", "No, never"], a: 0, why: "**Not always: the right answer often says it in other words**" },
+              { q: "Reading Task 1: “What is NOT TRUE…?” What do you look for?", opts: ["The option the text does not say", "The option the text says", "The longest option"], a: 0, why: "**The option the text does not say**" },
+              { q: "Reading Task 2: how many sentences are extra?", opts: ["One", "None", "Two"], a: 0, why: "**One**" },
+              { q: "Use of English Task 1: the line is correct. What do you write?", opts: ["V", "Nothing", "OK"], a: 0, why: "**V**" },
+              { q: "Use of English Task 1: how many extra words can one line have?", opts: ["One or none", "Two or three", "Always one"], a: 0, why: "**One or none**" },
+              { q: "Use of English Task 2: can you change the word given (such → so)?", opts: ["No, never", "Yes, if the meaning is the same"], a: 0, why: "**No, never**" },
+              { q: "Use of English Task 2: “(4 words)”. How do you write “didn’t”?", opts: ["did not: two words, no short forms", "didn’t: one word"], a: 0, why: "**did not: two words, no short forms**" },
+              { q: "Use of English Task 3: what do you decide first?", opts: ["The part of speech: noun, adjective, verb…", "The longest word", "Nothing, just write"], a: 0, why: "**The part of speech: noun, adjective, verb…**" },
+              { q: "Use of English Task 3: you wrote the word. What do you check?", opts: ["Spelling, prefix and ending (-s, -ed, -ly)", "Nothing", "Only the first letter"], a: 0, why: "**Spelling, prefix and ending (-s, -ed, -ly)**" },
+              { q: "Use of English Task 4: there are more letters than items. So…", opts: ["Some letters are extra", "Some letters go twice", "Some items stay empty"], a: 0, why: "**Some letters are extra**" },
+              { q: "Writing: you need 200–250 words and you have 170. Is it OK?", opts: ["No: a text this short can get 0 points", "Yes, it is close enough"], a: 0, why: "**No: a text this short can get 0 points**" },
+              { q: "Writing, a story: the task gives the first sentence. What do you do?", opts: ["Copy it word for word", "Change it a little", "Translate it"], a: 0, why: "**Copy it word for word**" },
+              { q: "Writing, an essay: what is in the plan?", opts: ["Introduction, opinion and reasons, examples, conclusion", "Only your opinion", "Only examples"], a: 0, why: "**Introduction, opinion and reasons, examples, conclusion**" }
+            ] },
+            { type: "brief", title: "Your way", items: ["There is no wrong answer.", "Tap what works for you."] },
             { type: "thisorthat", items: [
-              { a: "🌅 Go to bed early", b: "📚 Study late", ask: "What will you do the night before?" },
-              { a: "🎧 Music", b: "🤫 Silence", ask: "What helps you to focus?" },
-              { a: "🐢 Slow and careful", b: "🐇 Fast, then check", ask: "How do you do a test?" }
+              { a: "📄 Read the whole text first", b: "🔍 Go gap by gap", ask: "Reading Task 2: which way is yours?" },
+              { a: "1️⃣ Tasks in order", b: "🔀 Easiest task first", ask: "Use of English: which order is faster for you?" },
+              { a: "📝 Plan in notes", b: "🧠 Plan in your head", ask: "Writing: how do you plan?" },
+              { a: "✏️ Answer while you listen", b: "⏸ Answer in the pause", ask: "Listening Task 1: you hear it twice. When do you answer?" }
             ] }
           ]
         },
         {
-          stage: "practice", title: "Final test", minutes: 37, image: img("m09-focus"), test: true,
+          stage: "practice", title: "Final test", minutes: 40, image: img("m09-focus"), test: true,
           blocks: [
             { type: "list", title: "📌 How it works", items: ["One test, like at the olympiad.", "Choose or type your answers.", "At the end, press ✓ Check answers."] },
-            { type: "part", title: "Listening", icon: "🎧", olympiad: "15 minutes · 2 tasks · 15 points", tip: "Task 2: you hear the recording only once. Read the questions first.", minutes: 5 },
-            { type: "minitask", label: "Task 2", task: "mock-l2", items: [11, 12, 13, 14, 15], source: "Real task · Moscow municipal stage 2022/23 · Listening",
-              audio: { src: "media/listening-mun-msk-22-23.m4a", from: 419, stop: 618, label: "Listen" } },
             { type: "part", title: "Reading", icon: "📖", olympiad: "45 minutes · 2 tasks · 20 points", tip: "About 20 minutes for each task and 5 minutes to check.", minutes: 12 },
             { type: "minitask", label: "Task 1", task: "mock-r1", items: [8, 9, 10], source: "Real task · Moscow municipal stage 2022/23 · Reading", paras: [4, 5, 6] },
             { type: "minitask", label: "Task 2", task: "mock-r2", items: [12, 13, 14, 15], source: "Real task · Moscow municipal stage 2022/23 · Reading", paras: [1] },
-            { type: "part", title: "Use of English", icon: "🧩", olympiad: "60 minutes · 4 tasks · 45 points", tip: "About 15 minutes for each task. Task 2: count the words.", minutes: 20 },
-            { type: "minitask", label: "Task 1", task: "mock-u1", items: [2, 4, 8, 11, 14], source: "Real task · Moscow municipal stage 2022/23 · Use of English" },
-            { type: "minitask", label: "Task 2", task: "mock-u2", items: [1, 3, 8], source: "Real task · Moscow municipal stage 2022/23 · Use of English" },
-            { type: "minitask", label: "Task 3", task: "mock-u3", items: [6, 7, 8, 9, 10], source: "Real task · Moscow municipal stage 2022/23 · Use of English" },
-            { type: "minitask", label: "Task 4", task: "mock-u4", items: [3, 4, 7, 10], source: "Real task · Moscow municipal stage 2022/23 · Use of English" }
+            { type: "part", title: "Use of English", icon: "🧩", olympiad: "60 minutes · 4 tasks · 45 points", tip: "About 15 minutes for each task. Task 2: count the words.", minutes: 28 },
+            { type: "minitask", label: "Task 1", task: "mock-u1", items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], source: "Real task · Moscow municipal stage 2022/23 · Use of English" },
+            { type: "minitask", label: "Task 2", task: "mock-u2", items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], source: "Real task · Moscow municipal stage 2022/23 · Use of English" },
+            { type: "minitask", label: "Task 3", task: "mock-u3", items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], source: "Real task · Moscow municipal stage 2022/23 · Use of English" },
+            { type: "minitask", label: "Task 4", task: "mock-u4", items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], source: "Real task · Moscow municipal stage 2022/23 · Use of English" },
+            { type: "part", title: "Writing", icon: "✍️", olympiad: "60 minutes · 1 task · 20 points", tip: "Extra: choose one task or write both. Plan, write, then check.", minutes: 60, extra: true },
+            { type: "wpaper", source: "Real task · Moscow municipal stage 2022/23 · Writing",
+              intro: "Comment on the following quotation.",
+              quote: "A journey of a thousand miles begins with a single step.",
+              author: "Lao Tzu",
+              outro: "Write 200–250 words.",
+              pointsLabel: "Use the following plan:",
+              points: [
+                "make an introduction, explaining how you understand the author’s point of view;",
+                "express your personal opinion and give reasons to support it;",
+                "give examples from literature or history to illustrate your reasons;",
+                "make a conclusion restating your position."
+              ] },
+            { type: "writebox", min: 200, max: 250, label: "essay", send: "Writing · Essay (Lao Tzu)" },
+            { type: "wpaper", source: "Real task · All-Russian olympiad 2025/26 · Final stage · Writing", plain: true,
+              intro: "An English language magazine invites young people to participate in a writing competition. The participant must write a short story based on the following premise:",
+              premise: "A young person finds a mysterious book in a library. This book contains not just words, but three encrypted messages in the form of riddles. Each solved riddle helps the person to understand an important truth and changes their life's course.",
+              pointsLabel: "The story must include:",
+              points: [
+                "the information about why the person came to the library;",
+                "three riddles - questions that are difficult to understand, and that have surprising answers, that you may ask somebody as a game;",
+                "answers to the riddles discovering truths of vital importance;",
+                "description of how this book changed the person’s life."
+              ],
+              outro: "You decide to take part and write the short story." },
+            { type: "writebox", min: 220, max: 250, label: "story", send: "Writing · Story (The mysterious book)" }
           ]
         },
         {
-          stage: "feedback", title: "Writing", minutes: 13, image: img("m12-proud"),
+          stage: "feedback", title: "Writing", minutes: 10, image: img("m12-proud"),
           blocks: [
             { type: "list", title: "📌 Remember", items: [
               "At the olympiad: 60 minutes · 20 points · 200–250 words.",
@@ -1284,6 +1327,16 @@
               { text: "That is why I think this quote is completely right.", at: 6, wrong: "quote", cat: "Style" },
               { text: "Our interpretation of a book depends on our age and experience, which makes reading a very personal thing for everyon", at: 19, wrong: "everyon", cat: "Spelling" }
             ] }
+          ]
+        },
+        {
+          stage: "homework", home: true, title: "Homework: Listening", minutes: 15, image: img("m06-succeed"), test: true,
+          blocks: [
+            { type: "part", title: "Listening", icon: "🎧", olympiad: "15 minutes · 2 tasks · 15 points", tip: "Task 1: you hear the text twice. Task 2: only once. Read the questions in the pauses.", minutes: 15 },
+            { type: "minitask", label: "Task 1", task: "mock-l1", items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], source: "Real task · Moscow municipal stage 2022/23 · Listening",
+              audio: { src: "media/listening-mun-msk-22-23.m4a", from: 0, stop: 419, label: "Listen" } },
+            { type: "minitask", label: "Task 2", task: "mock-l2", items: [11, 12, 13, 14, 15], source: "Real task · Moscow municipal stage 2022/23 · Listening",
+              audio: { src: "media/listening-mun-msk-22-23.m4a", from: 419, stop: 618, label: "Listen" } }
           ]
         }
       ]
