@@ -322,7 +322,7 @@
       });
       if (tall && tparts.length) {
         var tgot = 0, tmax = 0;
-        h += '<div class="ls-box ls-score"><h3>🏁 Your result</h3>' + tparts.map(function (p) { tgot += p.got; tmax += p.max; return '<p><span>' + esc(p.t) + '</span><b>' + p.got + ' / ' + p.max + '</b></p>'; }).join("") +
+        h += '<div class="ls-box ls-score ls-result"><h3>🏁 Your result</h3>' + tparts.map(function (p) { tgot += p.got; tmax += p.max; return '<p><span>' + esc(p.t) + '</span><b>' + p.got + ' / ' + p.max + '</b></p>'; }).join("") +
           '<p class="tot"><span>Total</span><b>' + tgot + ' / ' + tmax + ' points</b></p></div>';
       }
     }
@@ -749,8 +749,19 @@
   // Ответ перефразирования помним, пока урок открыт; страницу не перерисовываем — иначе пропал бы курсор.
   document.addEventListener("input", function (e) {
     // Исправила ответ — старый ✓/✗ уже не про него: до нового «Check» поле снова не проверено.
-    var el = e.target; if (el.dataset && el.dataset.tfin != null) { var tg = game(el.dataset.tfin); tg.v = el.value; tg.checked = false; save();
-      var row = el.closest && el.closest(".ls-lm .ls-tf"); if (row) { row.classList.remove("right", "wrong"); var w = row.querySelector(".why"); if (w) w.remove(); } }
+    var el = e.target; if (el.dataset && el.dataset.tfin != null) { var tg = game(el.dataset.tfin); tg.v = el.value; tg.checked = false;
+      // Исправила ответ в проверенном задании (проверка PR 83): задание снова не проверено, как при смене выбора в pickRow, и старые баллы с экрана уходят.
+      var bkey = el.dataset.tfin.split(":").slice(0, -1).join(":"), bg = games[bkey], was = !!(bg && bg.checked);
+      if (was) bg.checked = false;
+      save();
+      var lm = el.closest && el.closest(".ls-lm");
+      if (lm && was) {
+        [].forEach.call(lm.querySelectorAll(".right, .wrong"), function (r) { r.classList.remove("right", "wrong"); });
+        [].forEach.call(lm.querySelectorAll(".why, .ls-bscore"), function (w) { w.parentNode.removeChild(w); });
+        var rbox = document.querySelector(".ls-result"); if (rbox) rbox.parentNode.removeChild(rbox);
+      } else {
+        var row = el.closest && el.closest(".ls-lm .ls-tf"); if (row) { row.classList.remove("right", "wrong"); var w = row.querySelector(".why"); if (w) w.remove(); }
+      } }
   });
   document.addEventListener("keydown", function (e) {
     var el = e.target; if (e.key !== "Enter" || !el.dataset || el.dataset.tfin == null) return;

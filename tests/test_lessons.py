@@ -1660,9 +1660,9 @@ class FinalLesson(unittest.TestCase):
     над каждой частью — время и баллы олимпиады и таймер на сегодня; ответы сразу в поля, одна кнопка Check answers — верно,
     неверно и сколько баллов. Задания вперемешку из разных лет, разделы и задания названы как в олимпиаде. Потом — её Writing."""
     TEST = [("Listening", [("mock-l2", [11, 12, 13, 14, 15], "Task 2")]),
-            ("Reading", [("mock-r1", [8, 9, 10], "Task 1"), ("p-r2-2324", [3, 4, 5, 6], "Task 2")]),
+            ("Reading", [("mock-r1", [8, 9, 10], "Task 1"), ("mock-r2", [12, 13, 14, 15], "Task 2")]),
             ("Use of English", [("mock-u1", [2, 4, 8, 11, 14], "Task 1"), ("mock-u2", [1, 3, 8], "Task 2"),
-                                ("p-u3-2324", [2, 4, 5, 7, 10], "Task 3"), ("mock-u4", [3, 4, 7, 10], "Task 4")])]
+                                ("mock-u3", [6, 7, 8, 9, 10], "Task 3"), ("mock-u4", [3, 4, 7, 10], "Task 4")])]
 
     def setUp(self):
         self.l = run_js('return L.filter(function(x){ return x.id === "l6"; })[0];')
@@ -1703,6 +1703,9 @@ class FinalLesson(unittest.TestCase):
         self.assertEqual(out.count("0 / 5 points"), 3, "у каждого задания свои баллы")
         out = render_step("l6", 1, events=[["type", "lmsel", "l6:1:2:0", "B"], ["click", "lscheckall", "l6:1"]], with_store=True)
         self.assertIn("1 / 29 points", out["html"])
+        # Проверка PR 83: исправила напечатанный ответ после Check — старые баллы не должны висеть, пока снова не нажмёт Check.
+        out = render_step("l6", 1, events=[["click", "lscheckall", "l6:1"], ["type", "tfin", "l6:1:7:0", "V"]])
+        self.assertNotIn("Your result", out)
 
     def test_items_not_done_in_earlier_lessons(self):
         before = run_js('return L.filter(function(x){ return x.date < "2026-11-16"; });')
@@ -1711,8 +1714,11 @@ class FinalLesson(unittest.TestCase):
             if b["type"] == "minitask":
                 for n in b["items"]:
                     self.assertNotIn((b["task"], n), used)
-        u2 = run_js('var o; window.VARIANTS.forEach(function(v){ v.parts.forEach(function(p){ p.tasks.forEach(function(t){ if (t.id === "p-u2-2324") o = t; }); }); }); return o;')
-        mock = json.dumps(u2, ensure_ascii=False)
+        # Проверка PR 83: пробник 2023/24 Варя, скорее всего, делала — из него ничего; и пункты 2022/23, перенесённые в пробник, тоже нет.
+        mock = json.dumps(run_js('var o = []; window.VARIANTS.forEach(function(v){ v.parts.forEach(function(p){ p.tasks.forEach(function(t){ if (/-2324$/.test(t.id)) o.push(t); }); }); }); return o;'), ensure_ascii=False)
+        for b in self.steps[1]["blocks"]:
+            if b["type"] == "minitask":
+                self.assertFalse(b["task"].endswith("-2324"), b["task"])
         for q in ("travel incognito", "If I finish my homework early", "did it on purpose"):
             self.assertNotIn(q, mock)
 

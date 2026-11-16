@@ -1198,7 +1198,7 @@
     },
     // Учитель 16.11: последний урок до олимпиады 21 ноября. Один финальный тест на одной странице, как на компьютере на олимпиаде:
     // над каждой частью — время и баллы олимпиады и таймер на сегодня, ответы сразу в поля, одна кнопка Check answers — верно, неверно, баллы.
-    // Задания вперемешку из работ 2022/23 и 2023/24, пункты, которых не было в уроках. Потом — её Writing, размечен как 6 ноября.
+    // Пункты работы 2022/23, которых не было в уроках; пробник 2023/24 Варя, скорее всего, делала — из него ничего. Потом — её Writing, размечен как 6 ноября.
     {
       id: "l6", date: "2026-11-16", title: "Final check", emoji: "🏁", cover: img("m31-go-for-success"),
       aims: [
@@ -1226,11 +1226,11 @@
               audio: { src: "media/listening-mun-msk-22-23.m4a", from: 419, stop: 618, label: "Listen" } },
             { type: "part", title: "Reading", icon: "📖", olympiad: "45 minutes · 2 tasks · 20 points", tip: "About 20 minutes for each task and 5 minutes to check.", minutes: 12 },
             { type: "minitask", label: "Task 1", task: "mock-r1", items: [8, 9, 10], source: "Real task · Moscow municipal stage 2022/23 · Reading", paras: [4, 5, 6] },
-            { type: "minitask", label: "Task 2", task: "p-r2-2324", items: [3, 4, 5, 6], source: "Real task · Moscow municipal stage 2023/24 · Reading", paras: [2, 3] },
+            { type: "minitask", label: "Task 2", task: "mock-r2", items: [12, 13, 14, 15], source: "Real task · Moscow municipal stage 2022/23 · Reading", paras: [1] },
             { type: "part", title: "Use of English", icon: "🧩", olympiad: "60 minutes · 4 tasks · 45 points", tip: "About 15 minutes for each task. Task 2: count the words.", minutes: 20 },
             { type: "minitask", label: "Task 1", task: "mock-u1", items: [2, 4, 8, 11, 14], source: "Real task · Moscow municipal stage 2022/23 · Use of English" },
             { type: "minitask", label: "Task 2", task: "mock-u2", items: [1, 3, 8], source: "Real task · Moscow municipal stage 2022/23 · Use of English" },
-            { type: "minitask", label: "Task 3", task: "p-u3-2324", items: [2, 4, 5, 7, 10], source: "Real task · Moscow municipal stage 2023/24 · Use of English" },
+            { type: "minitask", label: "Task 3", task: "mock-u3", items: [6, 7, 8, 9, 10], source: "Real task · Moscow municipal stage 2022/23 · Use of English" },
             { type: "minitask", label: "Task 4", task: "mock-u4", items: [3, 4, 7, 10], source: "Real task · Moscow municipal stage 2022/23 · Use of English" }
           ]
         },
