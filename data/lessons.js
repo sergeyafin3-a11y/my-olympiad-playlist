@@ -1196,7 +1196,97 @@
         }
       ]
     },
-    { id: "l6", date: "2026-11-16", title: "Mock exam: your mistakes", emoji: "🏔️", cover: img("m31-go-for-success"),
-      aims: ["We go through your mistakes in the mock exam."] }
+    // Учитель 16.11: последний урок до олимпиады 21 ноября. Один финальный тест на одной странице, как на компьютере на олимпиаде:
+    // над каждой частью — время и баллы олимпиады и таймер на сегодня, ответы сразу в поля, одна кнопка Check answers — верно, неверно, баллы.
+    // Пункты работы 2022/23, которых не было в уроках; пробник 2023/24 Варя, скорее всего, делала — из него ничего. Потом — её Writing, размечен как 6 ноября.
+    {
+      id: "l6", date: "2026-11-16", title: "Final check", emoji: "🏁", cover: img("m31-go-for-success"),
+      aims: [
+        "🎯 Goal: one final test like at the olympiad, then your writing.",
+        "Real tasks. Time and points as on 21 November."
+      ],
+      steps: [
+        {
+          stage: "warm-up", title: "Warm-up", minutes: 2, image: img("m18-all-good"),
+          blocks: [
+            { type: "brief", title: "This or that", items: ["Tap one in each row."] },
+            { type: "thisorthat", items: [
+              { a: "🌅 Go to bed early", b: "📚 Study late", ask: "What will you do the night before?" },
+              { a: "🎧 Music", b: "🤫 Silence", ask: "What helps you to focus?" },
+              { a: "🐢 Slow and careful", b: "🐇 Fast, then check", ask: "How do you do a test?" }
+            ] }
+          ]
+        },
+        {
+          stage: "practice", title: "Final test", minutes: 37, image: img("m09-focus"), test: true,
+          blocks: [
+            { type: "list", title: "📌 How it works", items: ["One test, like at the olympiad.", "Choose or type your answers.", "At the end, press ✓ Check answers."] },
+            { type: "part", title: "Listening", icon: "🎧", olympiad: "15 minutes · 2 tasks · 15 points", tip: "Task 2: you hear the recording only once. Read the questions first.", minutes: 5 },
+            { type: "minitask", label: "Task 2", task: "mock-l2", items: [11, 12, 13, 14, 15], source: "Real task · Moscow municipal stage 2022/23 · Listening",
+              audio: { src: "media/listening-mun-msk-22-23.m4a", from: 419, stop: 618, label: "Listen" } },
+            { type: "part", title: "Reading", icon: "📖", olympiad: "45 minutes · 2 tasks · 20 points", tip: "About 20 minutes for each task and 5 minutes to check.", minutes: 12 },
+            { type: "minitask", label: "Task 1", task: "mock-r1", items: [8, 9, 10], source: "Real task · Moscow municipal stage 2022/23 · Reading", paras: [4, 5, 6] },
+            { type: "minitask", label: "Task 2", task: "mock-r2", items: [12, 13, 14, 15], source: "Real task · Moscow municipal stage 2022/23 · Reading", paras: [1] },
+            { type: "part", title: "Use of English", icon: "🧩", olympiad: "60 minutes · 4 tasks · 45 points", tip: "About 15 minutes for each task. Task 2: count the words.", minutes: 20 },
+            { type: "minitask", label: "Task 1", task: "mock-u1", items: [2, 4, 8, 11, 14], source: "Real task · Moscow municipal stage 2022/23 · Use of English" },
+            { type: "minitask", label: "Task 2", task: "mock-u2", items: [1, 3, 8], source: "Real task · Moscow municipal stage 2022/23 · Use of English" },
+            { type: "minitask", label: "Task 3", task: "mock-u3", items: [6, 7, 8, 9, 10], source: "Real task · Moscow municipal stage 2022/23 · Use of English" },
+            { type: "minitask", label: "Task 4", task: "mock-u4", items: [3, 4, 7, 10], source: "Real task · Moscow municipal stage 2022/23 · Use of English" }
+          ]
+        },
+        {
+          stage: "feedback", title: "Writing", minutes: 13, image: img("m12-proud"),
+          blocks: [
+            { type: "list", title: "📌 Remember", items: [
+              "At the olympiad: 60 minutes · 20 points · 200–250 words.",
+              "Follow every point of the task.",
+              "Keep 5 minutes to check spelling and punctuation."
+            ] },
+            { type: "brief", title: "Your story", items: ["Read your story.", "The colours show the type of mistake."] },
+            { type: "marked", source: "Your homework · Story", title: "Long-awaited call",
+              paras: [
+                ["Tom had a very special reason for getting up early the next day, so he set the alarm for 6 am. ", { t: "The main reason was that he had been waiting for six months to win", c: "style" }, " ", { t: "a radio lottery", c: "lex" }, ". The prize was a concert trip to Australia. To win, you had to call the radio station and name the \"star of the hour\". As Tom was the number one fan of this radio station, he knew all the \"stars of the hour\" by heart."],
+                ["In the morning, Tom was ready to make a call. Exactly at 6 am, he dialed the number. He was really nervous. After a few beeps, he heard a voice! Tom immediately named the star, but then the connection was cut off. He was shocked. A few minutes later, the radio station called him back, congratulated him on his victory, and apologized for the technical problems."],
+                ["A week later, Tom was packing his luggage. He still couldn't believe that he had won and that it wasn't a dream. The flight to Australia took him 12 hours, and he arrived feeling really tired. However, all his exhaustion disappeared when he checked into a luxurious hotel. Soon, he went to the concert, where the famous star personally congratulated him on winning ", { t: "the lottery", c: "lex" }, " right on stage. It was an unforgettable journey, and Tom absolutely loved his trip to Australia!"]
+              ],
+              key: MARK_KEY,
+              score: [
+                { t: "Task completion", p: 4, max: 4 },
+                { t: "Organisation", p: 4, max: 4 },
+                { t: "Vocabulary", p: 3, max: 4 },
+                { t: "Grammar", p: 4, max: 4 },
+                { t: "Spelling and punctuation", p: 4, max: 4 }
+              ] },
+            { type: "brief", title: "Your essay", items: ["Read your essay.", "The colours show the type of mistake."] },
+            { type: "marked", source: "Your homework · Essay",
+              paras: [
+                ["The famous quotation by Edmund Wilson says, \"No two persons ever read the same book.\" I think the author means that every person has their own life experience. Because of this, people notice different things in the same story and feel different emotions."],
+                ["I completely agree with this statement. ", { t: "When we read, we connect the story with our own life. A teenager and an adult will look at the same characters in completely different ways.", c: "task" }],
+                ["A good example is the novel \"Fathers and Sons\" by Ivan Turgenev. The main character, Bazarov, rejects art, love, and family traditions. For a young reader, Bazarov often looks like a strong hero and a ", { t: "cool", c: "style" }, " rebel who is not afraid to say what he thinks. ", { t: "But", c: "style" }, " for an older reader, like a parent, Bazarov might seem rude and too confident. They can see that his ideas are actually wrong and bring him a lot of pain in the end. So, two people read the same book, but one likes the hero, and the other ", { t: "does not understand", c: "lex" }, " him."],
+                ["In conclusion, I firmly believe that Wilson is right. Our interpretation of a book depends on our age and experience, which makes reading a very personal thing for ", { t: "everyon", c: "spell" }]
+              ],
+              key: MARK_KEY,
+              score: [
+                { t: "Task completion", p: 3, max: 4 },
+                { t: "Organisation", p: 4, max: 4 },
+                { t: "Vocabulary", p: 3, max: 4 },
+                { t: "Grammar", p: 4, max: 4 },
+                { t: "Spelling and punctuation", p: 3, max: 4 }
+              ] },
+            { type: "brief", title: "Your mistakes", items: ["These sentences are from your homework.", "Tap the mistake in each sentence."] },
+            { type: "spot", then: "how do you fix it?", items: [
+              { text: "The main reason was that he had been waiting for six months to win a radio lottery.", at: 16, wrong: "lottery", cat: "Vocabulary" },
+              { text: "So, two people read the same book, but one likes the hero, and the other does not understand him.", at: 17, wrong: "understand", cat: "Vocabulary" },
+              { text: "Arthur was a harmful man and never missed an opportunity to make rude remarks about his nephew at dinner.", at: 3, wrong: "harmful", cat: "Vocabulary" },
+              { text: "The mansion and all his savings were being auctioned off to pay his debts.", at: 5, wrong: "savings", cat: "Vocabulary" },
+              { text: "It stated that due to financial issues, uncle Arthur was completely bankrupt.", at: 7, wrong: "uncle", cat: "Spelling" },
+              { text: "For a young reader, Bazarov often looks like a strong hero and a cool rebel who is not afraid to say what he thinks.", at: 13, wrong: "cool", cat: "Style" },
+              { text: "That is why I think this quote is completely right.", at: 6, wrong: "quote", cat: "Style" },
+              { text: "Our interpretation of a book depends on our age and experience, which makes reading a very personal thing for everyon", at: 19, wrong: "everyon", cat: "Spelling" }
+            ] }
+          ]
+        }
+      ]
+    }
   ];
 })();

@@ -151,6 +151,8 @@
     ".ls-paper{margin-top:12px;padding:16px;border-radius:6px;background:#FBF8F1;color:#1A1A1A;font-family:Georgia,'Times New Roman',serif;font-size:15px;line-height:1.55;box-shadow:0 8px 24px rgba(0,0,0,.35)}",
     ".ls-paper .src{font-family:inherit;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#6B6457;border-bottom:1px solid #D9D2C3;padding-bottom:6px;margin-bottom:10px}",
     ".ls-ptask{margin-top:16px;font-size:16px}",
+    ".ls-ptask small{font-weight:400;opacity:.7;font-size:13px;margin-left:6px}.ls-bscore{font-weight:700;margin:10px 0 0}",
+    ".ls-part{margin-top:26px;padding-top:16px;border-top:2px solid rgba(127,127,127,.35)}.ls-part h2{margin:0 0 6px}.ls-part p{margin:4px 0}",
     ".ls-hero.ls-full{max-height:none}",
     ".ls-bank h4{margin:16px 0 8px;font-size:15px}.ls-bank .it{margin:0 0 12px}.ls-bank .it p{margin:2px 0}",
     ".ls-paper p{margin:0 0 10px}.ls-paper .ins{font-weight:700}.ls-paper .ttl{font-weight:700;font-size:17px;text-align:center}",
@@ -248,6 +250,16 @@
   }
   // Ответ перефразирования: без регистра, лишних пробелов и точки в конце; апостроф — любой.
   function norm(s) { return String(s).toLowerCase().replace(/\u2019/g, "'").replace(/[.,!?;:"]/g, " ").replace(/\s+/g, " ").trim(); }
+  // Финальный тест (учитель 16.11): сколько верных ответов в задании урока; один пункт — один балл, как на олимпиаде.
+  function miniScore(l, i, k, b) {
+    var mi = taskById(b.task), key = l.id + ":" + i + ":" + k, g = game(key), got = 0;
+    if (!mi) return { got: 0, max: 0, checked: false };
+    b.items.forEach(function (num, n) {
+      var it = mi.items.filter(function (x) { return x.n === num; })[0];
+      if (mi.type === "choice" ? (g.pick || {})[n] === it.a[0] : matches(it, game(key + ":" + n).v || "")) got++;
+    });
+    return { got: got, max: b.items.length, checked: !!g.checked };
+  }
   function matches(it, v) { return it.accept.some(function (a) { return norm(a) === norm(v); }); }
   // Разбор проверки листа: счёт; под каждым неверным или пустым пропуском — где искать и «как решать»
   // (официальный разбор с ответом — свёрнут: сначала попробовать самой).
@@ -301,6 +313,19 @@
     // Задания раздела нумеруются по порядку — Task 1, Task 2…: учитель задаёт на дом «Section 5 → Task 3».
     var tn = 0;
     s.blocks.forEach(function (b, k) { h += block(l, i, k, b, b.type === "brief" || b.type === "paper" || b.type === "minitask" ? ++tn : 0); });
+    // Финальный тест: после «Check answers» — баллы по частям и всего.
+    if (s.test) {
+      var tparts = [], tcur = null, tall = true;
+      s.blocks.forEach(function (b, k) {
+        if (b.type === "part") { tcur = { t: b.title, got: 0, max: 0 }; tparts.push(tcur); }
+        if (b.type === "minitask" && tcur) { var ms = miniScore(l, i, k, b); tcur.got += ms.got; tcur.max += ms.max; if (!ms.checked) tall = false; }
+      });
+      if (tall && tparts.length) {
+        var tgot = 0, tmax = 0;
+        h += '<div class="ls-box ls-score ls-result"><h3>🏁 Your result</h3>' + tparts.map(function (p) { tgot += p.got; tmax += p.max; return '<p><span>' + esc(p.t) + '</span><b>' + p.got + ' / ' + p.max + '</b></p>'; }).join("") +
+          '<p class="tot"><span>Total</span><b>' + tgot + ' / ' + tmax + ' points</b></p></div>';
+      }
+    }
     // Учитель 26.10: «сейчас я себя проверяю, а завтра показываю экран ученице — ответы должны стереться».
     var canCheck = s.blocks.some(function (b) { return ["gapfill", "transform", "upgrade", "matchsheet", "minitask"].indexOf(b.type) >= 0 || (b.type === "paper" && b.task); });
     // В уроке-разборе заполнять нечего, кнопки стирания там не нужны. В остальных уроках они есть в каждом разделе.
@@ -442,13 +467,16 @@
         return '<div class="ls-tf' + (mig.checked ? (ok ? ' right' : ' wrong') : '') + '"><p class="q"><b>' + it.n + '.</b> ' + esc(it.q) + '</p><p class="s"><input data-tfin="' + key + ':' + i + '" value="' + esc(val) + '" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Answer ' + it.n + '"></p>' +
           (mig.checked ? '<p class="why">' + (ok ? '✓ Right!' : '✗ Answer: <b>' + esc(it.accept[0]) + '</b>') + '</p>' : '') + '</div>';
       }).join("");
-      return '<h3 class="ls-ptask">📋 Task ' + num + ' · ' + esc(b.title) + '</h3><div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p class="ins">' + esc(mi.intro) + '</p>' +
+      // label — как в олимпиаде («Task 2»), без своих слов (учитель 16.11); без него — номер по уроку и название.
+      var mtest = l.steps[i].test;
+      return '<h3 class="ls-ptask">📋 ' + (b.label ? esc(b.label) : 'Task ' + num + ' · ' + esc(b.title)) + (mtest ? ' <small>' + b.items.length + (b.items.length > 1 ? ' points' : ' point') + '</small>' : '') + '</h3><div class="ls-paper"><div class="src">' + esc(b.source) + '</div><p class="ins">' + esc(mi.intro) + '</p>' +
         (mi.example ? '<p>' + esc(mi.example) + '</p>' : '') +
         (mi.examples || []).map(function (e) { return '<p><b>' + esc(e.label) + '.</b> ' + esc(e.show) + ' — ' + esc(e.answer || 'V') + '</p>'; }).join("") +
         (b.paras ? (mi.textTitle ? '<p class="ttl">' + esc(mi.textTitle) + '</p>' : '') + (mi.textSubtitle ? '<p>' + esc(mi.textSubtitle) + '</p>' : '') + b.paras.map(function (n) { return '<p>' + esc(mi.text[n]) + '</p>'; }).join("") : '') +
         (shared ? olist(shared) : '') + '</div>' +
         (b.audio ? '<div class="listen"><button class="bigplay" data-play="' + b.audio.from + '" data-label="' + esc(b.audio.label) + '" data-src="' + esc(b.audio.src) + '" data-stop="' + b.audio.stop + '" data-sub="' + esc(b.source) + '">▶ ' + esc(b.audio.label) + '</button></div>' : '') +
-        '<div class="ls-lm">' + rows + '<div class="listen"><button class="ghost" data-lscheck="' + key + '">✓ Check</button></div></div>';
+        '<div class="ls-lm">' + rows + (mtest ? (mig.checked ? '<p class="ls-bscore">' + miniScore(l, i, k, b).got + ' / ' + b.items.length + ' points</p>' : '') :
+        '<div class="listen"><button class="ghost" data-lscheck="' + key + '">✓ Check</button></div>') + '</div>';
     }
     // Работа ученицы с выделениями: цвет — тип ошибки, у каждой номер, чтобы учитель могла сказать «посмотри на третье». Справа — какие цвета что значат
     // и какие номера к какому типу; там все типы, даже те, которых в тексте нет. Нажимать не на что, объяснений нет: объясняет учитель. Ниже — баллы.
@@ -521,6 +549,12 @@
         (b.opts ? '<div class="ls-wopts">' + b.opts.map(function (o) { return '<p><b>' + esc(o.k) + ')</b> ' + esc(o.t) + '</p>'; }).join("") + '</div>' : '') + '<ol>' + b.steps.map(function (x, j) {
         return j > wn ? '' : '<li><b>' + rich(x.q) + '</b>' + (j < wn ? '<p class="why">' + rich(x.a) + '</p>' : '') + '</li>';
       }).join("") + '</ol>' + (wn < b.steps.length ? '<button class="bigplay" data-lswalk="' + key + '">👀 Show</button>' : '<p class="ls-win">✅ Gap ' + esc(b.gap) + ' = ' + esc(b.answer) + '</p>') + '</div>';
+    }
+    // Часть финального теста: время и баллы олимпиады, подсказка и таймер на сегодня.
+    if (b.type === "part") {
+      var pon = st.timer && st.timer.key === key;
+      return '<div class="ls-part"><h2>' + esc(b.icon) + ' ' + esc(b.title) + '</h2><p><b>At the olympiad:</b> ' + esc(b.olympiad) + '.</p>' + (b.tip ? '<p>' + esc(b.tip) + '</p>' : '') +
+        '<div class="ls-timer"><b class="ls-clock" data-key="' + key + '">' + (pon ? left(st.timer.end) : b.minutes + ':00') + '</b><button class="ghost" data-lstimer="' + key + '" data-min="' + b.minutes + '">' + (pon ? '↺ Restart' : '▶ Today: ' + b.minutes + ' minutes') + '</button></div></div>';
     }
     if (b.type === "timer") {
       var on = st.timer && st.timer.key === key;
@@ -715,8 +749,19 @@
   // Ответ перефразирования помним, пока урок открыт; страницу не перерисовываем — иначе пропал бы курсор.
   document.addEventListener("input", function (e) {
     // Исправила ответ — старый ✓/✗ уже не про него: до нового «Check» поле снова не проверено.
-    var el = e.target; if (el.dataset && el.dataset.tfin != null) { var tg = game(el.dataset.tfin); tg.v = el.value; tg.checked = false; save();
-      var row = el.closest && el.closest(".ls-lm .ls-tf"); if (row) { row.classList.remove("right", "wrong"); var w = row.querySelector(".why"); if (w) w.remove(); } }
+    var el = e.target; if (el.dataset && el.dataset.tfin != null) { var tg = game(el.dataset.tfin); tg.v = el.value; tg.checked = false;
+      // Исправила ответ в проверенном задании (проверка PR 83): задание снова не проверено, как при смене выбора в pickRow, и старые баллы с экрана уходят.
+      var bkey = el.dataset.tfin.split(":").slice(0, -1).join(":"), bg = games[bkey], was = !!(bg && bg.checked);
+      if (was) bg.checked = false;
+      save();
+      var lm = el.closest && el.closest(".ls-lm");
+      if (lm && was) {
+        [].forEach.call(lm.querySelectorAll(".right, .wrong"), function (r) { r.classList.remove("right", "wrong"); });
+        [].forEach.call(lm.querySelectorAll(".why, .ls-bscore"), function (w) { w.parentNode.removeChild(w); });
+        var rbox = document.querySelector(".ls-result"); if (rbox) rbox.parentNode.removeChild(rbox);
+      } else {
+        var row = el.closest && el.closest(".ls-lm .ls-tf"); if (row) { row.classList.remove("right", "wrong"); var w = row.querySelector(".why"); if (w) w.remove(); }
+      } }
   });
   document.addEventListener("keydown", function (e) {
     var el = e.target; if (e.key !== "Enter" || !el.dataset || el.dataset.tfin == null) return;

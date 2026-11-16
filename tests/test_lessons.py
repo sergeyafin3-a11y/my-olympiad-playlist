@@ -176,7 +176,7 @@ class Lessons(unittest.TestCase):
 # Официальный ключ Reading Task 2 муниципального этапа Москвы 2024/25
 # (ans-engl-10-11-mun-msk-24-25.pdf, всош.цпм.рф): пропуски 1–10, лишнее — H.
 KEY_2425 = "GBKEIDCAJF"
-TASK_FILES = ["data/variant-mun-msk-25-26.js", "data/variant-mun-msk-22-23.js", "data/practice-mun.js", "data/explain-mun.js"]
+TASK_FILES = ["data/variant-mun-msk-25-26.js", "data/variant-mun-msk-23-24.js", "data/variant-mun-msk-22-23.js", "data/practice-mun.js", "data/explain-mun.js"]
 # Учитель 22.10: «поменяем местами» — на уроке разбираем текст 2025/26 про будильник (m-r2),
 # а пирог Цветаевой 2024/25 — домашнее задание на 15 минут (отработка p-r2-2425).
 IN_CLASS, HOMEWORK = "m-r2", "p-r2-2425"
@@ -1650,11 +1650,119 @@ class ExamWalkthroughLesson(unittest.TestCase):
         self.assertNotIn("16 November", text)
         l6 = run_js('return L.filter(function(x){ return x.id === "l6"; })[0];')
         self.assertEqual(l6["date"], "2026-11-16")
-        self.assertIn("mistakes", " ".join(l6["aims"]))
         self.assertNotIn("links", l6)
         l4 = run_js('return L.filter(function(x){ return x.id === "l4"; })[0];')
         self.assertNotIn("mock", json.dumps(l4, ensure_ascii=False).lower())
         self.assertIn("l.summary || l.links", (ROOT / "js" / "lesson-ui.js").read_text(encoding="utf-8"))
+
+class FinalLesson(unittest.TestCase):
+    """Учитель 16.11: последний урок до олимпиады. Один финальный тест на одной странице, как на компьютере на олимпиаде:
+    над каждой частью — время и баллы олимпиады и таймер на сегодня; ответы сразу в поля, одна кнопка Check answers — верно,
+    неверно и сколько баллов. Задания вперемешку из разных лет, разделы и задания названы как в олимпиаде. Потом — её Writing."""
+    TEST = [("Listening", [("mock-l2", [11, 12, 13, 14, 15], "Task 2")]),
+            ("Reading", [("mock-r1", [8, 9, 10], "Task 1"), ("mock-r2", [12, 13, 14, 15], "Task 2")]),
+            ("Use of English", [("mock-u1", [2, 4, 8, 11, 14], "Task 1"), ("mock-u2", [1, 3, 8], "Task 2"),
+                                ("mock-u3", [6, 7, 8, 9, 10], "Task 3"), ("mock-u4", [3, 4, 7, 10], "Task 4")])]
+
+    def setUp(self):
+        self.l = run_js('return L.filter(function(x){ return x.id === "l6"; })[0];')
+        self.steps = self.l["steps"]
+
+    def test_one_final_test_then_her_writing(self):
+        self.assertEqual(self.l["date"], "2026-11-16")
+        self.assertEqual([st["title"] for st in self.steps], ["Warm-up", "Final test", "Writing"])
+        self.assertLessEqual(sum(st["minutes"] for st in self.steps), 55, "из часа остаётся запас")
+        self.assertFalse(any(st.get("home") for st in self.steps))
+        st = self.steps[1]
+        self.assertTrue(st.get("test"))
+        got, part = [], None
+        for b in st["blocks"]:
+            if b["type"] == "part":
+                part = (b["title"], []); got.append(part)
+            elif b["type"] == "minitask":
+                part[1].append((b["task"], b["items"], b["label"]))
+        self.assertEqual(got, self.TEST)
+        parts = [b for b in st["blocks"] if b["type"] == "part"]
+        for b, want in zip(parts, ["15 minutes · 2 tasks · 15 points", "45 minutes · 2 tasks · 20 points", "60 minutes · 4 tasks · 45 points"]):
+            self.assertEqual(b["olympiad"], want, "время и баллы — как на олимпиаде")
+        self.assertEqual(sum(b["minutes"] for b in parts), st["minutes"])
+
+    def test_looks_like_the_olympiad_and_checks_with_points(self):
+        html = render_step("l6", 1)
+        self.assertEqual(html.count("data-lstimer="), 3, "таймер на каждую часть")
+        self.assertIn("At the olympiad:", html)
+        self.assertNotIn("data-lscheck=", html, "одна кнопка на весь тест")
+        self.assertIn("✓ Check answers", html)
+        self.assertIn('<h3 class="ls-ptask">📋 Task 2 <small>5 points</small></h3>', html)
+        self.assertNotIn("Total", html, "до проверки баллов нет")
+        out = render_step("l6", 1, events=[["click", "lscheckall", "l6:1"]])
+        self.assertIn("Total", out)
+        self.assertIn("0 / 29 points", out)
+        for name, mx in (("Listening", 5), ("Reading", 7), ("Use of English", 17)):
+            self.assertIn("<span>%s</span><b>0 / %d</b>" % (name, mx), out)
+        self.assertEqual(out.count("0 / 5 points"), 3, "у каждого задания свои баллы")
+        out = render_step("l6", 1, events=[["type", "lmsel", "l6:1:2:0", "B"], ["click", "lscheckall", "l6:1"]], with_store=True)
+        self.assertIn("1 / 29 points", out["html"])
+        # Проверка PR 83: исправила напечатанный ответ после Check — старые баллы не должны висеть, пока снова не нажмёт Check.
+        out = render_step("l6", 1, events=[["click", "lscheckall", "l6:1"], ["type", "tfin", "l6:1:7:0", "V"]])
+        self.assertNotIn("Your result", out)
+
+    def test_items_not_done_in_earlier_lessons(self):
+        before = run_js('return L.filter(function(x){ return x.date < "2026-11-16"; });')
+        used = {(b["task"], n) for l in before for st in l.get("steps", []) for b in st["blocks"] if b["type"] == "minitask" for n in b["items"]}
+        for b in self.steps[1]["blocks"]:
+            if b["type"] == "minitask":
+                for n in b["items"]:
+                    self.assertNotIn((b["task"], n), used)
+        # Проверка PR 83: пробник 2023/24 Варя, скорее всего, делала — из него ничего; и пункты 2022/23, перенесённые в пробник, тоже нет.
+        mock = json.dumps(run_js('var o = []; window.VARIANTS.forEach(function(v){ v.parts.forEach(function(p){ p.tasks.forEach(function(t){ if (/-2324$/.test(t.id)) o.push(t); }); }); }); return o;'), ensure_ascii=False)
+        for b in self.steps[1]["blocks"]:
+            if b["type"] == "minitask":
+                self.assertFalse(b["task"].endswith("-2324"), b["task"])
+        for q in ("travel incognito", "If I finish my homework early", "did it on purpose"):
+            self.assertNotIn(q, mock)
+
+    def test_listening_is_the_whole_task_2_heard_once(self):
+        b = [x for x in self.steps[1]["blocks"] if x["type"] == "minitask"][0]
+        self.assertEqual(b["audio"]["src"], "media/listening-mun-msk-22-23.m4a")
+        self.assertEqual((b["audio"]["from"], b["audio"]["stop"]), (419, 618))
+
+    def _check_homework(self, b, fixture, colours, points):
+        official = (ROOT / "tests" / "fixtures" / fixture).read_text(encoding="utf-8").strip().split("\n\n")
+        if b.get("title"):
+            self.assertEqual(b["title"], official[0], "заголовок дословно")
+            official = official[1:]
+        self.assertEqual(["".join(x if isinstance(x, str) else x["t"] for x in p) for p in b["paras"]], official, "текст дословно, с её ошибками")
+        marks = [x for p in b["paras"] for x in p if not isinstance(x, str)]
+        self.assertEqual([m["c"] for m in marks], colours)
+        for m in marks:
+            self.assertEqual(sorted(m), ["c", "t"], "только текст и цвет: объясняет учитель")
+        self.assertEqual([r["p"] for r in b["score"]], points)
+        self.assertEqual([r["t"] for r in b["score"]], ["Task completion", "Organisation", "Vocabulary", "Grammar", "Spelling and punctuation"])
+
+    def test_writing_is_her_homework_marked_like_on_6_november(self):
+        st = self.steps[2]
+        self.assertEqual([b["type"] for b in st["blocks"]], ["list", "brief", "marked", "brief", "marked", "brief", "spot"])
+        self._check_homework(st["blocks"][2], "homework-story-2526-tom.txt", ["style", "lex", "lex"], [4, 4, 3, 4, 4])
+        self._check_homework(st["blocks"][4], "homework-essay-2021-wilson.txt", ["task", "style", "style", "lex", "spell"], [3, 4, 3, 4, 3])
+        html = render_step("l6", 2).replace("&#39;", "'").replace("&quot;", '"')
+        self.assertIn("19 / 20", html)
+        self.assertIn("17 / 20", html)
+        for fix in ("contest", "competition", "accept", "everyone."):
+            self.assertNotIn(fix, html, "как исправить — говорит учитель")
+
+    def test_her_mistakes_from_both_homeworks_to_find(self):
+        spot = self.steps[2]["blocks"][-1]
+        story6 = (ROOT / "tests" / "fixtures" / "homework-story-2526.txt").read_text(encoding="utf-8")
+        essay6 = (ROOT / "tests" / "fixtures" / "homework-essay-2324.txt").read_text(encoding="utf-8")
+        story = (ROOT / "tests" / "fixtures" / "homework-story-2526-tom.txt").read_text(encoding="utf-8")
+        essay = (ROOT / "tests" / "fixtures" / "homework-essay-2021-wilson.txt").read_text(encoding="utf-8")
+        self.assertGreaterEqual(len(spot["items"]), 6)
+        for it in spot["items"]:
+            self.assertIn(it["text"], story6 + essay6 + story + essay, "её предложение дословно")
+            self.assertTrue(it["text"].split(" ")[it["at"]].startswith(it["wrong"]), it["text"])
+        self.assertTrue(any(it["text"] in story6 + essay6 for it in spot["items"]), "и ошибки 6 ноября")
+
 
 class RecordingsJumpExactly(unittest.TestCase):
     """Учитель 09.11: в Task 2 играло не то место. MP3 с плавающим битрейтом браузер перематывает по оценке и промахивается на десятки секунд,
