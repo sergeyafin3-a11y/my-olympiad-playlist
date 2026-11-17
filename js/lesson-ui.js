@@ -13,6 +13,15 @@
     Object.keys(st).forEach(function (k) { var o = st[k]; if (o && typeof o === "object" && !Array.isArray(o)) Object.keys(o).forEach(function (x) { if (x.indexOf("l5:") === 0) delete o[x]; }); });
     st.l5rev = 2;
   }
+  // Проверка PR 85: в домашний раздел урока 16 ноября сверху добавлено «How it works» — ответы Listening, сохранённые раньше, переезжают вслед за заданиями.
+  if (st.l6rev !== 1) {
+    var mv = function (k) { var m = /^l6:3:(\d+)(:.*)?$/.exec(k); return m ? "l6:3:" + (+m[1] + 1) + (m[2] || "") : k; };
+    Object.keys(st).forEach(function (k) { var o = st[k]; if (k === "step" || !o || typeof o !== "object" || Array.isArray(o)) return;
+      var moved = {}; Object.keys(o).forEach(function (x) { if (mv(x) !== x) { moved[mv(x)] = o[x]; delete o[x]; } });
+      Object.keys(moved).forEach(function (x) { o[x] = moved[x]; }); });
+    if (st.timer && st.timer.key) st.timer.key = mv(st.timer.key);
+    st.l6rev = 1; save();
+  }
   // Буквы, напечатанные в настоящем задании урока: "l2:1:1" → {"6": "D"}. Помнятся, пока ходим по шагам.
   if (!st.paper || typeof st.paper !== "object" || Array.isArray(st.paper)) st.paper = {};
   // Записи ученицы в уроке (карта сюжета, свои версии фраз, абзац): "l3:5:1" → {text: "…"}. Помнятся между шагами.
@@ -209,7 +218,7 @@
     // Перефразирование в формате Use of English Task 2: поле ответа и проверка.
     ".ls-tf{margin-top:10px;padding:14px;border-radius:14px;background:var(--card);border:1px solid var(--line)}",
     ".ls-tf.right{border-color:var(--acc)}.ls-tf.wrong{border-color:var(--bad)}",
-    ".ls-lmr.wrong,.ls-tf.wrong{background:rgba(255,92,92,.12)}.ls-lmr.right,.ls-tf.right{background:rgba(61,220,151,.10)}.ls-lm .why.hint{color:var(--ink)}",
+    ".ls-tries .ls-lmr.wrong,.ls-tries .ls-tf.wrong{background:rgba(255,92,92,.12)}.ls-tries .ls-lmr.right,.ls-tries .ls-tf.right{background:rgba(61,220,151,.10)}.ls-tries .why.hint{color:var(--ink)}",
     ".ls-tf .q{margin:0;line-height:1.45}.ls-tf .w{margin:8px 0 0;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--c)}",
     ".ls-tf .s{margin:6px 0 0;line-height:2.1}.ls-tf input{width:220px;max-width:100%;font-size:16px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:#101010;color:var(--ink)}",
     ".ls-tf .row{display:flex;gap:10px;align-items:center;margin-top:8px;flex-wrap:wrap}.ls-tf .why{font-size:15px}",
@@ -321,7 +330,7 @@
       var tparts = [], tcur = null, tall = true;
       s.blocks.forEach(function (b, k) {
         if (b.type === "part") { tcur = { t: b.title, got: 0, max: 0 }; tparts.push(tcur); }
-        if (b.type === "minitask" && tcur) { var ms = miniScore(l, i, k, b); tcur.got += s.tries ? ms.first || 0 : ms.got; tcur.max += ms.max; if (!ms.checked) tall = false; }
+        if (b.type === "minitask" && tcur) { var ms = miniScore(l, i, k, b); tcur.got += s.tries ? ms.first || 0 : ms.got; tcur.max += ms.max; if (!(s.tries ? ms.first != null : ms.checked)) tall = false; }
       });
       if (tall && tparts.length) {
         var tgot = 0, tmax = 0;
@@ -469,7 +478,7 @@
           var ans = mi.type === "choice" ? (it.opts || mi.opts).filter(function (o) { return o.k === it.a[0]; }).map(function (o) { return o.k + (o.t.length < 8 ? ' ' + o.t : ''); })[0] : it.accept[0] === "v" ? "V" : it.accept[0];
           note = ok ? '<p class="why">' + (mwrong.indexOf(n) >= 0 ? '✓ Fixed!' : '✓') + '</p>' : '<p class="why">✗ Answer: <b>' + esc(ans) + '</b>' + (help[1] ? ' — ' + esc(help[1]) : '') + '</p>';
         }
-        return { cls: cls, note: note, off: mt === 2 ? ' disabled' : '' };
+        return { cls: cls, note: note, off: mt === 2 || (mt === 1 && !mwrong.length) ? ' disabled' : '' };
       };
       var rows = b.items.map(function (num, i) {
         var it = mi.items.filter(function (x) { return x.n === num; })[0], own = it.opts || mi.opts;
@@ -498,7 +507,7 @@
         (b.paras ? (mi.textTitle ? '<p class="ttl">' + esc(mi.textTitle) + '</p>' : '') + (mi.textSubtitle ? '<p>' + esc(mi.textSubtitle) + '</p>' : '') + b.paras.map(function (n) { return '<p>' + esc(mi.text[n]) + '</p>'; }).join("") : '') +
         (shared ? olist(shared) : '') + '</div>' +
         (b.audio ? '<div class="listen"><button class="bigplay" data-play="' + b.audio.from + '" data-label="' + esc(b.audio.label) + '" data-src="' + esc(b.audio.src) + '" data-stop="' + b.audio.stop + '" data-sub="' + esc(b.source) + '">▶ ' + esc(b.audio.label) + '</button></div>' : '') +
-        '<div class="ls-lm">' + rows + (mtries ? (mt ? '<p class="ls-bscore">First try: ' + mig.first + ' / ' + b.items.length + ' points' + (mt === 2 ? ' · Second try: ' + miniScore(l, i, k, b).got + ' / ' + b.items.length : '') + (miniScore(l, i, k, b).got === b.items.length ? ' 🎉' : '') + '</p>' : '') +
+        '<div class="ls-lm' + (mtries ? ' ls-tries' : '') + '">' + rows + (mtries ? (mt ? '<p class="ls-bscore">First try: ' + mig.first + ' / ' + b.items.length + ' points' + (mt === 2 ? ' · Second try: ' + miniScore(l, i, k, b).got + ' / ' + b.items.length : '') + ((mt === 2 ? miniScore(l, i, k, b).got : mig.first) === b.items.length ? ' 🎉' : '') + '</p>' : '') +
           (mt === 0 || (mt === 1 && mwrong.length) ? '<div class="listen"><button class="bigplay" data-lstry="' + key + '">✓ ' + (mt ? 'Check again' : 'Check answers') + '</button></div>' : '') :
         mtest ? (mig.checked ? '<p class="ls-bscore">' + miniScore(l, i, k, b).got + ' / ' + b.items.length + ' points</p>' : '') :
         '<div class="listen"><button class="ghost" data-lscheck="' + key + '">✓ Check</button></div>') + '</div>';
@@ -700,6 +709,7 @@
     if (d.lstry) {
       var tk = d.lstry, tb = blockOf(tk), tmi = taskById(tb.task), tgm = game(tk), twrong = [];
       if (!tmi || (tgm.tries || 0) >= 2) return;
+      if (!d.sure && tb.items.some(function (num, n) { return !miniVal(tmi, tk, n).trim(); })) { d.sure = 1; b.textContent = "Some answers are empty. Tap again to check"; return; }
       tgm.vals = {};
       tb.items.forEach(function (num, n) { var v = miniVal(tmi, tk, n); tgm.vals[n] = v; if (!miniOk(tmi, miniItem(tmi, num), v)) twrong.push(n); });
       tgm.tries = (tgm.tries || 0) + 1;
