@@ -709,7 +709,9 @@
     if (d.lstry) {
       var tk = d.lstry, tb = blockOf(tk), tmi = taskById(tb.task), tgm = game(tk), twrong = [];
       if (!tmi || (tgm.tries || 0) >= 2) return;
-      if (!d.sure && tb.items.some(function (num, n) { return !miniVal(tmi, tk, n).trim(); })) { d.sure = 1; b.textContent = "Some answers are empty. Tap again to check"; return; }
+      // Пустые ответы: спросить; дописала часть, а пустые ещё есть — спросить снова.
+      var tempty = tb.items.filter(function (num, n) { return !miniVal(tmi, tk, n).trim(); }).length;
+      if (tempty && d.sure !== String(tempty)) { d.sure = String(tempty); b.textContent = (tempty === 1 ? "1 answer is" : tempty + " answers are") + " empty. Tap again to check"; return; }
       tgm.vals = {};
       tb.items.forEach(function (num, n) { var v = miniVal(tmi, tk, n); tgm.vals[n] = v; if (!miniOk(tmi, miniItem(tmi, num), v)) twrong.push(n); });
       tgm.tries = (tgm.tries || 0) + 1;

@@ -1809,6 +1809,11 @@ class FinalLesson(unittest.TestCase):
         out = render_step("l6", 1, events=[["click", "lstry", "l6:1:2"], ["click", "lstry", "l6:1:2"]])
         self.assertIn("First try: 0 / 3 points", out, "второе нажатие — проверка")
 
+    def test_filled_some_after_the_question_asks_again(self):
+        ev = [["click", "lstry", "l6:1:2"], ["type", "lmsel", "l6:1:2:0", "D"], ["click", "lstry", "l6:1:2"]]
+        self.assertNotIn("First try", render_step("l6", 1, events=ev), "пустых стало меньше, но они есть — спросить снова")
+        self.assertIn("First try: 1 / 3 points", render_step("l6", 1, events=ev + [["click", "lstry", "l6:1:2"]]))
+
     def test_hints_do_not_point_at_the_gap(self):
         for b in self.steps[1]["blocks"]:
             if b.get("task") == "mock-u1":
