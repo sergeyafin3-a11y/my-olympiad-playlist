@@ -13,6 +13,15 @@
     Object.keys(st).forEach(function (k) { var o = st[k]; if (o && typeof o === "object" && !Array.isArray(o)) Object.keys(o).forEach(function (x) { if (x.indexOf("l5:") === 0) delete o[x]; }); });
     st.l5rev = 2;
   }
+  // Проверка PR 85: в домашний раздел урока 16 ноября сверху добавлено «How it works» — ответы Listening, сохранённые раньше, переезжают вслед за заданиями.
+  if (st.l6rev !== 1) {
+    var mv = function (k) { var m = /^l6:3:(\d+)(:.*)?$/.exec(k); return m ? "l6:3:" + (+m[1] + 1) + (m[2] || "") : k; };
+    Object.keys(st).forEach(function (k) { var o = st[k]; if (k === "step" || !o || typeof o !== "object" || Array.isArray(o)) return;
+      var moved = {}; Object.keys(o).forEach(function (x) { if (mv(x) !== x) { moved[mv(x)] = o[x]; delete o[x]; } });
+      Object.keys(moved).forEach(function (x) { o[x] = moved[x]; }); });
+    if (st.timer && st.timer.key) st.timer.key = mv(st.timer.key);
+    st.l6rev = 1; save();
+  }
   // Буквы, напечатанные в настоящем задании урока: "l2:1:1" → {"6": "D"}. Помнятся, пока ходим по шагам.
   if (!st.paper || typeof st.paper !== "object" || Array.isArray(st.paper)) st.paper = {};
   // Записи ученицы в уроке (карта сюжета, свои версии фраз, абзац): "l3:5:1" → {text: "…"}. Помнятся между шагами.
@@ -209,6 +218,7 @@
     // Перефразирование в формате Use of English Task 2: поле ответа и проверка.
     ".ls-tf{margin-top:10px;padding:14px;border-radius:14px;background:var(--card);border:1px solid var(--line)}",
     ".ls-tf.right{border-color:var(--acc)}.ls-tf.wrong{border-color:var(--bad)}",
+    ".ls-tries .ls-lmr.wrong,.ls-tries .ls-tf.wrong{background:rgba(255,92,92,.12)}.ls-tries .ls-lmr.right,.ls-tries .ls-tf.right{background:rgba(61,220,151,.10)}.ls-tries .why.hint{color:var(--ink)}",
     ".ls-tf .q{margin:0;line-height:1.45}.ls-tf .w{margin:8px 0 0;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--c)}",
     ".ls-tf .s{margin:6px 0 0;line-height:2.1}.ls-tf input{width:220px;max-width:100%;font-size:16px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:#101010;color:var(--ink)}",
     ".ls-tf .row{display:flex;gap:10px;align-items:center;margin-top:8px;flex-wrap:wrap}.ls-tf .why{font-size:15px}",
@@ -254,12 +264,14 @@
   function miniScore(l, i, k, b) {
     var mi = taskById(b.task), key = l.id + ":" + i + ":" + k, g = game(key), got = 0;
     if (!mi) return { got: 0, max: 0, checked: false };
-    b.items.forEach(function (num, n) {
-      var it = mi.items.filter(function (x) { return x.n === num; })[0];
-      if (mi.type === "choice" ? (g.pick || {})[n] === it.a[0] : matches(it, game(key + ":" + n).v || "")) got++;
-    });
-    return { got: got, max: b.items.length, checked: !!g.checked };
+    b.items.forEach(function (num, n) { if (miniOk(mi, miniItem(mi, num), miniVal(mi, key, n))) got++; });
+    return { got: got, first: g.first, max: b.items.length, checked: !!g.checked };
   }
+  function miniItem(mi, num) { return mi.items.filter(function (x) { return x.n === num; })[0]; }
+  function miniVal(mi, key, n) { return (mi.type === "choice" ? (game(key).pick || {})[n] : game(key + ":" + n).v) || ""; }
+  function miniOk(mi, it, v) { return mi.type === "choice" ? v === it.a[0] : matches(it, v); }
+  // Раздел с двумя попытками (учитель 17.11): ключ задания "l6:1:5" → есть ли у его раздела tries.
+  function triesOn(key) { var p = key.split(":"), l = byId(p[0]), s = l && l.steps[+p[1]]; return !!(s && s.tries); }
   function matches(it, v) { return it.accept.some(function (a) { return norm(a) === norm(v); }); }
   // Разбор проверки листа: счёт; под каждым неверным или пустым пропуском — где искать и «как решать»
   // (официальный разбор с ответом — свёрнут: сначала попробовать самой).
@@ -318,16 +330,16 @@
       var tparts = [], tcur = null, tall = true;
       s.blocks.forEach(function (b, k) {
         if (b.type === "part") { tcur = { t: b.title, got: 0, max: 0 }; tparts.push(tcur); }
-        if (b.type === "minitask" && tcur) { var ms = miniScore(l, i, k, b); tcur.got += ms.got; tcur.max += ms.max; if (!ms.checked) tall = false; }
+        if (b.type === "minitask" && tcur) { var ms = miniScore(l, i, k, b); tcur.got += s.tries ? ms.first || 0 : ms.got; tcur.max += ms.max; if (!(s.tries ? ms.first != null : ms.checked)) tall = false; }
       });
       if (tall && tparts.length) {
         var tgot = 0, tmax = 0;
-        h += '<div class="ls-box ls-score ls-result"><h3>🏁 Your result</h3>' + tparts.map(function (p) { if (!p.max) return ""; tgot += p.got; tmax += p.max; return '<p><span>' + esc(p.t) + '</span><b>' + p.got + ' / ' + p.max + '</b></p>'; }).join("") +
+        h += '<div class="ls-box ls-score ls-result"><h3>🏁 Your result' + (s.tries ? ' · first try' : '') + '</h3>' + tparts.map(function (p) { if (!p.max) return ""; tgot += p.got; tmax += p.max; return '<p><span>' + esc(p.t) + '</span><b>' + p.got + ' / ' + p.max + '</b></p>'; }).join("") +
           '<p class="tot"><span>Total</span><b>' + tgot + ' / ' + tmax + ' points</b></p></div>';
       }
     }
     // Учитель 26.10: «сейчас я себя проверяю, а завтра показываю экран ученице — ответы должны стереться».
-    var canCheck = s.blocks.some(function (b) { return ["gapfill", "transform", "upgrade", "matchsheet", "minitask"].indexOf(b.type) >= 0 || (b.type === "paper" && b.task); });
+    var canCheck = !s.tries && s.blocks.some(function (b) { return ["gapfill", "transform", "upgrade", "matchsheet", "minitask"].indexOf(b.type) >= 0 || (b.type === "paper" && b.task); });
     // В уроке-разборе заполнять нечего, кнопки стирания там не нужны. В остальных уроках они есть в каждом разделе.
     var hasWork = l.steps.some(function (st) { return st.blocks.some(function (b) { return ["brief", "wpaper", "links", "bank"].indexOf(b.type) < 0; }); });
     if (hasWork) h += '<div class="ls-clear">' + (canCheck ? '<button class="bigplay" data-lscheckall="' + l.id + ':' + i + '">✓ Check answers</button>' : '') +
@@ -455,8 +467,28 @@
       if (!mi) return "";
       var mig = game(key), mip = mig.pick || {}, shared = mi.opts && mi.opts.length > 2 ? mi.opts : null;
       var olist = function (os) { return '<div class="ls-popts">' + os.map(function (o) { return '<p><b>' + esc(o.k) + ')</b> ' + esc(o.t) + '</p>'; }).join("") + '</div>'; };
+      var mtries = l.steps[i].tries, mt = mig.tries || 0, mvals = mig.vals || {}, mwrong = mig.wrong1 || [];
+      // Две попытки: после первой — красным ошибка и подсказка, куда смотреть; после второй — ответ и почему.
+      // Цвет — только пока ответ тот же, что проверяли: перебором вариантов верный не найти, проверка — по кнопке.
+      var verdict = function (n, it, cur) {
+        var ok = miniOk(mi, it, cur), fresh = mt > 0 && mvals[n] === cur, help = (b.help || {})[it.n] || [];
+        var cls = fresh ? (ok ? ' right' : ' wrong') : '', note = '';
+        if (mt === 1) note = fresh && ok ? '<p class="why">✓</p>' : mwrong.indexOf(n) >= 0 ? '<p class="why hint">💡 ' + esc(help[0] || "Read it again and look for the words that help.") + '</p>' : '';
+        if (mt === 2) {
+          var ans = mi.type === "choice" ? (it.opts || mi.opts).filter(function (o) { return o.k === it.a[0]; }).map(function (o) { return o.k + (o.t.length < 8 ? ' ' + o.t : ''); })[0] : it.accept[0] === "v" ? "V" : it.accept[0];
+          note = ok ? '<p class="why">' + (mwrong.indexOf(n) >= 0 ? '✓ Fixed!' : '✓') + '</p>' : '<p class="why">✗ Answer: <b>' + esc(ans) + '</b>' + (help[1] ? ' — ' + esc(help[1]) : '') + '</p>';
+        }
+        return { cls: cls, note: note, off: mt === 2 || (mt === 1 && !mwrong.length) ? ' disabled' : '' };
+      };
       var rows = b.items.map(function (num, i) {
         var it = mi.items.filter(function (x) { return x.n === num; })[0], own = it.opts || mi.opts;
+        if (mtries) {
+          var vd = verdict(i, it, miniVal(mi, key, i));
+          if (mi.type === "choice") return '<div class="ls-lmr' + vd.cls + '"><label><b>' + it.n + '.</b> ' + (/^Gap /.test(it.q) ? it.q : esc(it.q)) + ' <select data-lmsel="' + key + ':' + i + '"' + vd.off + '><option value="">–</option>' +
+            own.map(function (o) { return '<option value="' + esc(o.k) + '"' + (mip[i] === o.k ? ' selected' : '') + '>' + esc(o.k) + (o.t.length < 8 ? ' ' + esc(o.t) : '') + '</option>'; }).join("") + '</select></label>' +
+            (it.opts ? olist(it.opts) : '') + vd.note + '</div>';
+          return '<div class="ls-tf' + vd.cls + '"><p class="q"><b>' + it.n + '.</b> ' + esc(it.q) + '</p><p class="s"><input data-tfin="' + key + ':' + i + '" value="' + esc(game(key + ":" + i).v || "") + '" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Answer ' + it.n + '"' + vd.off + '></p>' + vd.note + '</div>';
+        }
         if (mi.type === "choice") {
           var good = mip[i] === it.a[0], label = /^Gap /.test(it.q) ? it.q : esc(it.q);
           return '<div class="ls-lmr' + (mig.checked ? (good ? ' right' : ' wrong') : '') + '"><label><b>' + it.n + '.</b> ' + label + ' <select data-lmsel="' + key + ':' + i + '"><option value="">–</option>' +
@@ -475,7 +507,9 @@
         (b.paras ? (mi.textTitle ? '<p class="ttl">' + esc(mi.textTitle) + '</p>' : '') + (mi.textSubtitle ? '<p>' + esc(mi.textSubtitle) + '</p>' : '') + b.paras.map(function (n) { return '<p>' + esc(mi.text[n]) + '</p>'; }).join("") : '') +
         (shared ? olist(shared) : '') + '</div>' +
         (b.audio ? '<div class="listen"><button class="bigplay" data-play="' + b.audio.from + '" data-label="' + esc(b.audio.label) + '" data-src="' + esc(b.audio.src) + '" data-stop="' + b.audio.stop + '" data-sub="' + esc(b.source) + '">▶ ' + esc(b.audio.label) + '</button></div>' : '') +
-        '<div class="ls-lm">' + rows + (mtest ? (mig.checked ? '<p class="ls-bscore">' + miniScore(l, i, k, b).got + ' / ' + b.items.length + ' points</p>' : '') :
+        '<div class="ls-lm' + (mtries ? ' ls-tries' : '') + '">' + rows + (mtries ? (mt ? '<p class="ls-bscore">First try: ' + mig.first + ' / ' + b.items.length + ' points' + (mt === 2 ? ' · Second try: ' + miniScore(l, i, k, b).got + ' / ' + b.items.length : '') + ((mt === 2 ? miniScore(l, i, k, b).got : mig.first) === b.items.length ? ' 🎉' : '') + '</p>' : '') +
+          (mt === 0 || (mt === 1 && mwrong.length) ? '<div class="listen"><button class="bigplay" data-lstry="' + key + '">✓ ' + (mt ? 'Check again' : 'Check answers') + '</button></div>' : '') :
+        mtest ? (mig.checked ? '<p class="ls-bscore">' + miniScore(l, i, k, b).got + ' / ' + b.items.length + ' points</p>' : '') :
         '<div class="listen"><button class="ghost" data-lscheck="' + key + '">✓ Check</button></div>') + '</div>';
     }
     // Работа ученицы с выделениями: цвет — тип ошибки, у каждой номер, чтобы учитель могла сказать «посмотри на третье». Справа — какие цвета что значат
@@ -672,6 +706,18 @@
       stay(); return;
     }
     if (d.lscheck) { game(d.lscheck).checked = true; stay(); return; }
+    if (d.lstry) {
+      var tk = d.lstry, tb = blockOf(tk), tmi = taskById(tb.task), tgm = game(tk), twrong = [];
+      if (!tmi || (tgm.tries || 0) >= 2) return;
+      // Пустые ответы: спросить; дописала часть, а пустые ещё есть — спросить снова.
+      var tempty = tb.items.filter(function (num, n) { return !miniVal(tmi, tk, n).trim(); }).length;
+      if (tempty && d.sure !== String(tempty)) { d.sure = String(tempty); b.textContent = (tempty === 1 ? "1 answer is" : tempty + " answers are") + " empty. Tap again to check"; return; }
+      tgm.vals = {};
+      tb.items.forEach(function (num, n) { var v = miniVal(tmi, tk, n); tgm.vals[n] = v; if (!miniOk(tmi, miniItem(tmi, num), v)) twrong.push(n); });
+      tgm.tries = (tgm.tries || 0) + 1;
+      if (tgm.tries === 1) { tgm.wrong1 = twrong; tgm.first = tb.items.length - twrong.length; }
+      tgm.checked = true; stay(); return;
+    }
     if (d.tfcheck) { game(d.tfcheck).checked = true; stay(); return; }
     if (d.lsjury) { var jp = d.lsjury.split(":"), jv = +jp.pop(), jc = jp.pop(), jgm = notesOf(jp.join(":")); jgm.pick = jgm.pick || {}; jgm.pick[jc] = jv; save(); stay(); return; }
     if (d.lsverdict) { notesOf(d.lsverdict).verdict = true; save(); stay(); return; }
@@ -733,7 +779,9 @@
   function pickRow(e) {
     var el = e.target; if (!el.dataset || el.dataset.lmsel == null) return;
     var mp = el.dataset.lmsel.split(":"), mn = mp.pop(), mg = game(mp.join(":")), was = mg.checked;
-    mg.pick = mg.pick || {}; mg.pick[mn] = el.value; mg.checked = false; save();
+    mg.pick = mg.pick || {}; mg.pick[mn] = el.value;
+    if (triesOn(mp.join(":"))) { save(); if (mg.tries) stay(); return; }
+    mg.checked = false; save();
     if (was) stay();
   }
   document.addEventListener("input", pickRow);
@@ -750,6 +798,12 @@
   document.addEventListener("input", function (e) {
     // Исправила ответ — старый ✓/✗ уже не про него: до нового «Check» поле снова не проверено.
     var el = e.target; if (el.dataset && el.dataset.tfin != null) { var tg = game(el.dataset.tfin); tg.v = el.value; tg.checked = false;
+      if (triesOn(el.dataset.tfin)) {
+        save();
+        var trow = el.closest && el.closest(".ls-lm .ls-tf");
+        if (trow) { trow.classList.remove("right", "wrong"); [].forEach.call(trow.querySelectorAll(".why"), function (w) { if (!w.classList.contains("hint")) w.parentNode.removeChild(w); }); }
+        return;
+      }
       // Исправила ответ в проверенном задании (проверка PR 83): задание снова не проверено, как при смене выбора в pickRow, и старые баллы с экрана уходят.
       var bkey = el.dataset.tfin.split(":").slice(0, -1).join(":"), bg = games[bkey], was = !!(bg && bg.checked);
       if (was) bg.checked = false;

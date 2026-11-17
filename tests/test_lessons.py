@@ -1710,20 +1710,132 @@ class FinalLesson(unittest.TestCase):
         html = render_step("l6", 1)
         self.assertEqual(html.count("data-lstimer="), 3, "таймер на каждую часть")
         self.assertIn("At the olympiad:", html)
-        self.assertNotIn("data-lscheck=", html, "одна кнопка на весь тест")
         self.assertIn('<h3 class="ls-ptask">📋 Task 1 <small>15 points</small></h3>', html)
         self.assertNotIn("Your result", html, "до проверки баллов нет")
         self.assertEqual(html.count("<textarea"), 2, "два Writing — с окнами")
-        out = render_step("l6", 1, events=[["click", "lscheckall", "l6:1"]])
+        tasks = ["l6:1:%d" % k for k in (2, 3, 5, 6, 7, 8)]
+        out = render_step("l6", 1, events=[["click", "lstry", t] for t in tasks for _ in (1, 2)])
         self.assertIn("0 / 52 points", out)
         for name, mx in (("Reading", 7), ("Use of English", 45)):
             self.assertIn("<span>%s</span><b>0 / %d</b>" % (name, mx), out)
         self.assertNotIn("<span>Writing</span>", out, "у Writing баллы ставит учитель")
-        self.assertEqual(out.count("0 / 10 points"), 3)
-        out = render_step("l6", 1, events=[["type", "lmsel", "l6:1:2:0", "D"], ["click", "lscheckall", "l6:1"]], with_store=True)
+        out = render_step("l6", 1, events=[["type", "lmsel", "l6:1:2:0", "D"]] + [["click", "lstry", t] for t in tasks for _ in (1, 2)], with_store=True)
         self.assertIn("1 / 52 points", out["html"])
-        out = render_step("l6", 1, events=[["click", "lscheckall", "l6:1"], ["type", "tfin", "l6:1:7:0", "V"]])
+        out = render_step("l6", 1, events=[["click", "lstry", t] for t in tasks[:-1] for _ in (1, 2)])
+        self.assertNotIn("Your result", out, "итог — когда проверены все задания")
+
+    # Учитель 17.11, домашка: «после каждого задания check answers… ошибка подсвечивается красным… не давай сразу правильный ответ…
+    # первая попытка неправильно — второй шанс… подсказка, куда посмотреть, но не прям буквально… на второй раз тоже неправильно — тогда ответ».
+    def test_each_task_has_its_own_check_answers(self):
+        for step, n in ((1, 6), (3, 2)):
+            html = render_step("l6", step)
+            self.assertEqual(html.count("data-lstry="), n, "кнопка после каждого задания")
+            self.assertEqual(html.count("✓ Check answers</button>"), n, "внизу раздела общей кнопки нет")
+            self.assertNotIn("data-lscheckall=", html)
+
+    def test_first_wrong_try_gives_a_hint_not_the_answer(self):
+        hint, why = self.steps[1]["blocks"][5]["help"]["1"]
+        out = render_step("l6", 1, events=[["type", "tfin", "l6:1:5:0", "V"], ["click", "lstry", "l6:1:5"], ["click", "lstry", "l6:1:5"]])
+        self.assertIn(hint, out.replace("&#39;", "'").replace("&quot;", '"'))
+        self.assertNotIn(why, out.replace("&#39;", "'").replace("&quot;", '"'), "объяснение с ответом — только после второй попытки")
+        self.assertNotIn("Answer:", out)
+        self.assertIn('class="ls-tf wrong"', out, "ошибка подсвечена")
+        self.assertIn("✓ Check again", out, "вторая попытка")
+        self.assertIn("First try: 0 / 15 points", out)
+
+    def test_second_wrong_try_shows_the_answer_and_why(self):
+        hint, why = self.steps[1]["blocks"][5]["help"]["2"]
+        ev = [["type", "tfin", "l6:1:5:0", "V"], ["click", "lstry", "l6:1:5"], ["click", "lstry", "l6:1:5"], ["type", "tfin", "l6:1:5:0", "having"], ["click", "lstry", "l6:1:5"]]
+        out = render_step("l6", 1, events=ev).replace("&#39;", "'").replace("&quot;", '"')
+        self.assertIn("✗ Answer: <b>V</b>", out, "пункт 2 пустой оба раза — теперь ответ")
+        self.assertIn("✓ Fixed!", out, "пункт 1 исправила сама")
+        self.assertEqual(out.count("✓ Fixed!"), 1)
+        self.assertIn(why, out)
+        self.assertNotIn("Check again", out, "третьей попытки нет")
+        self.assertIn("First try: 0 / 15 points · Second try: 1 / 15", out)
+        self.assertIn("disabled", out, "после ответа поля закрыты")
+
+    def test_changing_an_answer_after_a_hint_does_not_show_if_it_is_right(self):
+        ev = [["type", "lmsel", "l6:1:2:0", "A"], ["click", "lstry", "l6:1:2"], ["click", "lstry", "l6:1:2"], ["type", "lmsel", "l6:1:2:0", "D"]]
+        out = render_step("l6", 1, events=ev)
+        hint = self.steps[1]["blocks"][2]["help"]["8"][0]
+        self.assertIn(hint, out.replace("&#39;", "'").replace("&quot;", '"'), "подсказка остаётся, пока исправляет")
+        self.assertNotIn('class="ls-lmr right"', out, "перебором букв ответ не найти: верно ли — только по кнопке")
+        self.assertIn("First try: 0 / 3 points", out, "баллы первой попытки не меняются")
+
+    def test_all_right_on_the_first_try_needs_no_second(self):
+        ev = [["type", "lmsel", "l6:1:2:%d" % n, a] for n, a in enumerate("DBA")] + [["click", "lstry", "l6:1:2"]]
+        out = render_step("l6", 1, events=ev)
+        self.assertNotIn("Check again", out)
+        self.assertIn("First try: 3 / 3 points", out)
+
+    # Проверка PR 85.
+    def test_party_popper_does_not_tell_that_a_changed_answer_is_right(self):
+        ev = [["type", "lmsel", "l6:1:2:%d" % n, a] for n, a in enumerate("ABA")] + [["click", "lstry", "l6:1:2"], ["type", "lmsel", "l6:1:2:0", "D"]]
+        out = render_step("l6", 1, events=ev)
+        self.assertIn("First try: 2 / 3 points", out)
+        self.assertNotIn("🎉", out, "верно ли новое — только по кнопке")
+
+    def test_listening_answers_saved_before_stay_in_their_tasks(self):
+        # До PR 85 в разделе 4 блоки были [part, Task 1, Task 2]; теперь сверху «How it works».
+        old = {"games": {"l6:3:1": {"pick": {"0": "B"}}, "l6:3:2": {"pick": {"0": "C"}}}, "timer": {"key": "l6:3:0", "end": 1}}
+        out = render_step("l6", 3, init=old, with_store=True)
+        html = out["html"]
+        t1 = html[html.index('data-lmsel="l6:3:2:0"'):]
+        self.assertIn('<option value="B" selected>', t1[:t1.index("</select>")], "Task 1 — её ответ")
+        t2 = html[html.index('data-lmsel="l6:3:3:0"'):]
+        self.assertIn('<option value="C" selected>', t2[:t2.index("</select>")], "Task 2 — её ответ")
+        saved = json.loads(out["store"]["olymp-lessons"])
+        self.assertEqual(saved["timer"]["key"], "l6:3:1")
+        again = render_step("l6", 3, init=saved)
+        t1 = again[again.index('data-lmsel="l6:3:2:0"'):]
+        self.assertIn('<option value="B" selected>', t1[:t1.index("</select>")], "переносим один раз")
+
+    def test_yesterdays_check_does_not_count_as_a_first_try(self):
+        old = {"games": dict(("l6:1:%d" % k, {"checked": True}) for k in (2, 3, 5, 6, 7, 8)), "l6rev": 1}
+        out = render_step("l6", 1, init=old)
         self.assertNotIn("Your result", out)
+        self.assertEqual(out.count("✓ Check answers</button>"), 6)
+
+    def test_all_right_closes_the_task(self):
+        ev = [["type", "lmsel", "l6:1:2:%d" % n, a] for n, a in enumerate("DBA")] + [["click", "lstry", "l6:1:2"]]
+        out = render_step("l6", 1, events=ev)
+        t = out[out.index('data-lmsel="l6:1:2:0"'):]
+        self.assertTrue(t.startswith('data-lmsel="l6:1:2:0" disabled'), "менять уже нечего")
+
+    def test_empty_answers_ask_before_the_first_try_is_used(self):
+        out = render_step("l6", 1, events=[["click", "lstry", "l6:1:2"]])
+        self.assertNotIn("First try", out, "случайное нажатие не тратит попытку")
+        out = render_step("l6", 1, events=[["click", "lstry", "l6:1:2"], ["click", "lstry", "l6:1:2"]])
+        self.assertIn("First try: 0 / 3 points", out, "второе нажатие — проверка")
+
+    def test_filled_some_after_the_question_asks_again(self):
+        ev = [["click", "lstry", "l6:1:2"], ["type", "lmsel", "l6:1:2:0", "D"], ["click", "lstry", "l6:1:2"]]
+        self.assertNotIn("First try", render_step("l6", 1, events=ev), "пустых стало меньше, но они есть — спросить снова")
+        self.assertIn("First try: 1 / 3 points", render_step("l6", 1, events=ev + [["click", "lstry", "l6:1:2"]]))
+
+    def test_hints_do_not_point_at_the_gap(self):
+        for b in self.steps[1]["blocks"]:
+            if b.get("task") == "mock-u1":
+                for n, (hint, why) in b["help"].items():
+                    self.assertNotIn("…", hint, "многоточие на месте лишнего слова — это ответ: %s" % n)
+                    self.assertNotRegex(hint.lower(), r"correct|every word is needed|really a word too many", n)
+
+    def test_every_item_has_a_hint_and_an_explanation(self):
+        tasks = run_js("""var out = {}; window.VARIANTS.forEach(function(v){ v.parts.forEach(function(p){ p.tasks.forEach(function(t){ out[t.id] = t; }); }); }); return out;""")
+        for step in (1, 3):
+            for b in self.steps[step]["blocks"]:
+                if b["type"] != "minitask":
+                    continue
+                self.assertEqual(sorted(b["help"], key=int), [str(n) for n in b["items"]], b["task"])
+                for n in b["items"]:
+                    hint, why = b["help"][str(n)]
+                    self.assertTrue(hint and why, (b["task"], n))
+                    self.assertNotEqual(hint, why)
+                    it = [x for x in tasks[b["task"]]["items"] if x["n"] == n][0]
+                    if "accept" in it and len(it["accept"][0]) > 2:
+                        for a in it["accept"]:
+                            self.assertNotIn(a.lower(), hint.lower(), "подсказка не называет ответ: %s %d" % (b["task"], n))
 
     def test_two_writing_tasks_to_choose_at_the_bottom(self):
         blocks = self.steps[1]["blocks"]
