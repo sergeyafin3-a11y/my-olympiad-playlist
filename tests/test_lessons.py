@@ -18,7 +18,7 @@ HTML_INDEX = (ROOT / "index.html").read_text(encoding="utf-8")
 
 
 def run_js(body):
-    files = ["data/variant-mun-msk-25-26.js", "data/variant-mun-msk-23-24.js", "data/variant-mun-msk-22-23.js", "data/practice-mun.js", "data/explain-mun.js", "data/lessons.js"]
+    files = ["data/variant-mun-msk-25-26.js", "data/variant-mun-msk-23-24.js", "data/variant-mun-msk-22-23.js", "data/practice-mun.js", "data/explain-mun.js", "data/lesson-mun-26-27.js", "data/lessons.js"]
     src = "\n".join(["var window = this;"] + [(ROOT / f).read_text(encoding="utf-8") for f in files] +
                     ["JSON.stringify((function(){ var L = window.LESSONS, V = window.VARIANTS[0], P = window.PRACTICE['mun-msk-25-26'], E = window.EXPLAIN; " + body + "})());"])
     return json.loads(subprocess.run(["osascript", "-l", "JavaScript", "-e", src], capture_output=True, text=True, check=True).stdout)
@@ -38,7 +38,8 @@ class Lessons(unittest.TestCase):
         # Урок Reading перенесён учителем с 19.10 на 22.10, а затем на 23.10 («занятие, оказывается, сегодня»).
         self.assertIn("2026-10-23", dates)
         self.assertNotIn("2026-10-22", dates)
-        self.assertTrue(all(d < "2026-11-21" for d in dates))
+        # Учитель 23.11: после олимпиады занятия идут дальше каждую неделю; в сам день олимпиады урока нет.
+        self.assertNotIn("2026-11-21", dates)
         self.assertTrue(all(x[2] for x in r))
 
     def test_todays_lesson_is_a_full_50_minute_ppp_lesson(self):
@@ -176,7 +177,7 @@ class Lessons(unittest.TestCase):
 # Официальный ключ Reading Task 2 муниципального этапа Москвы 2024/25
 # (ans-engl-10-11-mun-msk-24-25.pdf, всош.цпм.рф): пропуски 1–10, лишнее — H.
 KEY_2425 = "GBKEIDCAJF"
-TASK_FILES = ["data/variant-mun-msk-25-26.js", "data/variant-mun-msk-23-24.js", "data/variant-mun-msk-22-23.js", "data/practice-mun.js", "data/explain-mun.js"]
+TASK_FILES = ["data/variant-mun-msk-25-26.js", "data/variant-mun-msk-23-24.js", "data/variant-mun-msk-22-23.js", "data/practice-mun.js", "data/explain-mun.js", "data/lesson-mun-26-27.js"]
 # Учитель 22.10: «поменяем местами» — на уроке разбираем текст 2025/26 про будильник (m-r2),
 # а пирог Цветаевой 2024/25 — домашнее задание на 15 минут (отработка p-r2-2425).
 IN_CLASS, HOMEWORK = "m-r2", "p-r2-2425"
@@ -1894,6 +1895,50 @@ class FinalLesson(unittest.TestCase):
             self.assertIn(it["text"], story6 + essay6 + story + essay, "её предложение дословно")
             self.assertTrue(it["text"].split(" ")[it["at"]].startswith(it["wrong"]), it["text"])
         self.assertTrue(any(it["text"] in story6 + essay6 for it in spot["items"]), "и ошибки 6 ноября")
+
+
+class MunicipalStageReview(unittest.TestCase):
+    """Учитель 23.11: задания муниципального этапа, который Варя писала 21.11, опубликованы — «давай будем их сегодня решать…
+    за один урок прорешали то, что она решала полностью». Работа целиком: все задания и все пункты, тексты дословно из файла."""
+    PAPER = ROOT.parent / "source-mun-msk" / "tasks-engl-10-11-mun-msk-26-27.txt"
+
+    def setUp(self):
+        self.l = run_js('return L.filter(function(x){ return x.id === "l7"; })[0];')
+        self.tasks = run_js('return window.PRACTICE["lesson-mun-msk-26-27"].all;')
+
+    def test_whole_paper_in_one_lesson(self):
+        self.assertEqual(self.l["date"], "2026-11-23")
+        got = [(b["task"], b["items"]) for st in self.l["steps"] for b in st["blocks"] if b["type"] == "minitask"]
+        want = [("m27-l1", list(range(1, 11))), ("m27-l2", list(range(11, 16))), ("m27-r1", list(range(1, 11))), ("m27-r2", list(range(1, 11))),
+                ("m27-u1", list(range(1, 16))), ("m27-u2", list(range(1, 11))), ("m27-u3", list(range(1, 11))), ("m27-u4", list(range(1, 11)))]
+        self.assertEqual(got, want, "все задания и все пункты работы")
+        self.assertLessEqual(sum(st["minutes"] for st in self.l["steps"] if not st.get("home")), 60)
+        self.assertTrue(any(b["type"] == "wpaper" for st in self.l["steps"] for b in st["blocks"]), "и Writing")
+
+    def test_texts_are_word_for_word(self):
+        raw = re.sub(r"Всероссийская олимпиада школьников\. Английский язык\. 2026–2027 уч\. г\.\nМуниципальный этап\. 10–11 классы\n\d+\n", "", self.PAPER.read_text(encoding="utf-8"))
+        paper = re.sub(r"\s+", " ", re.sub(r"-\n", "-", raw))
+        for t in self.tasks:
+            for para in t.get("text", []):
+                for piece in re.split(r"\(\d+\) ______\.?", para):
+                    piece = piece.strip(" .")
+                    if len(piece) > 20:
+                        self.assertTrue(piece in paper, "%s: %s" % (t["id"], piece[:80]))
+            for o in t.get("opts", []):
+                if len(o["t"]) > 8:
+                    self.assertTrue(o["t"] in paper, "%s: %s" % (t["id"], o["t"][:80]))
+
+    def test_listening_plays_the_whole_recording(self):
+        st = [s for s in self.l["steps"] if s["title"] == "Listening"][0]
+        clips = [(b["audio"]["from"], b["audio"]["stop"]) for b in st["blocks"] if b["type"] == "minitask"]
+        self.assertEqual(clips, [(0, 397), (397, 607)])
+
+    def test_renders_and_checks(self):
+        for i in range(len(self.l["steps"])):
+            html = render_step("l7", i)
+            self.assertNotRegex(html, r"[А-Яа-яЁё]", "на экране только английский")
+        html = render_step("l7", 3)
+        self.assertEqual(html.count('class="ls-ptask"'), 4)
 
 
 class RecordingsJumpExactly(unittest.TestCase):

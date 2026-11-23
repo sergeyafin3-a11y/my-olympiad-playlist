@@ -1497,6 +1497,78 @@
           ]
         }
       ]
+    },
+    {
+      // Учитель 23.11: Варя написала муниципальный этап 21.11, задания опубликованы — решаем всю работу за один урок, с разбором ошибок.
+      // Задания — data/lesson-mun-26-27.js (официальных ключей ещё нет, ответы наши — см. комментарий там). Шпаргалка учителю — teacher/14-….
+      id: "l7", date: "2026-11-23", title: "Your olympiad: the whole paper", emoji: "🔍", cover: img("m21-strong"),
+      aims: [
+        "🎯 Goal: solve the whole paper you wrote on 21 November.",
+        "The same tasks, one by one. Find what went wrong."
+      ],
+      steps: [
+        {
+          stage: "warm-up", title: "Warm-up", minutes: 3, image: img("m22-wont-give-up"),
+          blocks: [
+            { type: "brief", title: "Your olympiad", items: ["There is no wrong answer.", "Tap what is true for you."] },
+            { type: "thisorthat", items: [
+              { a: "🎧 Listening", b: "📖 Reading", ask: "Which part was easier?" },
+              { a: "🔎 Extra words", b: "🔁 Rewrite the sentence", ask: "Use of English: which task was harder?" },
+              { a: "⏱ Not enough time", b: "🤯 Too difficult", ask: "Use of English: what was the problem?" },
+              { a: "💡 I had an idea fast", b: "🌀 I had no idea", ask: "Writing: how did the story start?" }
+            ] }
+          ]
+        },
+        {
+          stage: "practice", title: "Listening", minutes: 10, image: img("m24-me-when-english"),
+          blocks: [
+            { type: "minitask", label: "Task 1", task: "m27-l1", items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], source: "Real task · Moscow municipal stage 2026/27 · Listening",
+              audio: { src: "media/listening-mun-msk-26-27.m4a", from: 0, stop: 397, label: "Listen" } },
+            { type: "minitask", label: "Task 2", task: "m27-l2", items: [11, 12, 13, 14, 15], source: "Real task · Moscow municipal stage 2026/27 · Listening",
+              audio: { src: "media/listening-mun-msk-26-27.m4a", from: 397, stop: 607, label: "Listen" } }
+          ]
+        },
+        {
+          stage: "practice", title: "Reading", minutes: 12, image: img("m03-studying"),
+          blocks: [
+            { type: "minitask", label: "Task 1", task: "m27-r1", items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], source: "Real task · Moscow municipal stage 2026/27 · Reading", paras: [0, 1, 2, 3, 4, 5, 6] },
+            { type: "minitask", label: "Task 2", task: "m27-r2", items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], source: "Real task · Moscow municipal stage 2026/27 · Reading", paras: [0, 1, 2, 3, 4, 5, 6] }
+          ]
+        },
+        {
+          stage: "practice", title: "Use of English", minutes: 25, image: img("m08-brain"),
+          blocks: [
+            { type: "minitask", label: "Task 1", task: "m27-u1", items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], source: "Real task · Moscow municipal stage 2026/27 · Use of English" },
+            { type: "minitask", label: "Task 2", task: "m27-u2", items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], source: "Real task · Moscow municipal stage 2026/27 · Use of English" },
+            { type: "minitask", label: "Task 3", task: "m27-u3", items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], source: "Real task · Moscow municipal stage 2026/27 · Use of English" },
+            { type: "minitask", label: "Task 4", task: "m27-u4", items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], source: "Real task · Moscow municipal stage 2026/27 · Use of English" }
+          ]
+        },
+        {
+          stage: "production", title: "Writing", minutes: 10, image: img("m16-plot-board"),
+          blocks: [
+            { type: "wpaper", source: "Real task · Moscow municipal stage 2026/27 · Writing",
+              intro: "You see the following notice in an English youth magazine and decide to send your story.",
+              premise: "Stories Wanted. Write a story for our magazine. The story must end with the sentence: As the clock struck midnight, Emma realised that the hardest journey was not the one across the ocean, but the one she had to make within herself.",
+              pointsLabel: "The story must include:",
+              points: ["a title", "an old diary", "a conflict between two close friends"],
+              outro: "Write 200-250 words (the title is included in the word count)." },
+            { type: "brief", title: "Plan it together", items: [
+              "Who are the two friends? Why do they argue?",
+              "Where is the old diary? What is in it?",
+              "Why is Emma crossing the ocean?",
+              "How does the story come to the last sentence?"
+            ] }
+          ]
+        },
+        {
+          stage: "homework", home: true, title: "Homework: Writing", minutes: 60, image: img("m05-you-can"),
+          blocks: [
+            { type: "brief", title: "Your story", items: ["Write the story again, with your plan.", "Use the last sentence word for word.", "Then press Send to my teacher."] },
+            { type: "writebox", min: 200, max: 250, label: "story", send: "Writing · Story (Municipal stage 2026/27)" }
+          ]
+        }
+      ]
     }
   ];
 })();
