@@ -1928,6 +1928,28 @@ class MunicipalStageReview(unittest.TestCase):
                 if len(o["t"]) > 8:
                     self.assertTrue(o["t"] in paper, "%s: %s" % (t["id"], o["t"][:80]))
 
+    # Проверка PR 86.
+    def test_item_texts_are_word_for_word_too(self):
+        raw = re.sub(r"Всероссийская олимпиада школьников\. Английский язык\. 2026–2027 уч\. г\.\nМуниципальный этап\. 10–11 классы\n\d+\n", "", self.PAPER.read_text(encoding="utf-8"))
+        paper = re.sub(r"\s+", " ", re.sub(r"-\n", "-", raw))
+        for t in self.tasks:
+            for it in t["items"]:
+                if t["id"] == "m27-u3":
+                    self.assertNotRegex(it["q"], r"^\d\. ", "номер заголовка статьи сливался бы с номером пункта")
+                if t["type"] == "choice" and not it["q"].startswith("Gap"):
+                    self.assertTrue(it["q"].replace(" (rhyming slang)", "") in paper, "%s %d" % (t["id"], it["n"]))
+                if t["id"] == "m27-u1":
+                    self.assertTrue(it["q"] in paper, "%s %d" % (t["id"], it["n"]))
+
+    def test_disputed_keys_after_review(self):
+        u1 = [t for t in self.tasks if t["id"] == "m27-u1"][0]["items"]
+        self.assertEqual(u1[6]["accept"], ["could"], "he no longer understood them")
+        u2 = [t for t in self.tasks if t["id"] == "m27-u2"][0]["items"]
+        for it in u2:
+            n = int(re.search(r"\((\d) words\)", it["q"]).group(1))
+            for a in it["accept"]:
+                self.assertEqual(len(a.split()), n, a)
+
     def test_listening_plays_the_whole_recording(self):
         st = [s for s in self.l["steps"] if s["title"] == "Listening"][0]
         clips = [(b["audio"]["from"], b["audio"]["stop"]) for b in st["blocks"] if b["type"] == "minitask"]
