@@ -37,12 +37,18 @@ class IeltsTab(unittest.TestCase):
         self.assertNotIn("#/lesson/", out["ielts"])
         self.assertNotIn("i1", re.findall(r'href="#/lesson/([^"]+)"', out["lesson"]))
         self.assertIn('href="#/lesson/l7"', out["lesson"])
+        # Проверка PR 87: урок IELTS открывается только во вкладке IELTS, а не под подсвеченной вкладкой Lesson.
+        typed = ielts("i1", 0, expose="window.App.routes.lesson(['lesson', 'i1'])")["exposed"]
+        self.assertNotIn("Success and ambition</h1>", typed)
 
     def test_lesson_page_leads_back_to_ielts(self):
         out = ielts("i1", 0, expose="window.App.routes.ielts(['ielts', 'i1'])")["exposed"]
         self.assertIn('href="#/ielts"', out)
         self.assertNotIn('href="#/lesson"', out)
         self.assertIn("Success and ambition", out)
+        last = len(data()["lessons"][0]["steps"]) - 1
+        end = ielts("i1", last, expose="window.App.routes.ielts(['ielts', 'i1'])")["exposed"]
+        self.assertIn('<a class="ghost" href="#/ielts"', end, "Finish ведёт в список IELTS")
 
 
 class SuccessAndAmbition(unittest.TestCase):
@@ -55,7 +61,7 @@ class SuccessAndAmbition(unittest.TestCase):
         self.assertEqual(len(self.l["aims"]), 1)
         self.assertTrue(self.l["aims"][0].startswith("🎯 Goal:"))
         mins = sum(s["minutes"] for s in self.l["steps"] if not s.get("home"))
-        self.assertTrue(55 <= mins <= 60, mins)
+        self.assertEqual(mins, 60)
 
     def test_sections_in_order(self):
         self.assertEqual([s["title"] for s in self.l["steps"]],

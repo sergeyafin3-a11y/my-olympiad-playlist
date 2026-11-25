@@ -292,7 +292,7 @@
 
   A.routes.lesson = function (parts) {
     var l = parts[1] && byId(parts[1]);
-    return l ? lesson(l) : list("lesson");
+    return l && !l.course ? lesson(l) : list("lesson");
   };
   A.routes.ielts = function (parts) {
     var l = parts[1] && byId(parts[1]);

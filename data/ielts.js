@@ -47,10 +47,10 @@
         { k: "J", t: "the be-all and end-all" }, { k: "K", t: "a big fish in a small pond" }, { k: "L", t: "no such thing as an overnight success" }
       ],
       items: [
-        { n: 1, q: "She was average at school, found her passion at thirty and is now a top surgeon. She is ______.", a: ["B"] },
+        { n: 1, q: "She was average at school and only became successful in her thirties, much later than her classmates. She is ______.", a: ["B"] },
         { n: 2, q: "He won one tournament and stopped training. You can't ______ if you want to stay at the top.", a: ["H"] },
         { n: 3, q: "Social media is ______: it helps you find your people, but it can also make you anxious.", a: ["I"] },
-        { n: 4, q: "After months of studying until 2 a.m., she reached total ______ and could not open a book.", a: ["F"] },
+        { n: 4, q: "After months of studying until 2 a.m., she reached the point of ______ and could not open a book.", a: ["F"] },
         { n: 5, q: "The band played in small pubs for ten years before their first hit. There's ______.", a: ["L"] },
         { n: 6, q: "If you want a great reference, ______: stay late, help others and do more than you are asked.", a: ["G"] },
         { n: 7, q: "Exams matter, but they are not ______ of your life.", a: ["J"] },
@@ -59,7 +59,7 @@
   ] };
 
   var HELP = {
-    1: ["Look at her age. When did her success come?", "A late bloomer becomes successful later in life than most people."],
+    1: ["Compare her with her classmates. When did her success come?", "A late bloomer becomes successful later in life than most people."],
     2: ["He stopped after one win. Which expression is about stopping because you are happy with the past?", "To rest on your laurels = to stop trying because you are happy with what you have already done."],
     3: ["The sentence gives one good side and one bad side.", "A double-edged sword has a good side and a bad side."],
     4: ["You need a noun. What happens to you after too much work?", "Burnout = total exhaustion after too much work or stress."],
@@ -75,7 +75,7 @@
       aims: ["🎯 Goal: talk about success for 2 minutes — with advanced grammar and 12 new expressions."],
       steps: [
         {
-          stage: "warm-up", title: "Chat", minutes: 5, image: img("m24-me-when-english"),
+          stage: "warm-up", title: "Chat", minutes: 7, image: img("m24-me-when-english"),
           blocks: [
             { type: "brief", title: "Your week", items: ["Tell your teacher about your week.", "Full answers: what happened, how you felt, why."] }
           ]
@@ -165,7 +165,7 @@
         {
           stage: "feedback", title: "Fix it", minutes: 4,
           blocks: [
-            { type: "brief", title: "Your sentences", items: ["Your teacher types 5 sentences from today.", "Find the mistake and fix it."] },
+            { type: "brief", title: "Your sentences", items: ["Here are 5 sentences from today.", "Find the mistake in each one and fix it."] },
             { type: "storymap", fields: [1, 2, 3, 4, 5].map(function (n) { return { id: "s" + n, label: "Sentence " + n }; }) }
           ]
         },
@@ -176,7 +176,7 @@
             { type: "minitask", title: "Choose the expression", task: "i1-home", help: HELP, items: [1, 2, 3, 4, 5, 6, 7, 8], source: "IELTS Speaking · Success and ambition" },
             { type: "brief", title: "Part 2 at home", items: ["Write a plan: 5–6 key words, not sentences.", "Speak for 2 minutes with the timer. Then do it again, better.", "Don't read your notes."] },
             { type: "speak", title: "Describe a person you know who is very ambitious.", seconds: 120,
-              plan: ["You should say: who this person is", "what they want to achieve", "what they do to get there", "and explain if you would like to be like them."],
+              plan: ["You should say: who this person is", "what they want to achieve", "what they do to get there", "and explain whether you would like to be like them."],
               phrases: ["a high-flyer", "go the extra mile", "burn the candle at both ends", "Not only … but also …"] },
             { type: "storymap", fields: [{ id: "plan", label: "Your plan: 5–6 key words" }] }
           ]
