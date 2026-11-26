@@ -3,7 +3,11 @@
 // настоящее олимпиадное задание), снизу «Back / Next». Шаг урока запоминается.
 // Из урока задание открывается обычным экраном задания, а наверху там — «← Back to the lesson».
 (function () {
-  var A = window.App, LS = window.LESSONS || [], esc = A.esc;
+  var A = window.App, esc = A.esc;
+  // Уроки IELTS (data/ielts.js) — тем же движком, но со своей вкладкой и своим списком.
+  var LS = (window.LESSONS || []).concat((window.IELTS || []).map(function (l) { l.course = "ielts"; return l; }));
+  function home(l) { return l && l.course === "ielts" ? "#/ielts" : "#/lesson"; }
+  function courseOf(l) { return l.course || "lesson"; }
   var KEY = "olymp-lessons", COLOR = "#2EC4D6";
   var st = { step: {}, from: null, timer: null };
   try { var raw = JSON.parse(localStorage.getItem(KEY) || "{}"); if (raw && typeof raw === "object" && !Array.isArray(raw)) st = Object.assign(st, raw); } catch (e) {}
@@ -239,7 +243,7 @@
     return r;
   }
   // «Сегодня» — урок с сегодняшней датой, а если сегодня урока нет — ближайший следующий.
-  function current() { var t = today(); return LS.filter(function (l) { return l.date >= t; })[0] || LS[LS.length - 1]; }
+  function current(ls) { ls = ls || LS.filter(function (l) { return !l.course; }); var t = today(); return ls.filter(function (l) { return l.date >= t; })[0] || ls[ls.length - 1]; }
   // **жирный** в тексте урока — без HTML в данных.
   // Обложка урока в списке — та же картинка, маленьким квадратом (обрезка через CSS).
   function thumb(u) { return u; }
@@ -288,17 +292,23 @@
 
   A.routes.lesson = function (parts) {
     var l = parts[1] && byId(parts[1]);
-    return l ? lesson(l) : list();
+    return l && !l.course ? lesson(l) : list("lesson");
+  };
+  A.routes.ielts = function (parts) {
+    var l = parts[1] && byId(parts[1]);
+    return l && l.course === "ielts" ? lesson(l) : list("ielts");
   };
 
-  function list() {
-    var cur = current(), t = today();
-    var h = '<div style="--c:' + COLOR + '"><div class="tabtop"></div>' +
-      '<div class="album"><span class="sq" aria-hidden="true">🎓</span><div><span class="eyebrow" style="color:#DADADA">Municipal stage · 21 November</span><h1>Lessons</h1><p>' + LS.length + ' lessons · 50 minutes each</p></div></div>';
-    LS.forEach(function (l) {
+  function list(course) {
+    var ls = LS.filter(function (l) { return courseOf(l) === course; }), cur = current(ls), t = today();
+    var h = course === "ielts"
+      ? '<div style="--c:' + COLOR + '"><div class="tabtop"></div><div class="album"><span class="sq" aria-hidden="true">🗣️</span><div><span class="eyebrow" style="color:#DADADA">Speaking practice</span><h1>IELTS</h1><p>' + ls.length + (ls.length === 1 ? ' topic' : ' topics') + ' · 60 minutes each</p></div></div>'
+      : '<div style="--c:' + COLOR + '"><div class="tabtop"></div>' +
+      '<div class="album"><span class="sq" aria-hidden="true">🎓</span><div><span class="eyebrow" style="color:#DADADA">Municipal stage · 21 November</span><h1>Lessons</h1><p>' + ls.length + ' lessons · 50 minutes each</p></div></div>';
+    ls.forEach(function (l) {
       var dp = dateParts(l.date), isCur = l === cur, past = l.date < t && !isCur;
       var badge = isCur ? '<span class="ls-badge now">' + (l.date === t ? 'Today' : 'Next') + '</span>' : past ? '<span class="ls-badge done">✓ done</span>' : '<span class="ls-badge soon">soon</span>';
-      h += '<a class="ls-card' + (isCur ? ' today' : '') + '" href="#/lesson/' + l.id + '">' + (l.cover ? '<img class="ls-thumb" src="' + esc(thumb(l.cover)) + '" alt="" loading="lazy">' : '<span class="ls-date"><b>' + dp[0] + '</b><small>' + dp[1] + '</small></span>') +
+      h += '<a class="ls-card' + (isCur ? ' today' : '') + '" href="' + home(l) + '/' + l.id + '">' + (l.cover ? '<img class="ls-thumb" src="' + esc(thumb(l.cover)) + '" alt="" loading="lazy">' : '<span class="ls-date"><b>' + dp[0] + '</b><small>' + dp[1] + '</small></span>') +
         '<span><span class="ls-when">' + dp[0] + ' ' + dp[1] + (l.emoji ? ' · ' + l.emoji : '') + '</span><span class="ls-title">' + esc(l.title) + '</span><span class="ls-sub">' + (l.steps ? l.steps.length + ' steps · ' + classMinutes(l) + ' min' : (l.summary || l.links ? 'Summary and links' : 'Coming soon')) + '</span></span>' + badge + '</a>';
     });
     return h + '</div>';
@@ -306,8 +316,8 @@
 
   function lesson(l) {
     var dp = dateParts(l.date);
-    var h = '<div style="--c:' + COLOR + '"><a class="back" href="#/lesson">← Lessons</a>' +
-      '<div class="taskhead"><span class="sq" aria-hidden="true">🎓</span><div><span class="eyebrow">Lesson · ' + dp[0] + ' ' + dp[1] + (l.steps ? ' · ' + classMinutes(l) + ' min' : '') + '</span><h1>' + esc(l.title) + '</h1></div></div>';
+    var h = '<div style="--c:' + COLOR + '"><a class="back" href="' + home(l) + '">← ' + (l.course === "ielts" ? "IELTS" : "Lessons") + '</a>' +
+      '<div class="taskhead"><span class="sq" aria-hidden="true">' + (l.course === "ielts" ? "🗣️" : "🎓") + '</span><div><span class="eyebrow">' + (l.course === "ielts" ? "IELTS" : "Lesson") + ' · ' + dp[0] + ' ' + dp[1] + (l.steps ? ' · ' + classMinutes(l) + ' min' : '') + '</span><h1>' + esc(l.title) + '</h1></div></div>';
     if (!l.steps) {
       if (l.cover) h += '<img class="ls-hero" src="' + esc(l.cover) + '" alt="" loading="lazy">';
       if (l.summary) h += '<p class="ls-text">' + rich(l.summary) + '</p>';
@@ -346,7 +356,7 @@
       '<button class="ghost" data-lsclear="' + l.id + ':' + i + ':">↺ Clear answers in this section</button>' +
       '<button class="ghost" data-lsclear="' + l.id + ':">↺ Clear the whole lesson</button></div>';
     h += '<div class="ls-nav">' + (i > 0 ? '<button class="ghost" data-lsgo="' + l.id + ':' + (i - 1) + '">← Back</button>' : '<span></span>') +
-      (i < l.steps.length - 1 ? '<button class="bigplay" data-lsgo="' + l.id + ':' + (i + 1) + '">Next: ' + esc(l.steps[i + 1].title) + ' →</button>' : '<a class="ghost" href="#/lesson" style="text-decoration:none">Finish ✓</a>') + '</div>';
+      (i < l.steps.length - 1 ? '<button class="bigplay" data-lsgo="' + l.id + ':' + (i + 1) + '">Next: ' + esc(l.steps[i + 1].title) + ' →</button>' : '<a class="ghost" href="' + home(l) + '" style="text-decoration:none">Finish ✓</a>') + '</div>';
     return h + '</div>';
   }
 
@@ -670,7 +680,7 @@
   A.taskTop.push(function (t) {
     if (!st.from || !st.from.lesson) return "";
     var l = byId(st.from.lesson); if (!l) return "";
-    return '<a class="ls-back" href="#/lesson/' + l.id + '">← Back to the lesson: ' + esc(l.steps ? l.steps[Math.min(st.step[l.id] || 0, l.steps.length - 1)].title : l.title) + '</a>' +
+    return '<a class="ls-back" href="' + home(l) + '/' + l.id + '">← Back to the lesson: ' + esc(l.steps ? l.steps[Math.min(st.step[l.id] || 0, l.steps.length - 1)].title : l.title) + '</a>' +
       (st.timer && st.timer.end > Date.now() ? ' <b class="ls-clock" data-key="' + st.timer.key + '" style="margin-left:8px;font-variant-numeric:tabular-nums">' + left(st.timer.end) + '</b>' : '');
   });
 
@@ -686,7 +696,7 @@
   }, 1000);
   document.addEventListener("click", function (e) {
     var a = e.target.closest("a[data-lsfrom]");
-    if (a) { var m = /^#\/lesson\/([^/]+)/.exec(location.hash); st.from = m ? { lesson: m[1] } : null; save(); return; }
+    if (a) { var m = /^#\/(?:lesson|ielts)\/([^/]+)/.exec(location.hash); st.from = m ? { lesson: m[1] } : null; save(); return; }
     var b = e.target.closest("button"); if (!b) return;
     var d = b.dataset;
     if (d.lsgo) { var p = d.lsgo.split(":"); st.step[p[0]] = +p[1]; save(); A.render(); window.scrollTo(0, 0); return; }
@@ -918,7 +928,7 @@
   // Ушли из уроков не через задание урока — обратная ссылка больше не нужна.
   window.addEventListener("hashchange", function () {
     var h = location.hash;
-    if (st.from && !/^#\/(t|full|lesson)\//.test(h) && h !== "#/lesson") { st.from = null; save(); }
+    if (st.from && !/^#\/(t|full|lesson|ielts)\//.test(h) && h !== "#/lesson" && h !== "#/ielts") { st.from = null; save(); }
   });
   A.render();
 })();
